@@ -299,3 +299,7 @@ Stamina is a mobile-first web app (PWA) and an AI coach that plans my training, 
   4. "Other" sport → Activity-only;
   5. meal ideas → templates for the first 2 weeks.
 - **Next step**: `/to-tickets` slices this spec into GitHub issues on the Projects board, ordered by the roadmap weeks.
+
+## Tickets
+
+Published by `/to-tickets`: 23 tracer-bullet tickets in `issues/` (01 walking skeleton → 23 launch hardening), numbered in dependency order with blocking edges and roadmap weeks. Frontier at publication: 01.
