@@ -1,7 +1,7 @@
 # Sport-request review queue screen
 
 Status: backlog
-Proposed increment: 2
+Proposed increment: 1
 
 Source: ruled out of the 8-week MVP in MVP scope per Pillar, including Nutrition depth (`.scratch/mvp-plan/issues/12-mvp-scope.md`).
 

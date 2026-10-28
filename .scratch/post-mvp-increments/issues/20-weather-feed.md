@@ -1,7 +1,7 @@
 # Weather feed for hot-conditions hydration
 
 Status: backlog
-Proposed increment: 2
+Proposed increment: 3
 
 Source: ruled out of the 8-week MVP in Nutrition and hydration logic (`.scratch/mvp-plan/issues/17-nutrition-hydration-logic.md`).
 

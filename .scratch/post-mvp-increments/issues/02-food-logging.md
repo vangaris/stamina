@@ -1,7 +1,7 @@
 # Food logging, food database and barcode scan
 
 Status: backlog
-Proposed increment: 2
+Proposed increment: 3
 
 Source: ruled out of the 8-week MVP in MVP scope per Pillar, including Nutrition depth (`.scratch/mvp-plan/issues/12-mvp-scope.md`).
 

@@ -1,7 +1,7 @@
 # Locales beyond EN and EL
 
 Status: backlog
-Proposed increment: 3
+Proposed increment: 4
 
 Source: ruled out of the 8-week MVP in MVP scope per Pillar, including Nutrition depth (`.scratch/mvp-plan/issues/12-mvp-scope.md`).
 
