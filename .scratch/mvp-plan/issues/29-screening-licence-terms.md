@@ -1,7 +1,7 @@
 # Ask PAR-Q+ Collaboration and CSEP for in-app licence terms
 
 Type: task
-Status: claimed
+Status: resolved
 
 ## Question
 
@@ -13,3 +13,4 @@ HITL: the agent drafts the two enquiry emails (product description, markets, lan
 
 - 2026-10-28: Drafts ready: [licence-enquiry-emails.md](../assets/licence-enquiry-emails.md). Contacts verified on the licensors' own pages: PAR-Q+ `eparmedx@gmail.com` (eparmedx.com terms page); CSEP Permissions `info@csep.ca` (csep.ca permissions page: $200/item republication fee; software use needs a CSEP Licensing Agreement + fees). Waiting on Vang to send; the two-week clock starts on the send date.
 - 2026-10-28: Step-by-step plan with dates, outcomes and the Day-7 follow-up: [licence-enquiry-plan.md](../assets/licence-enquiry-plan.md).
+- 2026-10-28: Ruled **out of scope** of this map once the destination was reached: Safety rules already decides both branches, so the reply only selects the screening wording at build time. Tracked as [Vang] item #2 in `docs/mvp-plan.md` §14; follow the licence-enquiry plan.

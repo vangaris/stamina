@@ -36,6 +36,7 @@ Labels: wayfinder:map
 - [How do the exercise library and app copy get into Greek?](issues/32-greek-localisation.md): AI translation + Vang review; safety copy checked by the reviewers, legal docs by the lawyer (Greek authoritative); CI fails on missing EL keys; ~300-item EN/EL ingredient vocabulary so allergen checks run on IDs; LLM writes in the user's locale; ≈ 12 h, pushing the MVP to ≈ 151 h vs ≈ 144 h.
 - [Success metrics and go-to-market for the first 100 users](issues/14-metrics-and-gtm.md): metrics from own Postgres (no analytics SDK); W4 retention ≥ 40 % + ≥ 30 "would pay" gate charging; 30 network users week 8 → indoor-season club partners weeks 9–10 → 3 invites each → 100 by week 12; name chosen by week 4 (EUIPO/TMview + domain), placeholder brand until after week 12.
 - [8-week roadmap and top risks](issues/27-roadmap-and-risks.md): ≈ 152 h at 19 h/week with no slack (landing page moved post-MVP); W1 infra → W4 engine → W5 core loop → W6 feature-complete → W7 sign-offs → W8 ~30 live users; top risk is external sign-offs slipping; pre-agreed cut list; post-MVP: Inc 1 payments + web wins, Inc 2 React Native + health apps.
+- [Write docs/mvp-plan.md](issues/28-write-mvp-plan.md): **destination reached**: `docs/mvp-plan.md` with role sections, 8-week roadmap, tech-stack table with first paid thresholds, top 5 risks, 13 open [Vang]/[External] items with needed-by weeks; hand-off to `/to-spec` → `/to-tickets`.
 - [Competitor teardown: Fitbod, MyFitnessPal, Future, padel apps](issues/03-competitor-teardown.md): Incumbents each own one Pillar (Fitbod Training, MFP Nutrition logging, Future human-coached Training, US-only); no daily readiness Check-in anywhere; padel apps are booking or tiny. Fitbod + MFP ≈ €40/mo in Greece.
 - [Where is the "not a medical device" line for adaptive coaching software?](issues/04-medical-device-boundary.md): Wellness if every surface targets general fitness, performance, mobility, recovery, sleep, weight; rehab, pain diagnosis, disease-specific programs/diets, risk scores or clinical alerts make it a device (EU: Class IIa+, Notified Body). Claims, not algorithms, decide.
 - [What does GDPR Article 9 require of a solo-founder health app?](issues/05-gdpr-health-data.md): All inputs are Art. 9 health data: separate explicit consent, mandatory DPIA (HDPA list) and Art. 30 records before launch; DPAs + transfer basis per processor incl. LLM; 72 h breach notice; Greek age 15; UK rep, WA MHMDA, FTC HBNR if targeted.
@@ -49,7 +50,7 @@ Labels: wayfinder:map
 
 ## Not yet specified
 
-- (empty: remaining unknowns are live tickets. Analytics and consent tooling, product name and brand theme moved into Success metrics and go-to-market; legal review and Greek localisation became tickets; the payment provider was decided in Monetization and pricing and lives on post-MVP Payments and subscriptions.)
+- (empty: the way to the destination is clear; nothing is left to decide before build week 1.)
 
 ## Out of scope
 
@@ -58,3 +59,5 @@ Labels: wayfinder:map
 - **Injury- or pain-specific routines, rehab**: never, in any increment (medical-device boundary).
 - **Locales beyond EN + EL**: i18n infrastructure is in scope, extra translations are not.
 - **Non-EU/EEA users during the beta**: residence-gated at sign-up (Legal review); UK, US-state health-data laws return with a later market launch.
+- [Install gh and move the repo and map to GitHub](issues/24-move-to-github.md): build-week-1 execution, closed when the plan was written; now [Vang] item #1 in `docs/mvp-plan.md`.
+- [Ask PAR-Q+ Collaboration and CSEP for in-app licence terms](issues/29-screening-licence-terms.md): the reply only picks the screening wording at build time (Safety rules decides both branches); now [Vang] item #2 in `docs/mvp-plan.md`.
