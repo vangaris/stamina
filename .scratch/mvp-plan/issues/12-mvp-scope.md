@@ -1,7 +1,7 @@
 # MVP scope per Pillar, including Nutrition depth
 
 Type: grilling
-Status: open
+Status: claimed
 Blocked by: 01, 02
 
 ## Question
@@ -13,3 +13,12 @@ What is in and out of the MVP for each Pillar (Training, Nutrition, Mobility & R
 - **Health-app connection**: Vang wants Stamina to connect with a health app (Apple Health / Google Health Connect) so Activities and workouts feed Adaptation and the app shows what to eat and drink. Per the platform research this needs a native shell (Capacitor) and the Apple Developer Program at $99/yr, which breaks the €0 constraint: is it in the 8-week MVP (read-only import of workouts?), or week-9+, with manual Activity logging at launch?
 
 Output: an in/out table per Pillar that fits 8 weeks at ~15 h/week with AI agents.
+
+## Comments
+
+- 2026-10-28 round 1 (Vang):
+  - Q1 Nutrition depth: accepted (b) daily targets + AI meal suggestions honouring preferences/allergies, household-measure portions, sport-day fluid/carb bump; no food logging, barcode or food DB in MVP.
+  - Q2 Sport coverage: users can request a sport; once added it is available to all users. Launch list widens beyond the first-user list: running, CrossFit, HYROX, calisthenics, etc. (approval flow and final list in round 2).
+  - Q3 Health-app connection: not in the 8 weeks; first post-MVP increment, shipped first as a beta (Play closed testing / TestFlight; TestFlight still needs the US$99/yr Apple account). MVP logs Activities manually.
+  - General: delivery platform and framework (PWA, Capacitor, React Native, native…) are decided last, on best practices. Delivery platform and frontend architecture now waits on the engine, onboarding and core-screens tickets; core screens no longer waits on it; engineering process waits on it.
+  - Q4–Q9 accepted. Everything ruled out becomes a post-MVP backlog ticket: `.scratch/post-mvp-increments/issues/01–11`. Injury/pain-specific routines stay excluded forever (medical-device boundary), so no ticket.

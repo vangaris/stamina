@@ -10,7 +10,7 @@ Labels: wayfinder:map
 
 - **Domain**: a sport-agnostic coaching product. The user picks any sport, what they need (training, nutrition, or both), goals, equipment, schedule and food preferences; the app suggests the best approach, AI suggests Sessions and shows what to eat and drink, and Activities (games, matches) plus Check-ins and Logs trigger Adaptation suggestions such as a Deload. The Program spans four Pillars (Training, Nutrition, Mobility & Recovery, Daily Routine). Use the vocabulary in `GLOSSARY.md`.
 - **Skills**: grilling tickets call `grilling` + `domain-modeling`; research tickets `research`; prototype tickets `prototype`.
-- **Hard constraints on every decision**: live with real users in ≤ 8 weeks; Vang part-time (~15 h/week) + AI coding agents; €0 / free tiers until traction, and every service names its first paid threshold; scales to worldwide users without a rewrite (multi-region, i18n, metric/imperial, time zones); not a medical device (screening, disclaimers, red-flag rules, GDPR for health data); prefer Vue 3 + TypeScript unless there's a strong reason not to.
+- **Hard constraints on every decision**: live with real users in ≤ 8 weeks; Vang part-time (~15 h/week) + AI coding agents; €0 / free tiers until traction, and every service names its first paid threshold; scales to worldwide users without a rewrite (multi-region, i18n, metric/imperial, time zones); not a medical device (screening, disclaimers, red-flag rules, GDPR for health data); delivery platform and framework are decided last, on best practices (Vue 3 + TypeScript is Vang's strongest stack, weighed rather than assumed).
 - **Standing preferences**: no sport-specific program is hard-coded (no CrossFit, padel or any other fixed module); `seed/` is Vang's own setup, used only as an example user; launch locales EN + EL with metric and imperial units; safety rules and nutrition logic are reviewed by a licensed professional before real users; decisions in the final document are marked [Vang] (made by Vang during grilling) or [External] (needs a third party, with needed-by week).
 - **Execution override**: the final ticket, Write docs/mvp-plan.md, produces the deliverable document inside this map. Everything else produces decisions, not deliverables.
 - **Research findings** live on local `research/<name>` branches (no remote until Install gh and move the repo and map to GitHub resolves); each research ticket points at its branch and file.
@@ -46,4 +46,6 @@ Labels: wayfinder:map
 ## Out of scope
 
 - **Building the MVP**: this map ends at a decision-complete plan; the build hands off to `/to-spec`.
+- **Post-MVP increments**: everything MVP scope rules out of the 8 weeks is a backlog ticket in `.scratch/post-mvp-increments/issues/` with a proposed increment number; the roadmap ticket orders them and the plan document lists them.
+- **Injury- or pain-specific routines, rehab**: never, in any increment (medical-device boundary).
 - **Locales beyond EN + EL**: i18n infrastructure is in scope, extra translations are not.
