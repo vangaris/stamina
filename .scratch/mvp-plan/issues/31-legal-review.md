@@ -1,7 +1,7 @@
 # Legal review: lawyer or not, scope and timing
 
 Type: grilling
-Status: open
+Status: claimed
 
 ## Question
 
