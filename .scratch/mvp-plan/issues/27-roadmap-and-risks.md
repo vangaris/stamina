@@ -1,7 +1,7 @@
 # 8-week roadmap and top risks
 
 Type: grilling
-Status: open
+Status: claimed
 Blocked by: 13, 14, 18, 19, 20, 21, 22, 23, 25, 26, 30, 31, 32
 
 ## Question
