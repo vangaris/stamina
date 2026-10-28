@@ -34,7 +34,7 @@ Labels: wayfinder:map
 
 - **API and auth details**: API style (platform-generated vs custom), auth providers (email, Apple, Google) and session model, once the backend platform is chosen.
 - **Design system specifics** beyond the basics in the core-screens prototype, once the component base is chosen.
-- **Payments and legal entity**: payment provider, VAT/OSS handling, and whether a company must exist before charging, once monetization is decided.
+- **Payment provider**: which provider or store billing mix to integrate, once monetization and the legal/channel research (What does a Greek solo founder need to sell EU consumer subscriptions…) are resolved; lands on post-MVP Payments and subscriptions.
 - **Analytics and consent tooling**: privacy-friendly product analytics and how it fits health-data consent, once metrics and GDPR obligations are known.
 - **Product name and brand**: replacing the `stamina` codename, once the first user and positioning are settled.
 - **Multi-region mechanics**: data residency per region, read replicas, routing, once DB and cloud choices exist.
