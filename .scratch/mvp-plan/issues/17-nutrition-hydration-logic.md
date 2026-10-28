@@ -1,7 +1,7 @@
 # Nutrition and hydration logic
 
 Type: grilling
-Status: open
+Status: claimed
 Blocked by: 01, 12
 
 ## Question
