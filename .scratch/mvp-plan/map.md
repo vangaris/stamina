@@ -24,6 +24,7 @@ Labels: wayfinder:map
 - [Training generation model: periodization, progression, sport and Activity load](issues/15-training-generation-model.md): rolling 4-week Blocks (3 build + Deload), 5-slot Sessions; AI picks library exercises, rules set all numbers; session-RPE Load vs 4-week average drives move/swap/lighten and Deload suggestions; ~150-exercise library.
 - [Core screens: Today, Session, Meals, Progress](issues/23-core-screens-prototype.md): Today = time-ordered timeline with inline suggestions and one-question Check-in; Session = one exercise per screen + full-screen rest; Meals = next-meal card; Progress = Load vs 4-week average; bottom tabs; themeable two-tier tokens.
 - [Data model, database, privacy and backups](issues/20-data-model-and-db.md): Neon Postgres Frankfurt + Neon Auth (email code + Google); nightly encrypted dumps to EU R2, 30-day retention, monthly restore test; RLS + field encryption for screening; append-only revisions; one stack per region with `home_region`.
+- [Cloud setup, environments, monitoring and cost guardrails](issues/21-cloud-and-environments.md): local / per-PR preview / prod with Neon branches; Cloudflare Pages frontend, Hono API on Deno Deploy EU (Cloud Run europe-west1 later); Brevo email codes, Sentry EU, UptimeRobot; OpenTofu state in R2; €5 alerts, hard AI caps, kill switch.
 - [Competitor teardown: Fitbod, MyFitnessPal, Future, padel apps](issues/03-competitor-teardown.md): Incumbents each own one Pillar (Fitbod Training, MFP Nutrition logging, Future human-coached Training, US-only); no daily readiness Check-in anywhere; padel apps are booking or tiny. Fitbod + MFP ≈ €40/mo in Greece.
 - [Where is the "not a medical device" line for adaptive coaching software?](issues/04-medical-device-boundary.md): Wellness if every surface targets general fitness, performance, mobility, recovery, sleep, weight; rehab, pain diagnosis, disease-specific programs/diets, risk scores or clinical alerts make it a device (EU: Class IIa+, Notified Body). Claims, not algorithms, decide.
 - [What does GDPR Article 9 require of a solo-founder health app?](issues/05-gdpr-health-data.md): All inputs are Art. 9 health data: separate explicit consent, mandatory DPIA (HDPA list) and Art. 30 records before launch; DPAs + transfer basis per processor incl. LLM; 72 h breach notice; Greek age 15; UK rep, WA MHMDA, FTC HBNR if targeted.
@@ -37,7 +38,7 @@ Labels: wayfinder:map
 
 ## Not yet specified
 
-- **API style**: platform Data API vs a custom API layer (and its runtime), once the delivery platform and Cloud setup are decided; auth is settled (Data model: Neon Auth).
+- **API contract style**: REST + OpenAPI vs typed RPC between frontend and the Hono API (Cloud setup), once the delivery platform is decided.
 - **Brand theme**: the real palette, typography and logo, applied through the theme layer (Core screens: two-tier tokens) once the product name and brand are settled.
 - **Payment provider**: which provider or store billing mix to integrate, once monetization and the legal/channel research (What does a Greek solo founder need to sell EU consumer subscriptions…) are resolved; lands on post-MVP Payments and subscriptions.
 - **Analytics and consent tooling**: privacy-friendly product analytics and how it fits health-data consent, once metrics and GDPR obligations are known.
