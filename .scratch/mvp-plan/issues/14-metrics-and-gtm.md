@@ -1,7 +1,7 @@
 # Success metrics and go-to-market for the first 100 users
 
 Type: grilling
-Status: open
+Status: claimed
 Blocked by: 02, 12
 
 ## Question
