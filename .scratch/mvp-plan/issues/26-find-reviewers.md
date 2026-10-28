@@ -1,7 +1,7 @@
 # Find the professional reviewers
 
 Type: task
-Status: open
+Status: claimed
 Blocked by: 16, 17
 
 ## Question
