@@ -1,7 +1,7 @@
 # Delivery platform and frontend architecture
 
 Type: grilling
-Status: open
+Status: claimed
 Blocked by: 08, 12, 15, 18, 22, 23
 
 ## Question
