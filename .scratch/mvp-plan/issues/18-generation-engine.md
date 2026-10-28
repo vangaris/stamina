@@ -11,3 +11,4 @@ Vang wants AI to suggest Sessions (and meals, per the Nutrition depth). Training
 ## Comments
 
 - 2026-10-28 (from Nutrition and hydration logic): meal-idea contract for the engine. Rules set each slot's target (protein g, carb portion, timing). The LLM returns a meal idea in household measures **with a full ingredient list**. A deterministic ingredient→allergen table rejects any allergen hit, with up to 2 regenerations, then a fixed template. No supplements, doses or conditions in LLM output. Fixed templates (~60) back the kill switch.
+- 2026-10-28 (from Safety rules): the engine must enforce the never-advise list in rules **and** in checks on LLM output; apply Limited-mode caps (RPE ≤ 7, no power/plyometric slot, no RIR 1 weeks) and body-area exclusions; honour stop-flag pauses; and never send Screening answers, stop flags or clearance statements to the LLM provider.

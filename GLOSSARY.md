@@ -40,6 +40,14 @@ _Avoid_: Survey, daily log, readiness score
 The record of what a user actually did in a Session or ate in a meal.
 _Avoid_: Entry, history, tracking
 
+**Screening**:
+The yes/no health questions a user answers before getting a Program, whose outcome is cleared, an excluded body area, or referred to a professional.
+_Avoid_: PAR-Q (unless licensed), assessment, medical check, clearance
+
+**Stop flag**:
+A symptom the user reports during a Check-in or Session that pauses training and points them to medical help.
+_Avoid_: Red flag alert, warning, symptom check
+
 **Activity**:
 Sport the user does outside a Session, planned or not, such as a basketball game, a padel match or a windy kitesurfing afternoon, logged manually or imported from a health app.
 _Avoid_: Game, match, external workout, sport session
