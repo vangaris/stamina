@@ -1,7 +1,7 @@
 # Core screens: Today, Session, Meals, Progress
 
 Type: prototype
-Status: open
+Status: claimed
 Blocked by: 12, 15
 
 ## Question
