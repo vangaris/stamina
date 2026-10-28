@@ -29,6 +29,7 @@ Labels: wayfinder:map
 - [Safety rules: screening, contraindications, red flags, never-advise list](issues/16-safety-rules.md): 10-question screening (Q9 split into 9a/9b by the onboarding prototype; licensed text if permitted, else own ACSM-based wording) → Referred / area excluded / Nutrition off / cleared; Limited Block after a doctor's OK; stop flags pause training; never-advise list; 5 disclaimer placements; launch gated on physio + dietitian sign-off.
 - [Generation engine: rules vs LLM vs hybrid; cost and safety controls](issues/18-generation-engine.md): rules decide all numbers and safety; Claude Haiku 5.5 only picks pre-filtered exercise IDs and writes meal ideas; no health data in prompts; strict validators + fallbacks; ≈ $2/mo, hard cap $10 (first paid cost); 50-prompt eval gate.
 - [Onboarding flow, including screening](issues/22-onboarding-prototype.md): "Fast start" — 8–9 screens to the first Program (needs + birth year first, sport, Goal, week, disclaimer + consent, one-page health check, account), then "finish setup" cards for equipment and Meals; under-18s stopped before any health question.
+- [Delivery platform and frontend architecture](issues/19-frontend-architecture.md): Vue 3 + Vite PWA now, React Native (Expo) apps at increment 1; container → composable → mediator → handler → factory-built services; shared framework-agnostic `app-core`; custom Tailwind components on tokens; one Nx package per component and utility; offline-first outbox.
 - [Competitor teardown: Fitbod, MyFitnessPal, Future, padel apps](issues/03-competitor-teardown.md): Incumbents each own one Pillar (Fitbod Training, MFP Nutrition logging, Future human-coached Training, US-only); no daily readiness Check-in anywhere; padel apps are booking or tiny. Fitbod + MFP ≈ €40/mo in Greece.
 - [Where is the "not a medical device" line for adaptive coaching software?](issues/04-medical-device-boundary.md): Wellness if every surface targets general fitness, performance, mobility, recovery, sleep, weight; rehab, pain diagnosis, disease-specific programs/diets, risk scores or clinical alerts make it a device (EU: Class IIa+, Notified Body). Claims, not algorithms, decide.
 - [What does GDPR Article 9 require of a solo-founder health app?](issues/05-gdpr-health-data.md): All inputs are Art. 9 health data: separate explicit consent, mandatory DPIA (HDPA list) and Art. 30 records before launch; DPAs + transfer basis per processor incl. LLM; 72 h breach notice; Greek age 15; UK rep, WA MHMDA, FTC HBNR if targeted.
@@ -42,13 +43,11 @@ Labels: wayfinder:map
 
 ## Not yet specified
 
-- **API contract style**: REST + OpenAPI vs typed RPC between frontend and the Hono API (Cloud setup), once the delivery platform is decided.
 - **Brand theme**: the real palette, typography and logo, applied through the theme layer (Core screens: two-tier tokens) once the product name and brand are settled.
 - **Payment provider**: which provider or store billing mix to integrate, once monetization and the legal/channel research (What does a Greek solo founder need to sell EU consumer subscriptions…) are resolved; lands on post-MVP Payments and subscriptions.
 - **Analytics and consent tooling**: privacy-friendly product analytics and how it fits health-data consent, once metrics and GDPR obligations are known.
 - **Product name and brand**: replacing the `stamina` codename, once the first user and positioning are settled.
 - **Legal review**: research surfaced three legal calls (wger CC-BY-SA reach into Stamina's own content, own-worded screening vs licensed instruments, DPIA sign-off); whether and when a lawyer is engaged hangs on the exercise-library, safety-rules and data-model decisions.
-- **Notifications and reminders**: channels (web push, local, email) and cadence, once the delivery platform is chosen.
 - **Exercise library localisation**: translating exercise content into Greek and future locales, once the library source is chosen.
 
 ## Out of scope
