@@ -280,7 +280,7 @@ Sources: [Generation engine](../.scratch/mvp-plan/issues/18-generation-engine.md
 - **No health data in prompts:** no user ID, age, sex, weight, Check-ins or screening answers. Allergens are sent mixed in with dislikes, unlabelled.
 - **Output checks:** strict structure checks; exercise IDs must come from the allowed list; allergen check by ID; a never-advise term filter (EN + EL); protein within ±30% of target. If a check fails, a retry, then a rules-only or template fallback.
 - **Cost:** about $2/month for 100 users [INFERENCE]. **Hard cap $10/month**; per user, 15 calls a day and 3 "another idea" a day. **Kill switch at 80%** of the cap, falling back to rules and templates.
-- **Testing:** golden tests for the rules. A **50-prompt evaluation set (25 EN + 25 EL) must pass at ≥ 98%** before any prompt change ships. Stored AI answers are never regenerated.
+- **Testing:** three seams (agreed in the build spec): **the API over HTTP** (real Hono app + Postgres, AI provider faked; the rules are tested through it with fixture users), **the `app-core` mediator** (offline queue, sync, stores), and **a few Playwright journeys** with axe. AI quality is gated separately by a **50-prompt evaluation set (25 EN + 25 EL) at ≥ 98%** before any prompt change ships. Stored AI answers are never regenerated.
 - **Transparency:** a "Suggested by AI" label (EU AI Act Art. 50). Anthropic is named as a processor in the privacy notice.
 
 **Integrations later.** Apple Health and Health Connect come with the React Native apps (increment 2), importing Activities. Payments (Paddle) come in increment 1.

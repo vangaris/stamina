@@ -108,7 +108,7 @@ infra/                    OpenTofu + setup scripts
 - Deno Deploy cron if the current product supports it (UNVERIFIED); otherwise a GitHub Actions schedule calls an internal endpoint.
 
 **Testing**
-- **Vitest**: domain golden tests, `app-core` handler tests through a mock-service mediator, component tests.
+- **Vitest**: `app-core` behaviour through a mock-service mediator; domain rules are tested through the API seam (superseded "domain golden tests": see the build spec's testing decisions).
 - **Playwright** at phone size on every PR preview: onboarding, a Session with offline logging then sync, "I played" → accept suggestion, meal logging.
 - **axe** accessibility checks.
 - The engine's 50-prompt eval set runs in CI on prompt changes.
