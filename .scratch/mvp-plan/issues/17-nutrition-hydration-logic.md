@@ -81,3 +81,4 @@ Sources: `docs/research/nutrition-evidence.md` (branch `research/nutrition-evide
 - Find the professional reviewers: the dietitian brief.
 - Data model additions (profile fields above, Activity `hot` flag, Sport Profile METs) fold into the schema at spec time.
 - Post-MVP 20 (weather feed) and 21 (adaptive energy targets).
+- 2026-10-28 (from Greek localisation): the ingredient→allergen table becomes a ~300-item ingredient vocabulary (ID, EN/EL names, 14-allergen tags, household units); AI meal ideas reference ingredient IDs only.

@@ -67,3 +67,4 @@ Hybrid engine: **rules decide everything numeric and everything safety-related; 
 - "Suggested by AI" label on meal ideas and exercise picks (EU AI Act Art. 50).
 - The privacy notice names Anthropic as processor and what is sent.
 - The DPIA covers the LLM flow.
+- 2026-10-28 (from Greek localisation): meal ideas return **ingredient IDs** from a ~300-item EN/EL ingredient vocabulary (allergen-tagged); the allergen check runs on IDs; LLM text is generated in the user's locale; the never-advise filter has EN + EL term lists; the eval set is 25 EN + 25 EL prompts.
