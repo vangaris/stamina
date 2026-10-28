@@ -22,6 +22,14 @@ _Avoid_: Mesocycle, phase, cycle
 One Training or Mobility & Recovery workout that Stamina schedules on a given day.
 _Avoid_: Workout, class, day
 
+**Goal**:
+The single primary outcome a user picks for their Program: perform better in their sport, get stronger, general fitness, or body composition.
+_Avoid_: Objective, target, aim
+
+**Sport Profile**:
+The approved description of a sport's demands that the engine plans around: energy mix, key movements, high-load body areas, typical Activity, recovery window and season.
+_Avoid_: Sport module, sport template, sport program
+
 ### Feedback
 
 **Check-in**:
@@ -35,6 +43,10 @@ _Avoid_: Entry, history, tracking
 **Activity**:
 Sport the user does outside a Session, planned or not, such as a basketball game, a padel match or a windy kitesurfing afternoon, logged manually or imported from a health app.
 _Avoid_: Game, match, external workout, sport session
+
+**Load**:
+The training stress of a Session or Activity, scored as perceived exertion (RPE) times minutes, and summed per week.
+_Avoid_: Volume, strain, training stress score
 
 **Adaptation**:
 A suggested change to a Program, triggered by Logs, Check-ins or Activities, that the user accepts or declines.
