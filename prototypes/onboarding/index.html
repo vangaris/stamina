@@ -1,0 +1,336 @@
+<!doctype html>
+<!--
+  PROTOTYPE — throwaway. Answers: "How should Stamina's onboarding (incl. Screening) be structured on a phone?"
+  Ticket: .scratch/mvp-plan/issues/22-onboarding-prototype.md (on main).
+  Same questions and Safety-rules outcome logic in every variant; only the flow structure differs:
+    A Stepper   — one question per screen
+    B Sections  — a hub with 4 sections, each a scrolling form page
+    C Fast start — minimum to a first Program, the rest asked later as "finish setup" cards
+  Switch with ?variant=A|B|C, the bottom bar, or ←/→. "{ } state" shows answers, outcome, screens shown and elapsed time.
+  Tokens copied from the Core screens prototype (placeholder theme).
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>PROTOTYPE · Stamina onboarding</title>
+<style>
+:root{
+  --font: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", sans-serif;
+  --fs-xs:12px; --fs-sm:14px; --fs-md:16px; --fs-lg:20px; --fs-xl:24px; --fs-2xl:32px;
+  --sp-1:4px; --sp-2:8px; --sp-3:12px; --sp-4:16px; --sp-5:24px; --sp-6:32px;
+  --r-sm:8px; --r-md:16px; --r-pill:999px; --tap:44px;
+  --c-bg:#f5f6f3; --c-surface:#fff; --c-surface-2:#eceee8; --c-text:#141914; --c-muted:#5b655b; --c-border:#dbe0d7;
+  --c-accent:#1d7a4c; --c-accent-ink:#fff; --c-accent-soft:#ddefe4; --c-load:#2d5db0; --c-load-soft:#e0e8f7;
+  --c-warn:#a8530a; --c-warn-soft:#fcefd9; --c-ok:#1d7a4c; --shadow:0 1px 2px rgba(0,0,0,.06),0 6px 16px rgba(0,0,0,.06);
+}
+@media (prefers-color-scheme: dark){:root{
+  --c-bg:#0e120e; --c-surface:#171d17; --c-surface-2:#202820; --c-text:#edf2eb; --c-muted:#98a398; --c-border:#2b342b;
+  --c-accent:#4cc38a; --c-accent-ink:#05200f; --c-accent-soft:#143826; --c-load:#86a9ef; --c-load-soft:#1a2741;
+  --c-warn:#f0a34c; --c-warn-soft:#3a2a12; --c-ok:#4cc38a; --shadow:none;}}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:#9aa39a;font-family:var(--font);color:var(--c-text);font-size:var(--fs-md);line-height:1.4}
+@media (prefers-color-scheme: dark){html,body{background:#000}}
+button,input{font:inherit;color:inherit}
+button{cursor:pointer;border:0;background:none;padding:0}
+.phone{position:relative;width:100%;max-width:400px;height:calc(100% - 44px);margin:0 auto;background:var(--c-bg);overflow:hidden;display:flex;flex-direction:column}
+.scroll{flex:1;overflow-y:auto;padding:var(--sp-4) var(--sp-4) 120px}
+.h1{font-size:var(--fs-xl);font-weight:700;margin:0 0 var(--sp-2)}
+.h2{font-size:var(--fs-lg);font-weight:700;margin:var(--sp-4) 0 var(--sp-2)}
+.label{font-size:var(--fs-xs);text-transform:uppercase;letter-spacing:.06em;color:var(--c-muted);font-weight:500}
+.muted{color:var(--c-muted)} .sm{font-size:var(--fs-sm)} .xs{font-size:var(--fs-xs)}
+.card{background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--r-md);padding:var(--sp-4);box-shadow:var(--shadow)}
+.stack>*+*{margin-top:var(--sp-3)}
+.row{display:flex;align-items:center;gap:var(--sp-2)} .wrap{flex-wrap:wrap} .between{justify-content:space-between} .grow{flex:1}
+.btn{min-height:var(--tap);padding:0 var(--sp-4);border-radius:var(--r-pill);font-weight:500;display:inline-flex;align-items:center;justify-content:center;gap:var(--sp-2)}
+.btn-primary{background:var(--c-accent);color:var(--c-accent-ink)} .btn-primary[disabled]{opacity:.4;cursor:not-allowed}
+.btn-ghost{background:var(--c-surface-2)} .btn-block{width:100%}
+.chip{min-width:var(--tap);min-height:var(--tap);border-radius:var(--r-pill);background:var(--c-surface-2);font-weight:500;display:inline-flex;align-items:center;justify-content:center;padding:0 var(--sp-3)}
+.chip.on{background:var(--c-accent);color:var(--c-accent-ink)}
+.pill{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:var(--r-pill);font-size:var(--fs-xs);font-weight:500;background:var(--c-surface-2)}
+.pill.ok{background:var(--c-accent-soft);color:var(--c-ok)} .pill.warn{background:var(--c-warn-soft);color:var(--c-warn)} .pill.load{background:var(--c-load-soft);color:var(--c-load)}
+.note{background:var(--c-warn-soft);border-radius:var(--r-md);padding:var(--sp-3) var(--sp-4);font-size:var(--fs-sm)}
+.field+.field{margin-top:var(--sp-5)}
+.q{font-weight:600;margin-bottom:var(--sp-2)}
+.bar{height:6px;border-radius:999px;background:var(--c-surface-2);overflow:hidden} .bar>i{display:block;height:100%;background:var(--c-accent)}
+.footer{position:absolute;left:0;right:0;bottom:0;padding:var(--sp-3) var(--sp-4);background:linear-gradient(transparent,var(--c-bg) 30%);display:flex;gap:var(--sp-2)}
+input[type=text]{min-height:var(--tap);border-radius:var(--r-sm);border:1px solid var(--c-border);background:var(--c-surface);padding:0 var(--sp-3);width:100%}
+.check{display:flex;gap:var(--sp-3);align-items:flex-start}
+.check .box{flex:none;width:28px;height:28px;border-radius:6px;border:2px solid var(--c-border);display:flex;align-items:center;justify-content:center;font-weight:700}
+.check .box.on{background:var(--c-accent);border-color:var(--c-accent);color:var(--c-accent-ink)}
+.stepper{display:flex;align-items:center;gap:var(--sp-2)} .stepper .val{min-width:72px;text-align:center;font-size:var(--fs-lg);font-weight:700}
+.days{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.days .chip{min-width:0;padding:0}
+#switcher{position:fixed;left:0;right:0;bottom:0;height:44px;display:flex;align-items:center;justify-content:center;gap:12px;background:#111;color:#fff;font:600 13px/1 ui-monospace,Menlo,monospace;z-index:100}
+#switcher button{color:#fff;padding:6px 12px;border-radius:6px;background:#2a2a2a}
+#statepanel{position:fixed;top:0;right:0;bottom:44px;width:min(420px,100%);background:#111;color:#b8f5c9;font:12px/1.35 ui-monospace,Menlo,monospace;overflow:auto;padding:12px;z-index:99;white-space:pre-wrap}
+</style>
+</head>
+<body>
+<div class="phone" id="app"></div>
+<div id="statepanel" hidden></div>
+<div id="switcher">
+  <button data-sw="prev" aria-label="Previous variant">←</button>
+  <span id="swlabel"></span>
+  <button data-sw="next" aria-label="Next variant">→</button>
+  <button data-sw="state">{ } state</button>
+  <button data-sw="reset">reset</button>
+</div>
+<script>
+// ===================== Domain data =====================
+const YEAR = 2026;
+const SPORTS = ['Padel','Tennis','Beach volleyball','Kitesurfing','Windsurfing','Basketball','5-a-side football','Running','CrossFit','HYROX','Calisthenics'];
+const HOT_SPORTS = ['Kitesurfing','Windsurfing','Beach volleyball'];
+const DAYS = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+const AREAS = ['Neck','Shoulder','Elbow / wrist','Upper back','Lower back','Hip','Knee','Ankle / foot'];
+const ALLERGENS = ['Gluten cereals','Crustaceans','Eggs','Fish','Peanuts','Soy','Milk','Tree nuts','Celery','Mustard','Sesame','Sulphites','Lupin','Molluscs']; // EU Reg. 1169/2011 Annex II
+const DISLIKES = ['Mushrooms','Olives','Spicy food','Red meat','Seafood','Coriander','Aubergine'];
+const SCREEN = [ // Safety rules, own wording; q9 split into 9a/9b (prototype finding: one combined question can't drive two different outcomes)
+  ['q1','Has a doctor ever told you that you have a heart condition, have had a stroke, or have high blood pressure?'],
+  ['q2','In the last 12 months, have you had chest pain, pressure or discomfort, at rest or during activity?'],
+  ['q3','In the last 12 months, have you fainted, lost consciousness, or lost your balance because of dizziness?'],
+  ['q4','Do you have diabetes (type 1 or 2) or kidney disease?'],
+  ['q5','Do you get short of breath at rest or with light effort, or did you need medical care for asthma in the last 12 months?'],
+  ['q6','Do you have a bone, joint or muscle problem that activity could make worse?'],
+  ['q7','Have you had a concussion or head injury in the last 12 months?'],
+  ['q8','Are you pregnant?'],
+  ['q9a','Has a doctor told you to exercise only under medical supervision?'],
+  ['q9b','Are you being treated for an eating disorder?'],
+];
+const REFER_KEYS = ['q1','q2','q3','q4','q5','q7','q8','q9a'];
+
+function initialState(){
+  return { a:{ units:'metric', lang:'English', birthYear:1992, heightCm:178, weightKg:78, mealsPerDay:4, sessionsPerWeek:3, minutes:45, playMinutes:90, playIntensity:'hard', availableDays:[], playDays:[], equipment:[], areas:[], allergens:[], dislikes:[] },
+    page:0, section:null, gate:null, revealed:false, doctorOk:false, startedAt:Date.now(), revealAt:null, screensShown:1, finish:{} };
+}
+let S = initialState();
+let variant = (new URLSearchParams(location.search).get('variant')||'A').toUpperCase(); if(!'ABC'.includes(variant)) variant='A';
+
+// ===================== Rules (Safety rules + Nutrition + Training model, simplified) =====================
+const wantsNutrition = () => S.a.needs==='nutrition' || S.a.needs==='both';
+const wantsTraining = () => S.a.needs==='training' || S.a.needs==='both';
+const age = () => YEAR - S.a.birthYear;
+const nutritionOff = () => S.a.q9b===true;
+function outcome(){
+  if(age()<18) return 'under18';
+  if(REFER_KEYS.some(k=>S.a[k]===true)) return S.doctorOk ? 'limited' : 'referred';
+  return 'cleared';
+}
+function blockEmphasis(){ return ({perform:'Strength', strength:'Strength', fitness:'Strength-endurance', body:'Strength-endurance'})[S.a.goal] || 'Strength'; }
+function placeWeek(){
+  const play = S.a.playDays.filter(d=>DAYS.includes(d));
+  const hard = S.a.playIntensity==='hard';
+  const avail = S.a.availableDays.filter(d=>!play.includes(d));
+  const dayBefore = d => play.includes(DAYS[(DAYS.indexOf(d)+1)%7]);
+  const preferred = avail.filter(d=>!(hard && dayBefore(d)));
+  const pick = [...preferred, ...avail.filter(d=>!preferred.includes(d))].slice(0, S.a.sessionsPerWeek).sort((x,y)=>DAYS.indexOf(x)-DAYS.indexOf(y));
+  const titles = ['Lower body strength','Upper body + rotation','Full body + power','Upper body strength'];
+  return DAYS.map(d=>{
+    const items=[];
+    if(play.includes(d)) items.push({t:'activity', label:`${S.a.sport==='Other'?(S.a.sportOther||'Your sport'):S.a.sport} ${S.a.playMinutes}′`});
+    const i=pick.indexOf(d); if(i>=0){ let title=titles[i%titles.length]; if(hard && dayBefore(d)) title='Upper body strength'; items.push({t:'session', label:title}); }
+    return {d, items};
+  });
+}
+function mifflin(){
+  const a=S.a, base = 10*a.weightKg + 6.25*a.heightCm - 5*age();
+  return Math.round(base + (a.sex==='male'?5 : a.sex==='female'?-161 : -78));
+}
+function nutritionTargets(){
+  const factor = ({sitting:1.4, feet:1.5, physical:1.7})[S.a.everyday] || 1.4;
+  let kcal = Math.round(mifflin()*factor) + (S.a.goal==='body'?-400:0);
+  kcal = Math.max(kcal, mifflin());
+  const protein = Math.round(S.a.weightKg*(S.a.goal==='body'?2.0:1.6));
+  const water = S.a.sex==='male'?2.0 : S.a.sex==='female'?1.6 : 1.8;
+  return { kcal, protein, carbs:Math.round(S.a.weightKg*3), water };
+}
+
+// ===================== Field widgets =====================
+const esc = s => String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const on = (k,v) => Array.isArray(S.a[k]) ? S.a[k].includes(v) : S.a[k]===v;
+const choice = (k, opts) => `<div class="row wrap">${opts.map(([v,l])=>`<button class="chip ${on(k,v)?'on':''}" data-a="pick" data-k="${k}" data-v="${esc(v)}">${esc(l)}</button>`).join('')}</div>`;
+const multi = (k, opts) => `<div class="row wrap">${opts.map(v=>`<button class="chip ${on(k,v)?'on':''}" data-a="toggle" data-k="${k}" data-v="${esc(v)}">${esc(v)}</button>`).join('')}</div>`;
+const days = k => `<div class="days">${DAYS.map(d=>`<button class="chip ${on(k,d)?'on':''}" data-a="toggle" data-k="${k}" data-v="${d}">${d}</button>`).join('')}</div>`;
+const yesno = k => `<div class="row"><button class="chip grow ${S.a[k]===true?'on':''}" data-a="yn" data-k="${k}" data-v="1">Yes</button><button class="chip grow ${S.a[k]===false?'on':''}" data-a="yn" data-k="${k}" data-v="0">No</button></div>`;
+const stepper = (k, step, unit) => `<div class="stepper"><button class="chip" data-a="num" data-k="${k}" data-v="-${step}">−</button><span class="val">${S.a[k]}${unit?' '+unit:''}</span><button class="chip" data-a="num" data-k="${k}" data-v="${step}">+</button></div>`;
+const check = (k, html) => `<button class="check" data-a="flag" data-k="${k}" style="text-align:left"><span class="box ${S.a[k]?'on':''}">${S.a[k]?'✓':''}</span><span class="sm">${html}</span></button>`;
+
+const F = {
+  needs:{ label:'What do you want from Stamina?', render:()=>choice('needs',[['training','A training program'],['nutrition','What to eat & drink'],['both','Both']]), valid:()=>!!S.a.needs },
+  sport:{ label:'Which sport do you play most?', render:()=>choice('sport',[...SPORTS.map(s=>[s,s]),['Other','Other…']]) + (S.a.sport==='Other'?`<div style="margin-top:8px"><input type="text" data-in="sportOther" placeholder="e.g. Squash" value="${esc(S.a.sportOther)}"><div class="xs muted" style="margin-top:4px">We'll build a beta plan now and add your sport for everyone once it's reviewed.</div></div>`:''),
+    valid:()=>!!S.a.sport && (S.a.sport!=='Other' || !!(S.a.sportOther||'').trim()) },
+  sportWeek:{ label:()=>`When do you usually play${S.a.sport&&S.a.sport!=='Other'?' '+S.a.sport.toLowerCase():''}?`, render:()=>`${days('playDays')}
+      <div class="row wrap" style="margin-top:8px"><button class="chip ${S.a.playVaries?'on':''}" data-a="flag" data-k="playVaries">It varies (weather, pickup games)</button></div>
+      <div class="q" style="margin-top:16px">Usually for</div>${choice('playMinutes',[[60,'60 min'],[90,'90 min'],[120,'2 h'],[180,'3 h+']])}
+      <div class="q" style="margin-top:16px">How hard</div>${choice('playIntensity',[['easy','Easy'],['moderate','Moderate'],['hard','Hard']])}
+      ${HOT_SPORTS.includes(S.a.sport)?`<div class="xs muted" style="margin-top:8px">☀️ "Hot conditions" will be on by default for ${S.a.sport.toLowerCase()} in summer.</div>`:''}`,
+    valid:()=>S.a.playDays.length>0 || !!S.a.playVaries },
+  goal:{ label:'Your main Goal', render:()=>choice('goal',[['perform','Play better in my sport'],['strength','Get stronger'],['fitness','General fitness'],['body','Body composition']]) + (nutritionOff()&&S.a.goal==='body'?'<div class="note" style="margin-top:8px">Body composition isn\'t available with your health answers.</div>':''),
+    valid:()=>!!S.a.goal && !(nutritionOff()&&S.a.goal==='body') },
+  schedule:{ label:'Your training week', when:wantsTraining, render:()=>`<div class="q">Sessions per week</div>${choice('sessionsPerWeek',[[2,'2'],[3,'3'],[4,'4']])}
+      <div class="q" style="margin-top:16px">Session length</div>${choice('minutes',[[30,'30 min'],[45,'45 min'],[60,'60 min']])}
+      <div class="q" style="margin-top:16px">Days you can train</div>${days('availableDays')}
+      <div class="xs muted" style="margin-top:6px">Pick at least ${S.a.sessionsPerWeek}.</div>`,
+    valid:()=>S.a.availableDays.length>=S.a.sessionsPerWeek },
+  equipment:{ label:'What can you train with?', when:wantsTraining, render:()=>multi('equipment',['Full gym','Dumbbells','Resistance bands','Pull-up bar','Bodyweight only']), valid:()=>S.a.equipment.length>0 },
+  units:{ label:'Units & language', render:()=>`${choice('units',[['metric','kg · cm'],['imperial','lb · ft']])}<div style="margin-top:12px">${choice('lang',[['English','English'],['Ελληνικά','Ελληνικά']])}</div><div class="xs muted" style="margin-top:6px">Pre-filled from your phone.</div>`, valid:()=>true },
+  disclaimer:{ label:'Before we ask about your health', render:()=>`<div class="card sm">Stamina gives general fitness and nutrition guidance for healthy adults. It is <b>not a medical device</b> and doesn't diagnose, treat or replace advice from a doctor, physiotherapist or dietitian. Stop and seek medical help if you feel unwell.</div><div style="margin-top:12px">${check('disclaimer','I understand')}</div>`, valid:()=>!!S.a.disclaimer },
+  consent:{ label:'Your health data', render:()=>`<div class="card sm stack"><div>To build a safe plan we need health information: your answers to a few health questions, and later your daily Check-ins (sleep, soreness, energy), workouts and meals.</div><div class="xs muted">Stored in the EU, encrypted, never sold or used for ads. Our AI provider never receives it. You can export it, withdraw consent or delete everything at any time in Settings.</div></div><div style="margin-top:12px">${check('consent','I explicitly consent to Stamina processing my health data to build and adapt my plan.')}</div>`, valid:()=>!!S.a.consent },
+  age:{ label:'What year were you born?', render:()=>`${stepper('birthYear',1)}<div class="xs muted" style="margin-top:8px">Stamina is for adults 18+. We ask this first so nobody under 18 is asked about their health.</div>`, valid:()=>true },
+  about:{ label:'About you', when:wantsNutrition, render:()=>`<div class="q">Height</div>${stepper('heightCm',1,'cm')}<div class="q" style="margin-top:16px">Weight</div>${stepper('weightKg',1,'kg')}
+      <div class="q" style="margin-top:16px">Sex <span class="muted sm">(only used to estimate energy needs)</span></div>${choice('sex',[['female','Female'],['male','Male'],['na','Prefer not to say']])}`,
+    valid:()=>!!S.a.sex },
+  level:{ label:'Your starting point', render:()=>`<div class="q">Have you trained at least 3 × 30 min a week for the last 3 months?</div>${yesno('level')}`, valid:()=>S.a.level!=null },
+  ...Object.fromEntries(SCREEN.map(([k,q],i)=>[k,{ label:`Health check · ${i+1} of ${SCREEN.length}`, screening:true, render:()=>`<div class="q">${q}</div>${yesno(k)}<div class="xs muted" style="margin-top:8px">If unsure, answer yes.</div>`, valid:()=>S.a[k]!=null }])),
+  areas:{ label:'Which areas should we avoid loading?', when:()=>S.a.q6===true, render:()=>`${multi('areas',AREAS)}<div class="xs muted" style="margin-top:8px">We'll leave out exercises that load these areas. Please get professional advice before training them.</div>`, valid:()=>S.a.areas.length>0 },
+  nutri:{ label:'Food', when:()=>wantsNutrition() && !nutritionOff(), render:()=>`
+      <div class="q">Outside training, your day is mostly…</div>${choice('everyday',[['sitting','Sitting'],['feet','On my feet'],['physical','Physical job']])}
+      <div class="q" style="margin-top:16px">You eat</div>${choice('pattern',[['all','Everything'],['pesc','Pescatarian'],['veg','Vegetarian'],['vegan','Vegan']])}
+      <div class="q" style="margin-top:16px">Allergies & intolerances</div>${multi('allergens',ALLERGENS)}
+      <div class="q" style="margin-top:16px">Rather not eat</div>${multi('dislikes',DISLIKES)}
+      <div class="q" style="margin-top:16px">Meals per day</div>${choice('mealsPerDay',[[3,'3'],[4,'4'],[5,'5']])}
+      <div class="q" style="margin-top:16px">Cooking</div>${choice('cooking',[['quick','Quick & simple'],['normal','I like to cook']])}`,
+    valid:()=>!!S.a.everyday && !!S.a.pattern && !!S.a.cooking },
+  account:{ label:'Save your plan', render:()=>`<div class="sm muted" style="margin-bottom:12px">No password: we'll email you a code.</div><div class="stack"><button class="btn btn-ghost btn-block ${S.a.account==='email'?'btn-primary':''}" data-a="pick" data-k="account" data-v="email">✉️ Continue with email</button><button class="btn btn-ghost btn-block ${S.a.account==='google'?'btn-primary':''}" data-a="pick" data-k="account" data-v="google">Continue with Google</button></div>`, valid:()=>!!S.a.account },
+};
+const visible = id => !F[id].when || F[id].when();
+const labelOf = id => typeof F[id].label==='function' ? F[id].label() : F[id].label;
+const fieldHtml = (id, big) => `<div class="field">${big?`<h1 class="h1">${esc(labelOf(id))}</h1>`:`<div class="h2" style="font-size:17px">${esc(labelOf(id))}</div>`}${F[id].render()}</div>`;
+
+// ===================== Gates & outcome screens (shared) =====================
+function gateCheck(ids){
+  // Run after a page that contains birth year or the last screening question.
+  if(ids.includes('age') && age()<18){ S.gate='under18'; return true; }
+  const screeningDone = SCREEN.every(([k])=>S.a[k]!=null);
+  if(ids.some(id=>F[id].screening) && screeningDone && REFER_KEYS.some(k=>S.a[k]===true) && !S.doctorOk){ S.gate='referred'; return true; }
+  return false;
+}
+function gateScreen(){
+  if(S.gate==='under18') return `<div class="scroll stack"><h1 class="h1">Stamina is for adults</h1><div class="card">You need to be 18 or older to use Stamina. We haven't saved any of your answers.</div></div>`;
+  if(S.gate==='referred'){
+    const preg = S.a.q8===true;
+    return `<div class="scroll stack"><h1 class="h1">Let's check with a professional first</h1>
+      <div class="card">Based on your answers, please talk to ${preg?'your doctor or midwife':'a doctor'} before starting a training program. This isn't a diagnosis: it's the standard advice for anyone who answers yes to these questions.</div>
+      <div class="sm muted">Your answers are saved privately. You can export or delete them in Settings at any time.</div>
+      ${preg?'':`<div class="card stack"><div class="sm">Already spoken to a doctor?</div><button class="btn btn-ghost btn-block" data-a="doctorOk">A doctor has said I can train</button><div class="xs muted">You'll start with a gentler first Block (effort capped, no jumping or explosive work).</div></div>`}
+    </div>`;
+  }
+  return '';
+}
+
+// ===================== Reveal (shared, C adds finish-setup cards) =====================
+function reveal(extra=''){
+  if(!S.revealAt) S.revealAt = Date.now();
+  const o = outcome(); const wk = placeWeek(); const n = wantsNutrition() && !nutritionOff() && S.a.everyday ? nutritionTargets() : null;
+  return `<div class="scroll stack">
+    <div class="label">Your plan · ${Math.round((S.revealAt-S.startedAt)/1000)} s · ${S.screensShown} screens</div>
+    <h1 class="h1">Here's your first week</h1>
+    ${extra}
+    ${wantsTraining()?`<div class="card stack">
+      <div class="row between"><b>Block 1 · ${blockEmphasis()}</b><span class="pill ${o==='limited'?'warn':'ok'}">${o==='limited'?'Limited: effort capped':'4 weeks'}</span></div>
+      ${wk.map(x=>`<div class="row between sm" style="padding:4px 0;border-top:1px solid var(--c-border)"><span style="width:40px">${x.d}</span><span class="grow">${x.items.map(i=>i.t==='activity'?`<span class="pill load">◆ ${esc(i.label)}</span>`:`🏋 ${esc(i.label)} <span class="xs muted">· ${S.a.minutes}′</span>`).join(' ')||'<span class="muted">rest</span>'}</span></div>`).join('')}
+      ${S.a.playVaries?'<div class="xs muted">Played on a day we didn\'t plan? Log it with ＋ I played and we\'ll suggest changes.</div>':''}
+      ${S.a.areas.length?`<div class="note">Leaving out exercises that load: ${S.a.areas.join(', ')}.</div>`:''}
+      <div class="xs muted">Exercise picks: <span class="pill">Suggested by AI</span></div>
+    </div>`:''}
+    ${wantsNutrition()?(nutritionOff()?`<div class="note">Food guidance is switched off based on your health answers. A registered dietitian can build you an individual plan.</div>`
+      : n?`<div class="card"><div class="label">Today's targets (rest day)</div><div class="row between" style="margin-top:8px"><div><b>${n.kcal}</b><div class="xs muted">kcal</div></div><div><b>${n.protein} g</b><div class="xs muted">protein</div></div><div><b>${n.carbs} g</b><div class="xs muted">carbs</div></div><div><b>${n.water} L</b><div class="xs muted">drinks</div></div></div><div class="xs muted" style="margin-top:8px">Rises on Session and sport days. General sports-nutrition guidance, not an individual plan.</div></div>`
+      : `<div class="card sm">🔒 Meals unlock when you add your food preferences.</div>`):''}
+    <button class="btn btn-primary btn-block" data-a="start">Start</button>
+  </div>`;
+}
+
+// ===================== Variant A — Stepper (one question per screen) =====================
+const A_ORDER = ['needs','age','sport','sportWeek','goal','schedule','equipment','units','disclaimer','consent','about','level',...SCREEN.map(s=>s[0]),'areas','nutri','account'];
+// ===================== Variant C — Fast start (minimum to first Program; rest later) =====================
+const C_PAGES = [['needs','age'],['sport','sportWeek'],['goal'],['schedule'],['disclaimer','consent'],['level',...SCREEN.map(s=>s[0])],['areas']];
+const C_LATER = [['equipment','What can you train with?','We assumed bodyweight + dumbbells.'],['about+nutri','Unlock Meals','Add body stats and food preferences.'],['account','Save your plan','Otherwise it\'s lost when you close the app.']];
+function pagesFor(v){
+  if(v==='A') return A_ORDER.map(id=>[id]).filter(p=>visible(p[0]));
+  if(v==='C') return C_PAGES.map(p=>p.filter(visible)).filter(p=>p.length);
+  return [];
+}
+function pagerView(v){
+  const pages = pagesFor(v); const p = pages[Math.min(S.page, pages.length-1)]; const ok = p.every(id=>F[id].valid());
+  const pct = Math.round((S.page)/(pages.length)*100);
+  return `<div style="padding:12px 16px 0"><div class="row between xs muted"><span>${v==='A'?`Step ${S.page+1} of ${pages.length}`:`Quick setup · ${S.page+1}/${pages.length}`}</span><span>${v==='C'?'~1 min':'~3 min'}</span></div><div class="bar" style="margin-top:6px"><i style="width:${pct}%"></i></div></div>
+    <div class="scroll">${p.map(id=>fieldHtml(id, v==='A')).join('')}</div>
+    <div class="footer">${S.page>0?'<button class="btn btn-ghost" data-a="back">Back</button>':''}<button class="btn btn-primary grow" data-a="next" ${ok?'':'disabled'}>${S.page===pages.length-1?'Build my plan':'Continue'}</button></div>`;
+}
+
+// ===================== Variant B — Sections hub =====================
+const B_SECTIONS = [
+  ['sport','You & your sport',['needs','age','sport','sportWeek','goal']],
+  ['week','Your training week',['schedule','equipment','units']],
+  ['health','Health & safety',['disclaimer','consent','level',...SCREEN.map(s=>s[0]),'areas']],
+  ['food','Food',['about','nutri']],
+];
+const secFields = s => s[2].filter(visible);
+const secDone = s => secFields(s).every(id=>F[id].valid());
+function hubView(){
+  const all = B_SECTIONS.filter(s=>secFields(s).length);
+  const done = all.every(secDone);
+  return `<div class="scroll stack"><h1 class="h1">Set up your plan</h1><div class="sm muted">Four short sections, in any order.</div>
+    ${all.map((s,i)=>`<button class="card row between" style="width:100%;text-align:left" data-a="section" data-v="${s[0]}"><div><div class="label">${i+1}</div><b>${s[1]}</b><div class="xs muted">${secFields(s).length} questions</div></div><span class="pill ${secDone(s)?'ok':''}">${secDone(s)?'✓ done':'to do'}</span></button>`).join('')}
+    ${done?fieldHtml('account'):''}
+  </div><div class="footer"><button class="btn btn-primary grow" data-a="build" ${done&&F.account.valid()?'':'disabled'}>Build my plan</button></div>`;
+}
+function sectionView(){
+  const s = B_SECTIONS.find(x=>x[0]===S.section); const ids=secFields(s); const ok=ids.every(id=>F[id].valid());
+  return `<div style="padding:12px 16px 0" class="row"><button class="chip" data-a="hub">‹</button><b>${s[1]}</b></div>
+    <div class="scroll">${ids.map(id=>fieldHtml(id,false)).join('')}</div>
+    <div class="footer"><button class="btn btn-primary grow" data-a="saveSection" ${ok?'':'disabled'}>Save section</button></div>`;
+}
+
+// ===================== Render & actions =====================
+function view(){
+  if(S.gate) return gateScreen();
+  if(S.revealed){
+    if(variant==='C'){
+      const cards = C_LATER.filter(([k])=> !S.finish[k] && (k!=='about+nutri' || (wantsNutrition()&&!nutritionOff())) && (k!=='equipment'||wantsTraining()));
+      const extra = cards.length?`<div class="label">Finish setup</div>${cards.map(([k,t,d])=>`<button class="card row between" style="width:100%;text-align:left" data-a="later" data-v="${k}"><div><b>${t}</b><div class="xs muted">${d}</div></div><span>›</span></button>`).join('')}`:'';
+      if(S.laterOpen){ const ids = S.laterOpen==='about+nutri'?['about','nutri']:[S.laterOpen]; const ok=ids.filter(visible).every(id=>F[id].valid());
+        return `<div style="padding:12px 16px 0" class="row"><button class="chip" data-a="laterClose">‹</button></div><div class="scroll">${ids.filter(visible).map(id=>fieldHtml(id,false)).join('')}</div><div class="footer"><button class="btn btn-primary grow" data-a="laterSave" ${ok?'':'disabled'}>Save</button></div>`; }
+      return reveal(extra);
+    }
+    return reveal();
+  }
+  if(variant==='B') return S.section ? sectionView() : hubView();
+  return pagerView(variant);
+}
+function render(){
+  document.getElementById('app').innerHTML = view();
+  document.getElementById('swlabel').textContent = `${variant} (${({A:'Stepper',B:'Sections',C:'Fast start'})[variant]}) · ${S.screensShown} screens`;
+  const sp=document.getElementById('statepanel'); if(!sp.hidden) sp.textContent='PROTOTYPE STATE\n'+JSON.stringify({variant, outcome:outcome(), screensShown:S.screensShown, secondsSoFar:Math.round(((S.revealAt||Date.now())-S.startedAt)/1000), gate:S.gate, page:S.page, section:S.section, answers:S.a},null,2);
+}
+const ACT = {
+  pick:d=>{ const n=+d.v; S.a[d.k] = isNaN(n)||d.v==='' ? d.v : n; },
+  toggle:d=>{ const L=S.a[d.k]; const i=L.indexOf(d.v); i>=0?L.splice(i,1):L.push(d.v); if(d.k==='playDays') S.a.playVaries=false; },
+  yn:d=>{ S.a[d.k] = d.v==='1'; if(d.k==='q6' && !S.a.q6) S.a.areas=[]; if(d.k==='q9b' && S.a.q9b && S.a.goal==='body') S.a.goal=null; },
+  flag:d=>{ S.a[d.k] = !S.a[d.k]; },
+  num:d=>{ S.a[d.k] = +(S.a[d.k] + (+d.v)); },
+  next:()=>{ const pages=pagesFor(variant); const p=pages[S.page]; if(gateCheck(p)){ S.screensShown++; return; } if(S.page<pages.length-1){ S.page++; S.screensShown++; } else { S.revealed=true; S.screensShown++; } },
+  back:()=>{ S.page=Math.max(0,S.page-1); },
+  section:d=>{ S.section=d.v; S.screensShown++; },
+  hub:()=>{ S.section=null; },
+  saveSection:()=>{ const s=B_SECTIONS.find(x=>x[0]===S.section); if(gateCheck(secFields(s))){ S.screensShown++; return; } S.section=null; S.screensShown++; },
+  build:()=>{ S.revealed=true; S.screensShown++; },
+  doctorOk:()=>{ S.doctorOk=true; S.gate=null; S.screensShown++; const pages=pagesFor(variant); if(variant!=='B' && S.page<pages.length-1) S.page++; else if(variant==='B') S.section=null; else S.revealed=true; },
+  later:d=>{ S.laterOpen=d.v; },
+  laterClose:()=>{ S.laterOpen=null; },
+  laterSave:()=>{ S.finish[S.laterOpen]=true; S.laterOpen=null; },
+  start:()=>{ alert('PROTOTYPE: this is where the Today screen (Core screens) begins.'); },
+};
+document.addEventListener('click', e=>{
+  const sw=e.target.closest('[data-sw]');
+  if(sw){ const k=sw.dataset.sw; if(k==='prev'||k==='next'){ cycle(k==='next'?1:-1); return; } if(k==='state'){ const sp=document.getElementById('statepanel'); sp.hidden=!sp.hidden; } if(k==='reset'){ S=initialState(); } render(); return; }
+  const el=e.target.closest('[data-a]'); if(!el || el.disabled) return;
+  ACT[el.dataset.a]?.(el.dataset); render();
+});
+document.addEventListener('input', e=>{ const k=e.target.dataset.in; if(!k) return; S.a[k]=e.target.value; const btn=document.querySelector('[data-a="next"],[data-a="saveSection"]'); if(btn){ /* re-validate without stealing focus */ const valid = variant==='B' ? secFields(B_SECTIONS.find(x=>x[0]===S.section)).every(id=>F[id].valid()) : pagesFor(variant)[S.page].every(id=>F[id].valid()); btn.disabled=!valid; } });
+function cycle(d){ const k=['A','B','C']; variant=k[(k.indexOf(variant)+d+3)%3]; S=initialState(); const u=new URL(location); u.searchParams.set('variant',variant); history.replaceState(null,'',u); render(); }
+document.addEventListener('keydown', e=>{ if(e.target.closest('input,textarea')) return; if(e.key==='ArrowRight') cycle(1); if(e.key==='ArrowLeft') cycle(-1); });
+render();
+</script>
+</body>
+</html>
