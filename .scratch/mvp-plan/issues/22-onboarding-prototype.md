@@ -42,3 +42,4 @@ Prototype (primary source): branch `prototype/onboarding`, commit `cb2445d`, `pr
 - **Reminder permission**: asked after the first Check-in, not during onboarding.
 
 **Propagated**: Safety rules Q9 split into 9a / 9b (now 10 questions); birth year is the first personal question.
+- 2026-10-28 (from Legal review): screen 1 also asks **country of residence**; only EU/EEA residents can continue during the beta ("Stamina is available in the EU/EEA for now"), before any consent or health question.
