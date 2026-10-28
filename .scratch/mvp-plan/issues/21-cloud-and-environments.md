@@ -1,7 +1,7 @@
 # Cloud setup, environments, monitoring and cost guardrails
 
 Type: grilling
-Status: open
+Status: claimed
 Blocked by: 06, 07, 20
 
 ## Question
