@@ -1,7 +1,7 @@
 # Onboarding flow, including screening
 
 Type: prototype
-Status: open
+Status: claimed
 Blocked by: 12, 16
 
 ## Question
