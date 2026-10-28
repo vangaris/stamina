@@ -31,7 +31,8 @@ Sources: medical-device boundary research and screening research. Principle: a s
 | 6 | Do you have a bone, joint or muscle problem that activity could make worse? (→ pick body areas) |
 | 7 | Have you had a concussion or head injury in the last 12 months? |
 | 8 | Are you pregnant? |
-| 9 | Has a doctor told you to exercise only under medical supervision, or are you being treated for an eating disorder? |
+| 9a | Has a doctor told you to exercise only under medical supervision? |
+| 9b | Are you being treated for an eating disorder? |
 
 Plus a non-medical starting-level question: "Have you trained at least 3 × 30 min a week for the last 3 months?" Under-18s are blocked earlier, by birth year.
 
@@ -39,8 +40,8 @@ Plus a non-medical starting-level question: "Have you trained at least 3 × 30 m
 
 | Answer | Outcome |
 |---|---|
-| Yes to 1, 2, 3, 4, 5, 7, 8, or 9 (supervision) | **Referred**: no Program; "Please talk to a doctor before starting" (pregnancy: health professional) |
-| Yes to 9 (eating disorder) | Nutrition off; "body composition" Goal unavailable; Training continues |
+| Yes to 1, 2, 3, 4, 5, 7, 8 or 9a | **Referred**: no Program; "Please talk to a doctor before starting" (pregnancy: "your doctor or midwife", and no Limited path) |
+| Yes to 9b | Nutrition off; "body composition" Goal unavailable; Training continues |
 | Yes to 6 | **Area excluded**: exercises loading the chosen areas are left out, with "get professional advice before training this area"; never a rehab or return plan; the user can remove the exclusion later |
 | All no | Cleared to start; intensity builds from the starting level |
 
@@ -92,3 +93,4 @@ Mobility is framed as "general mobility", never pain relief.
 - Find the professional reviewers: physio scope and launch gate.
 - Core screens additions (Check-in "Anything unusual today?" row, Session Stop button) fold in at spec time.
 - `GLOSSARY.md`: Screening, Stop flag.
+- 2026-10-28 (from Onboarding flow prototype, accepted by Vang): question 9 split into 9a (supervised exercise → Referred) and 9b (eating disorder → Nutrition off), because one combined question can't drive two outcomes. Screening is now 10 yes/no questions. Birth year is asked before consent and Screening, so under-18s never see health questions.
