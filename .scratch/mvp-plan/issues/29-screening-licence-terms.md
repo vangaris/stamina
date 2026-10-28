@@ -12,3 +12,4 @@ HITL: the agent drafts the two enquiry emails (product description, markets, lan
 ## Comments
 
 - 2026-10-28: Drafts ready: [licence-enquiry-emails.md](../assets/licence-enquiry-emails.md). Contacts verified on the licensors' own pages: PAR-Q+ `eparmedx@gmail.com` (eparmedx.com terms page); CSEP Permissions `info@csep.ca` (csep.ca permissions page: $200/item republication fee; software use needs a CSEP Licensing Agreement + fees). Waiting on Vang to send; the two-week clock starts on the send date.
+- 2026-10-28: Step-by-step plan with dates, outcomes and the Day-7 follow-up: [licence-enquiry-plan.md](../assets/licence-enquiry-plan.md).

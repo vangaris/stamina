@@ -1,7 +1,7 @@
 # Training generation model: periodization, progression, sport and Activity load
 
 Type: grilling
-Status: open
+Status: claimed
 Blocked by: 01, 11, 12
 
 ## Question
