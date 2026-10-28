@@ -10,7 +10,7 @@ Labels: wayfinder:map
 
 - **Domain**: a sport-agnostic coaching product. The user picks any sport, what they need (training, nutrition, or both), goals, equipment, schedule and food preferences; the app suggests the best approach, AI suggests Sessions and shows what to eat and drink, and Activities (games, matches) plus Check-ins and Logs trigger Adaptation suggestions such as a Deload. The Program spans four Pillars (Training, Nutrition, Mobility & Recovery, Daily Routine). Use the vocabulary in `GLOSSARY.md`.
 - **Skills**: grilling tickets call `grilling` + `domain-modeling`; research tickets `research`; prototype tickets `prototype`.
-- **Hard constraints on every decision**: live with real users in ≤ 8 weeks; Vang part-time (~15 h/week) + AI coding agents; €0 / free tiers until traction, and every service names its first paid threshold; scales to worldwide users without a rewrite (multi-region, i18n, metric/imperial, time zones); not a medical device (screening, disclaimers, red-flag rules, GDPR for health data); delivery platform and framework are decided last, on best practices (Vue 3 + TypeScript is Vang's strongest stack, weighed rather than assumed).
+- **Hard constraints on every decision**: live with real users in ≤ 8 weeks (first ~30 users; 100 by week 12); Vang part-time (~18 h/week, ≈144 h to week 8) + AI coding agents; €0 / free tiers until traction, and every service names its first paid threshold; scales to worldwide users without a rewrite (multi-region, i18n, metric/imperial, time zones); not a medical device (screening, disclaimers, red-flag rules, GDPR for health data); delivery platform and framework are decided last, on best practices (Vue 3 + TypeScript is Vang's strongest stack, weighed rather than assumed).
 - **Standing preferences**: no sport-specific program is hard-coded (no CrossFit, padel or any other fixed module); `seed/` is Vang's own setup, used only as an example user; launch locales EN + EL with metric and imperial units; safety rules and nutrition logic are reviewed by a licensed professional before real users; decisions in the final document are marked [Vang] (made by Vang during grilling) or [External] (needs a third party, with needed-by week).
 - **Execution override**: the final ticket, Write docs/mvp-plan.md, produces the deliverable document inside this map. Everything else produces decisions, not deliverables.
 - **Research findings** live on local `research/<name>` branches (no remote until Install gh and move the repo and map to GitHub resolves); each research ticket points at its branch and file.
@@ -19,6 +19,7 @@ Labels: wayfinder:map
 
 - [Import Vang's coaching system into seed/](issues/01-import-seed.md): seed is Vang's guide as an example user only; product is sport-agnostic, AI suggests Sessions and meals, Activities trigger Adaptation suggestions; health-app connection back in scope for MVP scope to phase.
 - [Who is the first user, and how is Stamina positioned?](issues/02-first-user-and-positioning.md): 18+ intermediate amateur athletes in Athens who play any sport regularly (padel, tennis, beach volley, kite, windsurf, team sports); "the AI coach that plans training, food and recovery around the sport you play"; leads with sport-aware Adaptation; WTP test €5–10/mo.
+- [MVP scope per Pillar, including Nutrition depth](issues/12-mvp-scope.md): targets + AI meal suggestions (no food logging); 11 launch sports + user requests approved by Vang; 19 post-MVP tickets incl. health-app connection and payments; free invite-only beta for ~30 users by week 8; ≈139 h at ~18 h/week.
 - [Competitor teardown: Fitbod, MyFitnessPal, Future, padel apps](issues/03-competitor-teardown.md): Incumbents each own one Pillar (Fitbod Training, MFP Nutrition logging, Future human-coached Training, US-only); no daily readiness Check-in anywhere; padel apps are booking or tiny. Fitbod + MFP ≈ €40/mo in Greece.
 - [Where is the "not a medical device" line for adaptive coaching software?](issues/04-medical-device-boundary.md): Wellness if every surface targets general fitness, performance, mobility, recovery, sleep, weight; rehab, pain diagnosis, disease-specific programs/diets, risk scores or clinical alerts make it a device (EU: Class IIa+, Notified Body). Claims, not algorithms, decide.
 - [What does GDPR Article 9 require of a solo-founder health app?](issues/05-gdpr-health-data.md): All inputs are Art. 9 health data: separate explicit consent, mandatory DPIA (HDPA list) and Art. 30 records before launch; DPAs + transfer basis per processor incl. LLM; 72 h breach notice; Greek age 15; UK rep, WA MHMDA, FTC HBNR if targeted.
@@ -31,7 +32,6 @@ Labels: wayfinder:map
 
 ## Not yet specified
 
-- **Food data source**: whether a food composition database is needed, and which (Open Food Facts, USDA FDC, Greek tables), hangs on the Nutrition depth chosen.
 - **API and auth details**: API style (platform-generated vs custom), auth providers (email, Apple, Google) and session model, once the backend platform is chosen.
 - **Design system specifics** beyond the basics in the core-screens prototype, once the component base is chosen.
 - **Payments and legal entity**: payment provider, VAT/OSS handling, and whether a company must exist before charging, once monetization is decided.
@@ -41,7 +41,6 @@ Labels: wayfinder:map
 - **Legal review**: research surfaced three legal calls (wger CC-BY-SA reach into Stamina's own content, own-worded screening vs licensed instruments, DPIA sign-off); whether and when a lawyer is engaged hangs on the exercise-library, safety-rules and data-model decisions.
 - **Notifications and reminders**: channels (web push, local, email) and cadence, once the delivery platform is chosen.
 - **Exercise library localisation**: translating exercise content into Greek and future locales, once the library source is chosen.
-- **Sport demand data**: where the engine's knowledge of each sport's demands comes from (sports-science sources, a curated sport list, AI-described with validation) and how many sports launch; hangs on the sport-coverage call in MVP scope.
 
 ## Out of scope
 
