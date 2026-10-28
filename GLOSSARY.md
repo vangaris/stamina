@@ -19,7 +19,7 @@ A multi-week phase of a Program with a single training emphasis.
 _Avoid_: Mesocycle, phase, cycle
 
 **Session**:
-One scheduled Training or Mobility & Recovery workout on a given day.
+One Training or Mobility & Recovery workout that Stamina schedules on a given day.
 _Avoid_: Workout, class, day
 
 ### Feedback
@@ -33,8 +33,8 @@ The record of what a user actually did in a Session or ate in a meal.
 _Avoid_: Entry, history, tracking
 
 **Activity**:
-Sport or exercise the user does outside a Session, such as a game, match or kite day, logged manually or imported from a health app.
-_Avoid_: Game, match, external workout
+Sport the user does outside a Session, planned or not, such as a basketball game, a padel match or a windy kitesurfing afternoon, logged manually or imported from a health app.
+_Avoid_: Game, match, external workout, sport session
 
 **Adaptation**:
 A suggested change to a Program, triggered by Logs, Check-ins or Activities, that the user accepts or declines.
