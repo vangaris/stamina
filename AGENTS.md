@@ -12,13 +12,13 @@ AI coach that plans training, food and recovery around the sport a user plays. G
 
 ## Each implementation session
 
-1. **Pick the ticket.** Use the one the user named. Otherwise take the lowest-numbered ticket whose `Status` is `ready-for-agent` and whose `Blocked by` tickets are all `done`.
-2. **Claim it.** Set `Status: in-progress` in the ticket file and commit, before writing code.
+1. **Read the board.** Run `scripts/tickets.sh`; it prints every ticket's status, ticked boxes and blockers. Resume a ticket marked IN PROGRESS first; otherwise use the one the user named, else the one marked NEXT.
+2. **Claim it.** Set `**Status:** in-progress` in the ticket file and commit, before writing code.
 3. **Branch.** Create `feat/NN-slug` from `main`.
-4. **Implement** with `/implement`, test-first at the agreed seams.
-5. **Finish.** The ticket is done when every acceptance-criterion box is ticked, the full test suite and typecheck are green, and `/code-review` has run.
-6. **Close it.** Set `Status: done`. Squash-merge to `main` with a Conventional title: `feat: NN <ticket title>`.
-7. **Report** the next frontier ticket.
+4. **Implement** with `/implement`, test-first at the agreed seams. Tick each acceptance box (`- [x]`) in the ticket file as soon as its criterion passes, and commit, so an interrupted session can resume where it left off.
+5. **Finish.** The ticket is done when every box is ticked, the full test suite and typecheck are green, and `/code-review` has run.
+6. **Close it.** Set `**Status:** done`. Squash-merge to `main` with a Conventional title: `feat: NN <ticket title>`.
+7. **Report** by running `scripts/tickets.sh` again and naming the new NEXT ticket.
 
 ## Rules that are easy to break
 
