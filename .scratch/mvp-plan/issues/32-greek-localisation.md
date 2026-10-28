@@ -1,7 +1,7 @@
 # How do the exercise library and app copy get into Greek?
 
 Type: grilling
-Status: open
+Status: claimed
 
 ## Question
 
