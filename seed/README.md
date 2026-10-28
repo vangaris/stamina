@@ -1,6 +1,6 @@
 # Seed material
 
-Vang's personal coaching system, imported as-is for the Program-design tickets to start from. Source material, not product content: nothing here is approved for users until the safety-rules and nutrition tickets and the professional review say so.
+Vang's personal nutrition and daily-routine guide, imported as-is as **an example user**: a reference persona for testing onboarding, Program suggestions and Nutrition logic, not a template for the product (Stamina hard-codes no sport or program). Source material, not product content: nothing here is approved for users until the safety-rules and nutrition tickets and the professional review say so.
 
 ## Inventory
 

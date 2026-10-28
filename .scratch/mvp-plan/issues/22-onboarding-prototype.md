@@ -6,4 +6,4 @@ Blocked by: 12, 16
 
 ## Question
 
-How should onboarding look and behave on a phone: goals, sport, level, equipment, schedule, units/locale, screening (PAR-Q style) with red-flag exits, consents (GDPR explicit consent for health data), and the first generated Program reveal? Rough clickable prototype to react to; measures: steps, time to first Program, drop-off risks.
+How should onboarding look and behave on a phone: the opening question of what the user needs (training program, nutrition, or both), sport (any sport) and its schedule (e.g. games per week), goals, level, equipment, food preferences and allergies, units/locale, screening (PAR-Q style) with red-flag exits, consents (GDPR explicit consent for health data, health-app connection if in scope), and the first suggested Program reveal? Rough clickable prototype to react to; measures: steps, time to first Program, drop-off risks.

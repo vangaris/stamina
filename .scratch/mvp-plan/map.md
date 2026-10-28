@@ -8,15 +8,16 @@ Labels: wayfinder:map
 
 ## Notes
 
-- **Domain**: a coaching product that generates and adapts a Program across four Pillars (Training, Nutrition, Mobility & Recovery, Daily Routine) from goals, sport, equipment, schedule, Check-ins and Logs. Use the vocabulary in `GLOSSARY.md`.
+- **Domain**: a sport-agnostic coaching product. The user picks any sport, what they need (training, nutrition, or both), goals, equipment, schedule and food preferences; the app suggests the best approach, AI suggests Sessions and shows what to eat and drink, and Activities (games, matches) plus Check-ins and Logs trigger Adaptation suggestions such as a Deload. The Program spans four Pillars (Training, Nutrition, Mobility & Recovery, Daily Routine). Use the vocabulary in `GLOSSARY.md`.
 - **Skills**: grilling tickets call `grilling` + `domain-modeling`; research tickets `research`; prototype tickets `prototype`.
 - **Hard constraints on every decision**: live with real users in ≤ 8 weeks; Vang part-time (~15 h/week) + AI coding agents; €0 / free tiers until traction, and every service names its first paid threshold; scales to worldwide users without a rewrite (multi-region, i18n, metric/imperial, time zones); not a medical device (screening, disclaimers, red-flag rules, GDPR for health data); prefer Vue 3 + TypeScript unless there's a strong reason not to.
-- **Standing preferences**: MVP sport scope is padel + general strength; launch locales EN + EL with metric and imperial units; safety rules and nutrition logic are reviewed by a licensed professional before real users; decisions in the final document are marked [Vang] (made by Vang during grilling) or [External] (needs a third party, with needed-by week).
+- **Standing preferences**: no sport-specific program is hard-coded (no CrossFit, padel or any other fixed module); `seed/` is Vang's own setup, used only as an example user; launch locales EN + EL with metric and imperial units; safety rules and nutrition logic are reviewed by a licensed professional before real users; decisions in the final document are marked [Vang] (made by Vang during grilling) or [External] (needs a third party, with needed-by week).
 - **Execution override**: the final ticket, Write docs/mvp-plan.md, produces the deliverable document inside this map. Everything else produces decisions, not deliverables.
 - **Research findings** live on local `research/<name>` branches (no remote until Install gh and move the repo and map to GitHub resolves); each research ticket points at its branch and file.
 
 ## Decisions so far
 
+- [Import Vang's coaching system into seed/](issues/01-import-seed.md): seed is Vang's guide as an example user only; product is sport-agnostic, AI suggests Sessions and meals, Activities trigger Adaptation suggestions; health-app connection back in scope for MVP scope to phase.
 - [Competitor teardown: Fitbod, MyFitnessPal, Future, padel apps](issues/03-competitor-teardown.md): Incumbents each own one Pillar (Fitbod Training, MFP Nutrition logging, Future human-coached Training, US-only); no daily readiness Check-in anywhere; padel apps are booking or tiny. Fitbod + MFP ≈ €40/mo in Greece.
 - [Where is the "not a medical device" line for adaptive coaching software?](issues/04-medical-device-boundary.md): Wellness if every surface targets general fitness, performance, mobility, recovery, sleep, weight; rehab, pain diagnosis, disease-specific programs/diets, risk scores or clinical alerts make it a device (EU: Class IIa+, Notified Body). Claims, not algorithms, decide.
 - [What does GDPR Article 9 require of a solo-founder health app?](issues/05-gdpr-health-data.md): All inputs are Art. 9 health data: separate explicit consent, mandatory DPIA (HDPA list) and Art. 30 records before launch; DPAs + transfer basis per processor incl. LLM; 72 h breach notice; Greek age 15; UK rep, WA MHMDA, FTC HBNR if targeted.
@@ -39,10 +40,9 @@ Labels: wayfinder:map
 - **Legal review**: research surfaced three legal calls (wger CC-BY-SA reach into Stamina's own content, own-worded screening vs licensed instruments, DPIA sign-off); whether and when a lawyer is engaged hangs on the exercise-library, safety-rules and data-model decisions.
 - **Notifications and reminders**: channels (web push, local, email) and cadence, once the delivery platform is chosen.
 - **Exercise library localisation**: translating exercise content into Greek and future locales, once the library source is chosen.
+- **Sport demand data**: where the engine's knowledge of each sport's demands comes from (sports-science sources, a curated sport list, AI-described with validation) and how many sports launch; hangs on the sport-coverage call in MVP scope.
 
 ## Out of scope
 
 - **Building the MVP**: this map ends at a decision-complete plan; the build hands off to `/to-spec`.
-- **Kite module**: MVP sport scope is padel + general strength; kite returns as a separate effort.
-- **Apple Health / Google Fit / wearables integrations**: not in the MVP build; the frontend platform decision must only keep the path open.
 - **Locales beyond EN + EL**: i18n infrastructure is in scope, extra translations are not.

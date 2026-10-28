@@ -32,6 +32,14 @@ _Avoid_: Survey, daily log, readiness score
 The record of what a user actually did in a Session or ate in a meal.
 _Avoid_: Entry, history, tracking
 
+**Activity**:
+Sport or exercise the user does outside a Session, such as a game, match or kite day, logged manually or imported from a health app.
+_Avoid_: Game, match, external workout
+
 **Adaptation**:
-A change to a Program triggered by Logs or Check-ins.
+A suggested change to a Program, triggered by Logs, Check-ins or Activities, that the user accepts or declines.
 _Avoid_: Adjustment, regeneration, update
+
+**Deload**:
+A planned short period of reduced training load inside a Block, scheduled or suggested as an Adaptation.
+_Avoid_: Recovery week, rest week
