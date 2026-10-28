@@ -29,6 +29,7 @@ Labels: wayfinder:map
 - [LLM options for plan generation: free tiers, cost, health-data terms](issues/09-llm-options.md): Gemini free tier is barred for EEA/UK-facing apps; only Groq free and Cloudflare Workers AI are €0 without training on inputs (~2–9 Programs/day). Paid models ≈ $0.01–0.02 per Program; most DPAs exclude health data.
 - [Screening and red-flag sources: PAR-Q+ licensing, ACSM screening](issues/10-screening-sources.md): PAR-Q+ and CSEP GAQ need written (possibly paid) licences for in-app use; ACSM algorithm logic and red-flag list are public, so own-worded screening is possible but can't claim 'validated'. Red flags converge across sources.
 - [Exercise library sources: licensing and media](issues/11-exercise-library-sources.md): wger is the only free, commercial-OK source with media (CC-BY-SA, share-alike; 48/939 Greek); free-exercise-db is public domain but image provenance unclear; exercisedb.io $199/$599 one-time; API Ninjas free tier non-commercial.
+- [What does a Greek solo founder need to sell EU consumer subscriptions, and what does each channel cost?](issues/30-selling-subscriptions-from-greece.md): Register (έναρξη, free, same day on gov.gr) before the first charge; e-ΕΦΚΑ ≥ €160/month from then, regardless of revenue. Fees: Stripe ≈2.2%+€0.25 (self-VAT/OSS, per-charge myDATA), Paddle 5%+$0.50 (MoR, bans 'coaching'), Apple 15% / EU 10%, Google 10%+5%.
 
 ## Not yet specified
 
