@@ -1,7 +1,7 @@
 # Generation engine: rules vs LLM vs hybrid; cost and safety controls
 
 Type: grilling
-Status: open
+Status: claimed
 Blocked by: 05, 09, 15, 16
 
 ## Question
