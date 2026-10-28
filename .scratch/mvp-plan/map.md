@@ -22,6 +22,7 @@ Labels: wayfinder:map
 - [MVP scope per Pillar, including Nutrition depth](issues/12-mvp-scope.md): targets + AI meal suggestions (no food logging); 11 launch sports + user requests approved by Vang; 19 post-MVP tickets incl. health-app connection and payments; free invite-only beta for ~30 users by week 8; ≈139 h at ~18 h/week.
 - [Monetization and pricing](issues/13-monetization.md): 14-day no-card trial → €7.99/mo or €59.99/yr everywhere; no free tier, no ads; Paddle first; founders €39.99 first year; charging gated on week-4 retention + ≥ 30 "would pay"; register business the week payments ship.
 - [Training generation model: periodization, progression, sport and Activity load](issues/15-training-generation-model.md): rolling 4-week Blocks (3 build + Deload), 5-slot Sessions; AI picks library exercises, rules set all numbers; session-RPE Load vs 4-week average drives move/swap/lighten and Deload suggestions; ~150-exercise library.
+- [Core screens: Today, Session, Meals, Progress](issues/23-core-screens-prototype.md): Today = time-ordered timeline with inline suggestions and one-question Check-in; Session = one exercise per screen + full-screen rest; Meals = next-meal card; Progress = Load vs 4-week average; bottom tabs; themeable two-tier tokens.
 - [Competitor teardown: Fitbod, MyFitnessPal, Future, padel apps](issues/03-competitor-teardown.md): Incumbents each own one Pillar (Fitbod Training, MFP Nutrition logging, Future human-coached Training, US-only); no daily readiness Check-in anywhere; padel apps are booking or tiny. Fitbod + MFP ≈ €40/mo in Greece.
 - [Where is the "not a medical device" line for adaptive coaching software?](issues/04-medical-device-boundary.md): Wellness if every surface targets general fitness, performance, mobility, recovery, sleep, weight; rehab, pain diagnosis, disease-specific programs/diets, risk scores or clinical alerts make it a device (EU: Class IIa+, Notified Body). Claims, not algorithms, decide.
 - [What does GDPR Article 9 require of a solo-founder health app?](issues/05-gdpr-health-data.md): All inputs are Art. 9 health data: separate explicit consent, mandatory DPIA (HDPA list) and Art. 30 records before launch; DPAs + transfer basis per processor incl. LLM; 72 h breach notice; Greek age 15; UK rep, WA MHMDA, FTC HBNR if targeted.
@@ -36,7 +37,7 @@ Labels: wayfinder:map
 ## Not yet specified
 
 - **API and auth details**: API style (platform-generated vs custom), auth providers (email, Apple, Google) and session model, once the backend platform is chosen.
-- **Design system specifics** beyond the basics in the core-screens prototype, once the component base is chosen.
+- **Brand theme**: the real palette, typography and logo, applied through the theme layer (Core screens: two-tier tokens) once the product name and brand are settled.
 - **Payment provider**: which provider or store billing mix to integrate, once monetization and the legal/channel research (What does a Greek solo founder need to sell EU consumer subscriptions…) are resolved; lands on post-MVP Payments and subscriptions.
 - **Analytics and consent tooling**: privacy-friendly product analytics and how it fits health-data consent, once metrics and GDPR obligations are known.
 - **Product name and brand**: replacing the `stamina` codename, once the first user and positioning are settled.
