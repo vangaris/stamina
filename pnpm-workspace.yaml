@@ -13,5 +13,5 @@ onlyBuiltDependencies:
   - nx
 # Security overrides for dev-tool transitive deps flagged by OSV-Scanner (remove when upstream bumps):
 overrides:
-  undici: '>=7.30.1'
+  undici: '^7.30.1'
   esbuild@0.18.20: '0.25.12'
