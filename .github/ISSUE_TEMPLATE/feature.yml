@@ -1,0 +1,24 @@
+name: Feature
+description: A user-facing capability, written as a user story
+labels: [feature]
+body:
+  - type: textarea
+    id: story
+    attributes:
+      label: User story
+      description: As a …, I want …, so that …
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      description: One checkbox per observable behaviour.
+      placeholder: '- [ ] …'
+    validations:
+      required: true
+  - type: textarea
+    id: notes
+    attributes:
+      label: Notes
+      description: Blocking tickets, safety-critical paths touched, links to the spec or decision tickets.

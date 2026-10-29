@@ -1,0 +1,141 @@
+# Per-PR preview: Neon branch (migrated) + Deno Deploy API revision + Cloudflare Pages web,
+# then the Playwright + axe smoke test against it. Torn down (Neon branch) when the PR closes.
+#
+# Needs (see docs/development.md, "One-time setup"):
+#   secrets: NEON_API_KEY, DENO_DEPLOY_TOKEN, CLOUDFLARE_API_TOKEN
+#   vars:    NEON_PROJECT_ID, NEON_PARENT_BRANCH (a data-free branch, never production),
+#            DENO_APP, CLOUDFLARE_ACCOUNT_ID, CLOUDFLARE_PAGES_PROJECT
+name: Preview
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, closed]
+
+concurrency:
+  group: preview-${{ github.event.pull_request.number }}
+  cancel-in-progress: ${{ github.event.action != 'closed' }}
+
+permissions:
+  contents: read
+
+jobs:
+  changes:
+    name: Code changed?
+    if: github.event.action != 'closed' && github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    outputs:
+      code: ${{ steps.diff.outputs.code }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      # Docs, tickets and templates do not need a preview (saves free Actions minutes).
+      - id: diff
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          if git diff --name-only "$BASE_SHA...$HEAD_SHA" \
+            | grep -qvE '^(\.scratch/|docs/|seed/|\.github/ISSUE_TEMPLATE/|\.github/pull_request_template\.md|\.github/CODEOWNERS|.*\.md$)'; then
+            echo "code=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "code=false" >> "$GITHUB_OUTPUT"
+          fi
+
+  deploy:
+    name: Deploy preview and run smoke test
+    needs: changes
+    if: needs.changes.outputs.code == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+      pull-requests: write
+    env:
+      PR: ${{ github.event.pull_request.number }}
+      WEB_URL: https://pr-${{ github.event.pull_request.number }}.${{ vars.CLOUDFLARE_PAGES_PROJECT }}.pages.dev
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+
+      - id: expiry
+        # Safety net: a branch missed by the close job still disappears.
+        run: echo "at=$(date -u -d '+14 days' +%Y-%m-%dT%H:%M:%SZ)" >> "$GITHUB_OUTPUT"
+      - id: neon
+        uses: neondatabase/create-branch-action@6.3.1
+        with:
+          project_id: ${{ vars.NEON_PROJECT_ID }}
+          api_key: ${{ secrets.NEON_API_KEY }}
+          parent_branch: ${{ vars.NEON_PARENT_BRANCH }}
+          branch_name: preview/pr-${{ github.event.pull_request.number }}
+          expires_at: ${{ steps.expiry.outputs.at }}
+      - name: Apply migrations
+        run: pnpm --filter @stamina/api db:migrate
+        env:
+          DATABASE_URL: ${{ steps.neon.outputs.db_url }}
+
+      - run: pnpm --filter @stamina/api build
+      - id: api
+        name: Deploy API (Deno Deploy)
+        run: node scripts/deno-deploy-preview.mjs
+        env:
+          DENO_DEPLOY_TOKEN: ${{ secrets.DENO_DEPLOY_TOKEN }}
+          DENO_APP: ${{ vars.DENO_APP }}
+          # Pooled URL: the API reaches Neon over WebSockets at runtime.
+          DATABASE_URL: ${{ steps.neon.outputs.db_url_pooled }}
+          CORS_ORIGINS: ${{ env.WEB_URL }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          GIT_SHA: ${{ github.event.pull_request.head.sha }}
+
+      - name: Build web
+        run: pnpm --filter @stamina/web build
+        env:
+          VITE_API_URL: ${{ steps.api.outputs.url }}
+      - id: pages
+        name: Deploy web (Cloudflare Pages)
+        uses: cloudflare/wrangler-action@v4.1.3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy apps/web/dist --project-name=${{ vars.CLOUDFLARE_PAGES_PROJECT }} --branch=pr-${{ github.event.pull_request.number }} --commit-dirty=true
+
+      - name: Install browser
+        run: pnpm --filter @stamina/web exec playwright install --with-deps chromium
+      - name: Playwright + axe on the preview
+        run: pnpm --filter @stamina/web e2e
+        env:
+          PLAYWRIGHT_BASE_URL: ${{ env.WEB_URL }}
+      - uses: actions/upload-artifact@v7
+        if: failure()
+        with:
+          name: playwright-report
+          path: apps/web/playwright-report
+          retention-days: 7
+
+      - uses: marocchino/sticky-pull-request-comment@v3.0.5
+        if: always()
+        with:
+          header: preview
+          message: |
+            **Preview** for ${{ github.event.pull_request.head.sha }}
+            - Web: ${{ env.WEB_URL }}
+            - API: ${{ steps.api.outputs.url }}
+            - Database: Neon branch `preview/pr-${{ github.event.pull_request.number }}`
+
+  cleanup:
+    name: Delete preview database branch
+    if: github.event.action == 'closed' && github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: neondatabase/delete-branch-action@v3.2.1
+        with:
+          project_id: ${{ vars.NEON_PROJECT_ID }}
+          api_key: ${{ secrets.NEON_API_KEY }}
+          branch: preview/pr-${{ github.event.pull_request.number }}

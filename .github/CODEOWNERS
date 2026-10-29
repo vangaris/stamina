@@ -1,0 +1,19 @@
+# Safety-critical paths need Vang's review and an explicit sign-off note on the PR.
+# Patterns for paths that do not exist yet are intentional: they apply as soon as the files land.
+
+# Database migrations (RLS policies live in them)
+/apps/api/drizzle/                  @vangaris
+
+# Screening outcomes and stop-flag rules
+/packages/domain/src/screening/     @vangaris
+/packages/domain/src/stop-flags/    @vangaris
+
+# AI prompts and validators
+/apps/api/src/ai/prompts/           @vangaris
+/apps/api/src/ai/validators/        @vangaris
+
+# Copy (EN/EL messages, disclaimers, never-advise term lists)
+/packages/i18n/                     @vangaris
+
+# The pipeline that guards all of the above
+/.github/                           @vangaris

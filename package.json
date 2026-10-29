@@ -1,0 +1,34 @@
+{
+  "name": "stamina",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@10.7.0",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "lint": "nx run-many -t lint",
+    "typecheck": "nx run-many -t typecheck",
+    "test": "nx run-many -t test",
+    "build": "nx run-many -t build",
+    "affected": "nx affected -t lint typecheck test build",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^21.2.4",
+    "@commitlint/config-conventional": "^21.2.4",
+    "@nx/eslint-plugin": "24.0.2",
+    "@types/node": "22",
+    "eslint": "10",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-vue": "^10.12.0",
+    "nx": "24.0.2",
+    "prettier": "^3.9.10",
+    "typescript": "6.0.3",
+    "typescript-eslint": "8",
+    "vitest": "^5.0.5",
+    "vue-eslint-parser": "^10.4.1",
+    "wrangler": "4"
+  }
+}

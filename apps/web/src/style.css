@@ -1,0 +1,4 @@
+@import 'tailwindcss';
+
+/* Utility classes used inside workspace UI packages must be compiled too. */
+@source "../../../packages/ui";
