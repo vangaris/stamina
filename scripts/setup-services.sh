@@ -331,16 +331,28 @@ step "In the top menu click Settings, scroll to 'Organization Tokens', click '+ 
 note "Menu: Applications · Sandboxes · Domains · Databases · Metrics · Billing · Settings."
 ask_secret DENO_DEPLOY_TOKEN "Paste the Deno Deploy token:"
 [[ "$(api GET "https://api.deno.com/v2/apps" "$DENO_DEPLOY_TOKEN")" == 200 ]] || die "Deno Deploy rejected that token: $(body)"
+write_env DENO_DEPLOY_TOKEN "$DENO_DEPLOY_TOKEN"
 if [[ "$(api GET "https://api.deno.com/v2/apps/${DENO_APP_SLUG}" "$DENO_DEPLOY_TOKEN")" == 200 ]]; then
   say "App ${DENO_APP_SLUG} already exists."
 else
   confirm "Create Deno Deploy app '${DENO_APP_SLUG}' in region eu (deploys a 1-line placeholder; real deploys come from CI)?" || die "Stopped before creating the app."
   tmp=$(mktemp -d)
   printf 'export default { fetch: () => new Response("stamina-api placeholder") };\n' > "$tmp/server.js"
-  (cd "$tmp" && DENO_DEPLOY_TOKEN="$DENO_DEPLOY_TOKEN" deno deploy create --org "$DENO_ORG" --app "$DENO_APP_SLUG" \
-    --source local --runtime-mode dynamic --entrypoint server.js \
-    --build-timeout 5 --build-memory-limit 1024 --region eu) || die "deno deploy create failed."
+  created=no
+  # The token is scoped to one organization, so the CLI may not need --org at all; and when it
+  # does, it may want the display name rather than the slug. Try the slug, then no --org.
+  for org_arg in "$DENO_ORG" ""; do
+    org_flags=()
+    [[ -n "$org_arg" ]] && org_flags=(--org "$org_arg")
+    if (cd "$tmp" && DENO_DEPLOY_TOKEN="$DENO_DEPLOY_TOKEN" deno deploy create ${org_flags[@]+"${org_flags[@]}"} \
+      --app "$DENO_APP_SLUG" --source local --runtime-mode dynamic --entrypoint server.js \
+      --build-timeout 5 --build-memory-limit 1024 --region eu); then
+      created=yes; break
+    fi
+    note "That attempt failed; trying again without --org."
+  done
   rm -rf "$tmp"
+  [[ "$created" == yes ]] || die "deno deploy create failed twice. Read the error above, then re-run (your token is saved)."
 fi
 write_env DENO_ORG "$DENO_ORG"
 write_env DENO_DEPLOY_TOKEN "$DENO_DEPLOY_TOKEN"
