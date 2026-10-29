@@ -21,34 +21,36 @@ export default defineConfig({
     trace: 'on-first-retry',
   },
   projects: [{ name: 'phone', use: { ...devices['Pixel 7'] } }],
-  webServer: remote
-    ? undefined
-    : [
-        {
-          command: 'pnpm --filter @stamina/api db:dev',
-          env: { DEV_DB_PORT: String(dbPort) },
-          port: dbPort,
-          reuseExistingServer: !process.env.CI,
-          timeout: 120_000,
-        },
-        {
-          command: 'pnpm --filter @stamina/api exec tsx src/main.node.ts',
-          env: {
-            PORT: String(apiPort),
-            DATABASE_URL: databaseUrl,
-            CORS_ORIGINS: `http://127.0.0.1:${webPort}`,
+  ...(remote
+    ? {}
+    : {
+        webServer: [
+          {
+            command: 'pnpm --filter @stamina/api db:dev',
+            env: { DEV_DB_PORT: String(dbPort) },
+            port: dbPort,
+            reuseExistingServer: !process.env.CI,
+            timeout: 120_000,
           },
-          url: `http://127.0.0.1:${apiPort}/health`,
-          reuseExistingServer: !process.env.CI,
-          timeout: 60_000,
-        },
-        {
-          command:
-            'pnpm exec vite build && pnpm exec vite preview --host 127.0.0.1 --port 4173 --strictPort',
-          env: { VITE_API_URL: `http://127.0.0.1:${apiPort}` },
-          url: `http://127.0.0.1:${webPort}`,
-          reuseExistingServer: !process.env.CI,
-          timeout: 120_000,
-        },
-      ],
+          {
+            command: 'pnpm --filter @stamina/api exec tsx src/main.node.ts',
+            env: {
+              PORT: String(apiPort),
+              DATABASE_URL: databaseUrl,
+              CORS_ORIGINS: `http://127.0.0.1:${webPort}`,
+            },
+            url: `http://127.0.0.1:${apiPort}/health`,
+            reuseExistingServer: !process.env.CI,
+            timeout: 60_000,
+          },
+          {
+            command:
+              'pnpm exec vite build && pnpm exec vite preview --host 127.0.0.1 --port 4173 --strictPort',
+            env: { VITE_API_URL: `http://127.0.0.1:${apiPort}` },
+            url: `http://127.0.0.1:${webPort}`,
+            reuseExistingServer: !process.env.CI,
+            timeout: 120_000,
+          },
+        ],
+      }),
 });

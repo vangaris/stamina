@@ -16,4 +16,4 @@
 - [x] Seam 1 harness: an API test boots the real Hono app against real Postgres with a fake AI provider and passes a health test
 - [x] Seam 2 harness: a mediator test with mock services passes a trivial query
 - [ ] Seam 3 harness: one Playwright smoke test (phone viewport + axe) passes against the preview
-- [ ] PR template with the Stamina checklist, issue forms, CODEOWNERS for safety-critical paths, Conventional PR-title check
+- [x] PR template with the Stamina checklist, issue forms, CODEOWNERS for safety-critical paths, Conventional PR-title check
