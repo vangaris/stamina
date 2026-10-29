@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.1](https://github.com/vangaris/stamina/compare/v1.0.0...v1.0.1) (2026-10-29)
+
+
+### Bug Fixes
+
+* wait for the production hostname after promoting a Deno revision ([#6](https://github.com/vangaris/stamina/issues/6)) ([fb5b6c2](https://github.com/vangaris/stamina/commit/fb5b6c2937ce6d28eb826386e1cd3ac35123d02e))
+
 ## 1.0.0 (2026-10-29)
 
 
