@@ -1,0 +1,57 @@
+# Nightly encrypted backup of the production database to an EU-jurisdiction R2 bucket.
+# pg_dump streams into age (public key only), so plaintext never touches disk; backups older than
+# 30 days are pruned after each upload. A failure fails the run and GitHub emails Vang.
+# Restore: docs/backups.md. Monthly proof that it restores: restore-test.yml.
+#
+# Needs (see docs/backups.md):
+#   secrets: PROD_DATABASE_URL (direct, not pooled), R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY
+#   vars:    BACKUP_AGE_PUBLIC_KEY, R2_BACKUP_BUCKET, R2_ENDPOINT
+name: Backup
+
+on:
+  schedule:
+    - cron: '30 2 * * *'
+  workflow_dispatch:
+
+concurrency:
+  group: backup
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  backup:
+    name: Dump, encrypt, upload
+    # Scheduled runs stay quiet until R2 is set up; a manual run without it still fails loudly.
+    if: github.event_name != 'schedule' || vars.R2_BACKUP_BUCKET != ''
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          sparse-checkout: scripts/ops
+      - name: Install age and the PostgreSQL 17 client
+        run: ./scripts/ops/backup-install-tools.sh
+      - name: Dump and encrypt
+        id: dump
+        run: |
+          file="$(./scripts/ops/backup-create.sh "$RUNNER_TEMP/backup")"
+          echo "file=$file" >> "$GITHUB_OUTPUT"
+        env:
+          DATABASE_URL: ${{ secrets.PROD_DATABASE_URL }}
+          BACKUP_AGE_PUBLIC_KEY: ${{ vars.BACKUP_AGE_PUBLIC_KEY }}
+      - name: Upload and prune
+        run: |
+          ./scripts/ops/backup-upload.sh "$BACKUP_FILE" | tee "$RUNNER_TEMP/upload.txt"
+          {
+            echo '### Backup written'
+            echo
+            sed 's/^/- /' "$RUNNER_TEMP/upload.txt"
+          } >> "$GITHUB_STEP_SUMMARY"
+        env:
+          BACKUP_FILE: ${{ steps.dump.outputs.file }}
+          R2_ENDPOINT: ${{ vars.R2_ENDPOINT }}
+          R2_BACKUP_BUCKET: ${{ vars.R2_BACKUP_BUCKET }}
+          R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}

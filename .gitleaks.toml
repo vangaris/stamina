@@ -1,0 +1,11 @@
+# Extend the default ruleset; allow only two test files that contain fake values shaped like keys.
+[extend]
+useDefault = true
+
+[[allowlists]]
+description = "Canned aws s3api list-objects-v2 fixtures (`\"Key\": \"stamina-....dump.age\"`)"
+paths = ['''scripts/ops/test/retention\.test\.sh''']
+
+[[allowlists]]
+description = "Mock-server tests use a fake API key"
+paths = ['''infra/test/ops-scripts\.test\.mjs''']

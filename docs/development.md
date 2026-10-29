@@ -51,6 +51,8 @@ Workflows are in `.github/workflows/`.
 - **`ci.yml`**: `nx affected` lint, typecheck, test, build; Gitleaks (pinned binary, full history); OSV-Scanner on `pnpm-lock.yaml`.
 - **`pr-title.yml`**: the PR title must be a Conventional Commit (the squash commit message is the title), e.g. `feat: 02 Release, infrastructure and ops pipeline`.
 - **`preview.yml`**: per PR, a Neon branch (migrated) + a Deno Deploy preview revision with that branch's `DATABASE_URL` + a Cloudflare Pages alias `pr-<N>`, then `e2e` against it. Closing the PR deletes the Neon branch (it also expires after 14 days). PRs that only touch docs, tickets or templates skip it.
+- **`release.yml`**: release-please keeps a release PR open; merging it tags, migrates production, deploys the API, then the web, then smoke-checks. See [releasing.md](releasing.md).
+- **Dependabot** (`.github/dependabot.yml`): weekly grouped npm and GitHub Actions updates. Dependabot PRs get no Actions secrets, so `preview.yml` skips them; CI still runs.
 
 Free-minutes levers: concurrency cancels superseded runs, `nx affected` skips untouched projects, pnpm is cached, doc-only PRs skip the preview.
 
@@ -70,4 +72,4 @@ What it sets:
 | Actions variable              | `DENO_APP`                             | app slug, created with `deno deploy create --region eu`                 |
 | Actions variables             | `CLOUDFLARE_ACCOUNT_ID`, `CLOUDFLARE_PAGES_PROJECT` | Pages project (direct upload)                              |
 
-Each preview API revision gets its own `DATABASE_URL` and `CORS_ORIGINS` as immutable revision env vars (`scripts/deno-deploy-preview.mjs`), so app-level Deno variables are not used for previews.
+Each preview API revision gets its own `DATABASE_URL` and `CORS_ORIGINS` as immutable revision env vars (`scripts/deno-deploy.mjs`), so app-level Deno variables are not used for previews.

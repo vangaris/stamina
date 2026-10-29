@@ -22,7 +22,9 @@
   "dependencies": {
     "@hono/node-server": "^2.1.5",
     "@neondatabase/serverless": "^1.2.0",
+    "@sentry/core": "^11.10.0",
     "@stamina/contracts": "workspace:^",
+    "@stamina/safe-log": "workspace:^",
     "drizzle-orm": "^0.45.4",
     "hono": "^4.13.14",
     "pg": "^8.23.1",

@@ -19,7 +19,9 @@
     ]
   },
   "dependencies": {
+    "@sentry/vue": "^11.10.0",
     "@stamina/app-core": "workspace:^",
+    "@stamina/safe-log": "workspace:^",
     "@stamina/ui-bottom-nav": "workspace:^",
     "pinia": "^4.1.0",
     "vue": "^3.5.44",

@@ -1,0 +1,138 @@
+# Infrastructure checks for PRs that touch infra/: format, validate, offline tests, and (when the
+# credentials exist) a real `tofu plan` posted as one sticky comment. It never applies: `tofu apply`
+# is run by hand (docs/infra.md), so a merged PR cannot change production by itself.
+#
+# The plan runs with read access only; the token it needs is a read-only variant of the one used locally.
+# Needs (see docs/infra.md, "Tokens and where they live"). Without them the plan is skipped with a note;
+# the other checks still run.
+#   secrets: TOFU_CLOUDFLARE_API_TOKEN, NEON_API_KEY, SENTRY_AUTH_TOKEN,
+#            TF_STATE_R2_ACCESS_KEY_ID, TF_STATE_R2_SECRET_ACCESS_KEY
+#   vars:    CLOUDFLARE_ACCOUNT_ID, NEON_PROJECT_ID, SENTRY_ORG; optional NEON_DEV_BRANCH_ID
+name: Infra plan
+
+on:
+  pull_request:
+    paths:
+      - infra/**
+      - scripts/ops/deno-setup.sh
+      - scripts/ops/uptimerobot-setup.sh
+      - scripts/ops/brevo-setup.sh
+      - .github/workflows/infra-plan.yml
+
+concurrency:
+  group: infra-plan-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  plan:
+    name: Check and plan
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      pull-requests: write
+    env:
+      TOFU_CLOUDFLARE_API_TOKEN: ${{ secrets.TOFU_CLOUDFLARE_API_TOKEN }}
+      NEON_API_KEY: ${{ secrets.NEON_API_KEY }}
+      SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+      TF_STATE_R2_ACCESS_KEY_ID: ${{ secrets.TF_STATE_R2_ACCESS_KEY_ID }}
+      TF_STATE_R2_SECRET_ACCESS_KEY: ${{ secrets.TF_STATE_R2_SECRET_ACCESS_KEY }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+      NEON_PROJECT_ID: ${{ vars.NEON_PROJECT_ID }}
+      SENTRY_ORG: ${{ vars.SENTRY_ORG }}
+      NEON_DEV_BRANCH_ID: ${{ vars.NEON_DEV_BRANCH_ID }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+      - uses: opentofu/setup-opentofu@v2.0.2
+        with:
+          tofu_version: 1.13.2
+          # The wrapper would re-print every command's output as step outputs.
+          tofu_wrapper: false
+
+      - name: Shell scripts and their offline tests
+        run: |
+          shellcheck infra/*.sh scripts/ops/deno-setup.sh scripts/ops/uptimerobot-setup.sh scripts/ops/brevo-setup.sh
+          node --test infra/test/ops-scripts.test.mjs
+      - name: Format
+        run: tofu fmt -check -recursive -diff infra
+      - name: Validate and test (providers mocked, no credentials)
+        working-directory: infra/envs/production
+        run: |
+          tofu init -backend=false -input=false
+          tofu validate
+          tofu test
+
+      - id: creds
+        name: Plan credentials present?
+        run: |
+          missing=()
+          for name in TOFU_CLOUDFLARE_API_TOKEN NEON_API_KEY SENTRY_AUTH_TOKEN TF_STATE_R2_ACCESS_KEY_ID \
+            TF_STATE_R2_SECRET_ACCESS_KEY CLOUDFLARE_ACCOUNT_ID NEON_PROJECT_ID SENTRY_ORG; do
+            [[ -n "${!name:-}" ]] || missing+=("$name")
+          done
+          if [[ ${#missing[@]} -eq 0 ]]; then
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+            echo "missing=${missing[*]}" >> "$GITHUB_OUTPUT"
+            echo "::notice title=tofu plan skipped::missing ${missing[*]}"
+          fi
+
+      - id: plan
+        name: Plan
+        if: steps.creds.outputs.ready == 'true'
+        run: |
+          infra/tofu.sh production init -reconfigure -input=false -no-color
+          # -lock=false: a PR plan never writes state, and a lock left by a cancelled run must not block the next one.
+          set +e
+          infra/tofu.sh production plan -input=false -no-color -lock=false > "$RUNNER_TEMP/plan.txt" 2>&1
+          code=$?
+          cat "$RUNNER_TEMP/plan.txt"
+          echo "code=$code" >> "$GITHUB_OUTPUT"
+      - name: Write the plan comment
+        if: always() && steps.creds.outputs.ready != ''
+        env:
+          READY: ${{ steps.creds.outputs.ready }}
+          MISSING: ${{ steps.creds.outputs.missing }}
+          PLAN_CODE: ${{ steps.plan.outputs.code }}
+          SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          {
+            echo "**OpenTofu** for $SHA"
+            echo
+            if [[ "$READY" != true ]]; then
+              echo "Format, validate and offline tests ran. The plan was **skipped**: missing $MISSING (see docs/infra.md)."
+            elif [[ "$PLAN_CODE" == 0 ]]; then
+              echo "<details><summary>tofu plan (production)</summary>"
+              echo
+              echo '```'
+              # Redact the credentials, then keep the comment under GitHub's size limit.
+              node -e '
+                let text = require("fs").readFileSync(process.env.RUNNER_TEMP + "/plan.txt", "utf8");
+                for (const name of ["TOFU_CLOUDFLARE_API_TOKEN", "NEON_API_KEY", "SENTRY_AUTH_TOKEN", "TF_STATE_R2_ACCESS_KEY_ID", "TF_STATE_R2_SECRET_ACCESS_KEY"]) {
+                  const value = process.env[name];
+                  if (value) text = text.split(value).join("***");
+                }
+                process.stdout.write(text.length > 60000 ? text.slice(0, 60000) + "\n... truncated, see the job log" : text);
+              '
+              echo '```'
+              echo "</details>"
+            else
+              echo "The plan **failed** (exit ${PLAN_CODE:-n/a}); see the job log."
+            fi
+          } > "$RUNNER_TEMP/comment.md"
+      - uses: marocchino/sticky-pull-request-comment@v3.0.5
+        if: always() && steps.creds.outputs.ready != ''
+        with:
+          header: infra-plan
+          path: ${{ runner.temp }}/comment.md
+      - name: Fail when the plan failed
+        if: steps.plan.outputs.code != '' && steps.plan.outputs.code != '0'
+        run: exit 1

@@ -1,0 +1,49 @@
+#!/usr/bin/env bash
+# Test double for the aws CLI: serves the subset used by the ops scripts from a local directory
+# ($FAKE_R2_DIR/<bucket>/<key>), so upload/prune/fetch can be exercised without R2.
+set -euo pipefail
+
+: "${FAKE_R2_DIR:?}"
+args=("$@")
+# drop the global --endpoint-url <value>
+if [ "${args[0]}" = "--endpoint-url" ]; then args=("${args[@]:2}"); fi
+
+opt() { # --name value
+  local i
+  for ((i = 0; i < ${#args[@]} - 1; i++)); do
+    if [ "${args[$i]}" = "$1" ]; then echo "${args[$((i + 1))]}"; return; fi
+  done
+}
+mtime() { stat -c %Y "$1" 2> /dev/null || stat -f %m "$1"; }
+
+case "${args[0]} ${args[1]}" in
+  "s3 cp")
+    src="${args[2]}"
+    dst="${args[3]}"
+    case "$src" in
+      s3://*) mkdir -p "$(dirname "$dst")"; cp "$FAKE_R2_DIR/${src#s3://}" "$dst" ;;
+      *) mkdir -p "$(dirname "$FAKE_R2_DIR/${dst#s3://}")"; cp "$src" "$FAKE_R2_DIR/${dst#s3://}" ;;
+    esac
+    ;;
+  "s3api head-object")
+    wc -c < "$FAKE_R2_DIR/$(opt --bucket)/$(opt --key)" | tr -d ' '
+    ;;
+  "s3api delete-object")
+    rm -f "$FAKE_R2_DIR/$(opt --bucket)/$(opt --key)"
+    ;;
+  "s3api list-objects-v2")
+    bucket="$(opt --bucket)"
+    entries=()
+    for f in "$FAKE_R2_DIR/$bucket"/*; do
+      [ -e "$f" ] || continue
+      entries+=("$(basename "$f") $(mtime "$f")")
+    done
+    if [ "${#entries[@]}" -eq 0 ]; then exit 0; fi # the real CLI prints nothing for an empty bucket
+    printf '%s\n' "${entries[@]}" \
+      | jq -Rn '{Contents: [inputs | split(" ") | {Key: .[0], LastModified: (.[1] | tonumber | todate)}]}'
+    ;;
+  *)
+    echo "fake aws: unsupported: ${args[*]}" >&2
+    exit 64
+    ;;
+esac

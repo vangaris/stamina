@@ -1,0 +1,37 @@
+# Weekly grouped dependency updates. Minor and patch updates arrive as one PR per ecosystem;
+# majors stay separate PRs so each can be reviewed alone.
+#
+# The commit prefix keeps the PR title a Conventional Commit (pr-title.yml). `chore`/`ci` do not
+# trigger a release by themselves.
+#
+# The root directory covers the pnpm workspace (apps/*, packages/**) through pnpm-lock.yaml.
+# Dependabot PRs get no Actions secrets, so preview.yml skips them; CI still runs.
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: '06:00'
+      timezone: Europe/Athens
+    commit-message:
+      prefix: 'chore(deps)'
+    open-pull-requests-limit: 5
+    groups:
+      npm-minor-patch:
+        update-types: [minor, patch]
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: '06:00'
+      timezone: Europe/Athens
+    commit-message:
+      prefix: 'ci(deps)'
+    open-pull-requests-limit: 5
+    groups:
+      actions-minor-patch:
+        update-types: [minor, patch]
