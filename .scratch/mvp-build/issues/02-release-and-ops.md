@@ -12,6 +12,6 @@
 - [x] release-please maintains a release PR; merging it tags, runs production migrations, deploys API then web, and smoke-checks the health endpoint
 - [ ] A scheduled job writes an encrypted pg_dump nightly to an EU-jurisdiction R2 bucket, keeping 30 days; a monthly job restores the latest dump into a scratch database and reports the result
 - [x] Sentry (EU region) captures web and API errors with personal-data scrubbing on
-- [ ] UptimeRobot checks the health endpoint every 5 minutes and alerts Vang
+- [x] UptimeRobot checks the health endpoint every 5 minutes and alerts Vang
 - [x] API logging emits only allowlisted fields (request ID, route, status, latency, pseudonymous user ID, error type); an API test proves request bodies never reach logs
 - [x] Dependabot configured for npm and GitHub Actions with weekly grouped updates; €5 budget alerts on every account that holds a card
