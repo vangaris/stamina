@@ -2,7 +2,7 @@
 
 **What to build:** Vang can grow and judge the beta: every active user gets 3 invites, users can send feedback, the week-4 prompt captures 'would pay €7.99/month?' and NPS, metrics are computed from Stamina's own data, and a daily digest summarises everything.
 
-**Blocked by:** 14: Adaptation suggestions, 16: Nutrition targets and water
+**Blocked by:** 14: Adaptation suggestions, 16: Nutrition targets and water, 24: R2 backups, restore test and OpenTofu state
 
 **Status:** ready-for-agent
 

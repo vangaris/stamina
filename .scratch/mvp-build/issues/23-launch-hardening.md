@@ -2,7 +2,7 @@
 
 **What to build:** The release candidate is proven ready for real users: every journey passes, the AI gate holds, the safety nets are tested, and the go/no-go checklist is complete.
 
-**Blocked by:** 02: Release, infrastructure and ops pipeline, 15: Today timeline and Progress, 19: Reminders and iOS install guide, 22: Greek localisation complete
+**Blocked by:** 02: Release, infrastructure and ops pipeline, 15: Today timeline and Progress, 19: Reminders and iOS install guide, 22: Greek localisation complete, 24: R2 backups, restore test and OpenTofu state
 
 **Status:** ready-for-agent
 
