@@ -365,6 +365,8 @@ step "Open Workers & Pages. Your Account ID is in the right-hand sidebar (also i
 ask CLOUDFLARE_ACCOUNT_ID "Paste the Account ID:"
 [[ "$(api GET "${CF_API}/accounts/${CLOUDFLARE_ACCOUNT_ID}/pages/projects" "$CLOUDFLARE_API_TOKEN")" == 200 ]] \
   || die "Cloudflare rejected the token or account ID: $(body)"
+write_env CLOUDFLARE_API_TOKEN "$CLOUDFLARE_API_TOKEN"
+write_env CLOUDFLARE_ACCOUNT_ID "$CLOUDFLARE_ACCOUNT_ID"
 if [[ "$(api GET "${CF_API}/accounts/${CLOUDFLARE_ACCOUNT_ID}/pages/projects/${PAGES_PROJECT}" "$CLOUDFLARE_API_TOKEN")" == 200 ]]; then
   say "Pages project ${PAGES_PROJECT} already exists."
 else
