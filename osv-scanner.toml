@@ -1,0 +1,7 @@
+# deepmerge 4.3.1 (GHSA-gcqx-w48m-w2h4, prototype poisoning in mergeObject) has no fixed release.
+# It is pulled in only by workbox-build -> @rollup/plugin-node-resolve, which runs at build time on
+# our own Rollup config, never on untrusted input, and is not shipped in any bundle.
+[[IgnoredVulns]]
+id = "GHSA-gcqx-w48m-w2h4"
+ignoreUntil = 2027-04-29
+reason = "Build-time only (workbox-build); no upstream fix; no untrusted input"
