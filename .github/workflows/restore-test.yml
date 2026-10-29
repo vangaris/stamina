@@ -51,7 +51,7 @@ jobs:
           R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
       - name: Create scratch Neon branch
         id: neon
-        uses: neondatabase/create-branch-action@6.3.1
+        uses: neondatabase/create-branch-action@v6.4.0
         with:
           project_id: ${{ vars.NEON_PROJECT_ID }}
           api_key: ${{ secrets.NEON_API_KEY }}
