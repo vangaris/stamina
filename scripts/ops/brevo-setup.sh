@@ -3,7 +3,7 @@
 # the sender address exists, and prints the SMTP host, port and login Neon Auth needs (ticket 04).
 # Idempotent: an existing sender is left alone.
 #
-#   scripts/ops/brevo-setup.sh [--dry-run]
+#   scripts/ops/brevo-setup.sh [--dry-run] [--ask-key]
 #
 # Env (also read from ./.env, or the file named by ENV_FILE):
 #   BREVO_API_KEY   API key from Brevo > SMTP & API > API keys (never printed)
@@ -13,6 +13,7 @@
 #   BREVO_API_BASE  API root (default https://api.brevo.com/v3; tests point it at a mock)
 #
 # --dry-run prints every request the real run would send and sends nothing, so it needs no API key.
+# --ask-key prompts (hidden) for the API key and saves it to .env, replacing any saved key.
 #
 # API reference: https://developers.brevo.com/reference/get-account, .../get-senders, .../create-sender
 #
@@ -28,9 +29,11 @@ usage() {
 }
 
 dry_run=false
+ask_key=false
 for arg in "$@"; do
   case "$arg" in
     --dry-run) dry_run=true ;;
+    --ask-key) ask_key=true ;;
     -h | --help)
       usage
       exit 0
@@ -50,6 +53,21 @@ if [[ -f "$env_file" ]]; then
   # shellcheck source=/dev/null
   . "$env_file"
   set +a
+fi
+
+if [[ "$ask_key" == true ]]; then
+  [[ -t 0 ]] || { echo "--ask-key needs a terminal" >&2; exit 2; }
+  read -rs -p "Paste the Brevo API key, then press Enter (nothing is shown): " BREVO_API_KEY
+  echo
+  BREVO_API_KEY="${BREVO_API_KEY//[[:space:]]/}"
+  [[ -n "$BREVO_API_KEY" ]] || { echo "empty key" >&2; exit 2; }
+  tmp="$(mktemp)"
+  [[ -f "$env_file" ]] && { grep -v '^BREVO_API_KEY=' "$env_file" > "$tmp" || true; }
+  printf "BREVO_API_KEY='%s'\n" "$BREVO_API_KEY" >> "$tmp"
+  cat "$tmp" > "$env_file"
+  rm -f "$tmp"
+  chmod 600 "$env_file"
+  export BREVO_API_KEY
 fi
 
 : "${SENDER_EMAIL:?SENDER_EMAIL is required (the From address for sign-in emails)}"
