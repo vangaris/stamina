@@ -1,0 +1,274 @@
+# Releases: release-please keeps a release PR open on main. Merging it tags the release and, in this
+# same workflow run, deploys to production: migrate database -> API (Deno Deploy) -> web (Cloudflare
+# Pages) -> smoke check. Any failing step stops the chain; the job summary names it and how to roll back.
+#
+# Why one workflow and no `on: release`: a tag or release created with the default GITHUB_TOKEN does not
+# trigger other workflows, so the deploy has to run here, gated on release-please's `release_created`.
+#
+# Run it by hand (Actions > Release > Run workflow) with a tag to redeploy that release, which is also
+# the rollback: redeploy the previous tag. See docs/releasing.md.
+#
+# Needs (see docs/releasing.md):
+#   secrets: DENO_DEPLOY_TOKEN, CLOUDFLARE_API_TOKEN, PROD_DATABASE_URL, PROD_DATABASE_URL_POOLED
+#            optional RELEASE_PLEASE_TOKEN (fine-grained PAT, so CI runs on the release PR)
+#   vars:    DENO_APP, CLOUDFLARE_ACCOUNT_ID, CLOUDFLARE_PAGES_PROJECT, PROD_API_URL, PROD_WEB_URL
+#            optional DENO_ORG (summary links), SENTRY_DSN_API, SENTRY_DSN_WEB (Sentry stays off when unset)
+name: Release
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Existing release tag to (re)deploy to production, e.g. v0.1.0'
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  release-please:
+    name: Release PR and tag
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    # Idempotent: a later run picks up whatever an earlier, superseded run would have done.
+    concurrency:
+      group: release-please
+      cancel-in-progress: false
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+    outputs:
+      release_created: ${{ steps.rp.outputs.release_created }}
+      tag_name: ${{ steps.rp.outputs.tag_name }}
+      sha: ${{ steps.rp.outputs.sha }}
+    steps:
+      - id: rp
+        uses: googleapis/release-please-action@v5
+        with:
+          # A PAT makes CI run on the release PR; the default token cannot (docs/releasing.md).
+          token: ${{ secrets.RELEASE_PLEASE_TOKEN || secrets.GITHUB_TOKEN }}
+          config-file: release-please-config.json
+          manifest-file: .release-please-manifest.json
+
+  deploy:
+    name: Deploy to production
+    needs: release-please
+    if: ${{ !cancelled() && (github.event_name == 'workflow_dispatch' || needs.release-please.outputs.release_created == 'true') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    # Two releases never deploy at once; a queued one waits for the running one.
+    concurrency:
+      group: production-deploy
+      cancel-in-progress: false
+    permissions:
+      contents: read
+    env:
+      PROD_API_URL: ${{ vars.PROD_API_URL }}
+      PROD_WEB_URL: ${{ vars.PROD_WEB_URL }}
+    steps:
+      - id: target
+        name: Resolve release tag
+        env:
+          EVENT: ${{ github.event_name }}
+          INPUT_TAG: ${{ inputs.tag }}
+          RELEASED_TAG: ${{ needs.release-please.outputs.tag_name }}
+          RELEASED_SHA: ${{ needs.release-please.outputs.sha }}
+        run: |
+          set -euo pipefail
+          if [ "$EVENT" = workflow_dispatch ]; then
+            tag="$INPUT_TAG"
+            ref="refs/tags/$tag"
+          else
+            tag="$RELEASED_TAG"
+            ref="$RELEASED_SHA"
+          fi
+          if ! [[ "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?$ ]]; then
+            echo "::error title=Not a release tag::'$tag' does not look like vMAJOR.MINOR.PATCH"
+            exit 1
+          fi
+          echo "tag=$tag" >> "$GITHUB_OUTPUT"
+          echo "ref=$ref" >> "$GITHUB_OUTPUT"
+
+      - id: preflight
+        name: Check production configuration
+        env:
+          DENO_DEPLOY_TOKEN: ${{ secrets.DENO_DEPLOY_TOKEN }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          PROD_DATABASE_URL: ${{ secrets.PROD_DATABASE_URL }}
+          PROD_DATABASE_URL_POOLED: ${{ secrets.PROD_DATABASE_URL_POOLED }}
+          DENO_APP: ${{ vars.DENO_APP }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_PAGES_PROJECT: ${{ vars.CLOUDFLARE_PAGES_PROJECT }}
+        run: |
+          set -euo pipefail
+          missing=()
+          for name in DENO_DEPLOY_TOKEN CLOUDFLARE_API_TOKEN PROD_DATABASE_URL PROD_DATABASE_URL_POOLED \
+            DENO_APP CLOUDFLARE_ACCOUNT_ID CLOUDFLARE_PAGES_PROJECT PROD_API_URL PROD_WEB_URL; do
+            [ -n "${!name:-}" ] || missing+=("$name")
+          done
+          if [ "${#missing[@]}" -gt 0 ]; then
+            echo "::error title=Production deploy is not configured::Missing secrets or variables: ${missing[*]}. Nothing was deployed. See docs/releasing.md."
+            exit 1
+          fi
+          for name in PROD_API_URL PROD_WEB_URL; do
+            if ! [[ "${!name}" =~ ^https://[^/]+$ ]]; then
+              echo "::error title=$name is malformed::Use https://host with no path and no trailing slash."
+              exit 1
+            fi
+          done
+
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ steps.target.outputs.ref }}
+          persist-credentials: false
+      - id: commit
+        run: echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - id: install
+        run: pnpm install --frozen-lockfile
+
+      # Both bundles are built before production is touched, so a build failure changes nothing.
+      - id: build_api
+        name: Build API
+        run: pnpm --filter @stamina/api build
+      - id: build_web
+        name: Build web
+        run: pnpm --filter @stamina/web build
+        env:
+          VITE_API_URL: ${{ env.PROD_API_URL }}
+          VITE_SENTRY_DSN: ${{ vars.SENTRY_DSN_WEB }}
+          VITE_SENTRY_ENVIRONMENT: production
+
+      # Strict order from here: migrate -> API -> web -> smoke.
+      - id: migrate
+        name: Apply production migrations
+        run: pnpm --filter @stamina/api db:migrate
+        env:
+          # Direct (non-pooled) connection, which migrations need.
+          DATABASE_URL: ${{ secrets.PROD_DATABASE_URL }}
+      - id: deploy_api
+        name: Deploy API (Deno Deploy, production)
+        run: node scripts/deno-deploy.mjs production
+        env:
+          DENO_DEPLOY_TOKEN: ${{ secrets.DENO_DEPLOY_TOKEN }}
+          DENO_APP: ${{ vars.DENO_APP }}
+          # Pooled URL: the API reaches Neon over WebSockets at runtime.
+          DATABASE_URL: ${{ secrets.PROD_DATABASE_URL_POOLED }}
+          CORS_ORIGINS: ${{ env.PROD_WEB_URL }}
+          SENTRY_DSN: ${{ vars.SENTRY_DSN_API }}
+          RELEASE_TAG: ${{ steps.target.outputs.tag }}
+          GIT_SHA: ${{ steps.commit.outputs.sha }}
+      - id: api_health
+        name: Check the production API before shipping the web
+        run: |
+          curl --fail --silent --show-error --max-time 20 \
+            --retry 6 --retry-delay 5 --retry-all-errors \
+            --output /dev/null "$PROD_API_URL/health"
+      - id: deploy_web
+        name: Deploy web (Cloudflare Pages, production)
+        uses: cloudflare/wrangler-action@v4.1.3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy apps/web/dist --project-name=${{ vars.CLOUDFLARE_PAGES_PROJECT }} --branch=main
+
+      - id: smoke
+        name: Smoke check
+        run: |
+          set -euo pipefail
+          fetch() { curl --fail --silent --show-error --max-time 20 --retry 6 --retry-delay 5 --retry-all-errors "$@"; }
+          fetch --output /dev/null "$PROD_API_URL/health"
+          fetch --output /dev/null "$PROD_WEB_URL/"
+          # The deployed web bundle must point at the production API: every built asset that carries the
+          # API URL must carry it on the live site too (and at least one must).
+          shopt -s nullglob
+          checked=0
+          for file in apps/web/dist/assets/*.js; do
+            grep -qF "$PROD_API_URL" "$file" || continue
+            name="$(basename "$file")"
+            fetch --output "$RUNNER_TEMP/live.js" "$PROD_WEB_URL/assets/$name"
+            grep -qF "$PROD_API_URL" "$RUNNER_TEMP/live.js" \
+              || { echo "::error::$PROD_WEB_URL/assets/$name does not contain $PROD_API_URL"; exit 1; }
+            checked=$((checked + 1))
+          done
+          if [ "$checked" -eq 0 ]; then
+            echo "::error::No built web asset contains $PROD_API_URL; VITE_API_URL was not baked in."
+            exit 1
+          fi
+          echo "web bundle points at $PROD_API_URL ($checked asset(s) checked)"
+
+      - name: Job summary
+        if: ${{ !cancelled() }}
+        env:
+          TAG: ${{ steps.target.outputs.tag }}
+          SHA: ${{ steps.commit.outputs.sha }}
+          JOB_STATUS: ${{ job.status }}
+          REVISION: ${{ steps.deploy_api.outputs.revision }}
+          DENO_ORG: ${{ vars.DENO_ORG }}
+          DENO_APP: ${{ vars.DENO_APP }}
+          # Outcome of each step, in run order.
+          OUTCOMES: >-
+            target=${{ steps.target.outcome }}
+            preflight=${{ steps.preflight.outcome }}
+            install=${{ steps.install.outcome }}
+            build_api=${{ steps.build_api.outcome }}
+            build_web=${{ steps.build_web.outcome }}
+            migrate=${{ steps.migrate.outcome }}
+            deploy_api=${{ steps.deploy_api.outcome }}
+            api_health=${{ steps.api_health.outcome }}
+            deploy_web=${{ steps.deploy_web.outcome }}
+            smoke=${{ steps.smoke.outcome }}
+        run: |
+          set -euo pipefail
+          failed=""
+          for pair in $OUTCOMES; do
+            if [ "${pair#*=}" = failure ]; then failed="${pair%%=*}"; break; fi
+          done
+          # A failure outside the named steps (checkout, tool setup) still happens before production.
+          [ -z "$failed" ] && [ "$JOB_STATUS" != success ] && failed=setup
+          console="the Deno Deploy console"
+          [ -n "$DENO_ORG" ] && console="[the Deno Deploy console](https://console.deno.com/$DENO_ORG/$DENO_APP)"
+          {
+            if [ -z "$failed" ]; then
+              echo "## Production deploy of $TAG succeeded"
+              echo
+              echo "- Commit: \`$SHA\`"
+              echo "- API revision: \`${REVISION:-unknown}\` ($PROD_API_URL)"
+              echo "- Web: $PROD_WEB_URL"
+              echo "- Steps: migrate, API, web and smoke check all passed."
+              echo "- Previous release to roll back to: Actions > Release > Run workflow with the previous tag."
+            else
+              echo "## Production deploy of $TAG FAILED at step \`$failed\`"
+              echo
+              echo "The chain is migrate, API, web, smoke; later steps did not run."
+              echo
+              case "$failed" in
+                target | preflight | setup | install | build_api | build_web)
+                  echo "**Production was not touched.** Fix the cause above and run this workflow again (Run workflow, tag \`$TAG\`)." ;;
+                migrate)
+                  echo "**The API and web are still on the previous release.** Check which migrations applied (\`drizzle.__drizzle_migrations\` in the production database). Migrations are forward-only: fix with a new migration, never edit an applied file, then run this workflow again with tag \`$TAG\`." ;;
+                deploy_api | api_health)
+                  echo "**The web is still on the previous release; the database already has this release's migrations** (safe: migrations follow expand/contract, so the previous API keeps working)."
+                  echo
+                  echo "- If production serves a broken API revision, re-promote the previous one: \`node scripts/deno-deploy.mjs revisions\` lists them (newest first), then \`node scripts/deno-deploy.mjs promote <revision-id>\` (needs DENO_DEPLOY_TOKEN and DENO_APP), or promote it in $console."
+                  echo "- Or run this workflow with the previous release tag." ;;
+                *)
+                  echo "**The database and API are on $TAG; the web may or may not be.**"
+                  echo
+                  echo "- API: \`node scripts/deno-deploy.mjs revisions\`, then \`node scripts/deno-deploy.mjs promote <revision-id>\` for the previous revision, or promote it in $console."
+                  echo "- Web: Cloudflare dashboard > Workers & Pages > the project > Deployments > the previous production deployment > Rollback."
+                  echo "- Or run this workflow with the previous release tag, which redeploys both." ;;
+              esac
+              echo
+              echo "Migrations are never rolled back. See docs/releasing.md."
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"

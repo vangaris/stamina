@@ -5,6 +5,9 @@
 #   secrets: NEON_API_KEY, DENO_DEPLOY_TOKEN, CLOUDFLARE_API_TOKEN
 #   vars:    NEON_PROJECT_ID, NEON_PARENT_BRANCH (a data-free branch, never production),
 #            DENO_APP, CLOUDFLARE_ACCOUNT_ID, CLOUDFLARE_PAGES_PROJECT
+#   optional vars: SENTRY_DSN_API, SENTRY_DSN_WEB (Sentry stays off when unset)
+#
+# Dependabot PRs get no Actions secrets, so every job here is skipped for them (CI still runs).
 name: Preview
 
 on:
@@ -21,7 +24,11 @@ permissions:
 jobs:
   changes:
     name: Code changed?
-    if: github.event.action != 'closed' && github.event.pull_request.head.repo.full_name == github.repository
+    if: >-
+      github.event.action != 'closed'
+      && github.event.pull_request.head.repo.full_name == github.repository
+      && github.actor != 'dependabot[bot]'
+      && github.event.pull_request.user.login != 'dependabot[bot]'
     runs-on: ubuntu-latest
     timeout-minutes: 3
     outputs:
@@ -46,7 +53,10 @@ jobs:
   deploy:
     name: Deploy preview and run smoke test
     needs: changes
-    if: needs.changes.outputs.code == 'true'
+    if: >-
+      needs.changes.outputs.code == 'true'
+      && github.actor != 'dependabot[bot]'
+      && github.event.pull_request.user.login != 'dependabot[bot]'
     runs-on: ubuntu-latest
     timeout-minutes: 20
     permissions:
@@ -83,13 +93,14 @@ jobs:
       - run: pnpm --filter @stamina/api build
       - id: api
         name: Deploy API (Deno Deploy)
-        run: node scripts/deno-deploy-preview.mjs
+        run: node scripts/deno-deploy.mjs preview
         env:
           DENO_DEPLOY_TOKEN: ${{ secrets.DENO_DEPLOY_TOKEN }}
           DENO_APP: ${{ vars.DENO_APP }}
           # Pooled URL: the API reaches Neon over WebSockets at runtime.
           DATABASE_URL: ${{ steps.neon.outputs.db_url_pooled }}
           CORS_ORIGINS: ${{ env.WEB_URL }}
+          SENTRY_DSN: ${{ vars.SENTRY_DSN_API }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
           GIT_SHA: ${{ github.event.pull_request.head.sha }}
 
@@ -97,6 +108,8 @@ jobs:
         run: pnpm --filter @stamina/web build
         env:
           VITE_API_URL: ${{ steps.api.outputs.url }}
+          VITE_SENTRY_DSN: ${{ vars.SENTRY_DSN_WEB }}
+          VITE_SENTRY_ENVIRONMENT: preview
       - id: pages
         name: Deploy web (Cloudflare Pages)
         uses: cloudflare/wrangler-action@v4.1.3
@@ -130,7 +143,11 @@ jobs:
 
   cleanup:
     name: Delete preview database branch
-    if: github.event.action == 'closed' && github.event.pull_request.head.repo.full_name == github.repository
+    if: >-
+      github.event.action == 'closed'
+      && github.event.pull_request.head.repo.full_name == github.repository
+      && github.actor != 'dependabot[bot]'
+      && github.event.pull_request.user.login != 'dependabot[bot]'
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:

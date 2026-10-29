@@ -1,9 +1,15 @@
 import tailwindcss from '@tailwindcss/vite';
 import vue from '@vitejs/plugin-vue';
-import { defineConfig } from 'vite';
+import { defineConfig, loadEnv } from 'vite';
 import { VitePWA } from 'vite-plugin-pwa';
 
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
+  // Make the DSN a build-time constant so a build without one drops the Sentry chunk entirely.
+  define: {
+    'import.meta.env.VITE_SENTRY_DSN': JSON.stringify(
+      loadEnv(mode, process.cwd(), 'VITE_').VITE_SENTRY_DSN ?? '',
+    ),
+  },
   plugins: [
     vue(),
     tailwindcss(),
@@ -39,4 +45,4 @@ export default defineConfig({
       },
     }),
   ],
-});
+}));

@@ -1,0 +1,84 @@
+# Monthly restore test: proves the newest nightly backup decrypts and restores.
+# Downloads the newest dump, restores it into an EMPTY database on a scratch Neon branch and runs
+# the sanity checks (scripts/ops/restore-verify.sh). The branch is always deleted. A bad restore
+# fails the run, so GitHub emails Vang. The scratch branch is created from NEON_PARENT_BRANCH (the
+# data-free `dev` branch), never from production: no real user data is copied anywhere new.
+# Details: docs/backups.md.
+#
+# Needs (see docs/backups.md):
+#   secrets: NEON_API_KEY, R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY, BACKUP_AGE_PRIVATE_KEY
+#   vars:    NEON_PROJECT_ID, NEON_PARENT_BRANCH, R2_BACKUP_BUCKET, R2_ENDPOINT
+name: Restore test
+
+on:
+  schedule:
+    - cron: '0 4 5 * *'
+  workflow_dispatch:
+
+concurrency:
+  group: restore-test
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  restore-test:
+    name: Restore the latest backup into a scratch branch
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          sparse-checkout: scripts/ops
+      - name: Install age and the PostgreSQL 17 client
+        run: ./scripts/ops/backup-install-tools.sh
+      - id: when
+        run: |
+          echo "month=$(date -u +%Y%m)" >> "$GITHUB_OUTPUT"
+          echo "expires=$(date -u -d '+1 day' +%Y-%m-%dT%H:%M:%SZ)" >> "$GITHUB_OUTPUT"
+      - name: Download the newest backup
+        id: fetch
+        run: |
+          file="$(./scripts/ops/restore-fetch.sh "$RUNNER_TEMP/restore")"
+          echo "file=$file" >> "$GITHUB_OUTPUT"
+        env:
+          R2_ENDPOINT: ${{ vars.R2_ENDPOINT }}
+          R2_BACKUP_BUCKET: ${{ vars.R2_BACKUP_BUCKET }}
+          R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+      - name: Create scratch Neon branch
+        id: neon
+        uses: neondatabase/create-branch-action@6.3.1
+        with:
+          project_id: ${{ vars.NEON_PROJECT_ID }}
+          api_key: ${{ secrets.NEON_API_KEY }}
+          parent_branch: ${{ vars.NEON_PARENT_BRANCH }}
+          branch_name: restore-test/${{ steps.when.outputs.month }}
+          # Safety net if the delete step below never runs.
+          expires_at: ${{ steps.when.outputs.expires }}
+      - name: Restore and verify
+        run: |
+          scratch="$(./scripts/ops/restore-prepare.sh)"
+          echo "::add-mask::$scratch"
+          export SCRATCH_DATABASE_URL="$scratch"
+          result="$(./scripts/ops/restore-verify.sh "$BACKUP_FILE")" && rc=0 || rc=$?
+          echo "$result"
+          {
+            if [ "$rc" -eq 0 ]; then echo '### Restore test passed'; else echo '### Restore test FAILED'; fi
+            echo
+            echo "- backup: \`$(basename "$BACKUP_FILE")\`"
+            echo "- result: \`$result\`"
+          } >> "$GITHUB_STEP_SUMMARY"
+          exit "$rc"
+        env:
+          ADMIN_DATABASE_URL: ${{ steps.neon.outputs.db_url }}
+          BACKUP_FILE: ${{ steps.fetch.outputs.file }}
+          BACKUP_AGE_PRIVATE_KEY: ${{ secrets.BACKUP_AGE_PRIVATE_KEY }}
+      - name: Delete scratch Neon branch
+        if: always() && steps.neon.outcome != 'skipped'
+        uses: neondatabase/delete-branch-action@v3.2.1
+        with:
+          project_id: ${{ vars.NEON_PROJECT_ID }}
+          api_key: ${{ secrets.NEON_API_KEY }}
+          branch: restore-test/${{ steps.when.outputs.month }}
