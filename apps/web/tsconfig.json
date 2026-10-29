@@ -1,0 +1,15 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "jsx": "preserve",
+    "types": ["vite/client", "vite-plugin-pwa/client"]
+  },
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.vue",
+    "e2e/**/*.ts",
+    "vite.config.ts",
+    "playwright.config.ts",
+    "pwa-assets.config.ts"
+  ]
+}

@@ -1,0 +1,10 @@
+packages:
+  - apps/*
+  - packages/*
+  - packages/ui/*
+  - packages/util/*
+onlyBuiltDependencies:
+  - esbuild
+  - embedded-postgres
+  - '@embedded-postgres/darwin-arm64'
+  - nx
