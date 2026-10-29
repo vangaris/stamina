@@ -300,8 +300,15 @@ say "Neon project: $NEON_PROJECT_ID"
 HAS_DEV=$(body | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{const b=JSON.parse(s).branches||[];console.log(b.some(x=>x.name==="dev")?"yes":"no")})')
 if [[ "$HAS_DEV" == no ]]; then
   DEFAULT_BRANCH_ID=$(body | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{const b=(JSON.parse(s).branches||[]).find(x=>x.default||x.primary);if(b)console.log(b.id)})')
-  [[ "$(api POST "${NEON_API}/projects/${NEON_PROJECT_ID}/branches" "$NEON_API_KEY" "{\"branch\":{\"name\":\"dev\",\"parent_id\":\"${DEFAULT_BRANCH_ID}\"}}")" =~ ^20 ]] \
-    || die "Creating the 'dev' branch failed: $(body)"
+  # A brand-new project is still running setup operations; Neon refuses writes until they finish.
+  for attempt in 1 2 3 4 5 6 7 8 9 10 11 12; do
+    code=$(api POST "${NEON_API}/projects/${NEON_PROJECT_ID}/branches" "$NEON_API_KEY" "{\"branch\":{\"name\":\"dev\",\"parent_id\":\"${DEFAULT_BRANCH_ID}\"}}")
+    [[ "$code" =~ ^20 ]] && break
+    [[ "$(body)" == *"running operations"* ]] || die "Creating the 'dev' branch failed (HTTP $code): $(body)"
+    note "Neon is still setting the project up, retrying in 5s ($attempt/12)"
+    sleep 5
+  done
+  [[ "$code" =~ ^20 ]] || die "Neon stayed busy for a minute. Re-run the wizard in a moment."
   say "Created branch 'dev' (empty; previews branch from it, never from production)."
 else
   say "Branch 'dev' already exists."
