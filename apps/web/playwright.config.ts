@@ -44,8 +44,7 @@ export default defineConfig({
             timeout: 60_000,
           },
           {
-            command:
-              'pnpm exec vite build && pnpm exec vite preview --host 127.0.0.1 --port 4173 --strictPort',
+            command: `pnpm exec vite build && pnpm exec vite preview --host 127.0.0.1 --port ${webPort} --strictPort`,
             env: { VITE_API_URL: `http://127.0.0.1:${apiPort}` },
             url: `http://127.0.0.1:${webPort}`,
             reuseExistingServer: !process.env.CI,

@@ -18,6 +18,8 @@ const apiStatus = computed(
 <template>
   <section>
     <h1 class="text-2xl font-semibold">Today</h1>
-    <p data-testid="api-status" class="mt-2 text-sm text-neutral-700">Server: {{ apiStatus }}</p>
+    <p data-testid="api-status" :data-state="state.kind" class="mt-2 text-sm text-neutral-700">
+      Server: {{ apiStatus }}
+    </p>
   </section>
 </template>

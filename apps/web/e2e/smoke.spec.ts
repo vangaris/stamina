@@ -8,11 +8,14 @@ test('shell loads at phone width, reaches the API and has no accessibility viola
 
   await expect(page).toHaveURL(/\/today$/);
   await expect(page.getByRole('heading', { name: 'Today' })).toBeVisible();
-  await expect(page.getByTestId('api-status')).toContainText('Connected');
+  await expect(page.getByTestId('api-status')).toHaveAttribute('data-state', 'ok');
 
   const nav = page.getByRole('navigation', { name: 'Main' });
   for (const tab of ['Today', 'Session', 'Meals', 'Progress']) {
-    await expect(nav.getByRole('link', { name: tab })).toBeVisible();
+    const link = nav.getByRole('link', { name: tab });
+    await expect(link).toBeVisible();
+    // 44 px minimum tap target; fails if the UI package's classes are not compiled into the CSS.
+    expect((await link.boundingBox())!.height).toBeGreaterThanOrEqual(44);
   }
 
   const results = await new AxeBuilder({ page }).analyze();

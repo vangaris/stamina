@@ -28,7 +28,6 @@ const emit = defineEmits<{ select: [id: string] }>();
           :class="item.id === activeId ? 'text-indigo-700' : 'text-neutral-700'"
           @click.prevent="emit('select', item.id)"
         >
-          <slot name="icon" :item="item" :active="item.id === activeId" />
           <span>{{ item.label }}</span>
         </a>
       </li>

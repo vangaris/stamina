@@ -11,9 +11,9 @@
     "production": ["default", "!{projectRoot}/**/*.test.ts", "!{projectRoot}/test/**/*"]
   },
   "targetDefaults": {
-    "lint": { "cache": true, "inputs": ["default"] },
-    "typecheck": { "cache": true, "inputs": ["default"] },
-    "test": { "cache": true, "inputs": ["default"] },
+    "lint": { "cache": true, "inputs": ["default", "^default"] },
+    "typecheck": { "cache": true, "inputs": ["default", "^default"] },
+    "test": { "cache": true, "inputs": ["default", "^default"] },
     "build": {
       "cache": true,
       "inputs": ["production", "^production"],

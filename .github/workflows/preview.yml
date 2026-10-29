@@ -1,7 +1,7 @@
 # Per-PR preview: Neon branch (migrated) + Deno Deploy API revision + Cloudflare Pages web,
 # then the Playwright + axe smoke test against it. Torn down (Neon branch) when the PR closes.
 #
-# Needs (see docs/previews-and-ci.md):
+# Needs (see docs/development.md, "One-time setup"):
 #   secrets: NEON_API_KEY, DENO_DEPLOY_TOKEN, CLOUDFLARE_API_TOKEN
 #   vars:    NEON_PROJECT_ID, NEON_PARENT_BRANCH (a data-free branch, never production),
 #            DENO_APP, CLOUDFLARE_ACCOUNT_ID, CLOUDFLARE_PAGES_PROJECT
@@ -37,7 +37,7 @@ jobs:
           HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         run: |
           if git diff --name-only "$BASE_SHA...$HEAD_SHA" \
-            | grep -qvE '^(\.scratch/|docs/|seed/|\.github/ISSUE_TEMPLATE/|\.github/pull_request_template\.md|CODEOWNERS|.*\.md$)'; then
+            | grep -qvE '^(\.scratch/|docs/|seed/|\.github/ISSUE_TEMPLATE/|\.github/pull_request_template\.md|\.github/CODEOWNERS|.*\.md$)'; then
             echo "code=true" >> "$GITHUB_OUTPUT"
           else
             echo "code=false" >> "$GITHUB_OUTPUT"
