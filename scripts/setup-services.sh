@@ -338,21 +338,14 @@ else
   confirm "Create Deno Deploy app '${DENO_APP_SLUG}' in region eu (deploys a 1-line placeholder; real deploys come from CI)?" || die "Stopped before creating the app."
   tmp=$(mktemp -d)
   printf 'export default { fetch: () => new Response("stamina-api placeholder") };\n' > "$tmp/server.js"
-  created=no
-  # The token is scoped to one organization, so the CLI may not need --org at all; and when it
-  # does, it may want the display name rather than the slug. Try the slug, then no --org.
-  for org_arg in "$DENO_ORG" ""; do
-    org_flags=()
-    [[ -n "$org_arg" ]] && org_flags=(--org "$org_arg")
-    if (cd "$tmp" && DENO_DEPLOY_TOKEN="$DENO_DEPLOY_TOKEN" deno deploy create ${org_flags[@]+"${org_flags[@]}"} \
-      --app "$DENO_APP_SLUG" --source local --runtime-mode dynamic --entrypoint server.js \
-      --build-timeout 5 --build-memory-limit 1024 --region eu); then
-      created=yes; break
-    fi
-    note "That attempt failed; trying again without --org."
-  done
+  # The placeholder's first build may fail (the app has no default entrypoint yet); that is fine:
+  # CI deploys real revisions with their own config. What matters is that the app now exists.
+  (cd "$tmp" && DENO_DEPLOY_TOKEN="$DENO_DEPLOY_TOKEN" deno deploy create --org "$DENO_ORG" \
+    --app "$DENO_APP_SLUG" --source local --runtime-mode dynamic --entrypoint server.js \
+    --build-timeout 5 --build-memory-limit 1024 --region eu -y) || true
   rm -rf "$tmp"
-  [[ "$created" == yes ]] || die "deno deploy create failed twice. Read the error above, then re-run (your token is saved)."
+  [[ "$(api GET "https://api.deno.com/v2/apps/${DENO_APP_SLUG}" "$DENO_DEPLOY_TOKEN")" == 200 ]] \
+    || die "The Deno app was not created. Read the error above (organizations: deno deploy orgs list)."
 fi
 write_env DENO_ORG "$DENO_ORG"
 write_env DENO_DEPLOY_TOKEN "$DENO_DEPLOY_TOKEN"
