@@ -56,6 +56,10 @@ Free-minutes levers: concurrency cancels superseded runs, `nx affected` skips un
 
 ### One-time setup (needs accounts, not in the repo)
 
+Run `./scripts/setup-services.sh`. It signs `gh` in, creates the private repo, creates the Neon project (Frankfurt, plus a data-free `dev` branch), the Deno Deploy app (`eu`) and the Cloudflare Pages project, sets every secret and variable below, and opens the first PR. You paste in three tokens; it creates everything else. Safe to re-run. Values are kept in the gitignored `.env`.
+
+What it sets:
+
 | Where                         | Name                                   | Value                                                                   |
 | ----------------------------- | -------------------------------------- | ----------------------------------------------------------------------- |
 | Actions secret                | `NEON_API_KEY`                         | Neon API key                                                            |
