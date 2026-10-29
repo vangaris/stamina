@@ -25,6 +25,8 @@ permissions:
 jobs:
   restore-test:
     name: Restore the latest backup into a scratch branch
+    # Scheduled runs stay quiet until R2 is set up; a manual run without it still fails loudly.
+    if: github.event_name != 'schedule' || vars.R2_BACKUP_BUCKET != ''
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
