@@ -221,6 +221,10 @@ api() {
 
 die() { printf '\n  %s✗ %s%s\n\n' "$YELLOW" "$1" "$RESET"; exit 1; }
 
+# flush_stdin discards keystrokes still buffered (e.g. the newline a paste leaves behind), so a
+# stray Enter is not read as "no" by the next y/N question.
+flush_stdin() { local junk; while read -r -t 1 -n 10000 junk; do :; done; }
+
 REPO_NAME="${REPO_NAME:-stamina}"
 NEON_API="https://console.neon.tech/api/v2"
 DENO_APP_SLUG="${DENO_APP_SLUG:-stamina-api}"
@@ -290,6 +294,7 @@ code=$(api GET "${NEON_API}/projects?org_id=${NEON_ORG_ID}&limit=100" "$NEON_API
 [[ "$code" == 200 ]] || die "Could not list Neon projects (HTTP $code): $(body)"
 NEON_PROJECT_ID=$(body | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{const p=(JSON.parse(s).projects||[]).find(p=>p.name==="stamina");if(p)console.log(p.id)})')
 if [[ -z "$NEON_PROJECT_ID" ]]; then
+  flush_stdin
   confirm "Create Neon project 'stamina' in Frankfurt (aws-eu-central-1, Postgres 17)?" || die "Stopped before creating the Neon project."
   code=$(api POST "${NEON_API}/projects" "$NEON_API_KEY" "{\"project\":{\"name\":\"stamina\",\"org_id\":\"${NEON_ORG_ID}\",\"region_id\":\"aws-eu-central-1\",\"pg_version\":17}}")
   [[ "$code" =~ ^20 ]] || die "Neon project creation failed (HTTP $code): $(body)"
@@ -335,6 +340,7 @@ write_env DENO_DEPLOY_TOKEN "$DENO_DEPLOY_TOKEN"
 if [[ "$(api GET "https://api.deno.com/v2/apps/${DENO_APP_SLUG}" "$DENO_DEPLOY_TOKEN")" == 200 ]]; then
   say "App ${DENO_APP_SLUG} already exists."
 else
+  flush_stdin
   confirm "Create Deno Deploy app '${DENO_APP_SLUG}' in region eu (deploys a 1-line placeholder; real deploys come from CI)?" || die "Stopped before creating the app."
   tmp=$(mktemp -d)
   printf 'export default { fetch: () => new Response("stamina-api placeholder") };\n' > "$tmp/server.js"
@@ -370,6 +376,7 @@ write_env CLOUDFLARE_ACCOUNT_ID "$CLOUDFLARE_ACCOUNT_ID"
 if [[ "$(api GET "${CF_API}/accounts/${CLOUDFLARE_ACCOUNT_ID}/pages/projects/${PAGES_PROJECT}" "$CLOUDFLARE_API_TOKEN")" == 200 ]]; then
   say "Pages project ${PAGES_PROJECT} already exists."
 else
+  flush_stdin
   confirm "Create Pages project '${PAGES_PROJECT}' (direct upload, production branch main)?" || die "Stopped before creating the Pages project."
   [[ "$(api POST "${CF_API}/accounts/${CLOUDFLARE_ACCOUNT_ID}/pages/projects" "$CLOUDFLARE_API_TOKEN" \
     "{\"name\":\"${PAGES_PROJECT}\",\"production_branch\":\"main\"}")" =~ ^20 ]] || die "Pages project creation failed: $(body)"
