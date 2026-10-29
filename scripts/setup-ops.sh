@@ -231,9 +231,10 @@ note "Skipped on purpose: Cloudflare R2 (backups + OpenTofu state). Those boxes 
 
 # ── 1. Sentry ─────────────────────────────────────────────────────────────
 stage "Sentry (EU region): one project for the web app, one for the API"
-open_url "https://de.sentry.io/signup/"
-step "Sign up or sign in on de.sentry.io. The address must end in de.sentry.io (EU data storage)."
-step "Create an organization if asked (any name)."
+open_url "https://sentry.io/signup/"
+step "Sign up on sentry.io (free Developer plan)."
+step "When it asks to create an organization, set 'Data Storage Location' to 'European Union (EU)'. It cannot be changed later."
+note "Your organization then lives at de.sentry.io (that is where the DSNs below end up)."
 step "Create project 1: Projects → Create Project. Platform: Vue. Name: stamina-web."
 step "On its page open Settings → Client Keys (DSN) and copy the DSN."
 ask SENTRY_DSN_WEB "Paste the stamina-web DSN:"
