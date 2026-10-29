@@ -4,7 +4,7 @@
 
 **Blocked by:** 01: Walking skeleton
 
-**Status:** ready-for-agent
+**Status:** in-progress
 
 **Roadmap week:** 1
 
