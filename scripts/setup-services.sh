@@ -274,12 +274,25 @@ step "Sign in (or sign up, free plan; no card needed)."
 step "Account settings → API keys → Create new API key, name it 'stamina-ci', copy it (shown once)."
 note "If that page has moved, look for 'API keys' in your Neon account settings."
 ask_secret NEON_API_KEY "Paste the Neon API key:"
-[[ "$(api GET "${NEON_API}/projects?limit=100" "$NEON_API_KEY")" == 200 ]] || die "Neon rejected that API key."
+NEON_API_KEY="${NEON_API_KEY//[[:space:]]/}"
+code=$(api GET "${NEON_API}/users/me/organizations" "$NEON_API_KEY")
+[[ "$code" == 200 ]] || die "Neon rejected that API key (HTTP $code): $(body)"
+orgs=$(body | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{for(const o of JSON.parse(s).organizations||[])console.log(o.id+"\t"+o.name)})')
+[[ -n "$orgs" ]] || die "Your Neon account has no organization. Open https://console.neon.tech once so it creates one, then re-run."
+if [[ "$(printf '%s\n' "$orgs" | wc -l)" -eq 1 ]]; then
+  NEON_ORG_ID="${orgs%%$'\t'*}"
+  say "Neon organization: ${orgs#*$'\t'} ($NEON_ORG_ID)"
+else
+  printf '%s\n' "$orgs"
+  ask NEON_ORG_ID "Which organization id (first column) should hold the project?"
+fi
+code=$(api GET "${NEON_API}/projects?org_id=${NEON_ORG_ID}&limit=100" "$NEON_API_KEY")
+[[ "$code" == 200 ]] || die "Could not list Neon projects (HTTP $code): $(body)"
 NEON_PROJECT_ID=$(body | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{const p=(JSON.parse(s).projects||[]).find(p=>p.name==="stamina");if(p)console.log(p.id)})')
 if [[ -z "$NEON_PROJECT_ID" ]]; then
   confirm "Create Neon project 'stamina' in Frankfurt (aws-eu-central-1, Postgres 17)?" || die "Stopped before creating the Neon project."
-  [[ "$(api POST "${NEON_API}/projects" "$NEON_API_KEY" '{"project":{"name":"stamina","region_id":"aws-eu-central-1","pg_version":17}}')" =~ ^20 ]] \
-    || die "Neon project creation failed: $(body)"
+  code=$(api POST "${NEON_API}/projects" "$NEON_API_KEY" "{\"project\":{\"name\":\"stamina\",\"org_id\":\"${NEON_ORG_ID}\",\"region_id\":\"aws-eu-central-1\",\"pg_version\":17}}")
+  [[ "$code" =~ ^20 ]] || die "Neon project creation failed (HTTP $code): $(body)"
   NEON_PROJECT_ID=$(body | jget project.id)
 fi
 say "Neon project: $NEON_PROJECT_ID"
