@@ -120,6 +120,17 @@ function hostnameOf(revision, production) {
   return wanted.flatMap((timeline) => timeline.hostnames)[0];
 }
 
+// Right after a promote the Production timeline can take a while to list its hostname.
+async function waitForHostname(revision, production) {
+  for (let attempt = 0; attempt < 24; attempt++) {
+    const hostname = hostnameOf(revision, production);
+    if (hostname) return hostname;
+    await sleep(5000);
+    revision = await call('GET', `/revisions/${revision.id}`);
+  }
+  return undefined;
+}
+
 // A fresh revision may take a few seconds to route; /health proves the Neon wiring end to end.
 async function waitForHealth(url) {
   let last = '';
@@ -170,7 +181,7 @@ async function deploy() {
     revision = await call('GET', `/revisions/${revision.id}`);
   }
 
-  const hostname = hostnameOf(revision, production);
+  const hostname = await waitForHostname(revision, production);
   if (!hostname) throw new Error(`revision ${revision.id} has no ${mode} hostname`);
   const url = `https://${hostname}`;
   await waitForHealth(url);
@@ -197,7 +208,7 @@ async function promote() {
   }
   await call('POST', `/revisions/${id}/promote`);
   const revision = await call('GET', `/revisions/${id}`);
-  const hostname = hostnameOf(revision, true);
+  const hostname = await waitForHostname(revision, true);
   console.log(`revision ${id} promoted to production`);
   if (hostname) await waitForHealth(`https://${hostname}`);
   console.log(
