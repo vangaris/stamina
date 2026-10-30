@@ -130,7 +130,7 @@ function onScrim() {
           ref="closeButton"
           type="button"
           :aria-label="closeLabel"
-          class="inline-flex size-tap shrink-0 items-center justify-center rounded-md text-text hover:bg-surface-sunken focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
+          class="inline-flex size-tap shrink-0 items-center justify-center rounded-md text-text hover:bg-surface-sunken focus-ring"
           @click="open = false"
         >
           <svg

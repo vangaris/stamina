@@ -83,7 +83,7 @@ Each preview API revision gets its own `DATABASE_URL` and `CORS_ORIGINS` as immu
 
 - Style with semantic utilities only. `pnpm lint` rejects Tailwind palette classes (`bg-indigo-700`), arbitrary colours and arbitrary px/rem lengths in `packages/ui/**/*.vue`.
 - Every user-visible string is a prop or slot (accessible names included); packages never import i18n.
-- Interactive elements: native elements first, a visible `focus-visible` outline (`focus-visible:outline-2 focus-visible:outline-focus`), a hit area of at least 44 x 44 px (`min-h-tap min-w-tap`; a small visual control sits inside a 44 px `label` or `data-tap-target` wrapper), and correct ARIA roles/states.
+- Interactive elements: native elements first, a visible focus outline (the `focus-ring` utility from the tokens, or `focus-ring-inset` where the edge is clipped), a hit area of at least 44 x 44 px (`min-h-tap min-w-tap`; a small visual control sits inside a 44 px `label` or `data-tap-target` wrapper), and correct ARIA roles/states.
 - Motion: use `transition-*` classes (their duration is the `base` token). `tokens.css` collapses all CSS transitions and animations under `prefers-reduced-motion`; code that animates in JS must check `matchMedia('(prefers-reduced-motion: reduce)')`.
 - Ids come from `useId()` (every component renders twice on the dev page).
 - Tests sit next to the component (`src/*.test.ts`, Vitest + jsdom + `@vue/test-utils`) and call `expectNoA11yViolations` from `@stamina/ui-test`. Colour contrast, tap size, focus indicators and reduced motion need real layout, so the dev page is checked in Chromium by `apps/web/e2e/ui-kit.spec.ts`.

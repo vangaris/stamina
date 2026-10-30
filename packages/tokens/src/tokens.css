@@ -64,6 +64,21 @@
   --color-scrim: var(--st-color-scrim);
 }
 
+/* The one focus style: components use `focus-ring` (outside the control) or `focus-ring-inset` (inside it, when the edge is clipped). */
+@utility focus-ring {
+  &:focus-visible {
+    outline: 2px solid var(--st-color-focus);
+    outline-offset: 2px;
+  }
+}
+
+@utility focus-ring-inset {
+  &:focus-visible {
+    outline: 2px solid var(--st-color-focus);
+    outline-offset: -2px;
+  }
+}
+
 :root {
   --st-font-family-sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   --st-font-size-xs: 0.75rem;

@@ -100,7 +100,7 @@ defineExpose({
         :name="name"
         :aria-invalid="error ? 'true' : undefined"
         :aria-describedby="describedBy"
-        class="min-h-tap w-full min-w-0 flex-1 rounded-md border-2 bg-surface px-3 py-2 text-base text-text placeholder:text-text-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus disabled:cursor-not-allowed disabled:bg-surface-sunken disabled:opacity-50"
+        class="min-h-tap w-full min-w-0 flex-1 rounded-md border-2 bg-surface px-3 py-2 text-base text-text placeholder:text-text-muted focus-ring disabled:cursor-not-allowed disabled:bg-surface-sunken disabled:opacity-50"
         :class="error ? 'border-danger' : 'border-border-strong'"
       />
       <span v-if="slots.suffix" :id="suffixId" class="shrink-0 text-base text-text-muted">

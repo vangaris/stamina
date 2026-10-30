@@ -114,6 +114,11 @@ describe('compiled CSS', () => {
     }
   });
 
+  it('defines the shared focus style once, as an outside and an inside variant', () => {
+    expect(css).toMatch(/@utility focus-ring \{[^}]*outline-offset: 2px/s);
+    expect(css).toMatch(/@utility focus-ring-inset \{[^}]*outline-offset: -2px/s);
+  });
+
   it('leaves Tailwind with no default colours', () => {
     expect(css).toContain('--color-*: initial;');
   });

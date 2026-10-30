@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Chip } from '@stamina/ui-chip';
+import { rovingTabStop, rovingTarget } from '@stamina/roving-focus';
 import { computed, useId, useTemplateRef } from 'vue';
 
 export type ChipGroupValue = string | number;
@@ -33,10 +34,12 @@ function isSelected(value: ChipGroupValue): boolean {
   return Array.isArray(model.value) ? model.value.includes(value) : model.value === value;
 }
 
+const disabledFlags = computed(() => props.options.map((o) => o.disabled === true));
+
 /** Single mode: the one chip in the tab order. */
 const tabbableValue = computed<ChipGroupValue | undefined>(() => {
-  const enabled = props.options.filter((o) => !o.disabled);
-  return (enabled.find((o) => isSelected(o.value)) ?? enabled[0])?.value;
+  const selected = props.options.findIndex((o) => isSelected(o.value));
+  return props.options[rovingTabStop(disabledFlags.value, selected) ?? -1]?.value;
 });
 
 function toggle(option: ChipGroupOption) {
@@ -55,37 +58,16 @@ function toggle(option: ChipGroupOption) {
 
 function onKeydown(event: KeyboardEvent) {
   if (props.multiple || event.altKey || event.ctrlKey || event.metaKey) return;
-  const enabled = props.options.filter((o) => !o.disabled);
-  if (enabled.length === 0) return;
-  const chips = Array.from(
-    group.value?.querySelectorAll<HTMLElement>('[role="radio"]:not(:disabled)') ?? [],
-  );
+  // Chips render in option order, so a chip's position is its option's index.
+  const chips = Array.from(group.value?.querySelectorAll<HTMLElement>('[role="radio"]') ?? []);
   const current = chips.indexOf(event.target as HTMLElement);
   if (current === -1) return;
-  let next: number;
-  switch (event.key) {
-    case 'ArrowRight':
-    case 'ArrowDown':
-      next = (current + 1) % enabled.length;
-      break;
-    case 'ArrowLeft':
-    case 'ArrowUp':
-      next = (current - 1 + enabled.length) % enabled.length;
-      break;
-    case 'Home':
-      next = 0;
-      break;
-    case 'End':
-      next = enabled.length - 1;
-      break;
-    default:
-      return;
-  }
-  event.preventDefault();
-  const option = enabled[next];
+  const next = rovingTarget(disabledFlags.value, current, event.key, 'both');
+  const option = next === undefined ? undefined : props.options[next];
   if (!option) return;
+  event.preventDefault();
   model.value = option.value;
-  chips[next]?.focus();
+  chips[next!]?.focus();
 }
 </script>
 

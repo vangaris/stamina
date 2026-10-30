@@ -25,7 +25,7 @@ const variants: Record<ButtonVariant, string> = {
   <button
     :type="type"
     :disabled="disabled"
-    class="inline-flex min-h-tap min-w-tap items-center justify-center gap-2 rounded-md px-4 py-2 text-base font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus disabled:cursor-not-allowed disabled:opacity-50"
+    class="inline-flex min-h-tap min-w-tap items-center justify-center gap-2 rounded-md px-4 py-2 text-base font-semibold transition-colors focus-ring disabled:cursor-not-allowed disabled:opacity-50"
     :class="[variants[variant], block && 'w-full']"
   >
     <slot />

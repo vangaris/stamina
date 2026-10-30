@@ -44,7 +44,7 @@ const describedBy = computed(() => {
           :required="required"
           :aria-invalid="hasError ? 'true' : undefined"
           :aria-describedby="describedBy"
-          class="peer size-6 appearance-none rounded-md border-2 bg-surface transition-colors checked:border-accent checked:bg-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
+          class="peer size-6 appearance-none rounded-md border-2 bg-surface transition-colors checked:border-accent checked:bg-accent focus-ring"
           :class="hasError ? 'border-danger' : 'border-border-strong'"
         />
         <!-- The tick is drawn, so the checked state is not conveyed by colour alone. -->

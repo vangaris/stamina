@@ -26,7 +26,7 @@ const aria = computed(() =>
     type="button"
     :disabled="disabled"
     v-bind="aria"
-    class="inline-flex min-h-tap min-w-tap items-center justify-center gap-1 rounded-pill border-2 px-4 text-sm font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus disabled:cursor-not-allowed disabled:opacity-50"
+    class="inline-flex min-h-tap min-w-tap items-center justify-center gap-1 rounded-pill border-2 px-4 text-sm font-medium transition-colors focus-ring disabled:cursor-not-allowed disabled:opacity-50"
     :class="
       selected
         ? 'border-accent bg-accent-soft text-on-accent-soft'

@@ -24,7 +24,7 @@ const emit = defineEmits<{ select: [id: string] }>();
         <a
           :href="item.href"
           :aria-current="item.id === activeId ? 'page' : undefined"
-          class="flex min-h-tap min-w-tap flex-col items-center justify-center gap-1 border-t-2 px-2 py-2 text-xs font-medium transition-colors focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-focus"
+          class="flex min-h-tap min-w-tap flex-col items-center justify-center gap-1 border-t-2 px-2 py-2 text-xs font-medium transition-colors focus-ring-inset"
           :class="
             item.id === activeId
               ? 'border-accent font-semibold text-accent'

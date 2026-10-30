@@ -28,6 +28,7 @@
     "vue-tsc": "^3.3.14"
   },
   "dependencies": {
-    "@stamina/ui-chip": "workspace:^"
+    "@stamina/ui-chip": "workspace:^",
+    "@stamina/roving-focus": "workspace:^"
   }
 }

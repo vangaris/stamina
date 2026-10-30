@@ -107,7 +107,7 @@ function onKeydown(event: KeyboardEvent) {
 }
 
 const buttonClass =
-  'flex min-h-tap min-w-tap shrink-0 touch-manipulation items-center justify-center rounded-md bg-accent p-4 text-on-accent transition-colors hover:bg-accent/90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus disabled:cursor-not-allowed disabled:opacity-50 aria-disabled:cursor-not-allowed aria-disabled:opacity-50';
+  'flex min-h-tap min-w-tap shrink-0 touch-manipulation items-center justify-center rounded-md bg-accent p-4 text-on-accent transition-colors hover:bg-accent/90 focus-ring disabled:cursor-not-allowed disabled:opacity-50 aria-disabled:cursor-not-allowed aria-disabled:opacity-50';
 </script>
 
 <template>
@@ -150,7 +150,7 @@ const buttonClass =
         :aria-valuemax="max"
         :aria-valuetext="valueText"
         :aria-disabled="disabled || undefined"
-        class="flex min-h-tap min-w-0 flex-1 flex-wrap items-center justify-center gap-x-2 rounded-md border-2 border-border-strong bg-surface px-3 text-text focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
+        class="flex min-h-tap min-w-0 flex-1 flex-wrap items-center justify-center gap-x-2 rounded-md border-2 border-border-strong bg-surface px-3 text-text focus-ring"
         :class="disabled && 'opacity-50'"
         @keydown="onKeydown"
       >

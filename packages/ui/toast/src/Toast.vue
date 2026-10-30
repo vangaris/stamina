@@ -100,7 +100,7 @@ function onFocusOut(event: FocusEvent) {
     <button
       v-if="actionLabel"
       type="button"
-      class="inline-flex min-h-tap min-w-tap shrink-0 items-center justify-center rounded-md px-3 text-sm font-semibold underline transition-colors hover:bg-text/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
+      class="inline-flex min-h-tap min-w-tap shrink-0 items-center justify-center rounded-md px-3 text-sm font-semibold underline transition-colors hover:bg-text/10 focus-ring"
       @click="emit('action')"
     >
       {{ actionLabel }}
@@ -108,7 +108,7 @@ function onFocusOut(event: FocusEvent) {
     <button
       type="button"
       :aria-label="dismissLabel"
-      class="inline-flex size-tap shrink-0 items-center justify-center rounded-md transition-colors hover:bg-text/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
+      class="inline-flex size-tap shrink-0 items-center justify-center rounded-md transition-colors hover:bg-text/10 focus-ring"
       @click="emit('dismiss')"
     >
       <svg
