@@ -2,6 +2,7 @@
 // Developer-only: every UI kit component in both themes. Not localised and not routed in
 // production builds (see router.ts). To add a component, drop `<Name>Demo.vue` into ./demos.
 import { markRaw, type Component } from 'vue';
+import { Theme } from './enums/theme.ts';
 
 const modules = import.meta.glob<{ default: Component }>('./demos/*Demo.vue', { eager: true });
 const demos = Object.entries(modules)
@@ -12,7 +13,7 @@ const demos = Object.entries(modules)
   .sort((a, b) => a.name.localeCompare(b.name));
 
 // Each theme is scoped to its own container, so both render side by side regardless of the phone.
-const themes = ['light', 'dark'] as const;
+const themes = Object.values(Theme);
 </script>
 
 <template>

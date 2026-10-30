@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ProgressBar } from '@stamina/ui-progress-bar';
+import { ProgressBar, ProgressBarSize, ProgressBarTone } from '@stamina/ui-progress-bar';
 </script>
 
 <template>
@@ -16,7 +16,7 @@ import { ProgressBar } from '@stamina/ui-progress-bar';
     <ProgressBar
       :value="1.2"
       :max="2.5"
-      tone="suggest"
+      :tone="ProgressBarTone.Suggest"
       label="Water"
       value-text="1.2 of 2.5 litres"
       show-label
@@ -26,7 +26,7 @@ import { ProgressBar } from '@stamina/ui-progress-bar';
     <ProgressBar
       :value="96"
       :max="140"
-      tone="load"
+      :tone="ProgressBarTone.Load"
       label="Protein"
       value-text="96 of 140 grams"
       show-label
@@ -39,7 +39,7 @@ import { ProgressBar } from '@stamina/ui-progress-bar';
     <ProgressBar
       :value="3"
       :max="3"
-      tone="suggest"
+      :tone="ProgressBarTone.Suggest"
       label="Padel sessions"
       value-text="3 of 3 sessions, done"
       show-label
@@ -49,7 +49,7 @@ import { ProgressBar } from '@stamina/ui-progress-bar';
     <ProgressBar
       :value="165"
       :max="140"
-      tone="load"
+      :tone="ProgressBarTone.Load"
       label="Protein over target"
       value-text="165 of 140 grams, over target"
       show-label
@@ -58,13 +58,18 @@ import { ProgressBar } from '@stamina/ui-progress-bar';
     </ProgressBar>
     <ProgressBar
       :value="62"
-      size="sm"
+      :size="ProgressBarSize.Sm"
       label="Load vs average"
       value-text="62 % of your average"
       show-label
     >
       <template #caption>62 %</template>
     </ProgressBar>
-    <ProgressBar :value="50" size="sm" tone="load" label="Weekly load, no caption" />
+    <ProgressBar
+      :value="50"
+      :size="ProgressBarSize.Sm"
+      :tone="ProgressBarTone.Load"
+      label="Weekly load, no caption"
+    />
   </div>
 </template>

@@ -1,3 +1,4 @@
 export { default as Button } from './components/Button.vue';
-export type { ButtonVariant } from './types.ts';
+export { ButtonType } from './enums/button-type.ts';
+export { ButtonVariant } from './enums/button-variant.ts';
 export type { ButtonProps } from './types.ts';

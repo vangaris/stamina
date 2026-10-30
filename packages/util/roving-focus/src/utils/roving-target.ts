@@ -1,4 +1,5 @@
-import type { RovingKeys } from '../types.ts';
+import { Key } from '@stamina/a11y';
+import { RovingKeys } from '../enums/roving-keys.ts';
 
 /**
  * Keyboard rules for a "roving tabindex" widget (tabs, radio groups): one item is in the Tab
@@ -14,20 +15,20 @@ export function rovingTarget(
   disabled: readonly boolean[],
   current: number,
   key: string,
-  keys: RovingKeys = 'horizontal',
+  keys: RovingKeys = RovingKeys.Horizontal,
 ): number | undefined {
   const enabled = disabled.flatMap((d, i) => (d ? [] : [i]));
   if (enabled.length === 0) return undefined;
   const position = enabled.indexOf(current);
-  const forward = key === 'ArrowRight' || (keys === 'both' && key === 'ArrowDown');
-  const backward = key === 'ArrowLeft' || (keys === 'both' && key === 'ArrowUp');
+  const forward = key === Key.ArrowRight || (keys === RovingKeys.Both && key === Key.ArrowDown);
+  const backward = key === Key.ArrowLeft || (keys === RovingKeys.Both && key === Key.ArrowUp);
   if (forward) return enabled[position === -1 ? 0 : (position + 1) % enabled.length];
   if (backward) {
     return enabled[
       position === -1 ? enabled.length - 1 : (position - 1 + enabled.length) % enabled.length
     ];
   }
-  if (key === 'Home') return enabled[0];
-  if (key === 'End') return enabled[enabled.length - 1];
+  if (key === Key.Home) return enabled[0];
+  if (key === Key.End) return enabled[enabled.length - 1];
   return undefined;
 }

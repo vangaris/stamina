@@ -1,3 +1,4 @@
+import { Key } from '@stamina/a11y';
 import { expectNoA11yViolations } from '@stamina/ui-test';
 import { mount, type VueWrapper } from '@vue/test-utils';
 import { defineComponent, ref } from 'vue';
@@ -99,11 +100,11 @@ describe('Tabs', () => {
   it('moves selection and focus with ArrowRight / ArrowLeft, skipping disabled tabs', async () => {
     const w = mountTabs('meals');
     tabs(w)[1]!.element.focus();
-    await tabs(w)[1]!.trigger('keydown', { key: 'ArrowRight' });
+    await tabs(w)[1]!.trigger('keydown', { key: Key.ArrowRight });
     expect(selected(w)).toEqual(['History']);
     expect(document.activeElement).toBe(tabs(w)[3]!.element);
 
-    await tabs(w)[3]!.trigger('keydown', { key: 'ArrowLeft' });
+    await tabs(w)[3]!.trigger('keydown', { key: Key.ArrowLeft });
     expect(selected(w)).toEqual(['Meals']);
     expect(document.activeElement).toBe(tabs(w)[1]!.element);
   });
@@ -111,11 +112,11 @@ describe('Tabs', () => {
   it('wraps around at both ends', async () => {
     const w = mountTabs('history');
     tabs(w)[3]!.element.focus();
-    await tabs(w)[3]!.trigger('keydown', { key: 'ArrowRight' });
+    await tabs(w)[3]!.trigger('keydown', { key: Key.ArrowRight });
     expect(selected(w)).toEqual(['Today']);
     expect(document.activeElement).toBe(tabs(w)[0]!.element);
 
-    await tabs(w)[0]!.trigger('keydown', { key: 'ArrowLeft' });
+    await tabs(w)[0]!.trigger('keydown', { key: Key.ArrowLeft });
     expect(selected(w)).toEqual(['History']);
     expect(document.activeElement).toBe(tabs(w)[3]!.element);
   });
@@ -126,9 +127,9 @@ describe('Tabs', () => {
       { id: 'last', label: 'Last', disabled: true },
     ]);
     tabs(w)[1]!.element.focus();
-    await tabs(w)[1]!.trigger('keydown', { key: 'End' });
+    await tabs(w)[1]!.trigger('keydown', { key: Key.End });
     expect(selected(w)).toEqual(['Meals']); // Targets and Last are disabled, so Meals is last
-    await tabs(w)[1]!.trigger('keydown', { key: 'Home' });
+    await tabs(w)[1]!.trigger('keydown', { key: Key.Home });
     expect(selected(w)).toEqual(['Today']);
     expect(document.activeElement).toBe(tabs(w)[0]!.element);
   });
@@ -136,8 +137,8 @@ describe('Tabs', () => {
   it('ignores keys that are not part of the pattern and modified arrows', async () => {
     const w = mountTabs('today');
     tabs(w)[0]!.element.focus();
-    await tabs(w)[0]!.trigger('keydown', { key: 'ArrowDown' });
-    await tabs(w)[0]!.trigger('keydown', { key: 'ArrowRight', altKey: true });
+    await tabs(w)[0]!.trigger('keydown', { key: Key.ArrowDown });
+    await tabs(w)[0]!.trigger('keydown', { key: Key.ArrowRight, altKey: true });
     expect(w.emitted('update:modelValue')).toBeUndefined();
   });
 

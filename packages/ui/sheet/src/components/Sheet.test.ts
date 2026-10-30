@@ -1,3 +1,4 @@
+import { Key } from '@stamina/a11y';
 import { expectNoA11yViolations } from '@stamina/ui-test';
 import { enableAutoUnmount, mount } from '@vue/test-utils';
 import { afterEach, beforeAll, describe, expect, it } from 'vitest';
@@ -80,7 +81,7 @@ describe('Sheet', () => {
 
   it('closes on Escape', async () => {
     const { wrapper, open } = mountControlled();
-    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: Key.Escape, bubbles: true }));
     await wrapper.vm.$nextTick();
     expect(open.value).toBe(false);
     expect(isOpen(wrapper)).toBe(false);
@@ -97,7 +98,7 @@ describe('Sheet', () => {
         }),
     });
     const wrapper = mount(Parent, { attachTo: document.body });
-    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: Key.Escape, bubbles: true }));
     await wrapper.vm.$nextTick();
     expect(requests).toEqual([false]);
     expect(isOpen(wrapper)).toBe(true);

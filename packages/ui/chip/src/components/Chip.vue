@@ -1,18 +1,23 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { CHIP_SELECTED_CLASSES, CHIP_UNSELECTED_CLASSES } from '../config.ts';
+import { AriaRole } from '@stamina/a11y';
+import { ChipMode } from '../enums/chip-mode.ts';
 import type { ChipProps } from '../types.ts';
 
 const props = withDefaults(defineProps<ChipProps>(), {
   selected: false,
-  mode: 'toggle',
+  mode: ChipMode.Toggle,
   disabled: false,
 });
 
 const aria = computed(() =>
-  props.mode === 'toggle'
+  props.mode === ChipMode.Toggle
     ? { 'aria-pressed': props.selected }
-    : { role: props.mode === 'radio' ? 'radio' : 'checkbox', 'aria-checked': props.selected },
+    : {
+        role: props.mode === ChipMode.Radio ? AriaRole.Radio : AriaRole.Checkbox,
+        'aria-checked': props.selected,
+      },
 );
 </script>
 

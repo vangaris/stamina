@@ -1,6 +1,6 @@
-export type CardTone = 'default' | 'accent' | 'load' | 'suggest' | 'danger';
-export type CardPadding = 'md' | 'lg';
-export type CardElement = 'div' | 'section' | 'article' | 'li';
+import type { CardElement } from './enums/card-element.ts';
+import type { CardPadding } from './enums/card-padding.ts';
+import type { CardTone } from './enums/card-tone.ts';
 
 export interface CardProps {
   /** Root element. */

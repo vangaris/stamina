@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Button } from '@stamina/ui-button';
+import { Button, ButtonVariant } from '@stamina/ui-button';
 import { Sheet } from '@stamina/ui-sheet';
 import { ref, useId } from 'vue';
 
@@ -23,7 +23,9 @@ const notes = [
 <template>
   <div class="flex flex-wrap gap-2">
     <Button @click="logOpen = true">Open sheet</Button>
-    <Button variant="secondary" @click="confirmOpen = true">Open confirmation</Button>
+    <Button :variant="ButtonVariant.Secondary" @click="confirmOpen = true"
+      >Open confirmation</Button
+    >
   </div>
   <p class="mt-2 text-sm text-text-muted">Saved {{ saved }}, discarded {{ discarded }}</p>
 
@@ -46,7 +48,7 @@ const notes = [
       >
         Save session
       </Button>
-      <Button variant="secondary" @click="logOpen = false">Cancel</Button>
+      <Button :variant="ButtonVariant.Secondary" @click="logOpen = false">Cancel</Button>
     </template>
   </Sheet>
 
@@ -62,7 +64,7 @@ const notes = [
     </p>
     <template #footer>
       <Button
-        variant="danger"
+        :variant="ButtonVariant.Danger"
         @click="
           discarded++;
           confirmOpen = false;
@@ -70,7 +72,7 @@ const notes = [
       >
         Skip Session
       </Button>
-      <Button variant="secondary" @click="confirmOpen = false">Keep it</Button>
+      <Button :variant="ButtonVariant.Secondary" @click="confirmOpen = false">Keep it</Button>
     </template>
   </Sheet>
 </template>

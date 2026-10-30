@@ -3,6 +3,7 @@
  * Tailwind v4 `@theme` mapping that makes semantic roles the only colours, sizes and spacing
  * Tailwind can generate. Pure: no file access, so tests and the build script share it.
  */
+import { Theme } from './enums/theme.ts';
 import {
   FOCUS_RING_LINES,
   HEADER_COMMENT,
@@ -45,20 +46,20 @@ export function compileTokens(src: TokenSources): string {
     declarations(base, '  '),
     '}',
     '',
-    ":root,\n[data-theme='light'] {",
-    '  color-scheme: light;',
+    `:root,\n[data-theme='${Theme.Light}'] {`,
+    `  color-scheme: ${Theme.Light};`,
     declarations(light, '  '),
     '}',
     '',
     '@media (prefers-color-scheme: dark) {',
-    "  :root:not([data-theme='light']) {",
-    '    color-scheme: dark;',
+    `  :root:not([data-theme='${Theme.Light}']) {`,
+    `    color-scheme: ${Theme.Dark};`,
     declarations(dark, '    '),
     '  }',
     '}',
     '',
-    "[data-theme='dark'] {",
-    '  color-scheme: dark;',
+    `[data-theme='${Theme.Dark}'] {`,
+    `  color-scheme: ${Theme.Dark};`,
     declarations(dark, '  '),
     '}',
     '',

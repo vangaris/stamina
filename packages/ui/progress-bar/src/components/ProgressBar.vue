@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { computed, useId } from 'vue';
 import { PROGRESS_BAR_SIZE_CLASSES, PROGRESS_BAR_TONE_CLASSES } from '../config.ts';
+import { ProgressBarSize } from '../enums/progress-bar-size.ts';
+import { ProgressBarTone } from '../enums/progress-bar-tone.ts';
 import type { ProgressBarProps } from '../types.ts';
 import { computeProgress } from '../utils/compute-progress.ts';
 
@@ -14,8 +16,8 @@ const props = withDefaults(defineProps<ProgressBarProps>(), {
   min: 0,
   max: 100,
   valueText: '',
-  tone: 'accent',
-  size: 'md',
+  tone: ProgressBarTone.Accent,
+  size: ProgressBarSize.Md,
   showLabel: false,
 });
 

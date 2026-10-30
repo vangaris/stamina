@@ -1,6 +1,7 @@
 import { ref, watchEffect } from 'vue';
 import { resolveToastDuration } from '../utils/resolve-toast-duration.ts';
-import type { ToastTone } from '../types.ts';
+import { PointerType } from '../enums/pointer-type.ts';
+import type { ToastTone } from '../enums/toast-tone.ts';
 
 export interface AutoDismissOptions {
   durationMs: () => number | null | undefined;
@@ -30,7 +31,7 @@ export function useAutoDismiss({ durationMs, tone, onDismiss }: AutoDismissOptio
 
   // Touch has no hover: a tap would otherwise leave the toast "hovered" until the next tap.
   function onPointer(event: PointerEvent, inside: boolean) {
-    if (event.pointerType !== 'touch') hovered.value = inside;
+    if (event.pointerType !== PointerType.Touch) hovered.value = inside;
   }
 
   function onFocusIn() {

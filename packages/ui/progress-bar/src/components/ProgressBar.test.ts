@@ -1,6 +1,8 @@
 import { expectNoA11yViolations } from '@stamina/ui-test';
 import { mount } from '@vue/test-utils';
 import { describe, expect, it } from 'vitest';
+import { ProgressBarSize } from '../enums/progress-bar-size.ts';
+import { ProgressBarTone } from '../enums/progress-bar-tone.ts';
 import ProgressBar from './ProgressBar.vue';
 
 const bar = (props: Record<string, unknown>, slots: Record<string, string> = {}) => {
@@ -83,7 +85,7 @@ describe('ProgressBar', () => {
     expect(now).toBeLessThanOrEqual(max);
   });
 
-  it.each(['accent', 'load', 'suggest'] as const)('has no axe violations (%s)', async (tone) => {
+  it.each(Object.values(ProgressBarTone))('has no axe violations (%s)', async (tone) => {
     const { wrapper } = bar(
       { value: 2, max: 3, tone, valueText: '2 of 3', showLabel: true },
       {
@@ -94,7 +96,7 @@ describe('ProgressBar', () => {
   });
 
   it('has no axe violations without a visible label, empty and over max', async () => {
-    await expectNoA11yViolations(bar({ value: 0, size: 'sm' }).wrapper.element);
+    await expectNoA11yViolations(bar({ value: 0, size: ProgressBarSize.Sm }).wrapper.element);
     await expectNoA11yViolations(bar({ value: 200 }).wrapper.element);
   });
 });

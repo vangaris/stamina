@@ -1,3 +1,5 @@
 export { default as Card } from './components/Card.vue';
-export type { CardElement, CardPadding, CardTone } from './types.ts';
+export { CardElement } from './enums/card-element.ts';
+export { CardPadding } from './enums/card-padding.ts';
+export { CardTone } from './enums/card-tone.ts';
 export type { CardProps } from './types.ts';

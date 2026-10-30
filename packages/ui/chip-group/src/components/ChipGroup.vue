@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { Chip } from '@stamina/ui-chip';
-import { rovingTabStop, rovingTarget } from '@stamina/roving-focus';
+import { AriaRole } from '@stamina/a11y';
+import { Chip, ChipMode } from '@stamina/ui-chip';
+import { RovingKeys, rovingTabStop, rovingTarget } from '@stamina/roving-focus';
 import { computed, useId, useTemplateRef } from 'vue';
 import type { ChipGroupModel, ChipGroupOption, ChipGroupProps, ChipGroupValue } from '../types.ts';
 import { isChipSelected } from '../utils/is-chip-selected.ts';
@@ -42,7 +43,7 @@ function onKeydown(event: KeyboardEvent) {
   const chips = Array.from(group.value?.querySelectorAll<HTMLElement>('[role="radio"]') ?? []);
   const current = chips.indexOf(event.target as HTMLElement);
   if (current === -1) return;
-  const next = rovingTarget(disabledFlags.value, current, event.key, 'both');
+  const next = rovingTarget(disabledFlags.value, current, event.key, RovingKeys.Both);
   const option = next === undefined ? undefined : props.options[next];
   if (!option) return;
   event.preventDefault();
@@ -58,7 +59,7 @@ function onKeydown(event: KeyboardEvent) {
     }}</span>
     <div
       ref="group"
-      :role="multiple ? 'group' : 'radiogroup'"
+      :role="multiple ? AriaRole.Group : AriaRole.Radiogroup"
       :aria-labelledby="labelId"
       class="flex flex-wrap gap-2"
       @keydown="onKeydown"
@@ -66,7 +67,7 @@ function onKeydown(event: KeyboardEvent) {
       <Chip
         v-for="option in options"
         :key="option.value"
-        :mode="multiple ? 'check' : 'radio'"
+        :mode="multiple ? ChipMode.Check : ChipMode.Radio"
         :selected="isSelected(option.value)"
         :disabled="option.disabled ?? false"
         :tabindex="multiple || option.value === tabbableValue ? 0 : -1"

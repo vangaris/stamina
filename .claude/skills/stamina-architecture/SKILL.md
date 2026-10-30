@@ -29,7 +29,7 @@ For each new module write three lines: its interface (types, invariants, errors)
 
 ### 4. Lay out
 
-Give each feature, UI component and util the folder shape in `docs/development.md` "Folder shape": `index.ts` as the only public interface, `types.ts`, `config.ts`, `components/`, `composables/`, `utils/`, tests beside their file, no empty folders. Logic leaves the `.vue` file; types are exported from `index.ts`.
+Give each feature, UI component and util the folder shape in `docs/development.md` "Folder shape": `index.ts` as the only public interface, `types.ts`, `config.ts`, `enums/` (one string enum per file; no magic strings), `components/`, `composables/`, `utils/`, tests beside their file, no empty folders. Logic leaves the `.vue` file; types are exported from `index.ts`.
 
 **Done when:** every exported function, composable and type has its own file and is reachable only through `index.ts`.
 

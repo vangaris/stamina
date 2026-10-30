@@ -1,5 +1,5 @@
 import { IntlMessageFormat } from 'intl-messageformat';
-import type { Locale } from '../types.ts';
+import type { Locale } from '../enums/locale.ts';
 
 const formatters = new Map<string, IntlMessageFormat>();
 

@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import { BUTTON_VARIANT_CLASSES } from '../config.ts';
+import { ButtonType } from '../enums/button-type.ts';
+import { ButtonVariant } from '../enums/button-variant.ts';
 import type { ButtonProps } from '../types.ts';
 
 withDefaults(defineProps<ButtonProps>(), {
-  variant: 'primary',
-  type: 'button',
+  variant: ButtonVariant.Primary,
+  type: ButtonType.Button,
   disabled: false,
   block: false,
 });

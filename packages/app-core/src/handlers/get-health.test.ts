@@ -1,8 +1,16 @@
 import { describe, expect, it } from 'vitest';
-import { createAppMediator, createServices, getHealth, type HealthState } from '../index.ts';
+import { DatabaseStatus, HealthStatus } from '@stamina/contracts';
+import {
+  createAppMediator,
+  createServices,
+  getHealth,
+  HealthStateKind,
+  ServicesMode,
+  type HealthState,
+} from '../index.ts';
 
 function setup(api?: Partial<ReturnType<typeof createServices>['api']>) {
-  const services = createServices('test');
+  const services = createServices(ServicesMode.Test);
   const writes: HealthState[] = [];
   const mediator = createAppMediator({
     services: { ...services, api: { ...services.api, ...api } },
@@ -17,17 +25,17 @@ describe('getHealth query through the mediator', () => {
 
     const result = await mediator.send(getHealth());
 
-    expect(result).toEqual({ kind: 'ok' });
-    expect(writes).toEqual([{ kind: 'ok' }]);
+    expect(result).toEqual({ kind: HealthStateKind.Ok });
+    expect(writes).toEqual([{ kind: HealthStateKind.Ok }]);
   });
 
   it('reports a degraded API without throwing', async () => {
     const { mediator, writes } = setup({
-      health: async () => ({ status: 'degraded', database: 'down' }),
+      health: async () => ({ status: HealthStatus.Degraded, database: DatabaseStatus.Down }),
     });
 
-    expect(await mediator.send(getHealth())).toEqual({ kind: 'degraded' });
-    expect(writes).toEqual([{ kind: 'degraded' }]);
+    expect(await mediator.send(getHealth())).toEqual({ kind: HealthStateKind.Degraded });
+    expect(writes).toEqual([{ kind: HealthStateKind.Degraded }]);
   });
 
   it('maps a network failure to an unreachable state', async () => {
@@ -37,7 +45,7 @@ describe('getHealth query through the mediator', () => {
       },
     });
 
-    expect(await mediator.send(getHealth())).toEqual({ kind: 'unreachable' });
-    expect(writes).toEqual([{ kind: 'unreachable' }]);
+    expect(await mediator.send(getHealth())).toEqual({ kind: HealthStateKind.Unreachable });
+    expect(writes).toEqual([{ kind: HealthStateKind.Unreachable }]);
   });
 });

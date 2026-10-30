@@ -29,6 +29,7 @@
   },
   "dependencies": {
     "@stamina/ui-chip": "workspace:^",
-    "@stamina/roving-focus": "workspace:^"
+    "@stamina/roving-focus": "workspace:^",
+    "@stamina/a11y": "workspace:^"
   }
 }

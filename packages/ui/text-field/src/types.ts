@@ -1,6 +1,5 @@
-export type TextFieldType = 'text' | 'email' | 'tel' | 'password' | 'search' | 'url';
-export type TextFieldInputmode =
-  'none' | 'text' | 'decimal' | 'numeric' | 'tel' | 'search' | 'email' | 'url';
+import type { TextFieldInputmode } from './enums/text-field-inputmode.ts';
+import type { TextFieldType } from './enums/text-field-type.ts';
 
 export interface TextFieldProps {
   /** Visible label; it is the accessible name. Never replaced by the placeholder. */

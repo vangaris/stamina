@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { TextField } from '@stamina/ui-text-field';
+import { TextField, TextFieldInputmode, TextFieldType } from '@stamina/ui-text-field';
 import { computed, ref } from 'vue';
 
 const birthYear = ref('1992');
@@ -26,7 +26,7 @@ const badEmailError = computed(() =>
     <TextField
       v-model="birthYear"
       label="Birth year"
-      inputmode="numeric"
+      :inputmode="TextFieldInputmode.Numeric"
       autocomplete="bday-year"
       :maxlength="4"
       placeholder="1990"
@@ -36,8 +36,8 @@ const badEmailError = computed(() =>
     <TextField
       v-model="email"
       label="E-mail"
-      type="email"
-      inputmode="email"
+      :type="TextFieldType.Email"
+      :inputmode="TextFieldInputmode.Email"
       autocomplete="email"
       placeholder="name@example.com"
       :error="emailError"
@@ -47,7 +47,7 @@ const badEmailError = computed(() =>
     <TextField
       v-model="code"
       label="Sign-in code"
-      inputmode="numeric"
+      :inputmode="TextFieldInputmode.Numeric"
       autocomplete="one-time-code"
       :maxlength="6"
       hint="The 6 digits we sent to your e-mail"
@@ -69,7 +69,7 @@ const badEmailError = computed(() =>
     <TextField
       v-model="weight"
       label="Weight"
-      inputmode="decimal"
+      :inputmode="TextFieldInputmode.Decimal"
       hint="Your morning weight is the most comparable"
     >
       <template #suffix>kg</template>
@@ -77,8 +77,8 @@ const badEmailError = computed(() =>
     <TextField
       v-model="badEmail"
       label="E-mail (error state)"
-      type="email"
-      inputmode="email"
+      :type="TextFieldType.Email"
+      :inputmode="TextFieldInputmode.Email"
       :error="badEmailError"
       hint="We never share it"
     />

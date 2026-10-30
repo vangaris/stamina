@@ -1,3 +1,4 @@
+import { Key } from '@stamina/a11y';
 import { expectNoA11yViolations } from '@stamina/ui-test';
 import { mount } from '@vue/test-utils';
 import { afterEach, describe, expect, it } from 'vitest';
@@ -91,16 +92,16 @@ describe('ChipGroup single', () => {
   it('moves focus and selection with arrows, wrapping and skipping disabled', async () => {
     wrapper = mountGroup({ modelValue: 'padel' });
     chips()[0]!.element.focus();
-    await chips()[0]!.trigger('keydown', { key: 'ArrowRight' });
+    await chips()[0]!.trigger('keydown', { key: Key.ArrowRight });
     expect(emitted().at(-1)).toEqual(['run']);
     expect(document.activeElement).toBe(chips()[2]!.element);
-    await chips()[2]!.trigger('keydown', { key: 'ArrowDown' });
-    await chips()[3]!.trigger('keydown', { key: 'ArrowRight' });
+    await chips()[2]!.trigger('keydown', { key: Key.ArrowDown });
+    await chips()[3]!.trigger('keydown', { key: Key.ArrowRight });
     expect(emitted().at(-1)).toEqual(['padel']);
     expect(document.activeElement).toBe(chips()[0]!.element);
-    await chips()[0]!.trigger('keydown', { key: 'ArrowLeft' });
+    await chips()[0]!.trigger('keydown', { key: Key.ArrowLeft });
     expect(emitted().at(-1)).toEqual(['gym']);
-    await chips()[3]!.trigger('keydown', { key: 'ArrowUp' });
+    await chips()[3]!.trigger('keydown', { key: Key.ArrowUp });
     expect(emitted().at(-1)).toEqual(['run']);
   });
 
@@ -110,9 +111,9 @@ describe('ChipGroup single', () => {
       modelValue: 'run',
     });
     chips()[2]!.element.focus();
-    await chips()[2]!.trigger('keydown', { key: 'End' });
+    await chips()[2]!.trigger('keydown', { key: Key.End });
     expect(emitted().at(-1)).toEqual(['gym']);
-    await chips()[3]!.trigger('keydown', { key: 'Home' });
+    await chips()[3]!.trigger('keydown', { key: Key.Home });
     expect(emitted().at(-1)).toEqual(['run']);
     expect(document.activeElement).toBe(chips()[2]!.element);
   });
@@ -179,7 +180,7 @@ describe('ChipGroup multiple', () => {
   it('does not toggle disabled options, and arrows do not change selection', async () => {
     wrapper = mountGroup({ options: allergens, multiple: true, modelValue: [] });
     await chips()[2]!.trigger('click');
-    await chips()[0]!.trigger('keydown', { key: 'ArrowRight' });
+    await chips()[0]!.trigger('keydown', { key: Key.ArrowRight });
     expect(emitted()).toHaveLength(0);
   });
 

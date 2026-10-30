@@ -1,3 +1,4 @@
+import { Key } from '@stamina/a11y';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { wrapTabFocus } from './wrap-tab-focus.ts';
 
@@ -28,7 +29,7 @@ const regions = () => ({
 });
 
 function tab(shiftKey = false) {
-  const event = new KeyboardEvent('keydown', { key: 'Tab', shiftKey, cancelable: true });
+  const event = new KeyboardEvent('keydown', { key: Key.Tab, shiftKey, cancelable: true });
   wrapTabFocus(event, regions());
   return event;
 }
@@ -76,14 +77,14 @@ describe('wrapTabFocus', () => {
     Object.defineProperty($('scroller'), 'clientHeight', { value: 100, configurable: true });
     $('scroller').tabIndex = -1; // focusable, but not matched by the tabbable selector
     $('scroller').focus();
-    const event = new KeyboardEvent('keydown', { key: 'Tab', cancelable: true });
+    const event = new KeyboardEvent('keydown', { key: Key.Tab, cancelable: true });
     wrapTabFocus(event, { ...regions(), footer: null });
     expect(event.defaultPrevented).toBe(true);
     expect(document.activeElement).toBe($('close'));
   });
 
   it('does nothing when there are no stops', () => {
-    const event = new KeyboardEvent('keydown', { key: 'Tab', cancelable: true });
+    const event = new KeyboardEvent('keydown', { key: Key.Tab, cancelable: true });
     wrapTabFocus(event, { dialog: null, closeButton: null, scroller: null, footer: null });
     expect(event.defaultPrevented).toBe(false);
   });

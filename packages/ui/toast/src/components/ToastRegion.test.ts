@@ -1,13 +1,17 @@
 import { expectNoA11yViolations } from '@stamina/ui-test';
 import { mount, type VueWrapper } from '@vue/test-utils';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { Key } from '@stamina/a11y';
+import { PointerType } from '../enums/pointer-type.ts';
+import { ToastPosition } from '../enums/toast-position.ts';
+import { ToastTone } from '../enums/toast-tone.ts';
 import type { ToastItem } from '../types.ts';
 import ToastRegion from './ToastRegion.vue';
 
 // The real TransitionGroup keeps its wrapper element and attributes; the default stub does not.
 const global = { stubs: { TransitionGroup: false } };
 
-function mountRegion(toasts: ToastItem[], position?: 'fixed' | 'absolute') {
+function mountRegion(toasts: ToastItem[], position?: ToastPosition) {
   return mount(ToastRegion, {
     attachTo: document.body,
     props: { toasts, dismissLabel: 'Dismiss', ...(position ? { position } : {}) },
@@ -41,7 +45,7 @@ describe('ToastRegion', () => {
       expect(region.textContent).toContain('Set saved');
     });
 
-    it.each<'info' | 'success'>(['info', 'success'])(
+    it.each<ToastTone>([ToastTone.Info, ToastTone.Success])(
       'announces %s toasts politely, not as alerts',
       (tone) => {
         wrapper = mountRegion([{ ...saved, tone }]);
@@ -56,7 +60,7 @@ describe('ToastRegion', () => {
     });
 
     it('announces danger toasts as alerts, not in the polite region', () => {
-      wrapper = mountRegion([{ id: 'e', message: 'Could not save', tone: 'danger' }]);
+      wrapper = mountRegion([{ id: 'e', message: 'Could not save', tone: ToastTone.Danger }]);
       expect(wrapper.get('[role="alert"]').text()).toContain('Could not save');
       expect(wrapper.get('[role="status"]').text()).toBe('');
     });
@@ -64,7 +68,7 @@ describe('ToastRegion', () => {
     it('renders one toast per item, in order, each with a named close button', () => {
       wrapper = mountRegion([
         { id: '1', message: 'First' },
-        { id: '2', message: 'Second', tone: 'success' },
+        { id: '2', message: 'Second', tone: ToastTone.Success },
       ]);
       const text = wrapper.get('[role="status"]').text();
       expect(text.indexOf('First')).toBeLessThan(text.indexOf('Second'));
@@ -78,7 +82,7 @@ describe('ToastRegion', () => {
       wrapper = mountRegion([
         { id: '1', message: 'First' },
         { id: '2', message: 'Second' },
-        { id: '3', message: 'Boom', tone: 'danger' },
+        { id: '3', message: 'Boom', tone: ToastTone.Danger },
       ]);
       const closers = wrapper.findAll('button[aria-label="Dismiss"]');
       await closers[1]!.trigger('click');
@@ -90,7 +94,7 @@ describe('ToastRegion', () => {
       wrapper = mountRegion([
         { id: '1', message: 'No action' },
         { id: '2', message: 'Set deleted', actionLabel: 'Undo' },
-        { id: '3', message: 'Sync failed', tone: 'danger', actionLabel: 'Retry' },
+        { id: '3', message: 'Sync failed', tone: ToastTone.Danger, actionLabel: 'Retry' },
       ]);
       expect(wrapper.findAll('button')).toHaveLength(2 + 3);
       await wrapper
@@ -115,7 +119,7 @@ describe('ToastRegion', () => {
 
     it('dismisses the toast with Escape while focus is inside it', async () => {
       wrapper = mountRegion([{ ...saved, actionLabel: 'Undo' }]);
-      await wrapper.get('button').trigger('keydown', { key: 'Escape' });
+      await wrapper.get('button').trigger('keydown', { key: Key.Escape });
       expect(wrapper.emitted('dismiss')).toEqual([['a']]);
     });
   });
@@ -164,8 +168,8 @@ describe('ToastRegion', () => {
 
     it('keeps danger toasts until closed by default, but honours an explicit duration', () => {
       wrapper = mountRegion([
-        { id: 'e', message: 'Could not save', tone: 'danger' },
-        { id: 'f', message: 'Sync failed', tone: 'danger', durationMs: 2000 },
+        { id: 'e', message: 'Could not save', tone: ToastTone.Danger },
+        { id: 'f', message: 'Sync failed', tone: ToastTone.Danger, durationMs: 2000 },
       ]);
       vi.advanceTimersByTime(60_000);
       expect(wrapper.emitted('dismiss')).toEqual([['f']]);
@@ -233,7 +237,7 @@ describe('ToastRegion', () => {
         wrapper = mountRegion([saved]);
         await wrapper
           .get('[role="status"] > div')
-          .trigger('pointerenter', { pointerType: 'touch' });
+          .trigger('pointerenter', { pointerType: PointerType.Touch });
         vi.advanceTimersByTime(5000);
         expect(wrapper.emitted('dismiss')).toEqual([['a']]);
       });
@@ -246,7 +250,7 @@ describe('ToastRegion', () => {
       await expectNoA11yViolations(wrapper.element);
     });
 
-    it.each<'info' | 'success' | 'danger'>(['info', 'success', 'danger'])(
+    it.each<ToastTone>([ToastTone.Info, ToastTone.Success, ToastTone.Danger])(
       'has no violations with a %s toast, with and without an action',
       async (tone) => {
         wrapper = mountRegion([
@@ -258,7 +262,7 @@ describe('ToastRegion', () => {
     );
 
     it('has no violations when absolutely positioned', async () => {
-      wrapper = mountRegion([saved], 'absolute');
+      wrapper = mountRegion([saved], ToastPosition.Absolute);
       await expectNoA11yViolations(wrapper.element);
     });
   });

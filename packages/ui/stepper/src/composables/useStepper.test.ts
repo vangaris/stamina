@@ -1,3 +1,4 @@
+import { Key } from '@stamina/a11y';
 import { ref } from 'vue';
 import { describe, expect, it } from 'vitest';
 import { useStepper } from './useStepper.ts';
@@ -42,7 +43,7 @@ describe('useStepper', () => {
   it('does nothing while disabled', () => {
     const s = setup(5, { disabled: true });
     s.stepBy(1, true);
-    const event = key('ArrowUp');
+    const event = key(Key.ArrowUp);
     s.onKeydown(event);
     expect(s.model.value).toBe(5);
     expect(event.defaultPrevented).toBe(false);
@@ -56,12 +57,12 @@ describe('useStepper', () => {
   });
 
   it.each([
-    ['ArrowUp', 6],
-    ['ArrowRight', 6],
-    ['ArrowDown', 4],
-    ['ArrowLeft', 4],
-    ['Home', 0],
-    ['End', 10],
+    [Key.ArrowUp, 6],
+    [Key.ArrowRight, 6],
+    [Key.ArrowDown, 4],
+    [Key.ArrowLeft, 4],
+    [Key.Home, 0],
+    [Key.End, 10],
   ])('%s moves to %s silently and is prevented', (k, expected) => {
     const s = setup(5, { min: 0, max: 10 });
     const event = key(k);
@@ -73,7 +74,7 @@ describe('useStepper', () => {
 
   it('ignores Home/End without a bound and unrelated keys', () => {
     const s = setup(5);
-    for (const k of ['Home', 'End', 'a']) {
+    for (const k of [Key.Home, Key.End, 'a']) {
       const event = key(k);
       s.onKeydown(event);
       expect(event.defaultPrevented).toBe(false);
@@ -84,7 +85,7 @@ describe('useStepper', () => {
   it('leaves modified key presses to the browser', () => {
     const s = setup(5);
     for (const mod of ['altKey', 'ctrlKey', 'metaKey']) {
-      const event = key('ArrowUp', { [mod]: true });
+      const event = key(Key.ArrowUp, { [mod]: true });
       s.onKeydown(event);
       expect(event.defaultPrevented).toBe(false);
     }

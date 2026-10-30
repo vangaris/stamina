@@ -1,4 +1,7 @@
 import type { ApiClient } from '@stamina/contracts';
+import type { HealthStateKind } from './enums/health-state-kind.ts';
+import type { RequestType } from './enums/request-type.ts';
+import type { ServicesMode } from './enums/services-mode.ts';
 
 /** A command or query. `Result` is a phantom type: it never exists at runtime. */
 export interface Request<Result = unknown> {
@@ -33,10 +36,13 @@ export interface Services {
   api: ApiClient;
 }
 
-/** `'test'` gives in-memory mocks; otherwise real services pointed at the API. */
-export type ServicesEnv = 'test' | { apiBaseUrl: string; fetch?: typeof fetch };
+/** `ServicesMode.Test` gives in-memory mocks; otherwise real services pointed at the API. */
+export type ServicesEnv = ServicesMode.Test | { apiBaseUrl: string; fetch?: typeof fetch };
 
-export type HealthState = { kind: 'ok' } | { kind: 'degraded' } | { kind: 'unreachable' };
+export type HealthState =
+  | { kind: HealthStateKind.Ok }
+  | { kind: HealthStateKind.Degraded }
+  | { kind: HealthStateKind.Unreachable };
 
 export interface Stores {
   /** Stores hold state only; the web app backs this with Pinia. */
@@ -44,7 +50,7 @@ export interface Stores {
 }
 
 export interface GetHealth extends Request<HealthState> {
-  readonly type: 'GetHealth';
+  readonly type: RequestType.GetHealth;
 }
 
 export interface AppMediatorOptions {

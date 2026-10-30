@@ -2,6 +2,8 @@ import { expectNoA11yViolations } from '@stamina/ui-test';
 import { mount } from '@vue/test-utils';
 import { afterEach, describe, expect, it } from 'vitest';
 import { defineComponent, h } from 'vue';
+import { TextFieldInputmode } from '../enums/text-field-inputmode.ts';
+import { TextFieldType } from '../enums/text-field-type.ts';
 import TextField from './TextField.vue';
 
 // Attached so that focus() has an observable effect.
@@ -188,8 +190,8 @@ describe('TextField', () => {
       const wrapper = mountField({
         props: {
           label: 'Code',
-          type: 'text',
-          inputmode: 'numeric',
+          type: TextFieldType.Text,
+          inputmode: TextFieldInputmode.Numeric,
           autocomplete: 'one-time-code',
           maxlength: 6,
           name: 'code',
@@ -211,10 +213,13 @@ describe('TextField', () => {
       expect(wrapper.get('input').attributes('type')).toBe('text');
     });
 
-    it.each(['email', 'tel', 'password', 'search'] as const)('supports type=%s', (type) => {
-      const wrapper = mountField({ props: { label: 'Field', type } });
-      expect(wrapper.get('input').attributes('type')).toBe(type);
-    });
+    it.each([TextFieldType.Email, TextFieldType.Tel, TextFieldType.Password, TextFieldType.Search])(
+      'supports type=%s',
+      (type) => {
+        const wrapper = mountField({ props: { label: 'Field', type } });
+        expect(wrapper.get('input').attributes('type')).toBe(type);
+      },
+    );
 
     it('sends undeclared attributes and listeners to the input, not the wrapper', async () => {
       let blurred = 0;
@@ -283,7 +288,7 @@ describe('TextField', () => {
         {},
       ],
       ['disabled', { label: 'Sport', disabled: true }, {}],
-      ['with suffix', { label: 'Weight', inputmode: 'decimal' }, { suffix: 'kg' }],
+      ['with suffix', { label: 'Weight', inputmode: TextFieldInputmode.Decimal }, { suffix: 'kg' }],
       [
         'with suffix, hint and error',
         { label: 'Weight', hint: 'Today, in kg', error: 'Enter a weight' },

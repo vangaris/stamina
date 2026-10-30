@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { Button } from '@stamina/ui-button';
-import { ToastRegion, type ToastItem } from '@stamina/ui-toast';
+import { Button, ButtonVariant } from '@stamina/ui-button';
+import { ToastPosition, ToastRegion, ToastTone, type ToastItem } from '@stamina/ui-toast';
 import { ref } from 'vue';
 
 // The demo owns the queue; the kit only renders and reports.
@@ -25,26 +25,36 @@ function onAction(id: string) {
 <template>
   <div class="flex flex-col gap-3">
     <div class="flex flex-wrap gap-2">
-      <Button variant="secondary" @click="add({ message: 'Set saved: 80 kg × 8' })">Info</Button>
-      <Button variant="secondary" @click="add({ message: 'Back online, synced', tone: 'success' })">
+      <Button :variant="ButtonVariant.Secondary" @click="add({ message: 'Set saved: 80 kg × 8' })"
+        >Info</Button
+      >
+      <Button
+        :variant="ButtonVariant.Secondary"
+        @click="add({ message: 'Back online, synced', tone: ToastTone.Success })"
+      >
         Success
       </Button>
       <Button
-        variant="secondary"
+        :variant="ButtonVariant.Secondary"
         @click="
-          add({ message: 'Could not save your weigh-in. Check your connection.', tone: 'danger' })
+          add({
+            message: 'Could not save your weigh-in. Check your connection.',
+            tone: ToastTone.Danger,
+          })
         "
       >
         Danger
       </Button>
       <Button
-        variant="secondary"
-        @click="add({ message: 'Padel session removed', tone: 'success', actionLabel: 'Undo' })"
+        :variant="ButtonVariant.Secondary"
+        @click="
+          add({ message: 'Padel session removed', tone: ToastTone.Success, actionLabel: 'Undo' })
+        "
       >
         With action
       </Button>
       <Button
-        variant="secondary"
+        :variant="ButtonVariant.Secondary"
         @click="add({ message: 'Program Adaptation accepted', durationMs: null })"
       >
         Stays until closed
@@ -59,7 +69,7 @@ function onAction(id: string) {
       <ToastRegion
         :toasts="toasts"
         dismiss-label="Dismiss"
-        position="absolute"
+        :position="ToastPosition.Absolute"
         @dismiss="remove"
         @action="onAction"
       />

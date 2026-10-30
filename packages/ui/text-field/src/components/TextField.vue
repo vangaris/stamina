@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { joinIds } from '@stamina/a11y';
 import { computed, ref, useAttrs, useId } from 'vue';
+import { TextFieldType } from '../enums/text-field-type.ts';
 import type { TextFieldProps } from '../types.ts';
 import { splitAttrs } from '../utils/split-attrs.ts';
 
@@ -9,7 +10,7 @@ import { splitAttrs } from '../utils/split-attrs.ts';
 defineOptions({ inheritAttrs: false });
 
 const props = withDefaults(defineProps<TextFieldProps>(), {
-  type: 'text',
+  type: TextFieldType.Text,
   inputmode: undefined,
   autocomplete: undefined,
   placeholder: undefined,

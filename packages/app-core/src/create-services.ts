@@ -1,9 +1,14 @@
-import { createApiClient } from '@stamina/contracts';
+import { createApiClient, DatabaseStatus, HealthStatus } from '@stamina/contracts';
+import { ServicesMode } from './enums/services-mode.ts';
 import type { Services, ServicesEnv } from './types.ts';
 
 export function createServices(env: ServicesEnv): Services {
-  if (env === 'test') {
-    return { api: { health: async () => ({ status: 'ok', database: 'up' }) } };
+  if (env === ServicesMode.Test) {
+    return {
+      api: {
+        health: async () => ({ status: HealthStatus.Ok, database: DatabaseStatus.Up }),
+      },
+    };
   }
   return {
     api: createApiClient({

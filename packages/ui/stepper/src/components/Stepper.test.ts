@@ -1,3 +1,4 @@
+import { Key } from '@stamina/a11y';
 import { expectNoA11yViolations } from '@stamina/ui-test';
 import { mount } from '@vue/test-utils';
 import { nextTick } from 'vue';
@@ -129,25 +130,25 @@ describe('Stepper keyboard', () => {
 
   it('Arrow Up / Down step the value and prevent page scrolling', async () => {
     setup({ step: 2.5, min: 0, max: 200 });
-    const up = new KeyboardEvent('keydown', { key: 'ArrowUp', cancelable: true });
+    const up = new KeyboardEvent('keydown', { key: Key.ArrowUp, cancelable: true });
     spin().element.dispatchEvent(up);
     expect(up.defaultPrevented).toBe(true);
     await nextTick();
-    await press('ArrowDown');
-    await press('ArrowDown');
+    await press(Key.ArrowDown);
+    await press(Key.ArrowDown);
     expect(emitted()).toEqual([62.5, 60, 57.5]);
   });
 
   it('Home and End jump to the bounds', async () => {
     setup({ min: 1, max: 30, modelValue: 10 });
-    await press('End');
-    await press('Home');
+    await press(Key.End);
+    await press(Key.Home);
     expect(emitted()).toEqual([30, 1]);
   });
 
   it('Home and End do nothing without bounds, and other keys are left alone', async () => {
     setup();
-    const end = new KeyboardEvent('keydown', { key: 'End', cancelable: true });
+    const end = new KeyboardEvent('keydown', { key: Key.End, cancelable: true });
     spin().element.dispatchEvent(end);
     const letter = new KeyboardEvent('keydown', { key: 'a', cancelable: true });
     spin().element.dispatchEvent(letter);
@@ -158,7 +159,7 @@ describe('Stepper keyboard', () => {
 
   it('ignores arrow keys at a bound', async () => {
     setup({ modelValue: 30, max: 30 });
-    await press('ArrowUp');
+    await press(Key.ArrowUp);
     expect(emitted()).toEqual([]);
   });
 
@@ -228,7 +229,7 @@ describe('Stepper announcements', () => {
 
   it('leaves announcing keyboard changes to the spinbutton itself, to avoid a double read', async () => {
     setup();
-    await press('ArrowUp');
+    await press(Key.ArrowUp);
     expect(live().text()).toBe('');
     expect(spin().attributes('aria-valuetext')).toBe('61');
   });
@@ -239,8 +240,8 @@ describe('Stepper disabled', () => {
     setup({ disabled: true });
     await plus().trigger('click');
     await minus().trigger('click');
-    await press('ArrowUp');
-    await press('Home');
+    await press(Key.ArrowUp);
+    await press(Key.Home);
     expect(emitted()).toEqual([]);
     expect(plus().attributes('disabled')).toBeDefined();
     expect(minus().attributes('disabled')).toBeDefined();

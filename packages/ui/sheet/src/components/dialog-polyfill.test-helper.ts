@@ -1,3 +1,4 @@
+import { Key } from '@stamina/a11y';
 /**
  * jsdom has no <dialog>.showModal(). This stands in for the browser behaviour the component relies
  * on: a modal dialog gets `open`, a `cancel` event on Escape (closing unless prevented) and a
@@ -15,7 +16,7 @@ export function installDialogPolyfill(): void {
     this.dispatchEvent(new Event('close'));
   };
   document.addEventListener('keydown', (e) => {
-    if (e.key !== 'Escape') return;
+    if (e.key !== Key.Escape) return;
     const dialog = [...document.querySelectorAll('dialog[open]')].pop() as
       HTMLDialogElement | undefined;
     if (dialog && dialog.dispatchEvent(new Event('cancel', { cancelable: true }))) dialog.close();

@@ -3,7 +3,8 @@ import { mount } from '@vue/test-utils';
 import { describe, expect, it } from 'vitest';
 import { defineComponent, h } from 'vue';
 import Button from './Button.vue';
-import type { ButtonVariant } from '../types.ts';
+import { ButtonType } from '../enums/button-type.ts';
+import { ButtonVariant } from '../enums/button-variant.ts';
 
 describe('Button', () => {
   it('emits click when pressed', async () => {
@@ -21,7 +22,7 @@ describe('Button', () => {
 
   it('does not submit a surrounding form unless it is a submit button', async () => {
     let submits = 0;
-    const Form = (type?: 'submit') =>
+    const Form = (type?: ButtonType) =>
       defineComponent({
         render: () =>
           h('form', { onSubmit: (e: Event) => (e.preventDefault(), submits++) }, [
@@ -31,11 +32,13 @@ describe('Button', () => {
 
     await mount(Form(), { attachTo: document.body }).get('button').trigger('click');
     expect(submits).toBe(0);
-    await mount(Form('submit'), { attachTo: document.body }).get('button').trigger('click');
+    await mount(Form(ButtonType.Submit), { attachTo: document.body })
+      .get('button')
+      .trigger('click');
     expect(submits).toBe(1);
   });
 
-  it.each<ButtonVariant>(['primary', 'secondary', 'ghost', 'danger'])(
+  it.each(Object.values(ButtonVariant))(
     'has an accessible name and no axe violations as %s',
     async (variant) => {
       const wrapper = mount(Button, { props: { variant }, slots: { default: 'Save' } });

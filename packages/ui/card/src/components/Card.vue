@@ -1,17 +1,20 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { CARD_PADDING_CLASSES, CARD_TONE_CLASSES } from '../config.ts';
+import { CardElement } from '../enums/card-element.ts';
+import { CardPadding } from '../enums/card-padding.ts';
+import { CardTone } from '../enums/card-tone.ts';
 import type { CardProps } from '../types.ts';
 
 const props = withDefaults(defineProps<CardProps>(), {
-  as: 'div',
-  tone: 'default',
-  padding: 'md',
+  as: CardElement.Div,
+  tone: CardTone.Default,
+  padding: CardPadding.Md,
   labelledBy: undefined,
 });
 
 const labelled = computed(() =>
-  (props.as === 'section' || props.as === 'article') && props.labelledBy
+  (props.as === CardElement.Section || props.as === CardElement.Article) && props.labelledBy
     ? { 'aria-labelledby': props.labelledBy }
     : {},
 );

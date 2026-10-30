@@ -1,3 +1,4 @@
+import { Key } from '@stamina/a11y';
 import { computed, ref, type Ref } from 'vue';
 import { boundState } from '../utils/bound-state.ts';
 import { stepValue } from '../utils/step-value.ts';
@@ -47,19 +48,19 @@ export function useStepper(options: UseStepperOptions) {
     const min = options.min();
     const max = options.max();
     switch (event.key) {
-      case 'ArrowUp':
-      case 'ArrowRight':
+      case Key.ArrowUp:
+      case Key.ArrowRight:
         stepBy(1, false);
         break;
-      case 'ArrowDown':
-      case 'ArrowLeft':
+      case Key.ArrowDown:
+      case Key.ArrowLeft:
         stepBy(-1, false);
         break;
-      case 'Home':
+      case Key.Home:
         if (min === undefined) return;
         commit(min, false);
         break;
-      case 'End':
+      case Key.End:
         if (max === undefined) return;
         commit(max, false);
         break;

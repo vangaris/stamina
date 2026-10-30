@@ -259,7 +259,7 @@ Stamina is a mobile-first web app (PWA) and an AI coach that plans my training, 
   - **The domain rules are tested through this seam**, not unit by unit.
   - **Fixture users**: Vang's seed persona (padel + kite), a basketball player with 2 games a week, a kitesurfer with weather-dependent Activities, a referred-then-Limited user, a vegan with a tree-nut allergy, an under-18 and a non-EEA applicant.
 - **Seam 2: `app-core` mediator.**
-  - Commands and queries are sent through a mediator built with `createServices('test')` mocks.
+  - Commands and queries are sent through a mediator built with `createServices(ServicesMode.Test)` mocks.
   - It covers offline queueing and sync, retries, idempotent replays, stale-Adaptation handling, error mapping, the log-safe pipeline (no health fields in logs) and store updates.
   - Shared by web and the later React Native app.
 - **Seam 3: browser journeys (Playwright at phone size on each PR preview, with axe).**

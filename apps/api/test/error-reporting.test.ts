@@ -1,6 +1,8 @@
 import type { Envelope, Event, Transport } from '@sentry/core';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { loadConfig } from '../src/config.ts';
+import { HttpHeader } from '../src/enums/http-header.ts';
+import { SentryEnvironment } from '../src/enums/sentry-environment.ts';
 import { createErrorReporter } from '../src/error-reporter.ts';
 import { expectNoSentinel, SENTINELS } from './support/sentinel.ts';
 import { startTestApi } from './support/test-api.ts';
@@ -57,7 +59,7 @@ describe('error reporting', () => {
     expect(event!.exception!.values!).toHaveLength(1);
     expect(event!.exception!.values![0]).toMatchObject({ type: 'PlanGenerationError', value: '' });
     expect(event!.exception!.values![0]!.stacktrace!.frames!.length).toBeGreaterThan(0);
-    expect(event!.tags).toEqual({ request_id: response.headers.get('x-request-id') });
+    expect(event!.tags).toEqual({ request_id: response.headers.get(HttpHeader.RequestId) });
     expect(event!.environment).toBe('test');
     for (const dropped of ['request', 'user', 'extra', 'breadcrumbs', 'message', 'contexts']) {
       expect(event).not.toHaveProperty(dropped);
@@ -87,7 +89,7 @@ describe('Sentry configuration', () => {
   it('accepts an EU DSN and defaults the environment to production', () => {
     expect(loadConfig({ ...base, SENTRY_DSN: EU_DSN }).sentry).toEqual({
       dsn: EU_DSN,
-      environment: 'production',
+      environment: SentryEnvironment.Production,
     });
   });
 

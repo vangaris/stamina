@@ -26,7 +26,8 @@ AI coach that plans training, food and recovery around the sport a user plays. G
 Full layout, examples and the review checklist: `docs/development.md`, "Code standards".
 
 - **Deep modules.** Small interface, a lot of behaviour behind it, tested through that interface. Apply the deletion test; add a seam only where two adapters really exist (real + fake). Use the skill's words: module, interface, seam, adapter.
-- **One folder shape per feature, UI component or shared utility**: `components/`, `composables/`, `utils/`, `types.ts` (or `types/`), `config.ts`, and `index.ts` as the only public interface. Create what is used, no empty folders.
+- **One folder shape per feature, UI component or shared utility**: `components/`, `composables/`, `utils/`, `enums/`, `types.ts` (or `types/`), `config.ts`, and `index.ts` as the only public interface. Create what is used, no empty folders.
+- **No magic strings.** A closed set of values that code branches on or passes around (variants, tones, modes, kinds, statuses, keys, ARIA roles set in script, request types, env names, error codes, route and tab ids, locale codes) is a string `enum` in the owning feature's `enums/<kebab-name>.ts`, one per file, exported from `index.ts` as a value and used by name everywhere (`HealthStateKind.Ok`, never `'ok'`). The enum value is the wire/DOM string, so nothing outside the code changes.
 - **Logic leaves the `.vue` file.** Every exported function, composable and utility is its own file with a test next to it. An SFC only wires props, emits and template to them.
 - **Types are exported.** Props, options, events and results are declared in `types.ts` and re-exported from `index.ts` with `export type`; never declared inline in a component or a handler.
 - **Constants and defaults live in `config.ts`.** No magic numbers, strings or tunables in components or utilities.

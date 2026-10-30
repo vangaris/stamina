@@ -1,6 +1,8 @@
 import { expectNoA11yViolations } from '@stamina/ui-test';
 import { mount } from '@vue/test-utils';
 import { describe, expect, it } from 'vitest';
+import { AriaRole } from '@stamina/a11y';
+import { ChipMode } from '../enums/chip-mode.ts';
 import Chip from './Chip.vue';
 
 describe('Chip', () => {
@@ -13,16 +15,16 @@ describe('Chip', () => {
 
   it('announces itself as a radio or checkbox when it is one option of a group', () => {
     const radio = mount(Chip, {
-      props: { mode: 'radio', selected: true },
+      props: { mode: ChipMode.Radio, selected: true },
       slots: { default: '7' },
     });
-    const check = mount(Chip, { props: { mode: 'check' }, slots: { default: 'Nuts' } });
+    const check = mount(Chip, { props: { mode: ChipMode.Check }, slots: { default: 'Nuts' } });
     expect(radio.get('button').attributes()).toMatchObject({
-      role: 'radio',
+      role: AriaRole.Radio,
       'aria-checked': 'true',
     });
     expect(check.get('button').attributes()).toMatchObject({
-      role: 'checkbox',
+      role: AriaRole.Checkbox,
       'aria-checked': 'false',
     });
     expect(radio.get('button').attributes('aria-pressed')).toBeUndefined();
@@ -38,11 +40,11 @@ describe('Chip', () => {
     expect(disabled.emitted('click')).toBeUndefined();
   });
 
-  it.each<{ mode: 'toggle' | 'radio' | 'check'; selected: boolean }>([
-    { mode: 'toggle', selected: false },
-    { mode: 'toggle', selected: true },
-    { mode: 'radio', selected: true },
-    { mode: 'check', selected: false },
+  it.each<{ mode: ChipMode; selected: boolean }>([
+    { mode: ChipMode.Toggle, selected: false },
+    { mode: ChipMode.Toggle, selected: true },
+    { mode: ChipMode.Radio, selected: true },
+    { mode: ChipMode.Check, selected: false },
   ])('has no axe violations ($mode, selected=$selected)', async (props) => {
     const wrapper = mount(Chip, { props, slots: { default: 'Padel' } });
     await expectNoA11yViolations(wrapper.element);

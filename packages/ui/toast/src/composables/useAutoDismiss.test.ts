@@ -1,12 +1,13 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { effectScope, ref, type EffectScope } from 'vue';
 import { DEFAULT_DURATION_MS } from '../config.ts';
-import type { ToastTone } from '../types.ts';
+import { PointerType } from '../enums/pointer-type.ts';
+import { ToastTone } from '../enums/toast-tone.ts';
 import { useAutoDismiss } from './useAutoDismiss.ts';
 
 function setup(initial: { durationMs?: number | null; tone?: ToastTone } = {}) {
   const durationMs = ref<number | null | undefined>(initial.durationMs);
-  const tone = ref<ToastTone>(initial.tone ?? 'info');
+  const tone = ref<ToastTone>(initial.tone ?? ToastTone.Info);
   const onDismiss = vi.fn();
   const scope = effectScope();
   const api = scope.run(() =>
@@ -56,14 +57,14 @@ describe('useAutoDismiss', () => {
 
   it('never dismisses when persistent (null) or danger without a duration', () => {
     const a = start({ durationMs: null });
-    const b = start({ tone: 'danger' });
+    const b = start({ tone: ToastTone.Danger });
     vi.advanceTimersByTime(DEFAULT_DURATION_MS * 10);
     expect(a.onDismiss).not.toHaveBeenCalled();
     expect(b.onDismiss).not.toHaveBeenCalled();
   });
 
   it('honours an explicit duration on a danger toast', () => {
-    const { onDismiss } = start({ tone: 'danger', durationMs: 2000 });
+    const { onDismiss } = start({ tone: ToastTone.Danger, durationMs: 2000 });
     vi.advanceTimersByTime(2000);
     expect(onDismiss).toHaveBeenCalledTimes(1);
   });
@@ -83,7 +84,7 @@ describe('useAutoDismiss', () => {
 
   it('does not count a touch pointer as hovering', () => {
     const { api, onDismiss } = start({ durationMs: 1000 });
-    api.onPointer(pointer('touch'), true);
+    api.onPointer(pointer(PointerType.Touch), true);
     vi.advanceTimersByTime(1000);
     expect(onDismiss).toHaveBeenCalledTimes(1);
   });

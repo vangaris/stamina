@@ -1,11 +1,14 @@
 <script setup lang="ts">
+import { AriaLive, AriaRole } from '@stamina/a11y';
 import { computed } from 'vue';
 import { TOAST_REGION_PLACEMENT_CLASSES } from '../config.ts';
+import { ToastTone } from '../enums/toast-tone.ts';
+import { ToastPosition } from '../enums/toast-position.ts';
 import type { ToastRegionProps } from '../types.ts';
 import { partitionToasts } from '../utils/partition-toasts.ts';
 import Toast from './Toast.vue';
 
-const props = withDefaults(defineProps<ToastRegionProps>(), { position: 'fixed' });
+const props = withDefaults(defineProps<ToastRegionProps>(), { position: ToastPosition.Fixed });
 
 const emit = defineEmits<{ dismiss: [id: string]; action: [id: string] }>();
 
@@ -15,8 +18,8 @@ const emit = defineEmits<{ dismiss: [id: string]; action: [id: string] }>();
 const regions = computed(() => {
   const { status, alert } = partitionToasts(props.toasts);
   return [
-    { role: 'status', live: 'polite', toasts: status },
-    { role: 'alert', live: undefined, toasts: alert },
+    { role: AriaRole.Status, live: AriaLive.Polite, toasts: status },
+    { role: AriaRole.Alert, live: undefined, toasts: alert },
   ];
 });
 
@@ -44,7 +47,7 @@ const placement = computed(() => TOAST_REGION_PLACEMENT_CLASSES[props.position])
         v-for="toast in region.toasts"
         :key="toast.id"
         :message="toast.message"
-        :tone="toast.tone ?? 'info'"
+        :tone="toast.tone ?? ToastTone.Info"
         :action-label="toast.actionLabel"
         :duration-ms="toast.durationMs"
         :dismiss-label="dismissLabel"

@@ -1,5 +1,5 @@
-export type ProgressBarTone = 'accent' | 'load' | 'suggest';
-export type ProgressBarSize = 'sm' | 'md';
+import type { ProgressBarSize } from './enums/progress-bar-size.ts';
+import type { ProgressBarTone } from './enums/progress-bar-tone.ts';
 
 export interface ProgressBarProps {
   value: number;

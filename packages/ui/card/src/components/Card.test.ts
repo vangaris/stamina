@@ -1,6 +1,7 @@
 import { expectNoA11yViolations } from '@stamina/ui-test';
 import { mount } from '@vue/test-utils';
 import { describe, expect, it } from 'vitest';
+import { CardElement } from '../enums/card-element.ts';
 import Card from './Card.vue';
 
 describe('Card', () => {
@@ -9,24 +10,28 @@ describe('Card', () => {
     expect(wrapper.element.tagName).toBe('DIV');
   });
 
-  it.each(['div', 'section', 'article', 'li'] as const)('renders the chosen element: %s', (as) => {
+  it.each(Object.values(CardElement))('renders the chosen element: %s', (as) => {
     const wrapper = mount(Card, { props: { as }, slots: { default: 'Hello' } });
     expect(wrapper.element.tagName).toBe(as.toUpperCase());
   });
 
   it('points a section or article at its heading only when labelledBy is given', () => {
-    const labelled = mount(Card, { props: { as: 'section', labelledBy: 'h1' } });
-    const bare = mount(Card, { props: { as: 'article' } });
+    const labelled = mount(Card, { props: { as: CardElement.Section, labelledBy: 'h1' } });
+    const bare = mount(Card, { props: { as: CardElement.Article } });
     expect(labelled.attributes('aria-labelledby')).toBe('h1');
     expect(bare.attributes('aria-labelledby')).toBeUndefined();
   });
 
   it('does not label a plain div or li', () => {
     expect(
-      mount(Card, { props: { as: 'div', labelledBy: 'h1' } }).attributes('aria-labelledby'),
+      mount(Card, { props: { as: CardElement.Div, labelledBy: 'h1' } }).attributes(
+        'aria-labelledby',
+      ),
     ).toBeUndefined();
     expect(
-      mount(Card, { props: { as: 'li', labelledBy: 'h1' } }).attributes('aria-labelledby'),
+      mount(Card, { props: { as: CardElement.Li, labelledBy: 'h1' } }).attributes(
+        'aria-labelledby',
+      ),
     ).toBeUndefined();
   });
 

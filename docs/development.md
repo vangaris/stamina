@@ -96,6 +96,8 @@ packages/ui/stepper/
     index.ts                 the only public interface: re-exports components, composables, utils, `export type`s
     types.ts                 props, options, events, results (`types/` when it grows)
     config.ts                constants, defaults, tunables
+    enums/
+      stepper-format.ts      one string enum per file, named after it (kebab-case)
     components/
       Stepper.vue            wiring only: props, emits, template
       Stepper.test.ts
@@ -109,6 +111,7 @@ packages/ui/stepper/
 
 - **Logic is not in the `.vue` file.** An SFC's `<script setup>` calls composables and utils; any exported function or composable is its own file with a test beside it. Pure logic goes in `utils/`, anything touching Vue reactivity or lifecycle in `composables/` (`useXxx`).
 - **Types are exported.** Declare props, options, events and results in `types.ts`, import them in the component (`defineProps<StepperProps>()`), and re-export from `index.ts` with `export type { ... }`. Never declare an exported type inline in a component, handler or util.
+- **No magic strings: enums.** A closed set of values that code branches on or passes around is a string `enum` in `enums/<kebab-name>.ts` (one per file), re-exported from `index.ts` as a value (`export { ButtonVariant } from './enums/button-variant.ts'`) and used by name everywhere: `status === HealthStatus.Ok`, `kind: HealthStateKind.Degraded`, `case Key.ArrowUp`. Enum values are the existing wire/DOM strings, so JSON, markup and i18n keys do not change. Config maps use computed keys (`{ [ButtonVariant.Primary]: '...' }` typed `Record<ButtonVariant, string>`), zod uses `z.enum(MyEnum)`, iteration uses `Object.values(MyEnum)`. In Vue templates import the enum in `<script setup>` and bind it (`:variant="ButtonVariant.Danger"`); a static `variant="danger"` fails `vue-tsc`, which is the enforcement: comparing an enum to a string literal is a compile error. Not enums: CSS class strings (`config.ts` class maps), static native attributes in templates (`role="tablist"`), DOM event names, i18n message keys, `typeof` checks. Shared keyboard keys and ARIA roles live in `@stamina/a11y` (`Key`, `AriaRole`, `AriaLive`).
 - **Constants live in `config.ts`**: defaults, limits, durations, class maps, option lists. No magic values in components or utils.
 - **One concept per file**, named after what it exports (`clamp-to-step.ts` exports `clampToStep`; `Stepper.vue` is `Stepper`). No catch-all `helpers.ts` or `utils.ts`.
 - **`index.ts` is the seam**: other packages and features import only from it. No deep imports into another module's folders, no cross-feature imports except through `index.ts`.
@@ -121,7 +124,7 @@ packages/ui/stepper/
 
 ### Review checklist
 
-Module interface small and documented? Any pass-through to delete? Logic out of the SFC and in its own tested file? Types in `types.ts` and re-exported? Constants in `config.ts`? Anything imported past another module's `index.ts`?
+Module interface small and documented? Any pass-through to delete? Logic out of the SFC and in its own tested file? Types in `types.ts` and re-exported? Any string literal that is really a closed set (use an enum)? Constants in `config.ts`? Anything imported past another module's `index.ts`?
 
 Every package under `packages/` follows this shape. Two exceptions are deliberate: `@stamina/ui-test` (its `config.js` must be plain JS because Vitest loads it through Node) and `@stamina/tokens`'s generated `tokens.css`.
 

@@ -1,5 +1,6 @@
 import { isEuSentryDsn } from '@stamina/safe-log';
 import { z } from 'zod';
+import { SentryEnvironment } from './enums/sentry-environment.ts';
 
 const envSchema = z.object({
   DATABASE_URL: z.string().min(1),
@@ -14,14 +15,14 @@ const envSchema = z.object({
       'SENTRY_DSN must be an https DSN on *.de.sentry.io',
     )
     .optional(),
-  SENTRY_ENVIRONMENT: z.enum(['production', 'preview']).default('production'),
+  SENTRY_ENVIRONMENT: z.enum(SentryEnvironment).default(SentryEnvironment.Production),
 });
 
 export interface Config {
   databaseUrl: string;
   corsOrigins: string[];
   /** Present only when `SENTRY_DSN` is set. */
-  sentry?: { dsn: string; environment: string };
+  sentry?: { dsn: string; environment: SentryEnvironment };
 }
 
 export function loadConfig(env: Record<string, string | undefined>): Config {

@@ -1,4 +1,5 @@
-export type ToastTone = 'info' | 'success' | 'danger';
+import type { ToastPosition } from './enums/toast-position.ts';
+import type { ToastTone } from './enums/toast-tone.ts';
 
 export interface ToastProps {
   message: string;
@@ -29,10 +30,10 @@ export interface ToastRegionProps {
   /** Accessible name of every toast's close button. */
   dismissLabel: string;
   /**
-   * `fixed` sits at the bottom of the screen above the bottom navigation. `absolute` fills
+   * `Fixed` sits at the bottom of the screen above the bottom navigation. `Absolute` fills
    * the bottom of the nearest positioned ancestor (a preview box, a dialog).
    */
-  position?: 'fixed' | 'absolute';
+  position?: ToastPosition;
 }
 
 /** Toasts split by how a screen reader should announce them. */

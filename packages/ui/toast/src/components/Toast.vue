@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import { TOAST_TONE_CLASSES, TOAST_TONE_ICON_PATHS } from '../config.ts';
+import { Key } from '@stamina/a11y';
 import { useAutoDismiss } from '../composables/useAutoDismiss.ts';
+import { ToastTone } from '../enums/toast-tone.ts';
 import type { ToastProps } from '../types.ts';
 
 const props = withDefaults(defineProps<ToastProps>(), {
-  tone: 'info',
+  tone: ToastTone.Info,
   actionLabel: undefined,
   durationMs: undefined,
 });
@@ -16,6 +18,10 @@ const { onPointer, onFocusIn, onFocusOut } = useAutoDismiss({
   tone: () => props.tone,
   onDismiss: () => emit('dismiss'),
 });
+
+function onKeydown(event: KeyboardEvent) {
+  if (event.key === Key.Escape) emit('dismiss');
+}
 </script>
 
 <template>
@@ -26,7 +32,7 @@ const { onPointer, onFocusIn, onFocusOut } = useAutoDismiss({
     @pointerleave="onPointer($event, false)"
     @focusin="onFocusIn"
     @focusout="onFocusOut"
-    @keydown.esc="emit('dismiss')"
+    @keydown="onKeydown"
   >
     <svg
       aria-hidden="true"

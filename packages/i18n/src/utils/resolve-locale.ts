@@ -1,5 +1,5 @@
 import { DEFAULT_LOCALE, LOCALES } from '../config.ts';
-import type { Locale } from '../types.ts';
+import type { Locale } from '../enums/locale.ts';
 
 /** First supported language among the phone's preferences ("el-GR" -> "el"), else English. */
 export function resolveLocale(preferred: readonly string[]): Locale {

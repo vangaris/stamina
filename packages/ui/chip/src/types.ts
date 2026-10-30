@@ -1,4 +1,4 @@
-export type ChipMode = 'toggle' | 'radio' | 'check';
+import type { ChipMode } from './enums/chip-mode.ts';
 
 export interface ChipProps {
   selected?: boolean;

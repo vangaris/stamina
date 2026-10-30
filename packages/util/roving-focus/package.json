@@ -19,5 +19,8 @@
   },
   "devDependencies": {
     "vitest": "^5.0.5"
+  },
+  "dependencies": {
+    "@stamina/a11y": "workspace:^"
   }
 }
