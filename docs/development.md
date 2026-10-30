@@ -123,7 +123,7 @@ packages/ui/stepper/
 
 Module interface small and documented? Any pass-through to delete? Logic out of the SFC and in its own tested file? Types in `types.ts` and re-exported? Constants in `config.ts`? Anything imported past another module's `index.ts`?
 
-Code written before this standard (the first UI kit packages, `tokens`, `i18n`) keeps its flat `src/` until it is next changed; new and touched modules follow the shape above.
+Every package under `packages/` follows this shape. Two exceptions are deliberate: `@stamina/ui-test` (its `config.js` must be plain JS because Vitest loads it through Node) and `@stamina/tokens`'s generated `tokens.css`.
 
 ## Design tokens and UI components
 

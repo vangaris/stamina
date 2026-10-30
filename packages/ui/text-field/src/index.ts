@@ -1,2 +1,2 @@
-export { default as TextField } from './TextField.vue';
-export type { TextFieldInputmode, TextFieldType } from './TextField.vue';
+export { default as TextField } from './components/TextField.vue';
+export type { TextFieldInputmode, TextFieldProps, TextFieldType } from './types.ts';

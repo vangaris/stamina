@@ -1,2 +1,2 @@
-export { default as Tabs } from './Tabs.vue';
-export type { TabsItem } from './Tabs.vue';
+export { default as Tabs } from './components/Tabs.vue';
+export type { TabsItem, TabsProps } from './types.ts';

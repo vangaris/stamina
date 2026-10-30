@@ -1,2 +1,2 @@
-export { default as ProgressBar } from './ProgressBar.vue';
-export type { ProgressBarSize, ProgressBarTone } from './ProgressBar.vue';
+export { default as ProgressBar } from './components/ProgressBar.vue';
+export type { ProgressBarProps, ProgressBarSize, ProgressBarTone } from './types.ts';

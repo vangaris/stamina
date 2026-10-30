@@ -1,2 +1,2 @@
-export { default as Stepper } from './Stepper.vue';
-export type { StepperFormat } from './Stepper.vue';
+export { default as Stepper } from './components/Stepper.vue';
+export type { StepperFormat, StepperProps } from './types.ts';

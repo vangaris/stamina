@@ -26,5 +26,8 @@
     "vitest": "^5.0.5",
     "vue": "^3.5.44",
     "vue-tsc": "^3.3.14"
+  },
+  "dependencies": {
+    "@stamina/a11y": "workspace:^"
   }
 }

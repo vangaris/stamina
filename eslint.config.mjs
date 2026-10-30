@@ -9,6 +9,17 @@ const paletteClass = String.raw`(?:[\w-]+:)*-?(?:bg|text|border|ring|fill|stroke
 const arbitraryColour = String.raw`\[(?:#|rgb|hsl|oklch|oklab)`;
 const arbitraryLength = String.raw`\[-?\d*\.?\d+(?:px|rem|em)\]`;
 
+const semanticClassSyntax = [
+  'error',
+  ...['Literal[value', 'TemplateElement[value.cooked'].flatMap((node) =>
+    [`(?:^|\\s)${paletteClass}`, arbitraryColour, arbitraryLength].map((pattern) => ({
+      selector: `${node}=/${pattern}/]`,
+      message:
+        'Class strings in components may use semantic tokens only (no palette colours, arbitrary colours or px/rem lengths).',
+    })),
+  ),
+];
+
 /**
  * Module boundaries (spec: "Nx tags enforce boundaries"):
  * - ui and util depend on nothing app-specific.
@@ -90,17 +101,14 @@ export default tseslint.config(
         `/${arbitraryColour}/`,
         `/${arbitraryLength}/`,
       ],
-      'no-restricted-syntax': [
-        'error',
-        ...['Literal[value', 'TemplateElement[value.cooked'].flatMap((node) =>
-          [`(?:^|\\s)${paletteClass}`, arbitraryColour, arbitraryLength].map((pattern) => ({
-            selector: `${node}=/${pattern}/]`,
-            message:
-              'Class strings in components may use semantic tokens only (no palette colours, arbitrary colours or px/rem lengths).',
-          })),
-        ),
-      ],
+      'no-restricted-syntax': semanticClassSyntax,
     },
+  },
+  {
+    // Class maps live in config.ts / utils (docs/development.md, "Folder shape"): same rule.
+    files: ['packages/ui/**/*.ts'],
+    ignores: ['**/*.test.ts'],
+    rules: { 'no-restricted-syntax': semanticClassSyntax },
   },
   {
     // Tests mount small host components to drive a v-model or a form.

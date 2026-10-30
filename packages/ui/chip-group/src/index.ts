@@ -1,2 +1,2 @@
-export { default as ChipGroup } from './ChipGroup.vue';
-export type { ChipGroupOption, ChipGroupValue } from './ChipGroup.vue';
+export { default as ChipGroup } from './components/ChipGroup.vue';
+export type { ChipGroupOption, ChipGroupProps, ChipGroupValue } from './types.ts';
