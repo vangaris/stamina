@@ -14,6 +14,7 @@ Infrastructure is declared in code. **OpenTofu** manages Cloudflare, Neon and Se
 | Deno Deploy app `stamina-api`                  | `scripts/setup-services.sh` creates; `scripts/ops/deno-setup.sh` verifies |
 | UptimeRobot monitor                            | `scripts/ops/uptimerobot-setup.sh`                          |
 | Brevo sender + SMTP settings                   | `scripts/ops/brevo-setup.sh`                                |
+| Neon Auth (sign-in) per branch                 | `scripts/ops/neon-auth-setup.mjs` (previews: `preview.yml`); runbook in [auth.md](auth.md) |
 
 ## Layout
 
@@ -28,7 +29,7 @@ infra/
     tests/plan.tftest.hcl   offline tests, providers mocked
     .terraform.lock.hcl     committed; linux_amd64 + darwin_arm64
   test/ops-scripts.test.mjs offline tests of the scripts, against mock HTTP servers
-scripts/ops/{deno,uptimerobot,brevo}-setup.sh
+scripts/ops/{deno,uptimerobot,brevo}-setup.sh   scripts/ops/neon-auth-setup.mjs
 ```
 
 Providers: `cloudflare/cloudflare` 5.28.1 (official), `kislerdm/neon` 0.18.0 (community, Neon-sponsored), `jianyuan/sentry` 0.15.8 (community, Sentry-sponsored). Bump a version in `versions.tf`, then `tofu -chdir=infra/envs/production init -upgrade -backend=false` and `tofu -chdir=infra/envs/production providers lock -platform=linux_amd64 -platform=darwin_arm64`.
@@ -47,6 +48,8 @@ Secrets never go in files. Locally they are in the gitignored `.env` (`infra/tof
 | `SENTRY_AUTH_TOKEN`, `SENTRY_ORG`                             | secret, variable           | Sentry (EU) > Settings > Developer Settings > Custom Integrations > Internal Integration; permissions Organization: Read, Project: Admin, Team: Admin (CI: Read). `SENTRY_ORG` is the organisation slug |
 | `UPTIMEROBOT_API_KEY`, `ALERT_EMAIL`, `PROD_API_URL`          | local only                 | UptimeRobot > Integrations > API; Vang's email; the production API origin                                                                                                                      |
 | `BREVO_API_KEY`, `SENDER_EMAIL`                               | local only                 | Brevo > SMTP & API > API keys; the From address                                                                                                                                                |
+| `BREVO_SMTP_LOGIN`, `BREVO_SMTP_KEY`                          | local only                 | Brevo > SMTP & API > SMTP: the login, and "Generate a new SMTP key" (not the API key). Read by `neon-auth-setup.mjs`; Neon Auth stores them for its sign-in emails                              |
+| `GOOGLE_OAUTH_CLIENT_ID`, `GOOGLE_OAUTH_CLIENT_SECRET`        | local only, optional       | Google Cloud Console > APIs & Services > Credentials > OAuth client ID (Web application). Read by `neon-auth-setup.mjs`; without them Neon's shared Google credentials stay (development only) |
 | `DENO_DEPLOY_TOKEN`, `DENO_APP`, `DENO_ORG`                   | secret + variable (exist); `DENO_ORG` only in `.env` unless the release workflow adds it | set by `setup-services.sh`                                                                                                                                                                     |
 
 Plan-only CI also needs the secrets above that are not "local only". Any missing one makes `infra-plan.yml` skip the plan with a note and still run the other checks.
@@ -58,6 +61,7 @@ Outputs feed these repository variables (run `gh variable set NAME --body "$(...
 | `SENTRY_DSN_API`, `SENTRY_DSN_WEB` | `tofu output -raw sentry_dsn_api` / `sentry_dsn_web` (run through `infra/tofu.sh production output -raw ...`) |
 | `R2_BACKUP_BUCKET`              | `infra/tofu.sh production output -raw backup_bucket`                   |
 | `R2_ENDPOINT`                   | `infra/tofu.sh production output -raw r2_endpoint`                     |
+| `NEON_AUTH_BASE_URL`            | `node scripts/ops/neon-auth-setup.mjs --branch main --web-origin <PROD_WEB_URL>` prints it (the Neon Auth `base_url` of the production branch); see [auth.md](auth.md) |
 
 ## Bootstrap order (first time)
 
@@ -82,6 +86,7 @@ Outputs feed these repository variables (run `gh variable set NAME --body "$(...
    scripts/ops/deno-setup.sh                      # verifies token, app, production hostname
    scripts/ops/uptimerobot-setup.sh --dry-run     # review, then run without --dry-run
    scripts/ops/brevo-setup.sh --dry-run           # review, then run without --dry-run
+   node scripts/ops/neon-auth-setup.mjs --dry-run # sign-in: review, then run for dev and main (docs/auth.md has the runbook)
    ```
 7. **Push alerts** (UptimeRobot): install the UptimeRobot mobile app and sign in as Vang; the API cannot register a device.
 
@@ -119,7 +124,7 @@ infra/tofu.sh production apply
 
 State is in `stamina-tfstate/production/terraform.tfstate` (EU jurisdiction) with a lock object beside it. R2 has no object versioning, so keep a copy before risky changes: `infra/tofu.sh production state pull > state-backup.tfstate` (gitignored; keep it out of the repo). The state holds no database passwords (`store_password = "no"`).
 
-CI (`.github/workflows/infra-plan.yml`) runs on PRs that touch `infra/**`: shellcheck, the script tests, `tofu fmt -check`, `tofu validate`, `tofu test`, and, when its secrets exist, a read-only `tofu plan` posted as one sticky comment (credentials redacted). It never applies.
+CI (`.github/workflows/infra-plan.yml`) runs on PRs that touch `infra/**` or the ops scripts (including `neon-auth-setup.mjs` and `deno-deploy.mjs`): shellcheck, the script tests, `tofu fmt -check`, `tofu validate`, `tofu test`, and, when its secrets exist, a read-only `tofu plan` posted as one sticky comment (credentials redacted). It never applies.
 
 Offline checks you can run without any account:
 
@@ -179,3 +184,4 @@ Verified locally: `tofu fmt`, `validate`, `tofu test` (providers mocked), the S3
 - Brevo: endpoints and fields are from the reference pages; the SMTP key still has to be generated in the console.
 - Deno: that revision timelines report `context: production` for the production revision, and the region (the REST API does not expose it).
 - Cloudflare: that enabling R2 needs a card (see the budget table), and the exact token permission labels.
+- Neon Auth: the management API calls of `scripts/ops/neon-auth-setup.mjs` (what its header lists as `[INFERENCE]`) and the sign-in flow itself; see [auth.md](auth.md), "Not yet verified live".

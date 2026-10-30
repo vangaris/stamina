@@ -18,6 +18,7 @@
     ]
   },
   "dependencies": {
-    "@stamina/contracts": "workspace:^"
+    "@stamina/contracts": "workspace:^",
+    "zod": "^4.6.7"
   }
 }

@@ -79,7 +79,10 @@ describe('error reporting', () => {
 });
 
 describe('Sentry configuration', () => {
-  const base = { DATABASE_URL: 'postgres://x' };
+  const base = {
+    DATABASE_URL: 'postgres://x',
+    NEON_AUTH_BASE_URL: 'https://ep-x.neonauth.example.neon.tech/neondb/auth',
+  };
 
   it('stays off when no DSN is set', () => {
     expect(loadConfig(base).sentry).toBeUndefined();

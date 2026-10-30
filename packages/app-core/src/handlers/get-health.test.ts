@@ -1,51 +1,56 @@
 import { describe, expect, it } from 'vitest';
 import { DatabaseStatus, HealthStatus } from '@stamina/contracts';
-import {
-  createAppMediator,
-  createServices,
-  getHealth,
-  HealthStateKind,
-  ServicesMode,
-  type HealthState,
-} from '../index.ts';
+import { getHealth, HealthStateKind, createServices, ServicesMode } from '../index.ts';
+import { setupMediator } from '../testing/setup-mediator.ts';
 
-function setup(api?: Partial<ReturnType<typeof createServices>['api']>) {
-  const services = createServices(ServicesMode.Test);
-  const writes: HealthState[] = [];
-  const mediator = createAppMediator({
-    services: { ...services, api: { ...services.api, ...api } },
-    stores: { health: { set: (state) => writes.push(state) } },
-  });
-  return { mediator, writes };
+function setupWithApi(api: Partial<ReturnType<typeof createServices>['api']>) {
+  const base = createServices({ mode: ServicesMode.Test });
+  return setupMediator({ api: { ...base.api, ...api } });
 }
 
 describe('getHealth query through the mediator', () => {
   it('returns the API state and records it in the health store', async () => {
-    const { mediator, writes } = setup();
+    const { mediator, healthWrites } = setupMediator();
 
     const result = await mediator.send(getHealth());
 
     expect(result).toEqual({ kind: HealthStateKind.Ok });
-    expect(writes).toEqual([{ kind: HealthStateKind.Ok }]);
+    expect(healthWrites).toEqual([{ kind: HealthStateKind.Ok }]);
   });
 
   it('reports a degraded API without throwing', async () => {
-    const { mediator, writes } = setup({
+    const { mediator, healthWrites } = setupWithApi({
       health: async () => ({ status: HealthStatus.Degraded, database: DatabaseStatus.Down }),
     });
 
     expect(await mediator.send(getHealth())).toEqual({ kind: HealthStateKind.Degraded });
-    expect(writes).toEqual([{ kind: HealthStateKind.Degraded }]);
+    expect(healthWrites).toEqual([{ kind: HealthStateKind.Degraded }]);
   });
 
   it('maps a network failure to an unreachable state', async () => {
-    const { mediator, writes } = setup({
+    const { mediator, healthWrites } = setupWithApi({
       health: async () => {
         throw new TypeError('Failed to fetch');
       },
     });
 
     expect(await mediator.send(getHealth())).toEqual({ kind: HealthStateKind.Unreachable });
-    expect(writes).toEqual([{ kind: HealthStateKind.Unreachable }]);
+    expect(healthWrites).toEqual([{ kind: HealthStateKind.Unreachable }]);
+  });
+
+  it('still reports unreachable while the device is offline', async () => {
+    const { mediator } = setupMediator({
+      network: { isOnline: () => false },
+      api: {
+        health: async () => {
+          throw new TypeError('Failed to fetch');
+        },
+        me: async () => {
+          throw new Error('unused');
+        },
+      },
+    });
+
+    expect(await mediator.send(getHealth())).toEqual({ kind: HealthStateKind.Unreachable });
   });
 });

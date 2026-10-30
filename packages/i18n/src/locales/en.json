@@ -12,5 +12,36 @@
     "ok": "Connected",
     "degraded": "Database unavailable",
     "unreachable": "Offline"
+  },
+  "signIn": {
+    "email": {
+      "title": "What is your email?",
+      "label": "Email",
+      "hint": "We will send you a 6-digit code. No password needed.",
+      "submit": "Send code",
+      "or": "or",
+      "google": "Continue with Google"
+    },
+    "code": {
+      "title": "Check your email",
+      "description": "We sent a 6-digit code to {email}.",
+      "label": "{length}-digit code",
+      "submit": "Sign in",
+      "resend": "Send a new code",
+      "resendIn": "Send a new code in {seconds}s",
+      "back": "Use a different email"
+    },
+    "errors": {
+      "emailInvalid": "Enter a valid email address, like name@example.com.",
+      "codeInvalidFormat": "Enter the 6 digits from your email.",
+      "invalidCode": "That code is not right. Check it and try again.",
+      "codeExpired": "That code has expired. Send a new one.",
+      "tooManyAttempts": "Too many tries. Send a new code to continue.",
+      "offline": "You are offline. Connect to the internet and try again.",
+      "unknown": "Something went wrong. Please try again."
+    },
+    "notices": {
+      "codeResent": "A new code is on its way."
+    }
   }
 }

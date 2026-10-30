@@ -33,6 +33,11 @@ const routes: RouteRecordRaw[] = [
     name: RouteName.Progress,
     component: () => import('./pages/ProgressPage.vue'),
   },
+  {
+    path: RoutePath.SignIn,
+    name: RouteName.SignIn,
+    component: () => import('./features/sign-in/index.ts').then((m) => m.SignInContainer),
+  },
 ];
 
 // Developer-only UI kit page. `import.meta.env.DEV` is a build-time constant, so a production

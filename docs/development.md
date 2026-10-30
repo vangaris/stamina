@@ -25,6 +25,7 @@ pnpm --filter @stamina/web dev             # web on :5173 (VITE_API_URL defaults
 - Seam 1 uses `TEST_DATABASE_URL` when set (CI points it at a Postgres service container), otherwise starts an embedded Postgres.
 - `pnpm --filter @stamina/web e2e` starts its own Postgres (:54330), API (:8788) and built web (:4173). Set `PLAYWRIGHT_BASE_URL` to run it against a deployed preview instead.
 - Migrations are forward-only: never edit an applied file, add a new one.
+- **Auth and row-level security (API).** Authenticated routes need `Authorization: Bearer <jwt>` (the short-lived Neon Auth token); `authenticate` verifies it with `jose` against the JWKS of `NEON_AUTH_BASE_URL` and sets the pseudonymous `userId`. User-owned tables are touched **only** through `withUser(db, userId, fn)` (`apps/api/src/db/with-user.ts`): one transaction as the NOLOGIN `stamina_app` role with `app.user_id` set, because Neon owner roles and local superusers bypass RLS. Each user-owned table's migration enables and forces RLS, adds a policy on `app_user_id()` and grants its privileges to `stamina_app`. Tests mint tokens with a local Ed25519 JWKS (`apps/api/test/support/test-auth.ts`), so real verification runs without Neon.
 
 ## Module boundaries
 
@@ -51,7 +52,7 @@ Workflows are in `.github/workflows/`.
 
 - **`ci.yml`**: `nx affected` lint, typecheck, test, build; the UI kit Playwright job (`e2e:ui`, contrast, tap size, focus, reduced motion, sheet focus trap); Gitleaks (pinned binary, full history); OSV-Scanner on `pnpm-lock.yaml`.
 - **`pr-title.yml`**: the PR title must be a Conventional Commit (the squash commit message is the title), e.g. `feat: 02 Release, infrastructure and ops pipeline`.
-- **`preview.yml`**: per PR, a Neon branch (migrated) + a Deno Deploy preview revision with that branch's `DATABASE_URL` + a Cloudflare Pages alias `pr-<N>`, then `e2e` against it. Closing the PR deletes the Neon branch (it also expires after 14 days). PRs that only touch docs, tickets or templates skip it.
+- **`preview.yml`**: per PR, a Neon branch (migrated) + that branch's own Neon Auth (its origin trusted, its `base_url` read) + a Deno Deploy preview revision with that branch's `DATABASE_URL` and `NEON_AUTH_BASE_URL` + a Cloudflare Pages alias `pr-<N>` whose `/auth/*` proxy points at that branch's Neon Auth, then `e2e` against it. Closing the PR deletes the Neon branch (it also expires after 14 days). PRs that only touch docs, tickets or templates skip it.
 - **`release.yml`**: release-please keeps a release PR open; merging it tags, migrates production, deploys the API, then the web, then smoke-checks. See [releasing.md](releasing.md).
 - **Dependabot** (`.github/dependabot.yml`): weekly grouped npm and GitHub Actions updates. Dependabot PRs get no Actions secrets, so `preview.yml` skips them; CI still runs.
 
@@ -72,8 +73,9 @@ What it sets:
 | Actions variable              | `NEON_PARENT_BRANCH`                   | a branch **without real user data** (e.g. `dev`); never production      |
 | Actions variable              | `DENO_APP`                             | app slug, created with `deno deploy create --region eu`                 |
 | Actions variables             | `CLOUDFLARE_ACCOUNT_ID`, `CLOUDFLARE_PAGES_PROJECT` | Pages project (direct upload)                              |
+| Actions variable              | `NEON_AUTH_BASE_URL`                   | the production branch's Neon Auth `base_url` (`scripts/ops/neon-auth-setup.mjs --branch main` prints it; not set by `setup-services.sh`, see [auth.md](auth.md)) |
 
-Each preview API revision gets its own `DATABASE_URL` and `CORS_ORIGINS` as immutable revision env vars (`scripts/deno-deploy.mjs`), so app-level Deno variables are not used for previews.
+Each preview API revision gets its own `DATABASE_URL`, `CORS_ORIGINS` and `NEON_AUTH_BASE_URL` as immutable revision env vars (`scripts/deno-deploy.mjs`), so app-level Deno variables are not used for previews. The `dev` branch (`NEON_PARENT_BRANCH`) must have Neon Auth set up once with `scripts/ops/neon-auth-setup.mjs`, because every preview branch inherits its auth configuration; see [auth.md](auth.md).
 
 ## Code standards
 
