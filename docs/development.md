@@ -75,6 +75,56 @@ What it sets:
 
 Each preview API revision gets its own `DATABASE_URL` and `CORS_ORIGINS` as immutable revision env vars (`scripts/deno-deploy.mjs`), so app-level Deno variables are not used for previews.
 
+## Code standards
+
+The default for every implementation; `/code-review` checks the diff against it. Design first: read `skill://codebase-design`, then write down the modules, their interfaces and where tests cross before coding.
+
+### Design
+
+- **Deep modules**: a small interface with a lot of behaviour behind it. The interface is everything a caller must know (types, invariants, ordering, errors), not just the signature.
+- **Deletion test**: if deleting a module makes its complexity vanish, it was a pass-through; inline it. If the complexity reappears in every caller, it earns its keep.
+- **Seams**: put one where behaviour must vary (real vs fake adapter, e.g. `createServices(env)`), not for hypothetical reuse. One adapter is a hypothetical seam; two is a real one.
+- **Testable by shape**: accept dependencies instead of creating them, return results instead of mutating, keep the surface small.
+
+### Folder shape
+
+Every feature, UI component and shared utility (a package, or a folder under `apps/*/src/features/<feature>`) uses the same shape. Create only what is used.
+
+```
+packages/ui/stepper/
+  src/
+    index.ts                 the only public interface: re-exports components, composables, utils, `export type`s
+    types.ts                 props, options, events, results (`types/` when it grows)
+    config.ts                constants, defaults, tunables
+    components/
+      Stepper.vue            wiring only: props, emits, template
+      Stepper.test.ts
+    composables/
+      useSpinbutton.ts       Vue state and lifecycle that is not template wiring
+      useSpinbutton.test.ts
+    utils/
+      clamp-to-step.ts       pure functions, one concept per file
+      clamp-to-step.test.ts
+```
+
+- **Logic is not in the `.vue` file.** An SFC's `<script setup>` calls composables and utils; any exported function or composable is its own file with a test beside it. Pure logic goes in `utils/`, anything touching Vue reactivity or lifecycle in `composables/` (`useXxx`).
+- **Types are exported.** Declare props, options, events and results in `types.ts`, import them in the component (`defineProps<StepperProps>()`), and re-export from `index.ts` with `export type { ... }`. Never declare an exported type inline in a component, handler or util.
+- **Constants live in `config.ts`**: defaults, limits, durations, class maps, option lists. No magic values in components or utils.
+- **One concept per file**, named after what it exports (`clamp-to-step.ts` exports `clampToStep`; `Stepper.vue` is `Stepper`). No catch-all `helpers.ts` or `utils.ts`.
+- **`index.ts` is the seam**: other packages and features import only from it. No deep imports into another module's folders, no cross-feature imports except through `index.ts`.
+- **App features** follow the client layering in `AGENTS.md`: `features/<feature>/components` holds the container and presentational components, `composables/` the one composable the container calls, `types.ts` and `config.ts` as above. Shared code moves to a package once a second feature needs it.
+
+### Tests
+
+- Tests sit next to the file they test and cross its interface, not its internals (see `AGENTS.md` "Test seams": domain rules are tested through the API seam, not as isolated units; UI and utility modules get their own interface tests).
+- A util or composable extracted for testability must have a test that could fail for a plausible bug; extraction is not a reason to test wiring.
+
+### Review checklist
+
+Module interface small and documented? Any pass-through to delete? Logic out of the SFC and in its own tested file? Types in `types.ts` and re-exported? Constants in `config.ts`? Anything imported past another module's `index.ts`?
+
+Code written before this standard (the first UI kit packages, `tokens`, `i18n`) keeps its flat `src/` until it is next changed; new and touched modules follow the shape above.
+
 ## Design tokens and UI components
 
 **Tokens** (`packages/tokens`) are DTCG JSON in two tiers: `primitive.tokens.json` (raw values; the only file a brand theme replaces) and `semantic.*.tokens.json` (named roles that alias primitives: `bg`, `surface`, `text`, `accent`, `load`, `suggest`, `danger`, `focus`, … plus type, spacing, radius, tap size). `pnpm --filter @stamina/tokens generate` compiles them to `src/tokens.css` (committed; the tokens test fails when it is stale): CSS variables for light and dark (the phone's setting, or `data-theme="light|dark"` on any element) and the Tailwind `@theme` mapping. The default Tailwind palette and scales are removed, so only semantic roles generate utilities: `bg-surface text-text border-border`, `text-sm` (14 px), `p-4` (16 px), `rounded-md`, `min-h-tap` (44 px). Placeholder values: system font, type 12/14/16/20/24/32/48 (`xs sm base lg xl 2xl 3xl`), spacing 4/8/12/16/24/32 (`1 2 3 4 6 8`, plus `0`), radius 8/16/pill (`md lg pill`).
