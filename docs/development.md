@@ -18,6 +18,7 @@ pnpm --filter @stamina/web dev             # web on :5173 (VITE_API_URL defaults
 | typecheck, build                       | `pnpm typecheck`, `pnpm build`             |
 | seam 1 (API) and seam 2 (app-core)     | `pnpm test`                                |
 | seam 3 (Playwright + axe, phone width) | `pnpm --filter @stamina/web e2e`           |
+| UI kit only (dev page, no DB or API)   | `pnpm --filter @stamina/web e2e:ui`        |
 | only what a branch changed             | `pnpm affected`                            |
 | new migration                          | edit `src/db/schema.ts`, `pnpm --filter @stamina/api db:generate` |
 
@@ -48,7 +49,7 @@ A package gets one `type:` and one `scope:` tag. UI components go in `packages/u
 
 Workflows are in `.github/workflows/`.
 
-- **`ci.yml`**: `nx affected` lint, typecheck, test, build; Gitleaks (pinned binary, full history); OSV-Scanner on `pnpm-lock.yaml`.
+- **`ci.yml`**: `nx affected` lint, typecheck, test, build; the UI kit Playwright job (`e2e:ui`, contrast, tap size, focus, reduced motion, sheet focus trap); Gitleaks (pinned binary, full history); OSV-Scanner on `pnpm-lock.yaml`.
 - **`pr-title.yml`**: the PR title must be a Conventional Commit (the squash commit message is the title), e.g. `feat: 02 Release, infrastructure and ops pipeline`.
 - **`preview.yml`**: per PR, a Neon branch (migrated) + a Deno Deploy preview revision with that branch's `DATABASE_URL` + a Cloudflare Pages alias `pr-<N>`, then `e2e` against it. Closing the PR deletes the Neon branch (it also expires after 14 days). PRs that only touch docs, tickets or templates skip it.
 - **`release.yml`**: release-please keeps a release PR open; merging it tags, migrates production, deploys the API, then the web, then smoke-checks. See [releasing.md](releasing.md).
@@ -73,3 +74,22 @@ What it sets:
 | Actions variables             | `CLOUDFLARE_ACCOUNT_ID`, `CLOUDFLARE_PAGES_PROJECT` | Pages project (direct upload)                              |
 
 Each preview API revision gets its own `DATABASE_URL` and `CORS_ORIGINS` as immutable revision env vars (`scripts/deno-deploy.mjs`), so app-level Deno variables are not used for previews.
+
+## Design tokens and UI components
+
+**Tokens** (`packages/tokens`) are DTCG JSON in two tiers: `primitive.tokens.json` (raw values; the only file a brand theme replaces) and `semantic.*.tokens.json` (named roles that alias primitives: `bg`, `surface`, `text`, `accent`, `load`, `suggest`, `danger`, `focus`, … plus type, spacing, radius, tap size). `pnpm --filter @stamina/tokens generate` compiles them to `src/tokens.css` (committed; the tokens test fails when it is stale): CSS variables for light and dark (the phone's setting, or `data-theme="light|dark"` on any element) and the Tailwind `@theme` mapping. The default Tailwind palette and scales are removed, so only semantic roles generate utilities: `bg-surface text-text border-border`, `text-sm` (14 px), `p-4` (16 px), `rounded-md`, `min-h-tap` (44 px). Placeholder values: system font, type 12/14/16/20/24/32/48 (`xs sm base lg xl 2xl 3xl`), spacing 4/8/12/16/24/32 (`1 2 3 4 6 8`, plus `0`), radius 8/16/pill (`md lg pill`).
+
+**Components** are one package per component in `packages/ui/<name>` (`@stamina/ui-<name>`), presentational (props in, events out) and framework-light:
+
+- Style with semantic utilities only. `pnpm lint` rejects Tailwind palette classes (`bg-indigo-700`), arbitrary colours and arbitrary px/rem lengths in `packages/ui/**/*.vue`.
+- Every user-visible string is a prop or slot (accessible names included); packages never import i18n.
+- Interactive elements: native elements first, a visible `focus-visible` outline (`focus-visible:outline-2 focus-visible:outline-focus`), a hit area of at least 44 x 44 px (`min-h-tap min-w-tap`; a small visual control sits inside a 44 px `label` or `data-tap-target` wrapper), and correct ARIA roles/states.
+- Motion: use `transition-*` classes (their duration is the `base` token). `tokens.css` collapses all CSS transitions and animations under `prefers-reduced-motion`; code that animates in JS must check `matchMedia('(prefers-reduced-motion: reduce)')`.
+- Ids come from `useId()` (every component renders twice on the dev page).
+- Tests sit next to the component (`src/*.test.ts`, Vitest + jsdom + `@vue/test-utils`) and call `expectNoA11yViolations` from `@stamina/ui-test`. Colour contrast, tap size, focus indicators and reduced motion need real layout, so the dev page is checked in Chromium by `apps/web/e2e/ui-kit.spec.ts`.
+
+**Dev UI page**: `pnpm --filter @stamina/web dev`, then open `/dev/ui`. It renders every component in a light and a dark container. Add a component by dropping `<Name>Demo.vue` into `apps/web/src/dev/demos/`. The route exists only when `import.meta.env.DEV` is true, so production builds carry neither the route nor the page (`e2e/dev-page.spec.ts` checks it).
+
+## Translations
+
+`packages/i18n` holds the messages: `src/locales/en.json` (the source) and `el.json`, nested, ICU syntax (`{count, plural, one {# set} other {# sets}}`). `pnpm test` fails when an English key has no Greek value, when a Greek message is not valid ICU or uses different arguments, or when Greek has a key English lacks. The web app compiles messages with `intl-messageformat` (`apps/web/src/i18n.ts`) and picks the locale from the phone (`navigator.languages`). Style guide for Greek: informal «εσύ», gym terms with the English name on first use, Greek number format.

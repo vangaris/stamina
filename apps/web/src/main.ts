@@ -1,10 +1,16 @@
 import { createPinia } from 'pinia';
-import { createApp } from 'vue';
+import { createApp, watchEffect } from 'vue';
 import App from './App.vue';
+import { i18n } from './i18n.ts';
 import { router } from './router.ts';
 import './style.css';
 
-const app = createApp(App).use(createPinia()).use(router);
+const app = createApp(App).use(createPinia()).use(router).use(i18n);
+
+// Screen readers pick pronunciation from <html lang>.
+watchEffect(() => {
+  document.documentElement.lang = i18n.global.locale.value;
+});
 
 async function start() {
   // Sentry must be ready before the first component runs so mount errors are captured. A build

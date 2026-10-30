@@ -1,0 +1,106 @@
+{
+  "$description": "Raw values (tier 1). A brand theme replaces this file only; components never see these directly.",
+  "color": {
+    "$type": "color",
+    "neutral": {
+      "0": { "$value": "#ffffff" },
+      "50": { "$value": "#f6f7f6" },
+      "100": { "$value": "#eceeed" },
+      "200": { "$value": "#dcdfde" },
+      "300": { "$value": "#c3c8c6" },
+      "500": { "$value": "#6b7370" },
+      "600": { "$value": "#565d5a" },
+      "700": { "$value": "#3f4543" },
+      "800": { "$value": "#2a2f2d" },
+      "900": { "$value": "#1a1d1c" },
+      "950": { "$value": "#0f1110" }
+    },
+    "green": {
+      "50": { "$value": "#e8f6ee" },
+      "100": { "$value": "#cdeedb" },
+      "400": { "$value": "#4cc07f" },
+      "700": { "$value": "#17703f" },
+      "800": { "$value": "#145a35" },
+      "900": { "$value": "#0f3f26" }
+    },
+    "blue": {
+      "50": { "$value": "#e8f1fc" },
+      "300": { "$value": "#8ab9f1" },
+      "400": { "$value": "#5a9be8" },
+      "600": { "$value": "#1f66c2" },
+      "900": { "$value": "#0f2f5c" }
+    },
+    "amber": {
+      "50": { "$value": "#fff4d6" },
+      "300": { "$value": "#fbc943" },
+      "400": { "$value": "#f5b820" },
+      "800": { "$value": "#6b4500" },
+      "900": { "$value": "#4a3000" }
+    },
+    "red": {
+      "50": { "$value": "#fdecec" },
+      "300": { "$value": "#f28b82" },
+      "600": { "$value": "#c62828" },
+      "700": { "$value": "#a31f1f" },
+      "900": { "$value": "#5c1212" }
+    },
+    "black-50": { "$value": "#0f111080" }
+  },
+  "font": {
+    "family": {
+      "$type": "fontFamily",
+      "system": {
+        "$value": [
+          "system-ui",
+          "-apple-system",
+          "Segoe UI",
+          "Roboto",
+          "Helvetica Neue",
+          "Arial",
+          "sans-serif"
+        ]
+      }
+    },
+    "size": {
+      "$type": "dimension",
+      "12": { "$value": "0.75rem" },
+      "14": { "$value": "0.875rem" },
+      "16": { "$value": "1rem" },
+      "20": { "$value": "1.25rem" },
+      "24": { "$value": "1.5rem" },
+      "32": { "$value": "2rem" },
+      "48": { "$value": "3rem" }
+    },
+    "leading": {
+      "$type": "number",
+      "tight": { "$value": 1.15 },
+      "snug": { "$value": 1.3 },
+      "normal": { "$value": 1.5 }
+    }
+  },
+  "space": {
+    "$type": "dimension",
+    "0": { "$value": "0rem" },
+    "4": { "$value": "0.25rem" },
+    "8": { "$value": "0.5rem" },
+    "12": { "$value": "0.75rem" },
+    "16": { "$value": "1rem" },
+    "24": { "$value": "1.5rem" },
+    "32": { "$value": "2rem" }
+  },
+  "radius": {
+    "$type": "dimension",
+    "8": { "$value": "0.5rem" },
+    "16": { "$value": "1rem" },
+    "pill": { "$value": "9999px" }
+  },
+  "size": {
+    "$type": "dimension",
+    "44": { "$value": "2.75rem" }
+  },
+  "duration": {
+    "$type": "duration",
+    "150": { "$value": "150ms" },
+    "250": { "$value": "250ms" }
+  }
+}

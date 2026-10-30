@@ -1,0 +1,33 @@
+{
+  "name": "@stamina/ui-test",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./config": "./src/config.js"
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "typecheck": "tsc -p tsconfig.json"
+  },
+  "nx": {
+    "tags": [
+      "type:util",
+      "scope:vue"
+    ]
+  },
+  "dependencies": {
+    "@vitejs/plugin-vue": "^6.0.10",
+    "@vue/test-utils": "^2.5.1",
+    "axe-core": "^4.14.0",
+    "jsdom": "^30.1.3",
+    "vitest": "^5.0.5"
+  },
+  "peerDependencies": {
+    "vue": "^3.5.0"
+  },
+  "devDependencies": {
+    "vue": "^3.5.44"
+  }
+}

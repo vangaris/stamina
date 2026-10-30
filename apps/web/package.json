@@ -10,6 +10,7 @@
     "lint": "eslint .",
     "typecheck": "vue-tsc --noEmit -p tsconfig.json",
     "e2e": "playwright test",
+    "e2e:ui": "playwright test -c playwright.ui-kit.config.ts",
     "generate-icons": "pwa-assets-generator"
   },
   "nx": {
@@ -21,10 +22,24 @@
   "dependencies": {
     "@sentry/vue": "^11.10.0",
     "@stamina/app-core": "workspace:^",
+    "@stamina/i18n": "workspace:^",
     "@stamina/safe-log": "workspace:^",
+    "@stamina/tokens": "workspace:^",
     "@stamina/ui-bottom-nav": "workspace:^",
+    "@stamina/ui-button": "workspace:^",
+    "@stamina/ui-card": "workspace:^",
+    "@stamina/ui-checkbox": "workspace:^",
+    "@stamina/ui-chip": "workspace:^",
+    "@stamina/ui-chip-group": "workspace:^",
+    "@stamina/ui-progress-bar": "workspace:^",
+    "@stamina/ui-sheet": "workspace:^",
+    "@stamina/ui-stepper": "workspace:^",
+    "@stamina/ui-tabs": "workspace:^",
+    "@stamina/ui-text-field": "workspace:^",
+    "@stamina/ui-toast": "workspace:^",
     "pinia": "^4.1.0",
     "vue": "^3.5.44",
+    "vue-i18n": "^11.4.16",
     "vue-router": "^5.4.0"
   },
   "devDependencies": {

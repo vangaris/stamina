@@ -1,0 +1,16 @@
+{
+  "nav": {
+    "label": "Main",
+    "today": "Today",
+    "session": "Session",
+    "meals": "Meals",
+    "progress": "Progress"
+  },
+  "status": {
+    "server": "Server: {state}",
+    "unknown": "Checking…",
+    "ok": "Connected",
+    "degraded": "Database unavailable",
+    "unreachable": "Offline"
+  }
+}

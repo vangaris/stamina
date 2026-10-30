@@ -1,0 +1,51 @@
+{
+  "$description": "Semantic tier, identical in every theme: type, spacing, radius, tap target, motion.",
+  "font": {
+    "family": {
+      "$type": "fontFamily",
+      "sans": { "$value": "{font.family.system}" }
+    },
+    "size": {
+      "$type": "dimension",
+      "xs": { "$value": "{font.size.12}" },
+      "sm": { "$value": "{font.size.14}" },
+      "base": { "$value": "{font.size.16}" },
+      "lg": { "$value": "{font.size.20}" },
+      "xl": { "$value": "{font.size.24}" },
+      "2xl": { "$value": "{font.size.32}" },
+      "3xl": { "$value": "{font.size.48}" }
+    },
+    "leading": {
+      "$type": "number",
+      "xs": { "$value": "{font.leading.snug}" },
+      "sm": { "$value": "{font.leading.snug}" },
+      "base": { "$value": "{font.leading.normal}" },
+      "lg": { "$value": "{font.leading.snug}" },
+      "xl": { "$value": "{font.leading.snug}" },
+      "2xl": { "$value": "{font.leading.tight}" },
+      "3xl": { "$value": "{font.leading.tight}" }
+    }
+  },
+  "space": {
+    "$type": "dimension",
+    "0": { "$value": "{space.0}" },
+    "1": { "$value": "{space.4}" },
+    "2": { "$value": "{space.8}" },
+    "3": { "$value": "{space.12}" },
+    "4": { "$value": "{space.16}" },
+    "6": { "$value": "{space.24}" },
+    "8": { "$value": "{space.32}" },
+    "tap": { "$value": "{size.44}", "$description": "Minimum tap target: 44 px." }
+  },
+  "radius": {
+    "$type": "dimension",
+    "md": { "$value": "{radius.8}" },
+    "lg": { "$value": "{radius.16}" },
+    "pill": { "$value": "{radius.pill}" }
+  },
+  "duration": {
+    "$type": "duration",
+    "fast": { "$value": "{duration.150}" },
+    "base": { "$value": "{duration.250}" }
+  }
+}

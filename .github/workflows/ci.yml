@@ -46,6 +46,29 @@ jobs:
       - uses: nrwl/nx-set-shas@v5
       - run: pnpm nx affected -t lint typecheck test build
 
+  ui-kit:
+    name: UI kit in Chromium
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      # Needs real layout and painting, which jsdom lacks: runs the dev-only /dev/ui page on the
+      # Vite dev server (no database or API). The preview deploy is a production build and has no such page.
+      - run: pnpm --filter @stamina/web exec playwright install --with-deps chromium
+      - run: pnpm --filter @stamina/web e2e:ui
+      - uses: actions/upload-artifact@v7
+        if: failure()
+        with:
+          name: playwright-report-ui-kit
+          path: apps/web/playwright-report
+          retention-days: 7
+
   gitleaks:
     name: Gitleaks
     runs-on: ubuntu-latest

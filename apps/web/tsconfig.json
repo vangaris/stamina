@@ -10,6 +10,7 @@
     "e2e/**/*.ts",
     "vite.config.ts",
     "playwright.config.ts",
+    "playwright.ui-kit.config.ts",
     "pwa-assets.config.ts"
   ]
 }
