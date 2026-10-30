@@ -77,7 +77,7 @@ Each preview API revision gets its own `DATABASE_URL` and `CORS_ORIGINS` as immu
 
 ## Code standards
 
-The default for every implementation; `/code-review` checks the diff against it. Design first: read `skill://codebase-design`, then write down the modules, their interfaces and where tests cross before coding.
+The default for every implementation; `/code-review` checks the diff against it. Design first: read `skill://stamina-architecture` (project skill in `.claude/skills/`, built on `skill://codebase-design`), then write down the modules, their interfaces and where tests cross before coding.
 
 ### Design
 

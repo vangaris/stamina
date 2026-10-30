@@ -15,7 +15,7 @@ AI coach that plans training, food and recovery around the sport a user plays. G
 1. **Read the board.** Run `scripts/tickets.sh`; it prints every ticket's status, ticked boxes and blockers. Resume a ticket marked IN PROGRESS first; otherwise use the one the user named, else the one marked NEXT.
 2. **Claim it.** Set `**Status:** in-progress` in the ticket file and commit, before writing code.
 3. **Branch.** Create `feat/NN-slug` from `main`.
-4. **Design first.** Before any implementation (a ticket, a fix, a refactor), read `skill://codebase-design` and decide the modules, their interfaces and the seams, then lay files out per **Code standards** below. State the design in a few lines (modules, interface, where tests cross) before writing code.
+4. **Design first.** Before any implementation (a ticket, a fix, a refactor), read `skill://stamina-architecture` (it applies `skill://codebase-design`) and decide the modules, their interfaces and the seams, then lay files out per **Code standards** below. For a `packages/ui` component also read `skill://stamina-ui-component`. State the design in a few lines (modules, interface, where tests cross) before writing code.
 5. **Implement** with `/implement`, test-first at the agreed seams. Tick each acceptance box (`- [x]`) in the ticket file as soon as its criterion passes, and commit, so an interrupted session can resume where it left off.
 6. **Finish.** The ticket is done when every box is ticked, the full test suite and typecheck are green, and `/code-review` has run.
 7. **Close it.** Set `**Status:** done`. Squash-merge to `main` with a Conventional title: `feat: NN <ticket title>`.
