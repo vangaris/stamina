@@ -4,7 +4,7 @@
 
 **Blocked by:** 01: Walking skeleton, 03: Theme tokens, core UI kit and i18n
 
-**Status:** ready-for-agent
+**Status:** in-progress
 
 **Roadmap week:** 2
 
