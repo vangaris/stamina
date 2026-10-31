@@ -239,7 +239,7 @@ step "Create project 1: Projects → Create Project. Platform: Vue. Name: stamin
 step "On its page open Settings → Client Keys (DSN) and copy the DSN."
 ask SENTRY_DSN_WEB "Paste the stamina-web DSN:"
 eu_dsn "$SENTRY_DSN_WEB" || die "That is not an https DSN on *.de.sentry.io. Check you are on the EU site."
-step "Create project 2: Create Project. Platform: JavaScript or Deno. Name: stamina-api."
+step "Create project 2: Create Project. Platform: JavaScript (the API runs on Cloudflare Workers). Name: stamina-api."
 step "Again Settings → Client Keys (DSN) → copy the DSN."
 ask SENTRY_DSN_API "Paste the stamina-api DSN:"
 eu_dsn "$SENTRY_DSN_API" || die "That is not an https DSN on *.de.sentry.io."

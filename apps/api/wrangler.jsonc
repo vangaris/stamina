@@ -1,0 +1,12 @@
+{
+  // The Hono API on Cloudflare Workers. Previews are deployed as `stamina-api-pr-<N>` by
+  // scripts/workers-deploy.mjs, which overrides `name`.
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "stamina-api",
+  "main": "src/worker.ts",
+  "compatibility_date": "2026-01-01",
+  "workers_dev": true,
+  // Bindings are not listed here: DATABASE_URL and SENTRY_DSN are secrets, and NEON_AUTH_BASE_URL,
+  // CORS_ORIGINS and SENTRY_ENVIRONMENT are vars, all supplied per environment by
+  // scripts/workers-deploy.mjs. For `pnpm dev:worker` put them in `.dev.vars` (gitignored).
+}

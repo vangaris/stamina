@@ -8,7 +8,7 @@
 #
 # Env (also read from ./.env, or the file named by ENV_FILE):
 #   UPTIMEROBOT_API_KEY  API key from https://dashboard.uptimerobot.com/integrations (never printed)
-#   PROD_API_URL         production API origin, e.g. https://stamina-api.vangaris.deno.net
+#   PROD_API_URL         production API origin, e.g. https://stamina-api.<subdomain>.workers.dev
 #   ALERT_EMAIL          where alerts go (Vang's email)
 # Optional:
 #   MONITOR_NAME         friendly name, also the identity of the monitor (default "stamina-api /health")
@@ -50,7 +50,7 @@ if [[ -f "$env_file" ]]; then
   set +a
 fi
 
-: "${PROD_API_URL:?PROD_API_URL is required, e.g. https://stamina-api.vangaris.deno.net}"
+: "${PROD_API_URL:?PROD_API_URL is required, e.g. https://stamina-api.<subdomain>.workers.dev}"
 : "${ALERT_EMAIL:?ALERT_EMAIL is required}"
 if [[ "$dry_run" == false ]]; then
   : "${UPTIMEROBOT_API_KEY:?UPTIMEROBOT_API_KEY is required (https://dashboard.uptimerobot.com/integrations)}"

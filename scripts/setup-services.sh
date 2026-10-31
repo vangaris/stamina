@@ -227,15 +227,14 @@ flush_stdin() { local junk; while read -r -t 1 -n 10000 junk; do :; done; }
 
 REPO_NAME="${REPO_NAME:-stamina}"
 NEON_API="https://console.neon.tech/api/v2"
-DENO_APP_SLUG="${DENO_APP_SLUG:-stamina-api}"
 PAGES_PROJECT="${PAGES_PROJECT:-stamina-web}"
 CF_API="https://api.cloudflare.com/client/v4"
 
 run_wizard() {
 
-TOTAL_STAGES=5
+TOTAL_STAGES=4
 
-banner "Stamina: GitHub repo, Neon, Deno Deploy and Cloudflare Pages"
+banner "Stamina: GitHub repo, Neon and Cloudflare (Pages + Workers)"
 
 # ── 1. GitHub ─────────────────────────────────────────────────────────────
 stage "GitHub: sign in, create the private repo, push"
@@ -324,46 +323,12 @@ set_secret NEON_API_KEY "$NEON_API_KEY"
 set_var NEON_PROJECT_ID "$NEON_PROJECT_ID"
 set_var NEON_PARENT_BRANCH "dev"
 
-# ── 3. Deno Deploy ────────────────────────────────────────────────────────
-stage "Deno Deploy: EU app for the API"
-command -v deno >/dev/null 2>&1 || die "deno is not installed. Run: brew install deno"
-open_url "https://console.deno.com"
-step "Sign in and create an organization if you have none (free)."
-step "Look at the URL: console.deno.com/<ORG>. That <ORG> is your organization slug."
-ask DENO_ORG "Organization slug:"
-open_url "https://console.deno.com/${DENO_ORG}"
-step "In the top menu click Settings, scroll to 'Organization Tokens', click '+ Create a new token', name it 'stamina-ci', copy it (shown once)."
-note "Menu: Applications · Sandboxes · Domains · Databases · Metrics · Billing · Settings."
-ask_secret DENO_DEPLOY_TOKEN "Paste the Deno Deploy token:"
-[[ "$(api GET "https://api.deno.com/v2/apps" "$DENO_DEPLOY_TOKEN")" == 200 ]] || die "Deno Deploy rejected that token: $(body)"
-write_env DENO_DEPLOY_TOKEN "$DENO_DEPLOY_TOKEN"
-if [[ "$(api GET "https://api.deno.com/v2/apps/${DENO_APP_SLUG}" "$DENO_DEPLOY_TOKEN")" == 200 ]]; then
-  say "App ${DENO_APP_SLUG} already exists."
-else
-  flush_stdin
-  confirm "Create Deno Deploy app '${DENO_APP_SLUG}' in region eu (deploys a 1-line placeholder; real deploys come from CI)?" || die "Stopped before creating the app."
-  tmp=$(mktemp -d)
-  printf 'export default { fetch: () => new Response("stamina-api placeholder") };\n' > "$tmp/server.js"
-  # The placeholder's first build may fail (the app has no default entrypoint yet); that is fine:
-  # CI deploys real revisions with their own config. What matters is that the app now exists.
-  (cd "$tmp" && DENO_DEPLOY_TOKEN="$DENO_DEPLOY_TOKEN" deno deploy create --org "$DENO_ORG" \
-    --app "$DENO_APP_SLUG" --source local --runtime-mode dynamic --entrypoint server.js \
-    --build-timeout 5 --build-memory-limit 1024 --region eu -y) || true
-  rm -rf "$tmp"
-  [[ "$(api GET "https://api.deno.com/v2/apps/${DENO_APP_SLUG}" "$DENO_DEPLOY_TOKEN")" == 200 ]] \
-    || die "The Deno app was not created. Read the error above (organizations: deno deploy orgs list)."
-fi
-write_env DENO_ORG "$DENO_ORG"
-write_env DENO_DEPLOY_TOKEN "$DENO_DEPLOY_TOKEN"
-set_secret DENO_DEPLOY_TOKEN "$DENO_DEPLOY_TOKEN"
-set_var DENO_APP "$DENO_APP_SLUG"
-
-# ── 4. Cloudflare Pages ───────────────────────────────────────────────────
-stage "Cloudflare Pages: project for the web app"
+# ── 3. Cloudflare Pages and Workers ───────────────────────────────────────────────────
+stage "Cloudflare: Pages project for the web app, token for the API Worker"
 open_url "https://dash.cloudflare.com/profile/api-tokens"
 step "Sign in (or sign up, free plan)."
 step "Create Token → 'Create Custom Token' → Get started."
-step "Permissions: Account · Cloudflare Pages · Edit. Account Resources: Include · your account."
+step "Permissions (add both rows): Account · Cloudflare Pages · Edit, and Account · Workers Scripts · Edit. Account Resources: Include · your account."
 step "Continue to summary → Create Token, copy the token (shown once)."
 ask_secret CLOUDFLARE_API_TOKEN "Paste the Cloudflare API token:"
 open_url "https://dash.cloudflare.com"
@@ -392,7 +357,7 @@ set_secret CLOUDFLARE_API_TOKEN "$CLOUDFLARE_API_TOKEN"
 set_var CLOUDFLARE_ACCOUNT_ID "$CLOUDFLARE_ACCOUNT_ID"
 set_var CLOUDFLARE_PAGES_PROJECT "$PAGES_PROJECT"
 
-# ── 5. First PR and main protection ───────────────────────────────────────
+# ── 4. First PR and main protection ───────────────────────────────────────
 stage "GitHub: open the Ticket 01 PR and protect main"
 if gh pr view feat/01-walking-skeleton >/dev/null 2>&1; then
   say "A PR for feat/01-walking-skeleton already exists."
@@ -427,7 +392,7 @@ else
   warn "GitHub refused branch protection on this plan; recorded below."
 fi
 open_url "$(gh pr view feat/01-walking-skeleton --json url --jq .url)"
-note "The PR's checks start now. The Preview workflow is the first real test of Neon + Deno Deploy + Cloudflare."
+note "The PR's checks start now. The Preview workflow is the first real test of Neon + the Cloudflare Worker + Cloudflare Pages."
 
 finish
 }

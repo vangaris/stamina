@@ -1,7 +1,7 @@
 import { meResponseSchema } from '@stamina/contracts';
 import { Hono } from 'hono';
 import { authenticate, requireUserId, type TokenVerifier } from '../auth/index.ts';
-import type { Db } from '../db/client.ts';
+import type { Db } from '../db/types.ts';
 import { appUser } from '../db/schema.ts';
 import { withUser } from '../db/with-user.ts';
 import type { AppEnv } from '../request-log.ts';
