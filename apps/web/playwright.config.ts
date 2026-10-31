@@ -78,7 +78,7 @@ export default defineConfig({
           },
           {
             command: 'pnpm --filter @stamina/api db:dev',
-            env: { DEV_DB_PORT: String(dbPort) },
+            env: { DEV_DB_PORT: String(dbPort), DEV_DB_DIR: '.pgdata-e2e' },
             port: dbPort,
             reuseExistingServer: !process.env.CI,
             timeout: 120_000,

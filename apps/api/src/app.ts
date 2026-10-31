@@ -11,7 +11,7 @@ import { HTTPException } from 'hono/http-exception';
 import type { AiProvider } from './ai/provider.ts';
 import type { TokenVerifier } from './auth/index.ts';
 import { isOriginAllowed } from './cors.ts';
-import type { Db } from './db/client.ts';
+import type { Db } from './db/types.ts';
 import { ApiErrorCode } from './enums/api-error-code.ts';
 import type { ErrorReporter } from './error-reporter.ts';
 import { requestLog, type AppEnv, type LogSink } from './request-log.ts';

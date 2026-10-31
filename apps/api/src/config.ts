@@ -4,16 +4,14 @@ import { SentryEnvironment } from './enums/sentry-environment.ts';
 
 const JWKS_PATH = '/.well-known/jwks.json';
 
-const HTTP_PROTOCOLS: readonly string[] = ['http:', 'https:'];
-
-const httpUrl = z
-  .url()
-  .refine((value) => HTTP_PROTOCOLS.includes(new URL(value).protocol), 'must be an http(s) URL');
+/** Any http(s) URL, including `localhost` and IP hosts (local dev and the e2e fake auth server); never throws. */
+const isHttpUrl = (value: string) =>
+  URL.canParse(value) && /^https?:$/.test(new URL(value).protocol);
 
 const envSchema = z.object({
   DATABASE_URL: z.string().min(1),
   /** Neon Auth `base_url` (it ends with `/auth`): its JWKS and token issuer are derived from it. */
-  NEON_AUTH_BASE_URL: httpUrl,
+  NEON_AUTH_BASE_URL: z.string().refine(isHttpUrl, 'NEON_AUTH_BASE_URL must be an http(s) URL'),
   /** Comma-separated web origins allowed to call the API; `https://*.example.pages.dev` matches subdomains. */
   CORS_ORIGINS: z.string().default(''),
   /** Sentry EU DSN. Unset or empty disables error reporting. */

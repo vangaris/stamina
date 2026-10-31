@@ -1,5 +1,5 @@
 # Releases: release-please keeps a release PR open on main. Merging it tags the release and, in this
-# same workflow run, deploys to production: migrate database -> API (Deno Deploy) -> web (Cloudflare
+# same workflow run, deploys to production: migrate database -> API (Cloudflare Workers) -> web (Cloudflare
 # Pages) -> smoke check. Any failing step stops the chain; the job summary names it and how to roll back.
 #
 # Why one workflow and no `on: release`: a tag or release created with the default GITHUB_TOKEN does not
@@ -9,11 +9,11 @@
 # the rollback: redeploy the previous tag. See docs/releasing.md.
 #
 # Needs (see docs/releasing.md):
-#   secrets: DENO_DEPLOY_TOKEN, CLOUDFLARE_API_TOKEN, PROD_DATABASE_URL, PROD_DATABASE_URL_POOLED
+#   secrets: CLOUDFLARE_API_TOKEN (Pages edit + Workers Scripts edit), PROD_DATABASE_URL, PROD_DATABASE_URL_POOLED
 #            optional RELEASE_PLEASE_TOKEN (fine-grained PAT, so CI runs on the release PR)
-#   vars:    DENO_APP, CLOUDFLARE_ACCOUNT_ID, CLOUDFLARE_PAGES_PROJECT, PROD_API_URL, PROD_WEB_URL,
+#   vars:    CLOUDFLARE_ACCOUNT_ID, CLOUDFLARE_PAGES_PROJECT, PROD_API_URL (the Worker's workers.dev URL), PROD_WEB_URL,
 #            NEON_AUTH_BASE_URL (the production branch's Neon Auth base_url, docs/auth.md)
-#            optional DENO_ORG (summary links), SENTRY_DSN_API, SENTRY_DSN_WEB (Sentry stays off when unset)
+#            optional SENTRY_DSN_API, SENTRY_DSN_WEB (Sentry stays off when unset)
 name: Release
 
 on:
@@ -99,18 +99,16 @@ jobs:
       - id: preflight
         name: Check production configuration
         env:
-          DENO_DEPLOY_TOKEN: ${{ secrets.DENO_DEPLOY_TOKEN }}
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           PROD_DATABASE_URL: ${{ secrets.PROD_DATABASE_URL }}
           PROD_DATABASE_URL_POOLED: ${{ secrets.PROD_DATABASE_URL_POOLED }}
-          DENO_APP: ${{ vars.DENO_APP }}
           CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
           CLOUDFLARE_PAGES_PROJECT: ${{ vars.CLOUDFLARE_PAGES_PROJECT }}
         run: |
           set -euo pipefail
           missing=()
-          for name in DENO_DEPLOY_TOKEN CLOUDFLARE_API_TOKEN PROD_DATABASE_URL PROD_DATABASE_URL_POOLED \
-            DENO_APP CLOUDFLARE_ACCOUNT_ID CLOUDFLARE_PAGES_PROJECT PROD_API_URL PROD_WEB_URL NEON_AUTH_BASE_URL; do
+          for name in CLOUDFLARE_API_TOKEN PROD_DATABASE_URL PROD_DATABASE_URL_POOLED \
+            CLOUDFLARE_ACCOUNT_ID CLOUDFLARE_PAGES_PROJECT PROD_API_URL PROD_WEB_URL NEON_AUTH_BASE_URL; do
             [ -n "${!name:-}" ] || missing+=("$name")
           done
           if [ "${#missing[@]}" -gt 0 ]; then
@@ -125,6 +123,20 @@ jobs:
           done
           if ! [[ "$NEON_AUTH_BASE_URL" =~ ^https://[^/]+/.+/auth$ ]]; then
             echo "::error title=NEON_AUTH_BASE_URL is malformed::Use Neon's base_url for the production branch, https://host/<database>/auth (scripts/ops/neon-auth-setup.mjs --branch main prints it)."
+            exit 1
+          fi
+          # The token must work and the account needs a workers.dev subdomain; PROD_API_URL (baked into the
+          # web build) must be the Worker's own URL. (Whether the token can edit Workers is only known at deploy.)
+          subdomain="$(curl --silent --max-time 20 \
+            --header "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
+            "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/workers/subdomain" \
+            | jq -r '.result.subdomain // empty')"
+          if [ -z "$subdomain" ]; then
+            echo "::error title=No workers.dev subdomain::Cloudflare did not return a workers.dev subdomain for the account: the token is invalid or has no access, or no subdomain is registered (free; dashboard > Workers & Pages). See docs/infra.md, 'Runbook: Cloudflare token and Workers'."
+            exit 1
+          fi
+          if [ "$PROD_API_URL" != "https://stamina-api.$subdomain.workers.dev" ]; then
+            echo "::error title=PROD_API_URL does not match the Worker::PROD_API_URL is '$PROD_API_URL' but the production Worker is served at https://stamina-api.$subdomain.workers.dev."
             exit 1
           fi
 
@@ -162,20 +174,27 @@ jobs:
           # Direct (non-pooled) connection, which migrations need.
           DATABASE_URL: ${{ secrets.PROD_DATABASE_URL }}
       - id: deploy_api
-        name: Deploy API (Deno Deploy, production)
-        run: node scripts/deno-deploy.mjs production
+        name: Deploy API (Cloudflare Workers, production)
+        run: node scripts/workers-deploy.mjs production
         env:
-          DENO_DEPLOY_TOKEN: ${{ secrets.DENO_DEPLOY_TOKEN }}
-          DENO_APP: ${{ vars.DENO_APP }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
           # Pooled URL: the API reaches Neon over WebSockets at runtime.
           DATABASE_URL: ${{ secrets.PROD_DATABASE_URL_POOLED }}
           CORS_ORIGINS: ${{ env.PROD_WEB_URL }}
+          NEON_AUTH_BASE_URL: ${{ env.NEON_AUTH_BASE_URL }}
           SENTRY_DSN: ${{ vars.SENTRY_DSN_API }}
           RELEASE_TAG: ${{ steps.target.outputs.tag }}
           GIT_SHA: ${{ steps.commit.outputs.sha }}
       - id: api_health
         name: Check the production API before shipping the web
+        env:
+          DEPLOYED_URL: ${{ steps.deploy_api.outputs.url }}
         run: |
+          if [ "$DEPLOYED_URL" != "$PROD_API_URL" ]; then
+            echo "::error title=PROD_API_URL does not match the deployed Worker::The Worker is at '$DEPLOYED_URL' but PROD_API_URL is '$PROD_API_URL'."
+            exit 1
+          fi
           curl --fail --silent --show-error --max-time 20 \
             --retry 6 --retry-delay 5 --retry-all-errors \
             --output /dev/null "$PROD_API_URL/health"
@@ -224,9 +243,7 @@ jobs:
           TAG: ${{ steps.target.outputs.tag }}
           SHA: ${{ steps.commit.outputs.sha }}
           JOB_STATUS: ${{ job.status }}
-          REVISION: ${{ steps.deploy_api.outputs.revision }}
-          DENO_ORG: ${{ vars.DENO_ORG }}
-          DENO_APP: ${{ vars.DENO_APP }}
+          VERSION: ${{ steps.deploy_api.outputs.version }}
           # Outcome of each step, in run order.
           OUTCOMES: >-
             target=${{ steps.target.outcome }}
@@ -248,14 +265,13 @@ jobs:
           done
           # A failure outside the named steps (checkout, tool setup) still happens before production.
           [ -z "$failed" ] && [ "$JOB_STATUS" != success ] && failed=setup
-          console="the Deno Deploy console"
-          [ -n "$DENO_ORG" ] && console="[the Deno Deploy console](https://console.deno.com/$DENO_ORG/$DENO_APP)"
+          console="the Cloudflare dashboard (Workers & Pages > stamina-api > Deployments)"
           {
             if [ -z "$failed" ]; then
               echo "## Production deploy of $TAG succeeded"
               echo
               echo "- Commit: \`$SHA\`"
-              echo "- API revision: \`${REVISION:-unknown}\` ($PROD_API_URL)"
+              echo "- API Worker version: \`${VERSION:-unknown}\` ($PROD_API_URL)"
               echo "- Web: $PROD_WEB_URL"
               echo "- Steps: migrate, API, web and smoke check all passed."
               echo "- Previous release to roll back to: Actions > Release > Run workflow with the previous tag."
@@ -272,12 +288,12 @@ jobs:
                 deploy_api | api_health)
                   echo "**The web is still on the previous release; the database already has this release's migrations** (safe: migrations follow expand/contract, so the previous API keeps working)."
                   echo
-                  echo "- If production serves a broken API revision, re-promote the previous one: \`node scripts/deno-deploy.mjs revisions\` lists them (newest first), then \`node scripts/deno-deploy.mjs promote <revision-id>\` (needs DENO_DEPLOY_TOKEN and DENO_APP), or promote it in $console."
+                  echo "- If production serves a broken API version, roll the Worker back to the previous one: \`node scripts/workers-deploy.mjs rollback\` (needs CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID; \`rollback <version-id>\` picks a version), or roll back in $console."
                   echo "- Or run this workflow with the previous release tag." ;;
                 *)
                   echo "**The database and API are on $TAG; the web may or may not be.**"
                   echo
-                  echo "- API: \`node scripts/deno-deploy.mjs revisions\`, then \`node scripts/deno-deploy.mjs promote <revision-id>\` for the previous revision, or promote it in $console."
+                  echo "- API: \`node scripts/workers-deploy.mjs rollback\` for the previous Worker version, or roll back in $console."
                   echo "- Web: Cloudflare dashboard > Workers & Pages > the project > Deployments > the previous production deployment > Rollback."
                   echo "- Or run this workflow with the previous release tag, which redeploys both." ;;
               esac

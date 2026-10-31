@@ -24,7 +24,7 @@ export interface ErrorReporterOptions {
 
 const FLUSH_TIMEOUT_MS = 2000;
 
-/** Plain `fetch` works on both Node and Deno Deploy, unlike the Node SDK's http-module transport. */
+/** Plain `fetch` works on Node and on Cloudflare Workers, unlike the Node SDK's http-module transport. */
 function fetchTransport(options: BaseTransportOptions): Transport {
   return createTransport(options, async (request) => {
     const response = await fetch(options.url, {
@@ -44,7 +44,7 @@ function fetchTransport(options: BaseTransportOptions): Transport {
 
 /**
  * Uses `@sentry/core` directly: `@sentry/node` depends on OpenTelemetry module patching that
- * neither an esbuild bundle nor Deno Deploy supports. Only exception type and stack frames leave
+ * neither a bundled Worker nor an edge runtime supports. Only exception type and stack frames leave
  * the process (see `@stamina/safe-log`).
  */
 export function createErrorReporter(options: ErrorReporterOptions): ErrorReporter {

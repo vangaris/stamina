@@ -1,5 +1,5 @@
 import { sql } from 'drizzle-orm';
-import type { Db } from './client.ts';
+import type { Db } from './types.ts';
 import { APP_ROLE, USER_ID_SETTING } from './config.ts';
 
 /** The transaction handle `fn` receives; the same shape on the `pg` and Neon serverless drivers. */
