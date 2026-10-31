@@ -424,10 +424,34 @@ describe('neon-auth-setup.mjs', () => {
   /** A Neon project with branches dev (br-dev-1) and main (br-main-1); `auth` maps branch id -> state. */
   const neon = () => {
     const auth = {};
-    const state = { auth };
+    // Every branch has a read-write compute endpoint unless a test removes it.
+    const endpoints = {
+      'br-dev-1': [{ id: 'ep-dev-1', type: 'read_write', current_state: 'idle' }],
+      'br-main-1': [{ id: 'ep-main-1', type: 'read_write', current_state: 'idle' }],
+      'br-pr-7': [{ id: 'ep-pr-7', type: 'read_write', current_state: 'idle' }],
+    };
+    const state = { auth, endpoints };
     return [
       (req, url, body) => {
         const path = url.pathname;
+        if (path === '/api/v2/projects/proj-1/endpoints' && req.method === 'POST') {
+          const created = {
+            id: `ep-new-${body.endpoint.branch_id}`,
+            ...body.endpoint,
+            current_state: 'init',
+          };
+          endpoints[body.endpoint.branch_id] = [created];
+          return [201, { endpoint: created }];
+        }
+        if (path.startsWith('/api/v2/projects/proj-1/endpoints/')) {
+          const id = path.split('/').pop();
+          const found = Object.values(endpoints)
+            .flat()
+            .find((e) => e.id === id);
+          if (!found) return [404, {}];
+          found.current_state = 'idle';
+          return [200, { endpoint: found }];
+        }
         if (!path.startsWith(prefix)) return [404, {}];
         const rest = path.slice(prefix.length);
         const branches = [
@@ -440,6 +464,7 @@ describe('neon-auth-setup.mjs', () => {
         const branch = branches.find((b) => b.id === id);
         if (!branch) return [404, { code: 'NOT_FOUND' }];
         if (tail.length === 0) return [200, { branch }];
+        if (tail[0] === 'endpoints') return [200, { endpoints: endpoints[id] ?? [] }];
         if (tail[0] !== 'auth') return [404, {}];
         const section = tail.slice(1).join('/');
         const a = auth[id];
@@ -500,6 +525,42 @@ describe('neon-auth-setup.mjs', () => {
   };
   const sent = (api, method, suffix) =>
     api.requests.filter((r) => r.method === method && r.path.endsWith(suffix));
+
+  it('creates a read-write endpoint on a branch that has none, and leaves an existing one alone', async () => {
+    const { api, state } = await start();
+    state.endpoints['br-dev-1'] = [];
+    const first = await runNode(script, ['--branch', 'dev'], {
+      ...envFor(api, { NEON_ENDPOINT_POLL_MS: '1' }),
+      ...google,
+    });
+    assert.equal(first.code, 0, first.all);
+    const created = api.requests.filter(
+      (r) => r.method === 'POST' && r.path === '/api/v2/projects/proj-1/endpoints',
+    );
+    assert.equal(created.length, 1);
+    assert.deepEqual(created[0].body.endpoint, {
+      branch_id: 'br-dev-1',
+      type: 'read_write',
+    });
+    assert.match(first.stdout, /created a read-write compute endpoint/);
+    // Auth is enabled only after the endpoint exists.
+    const order = api.requests.map((r) => `${r.method} ${r.path}`);
+    assert.ok(
+      order.indexOf('POST /api/v2/projects/proj-1/endpoints') <
+        order.indexOf('POST /api/v2/projects/proj-1/branches/br-dev-1/auth'),
+    );
+
+    const again = await runNode(script, ['--branch', 'dev'], envFor(api, google));
+    api.close();
+    assert.equal(again.code, 0, again.all);
+    assert.equal(
+      api.requests.filter(
+        (r) => r.method === 'POST' && r.path.endsWith('/projects/proj-1/endpoints'),
+      ).length,
+      1,
+    );
+    noSecrets(first);
+  });
 
   it('--dry-run sends nothing, needs no keys and redacts secrets', async () => {
     const api = await mock(() => [500, {}]);

@@ -162,6 +162,8 @@ const redact = (body) =>
     Object.entries(body).map(([k, v]) => [k, SECRET_FIELDS.has(k) ? '<redacted>' : v]),
   );
 
+const ENDPOINT_POLLS = 30;
+const ENDPOINT_POLL_MS = Number(process.env.NEON_ENDPOINT_POLL_MS ?? 2000);
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 function createNeon({ base, apiKey, projectId }) {
@@ -192,6 +194,29 @@ function createNeon({ base, apiKey, projectId }) {
 const fail = (what, res) => {
   throw new Error(`${what} failed: HTTP ${res.status} ${res.text.slice(0, 600)}`);
 };
+
+/**
+ * Neon Auth keeps its data in the branch's database, so the branch needs a read-write compute
+ * endpoint ("no read-write endpoint found for branch" otherwise). A data-free parent branch such as
+ * `dev` has none until one is created; it scales to zero when idle. Waits until it has left `init`.
+ */
+async function ensureEndpoint(neon, branchId) {
+  const listed = await neon('GET', `/branches/${branchId}/endpoints`);
+  if (!listed.ok) fail('listing the branch endpoints', listed);
+  const existing = (listed.json?.endpoints ?? []).find((e) => e.type === 'read_write');
+  if (existing) return { id: existing.id, created: false };
+  const created = await neon('POST', '/endpoints', {
+    endpoint: { branch_id: branchId, type: 'read_write' },
+  });
+  if (!created.ok) fail('creating a read-write endpoint', created);
+  const id = created.json?.endpoint?.id;
+  for (let attempt = 0; id && attempt < ENDPOINT_POLLS; attempt++) {
+    const res = await neon('GET', `/endpoints/${id}`);
+    if (res.ok && res.json?.endpoint?.current_state !== 'init') break;
+    await sleep(ENDPOINT_POLL_MS);
+  }
+  return { id, created: true };
+}
 
 /** Returns the branch's Neon Auth integration, enabling it when the branch has none yet. */
 async function ensureAuth(neon, branchId) {
@@ -312,6 +337,15 @@ function printDryRun({ options, origins, smtp, google }) {
     byId ? b : `${project}/branches?search=${encodeURIComponent(options.branch)}&limit=100`,
     'resolve the branch',
   );
+  add('GET', `${b}/endpoints`, 'does the branch have a read-write compute endpoint?');
+  add(
+    'POST',
+    `${project}/endpoints`,
+    'only when it has none (Neon Auth needs one; scales to zero)',
+    {
+      endpoint: { branch_id: '<branch id>', type: 'read_write' },
+    },
+  );
   add('GET', `${b}/auth`, 'read the integration and its base_url');
   add('POST', `${b}/auth`, 'only when Auth is not enabled yet', { auth_provider: AUTH_PROVIDER });
   if (!options.preview) {
@@ -421,6 +455,11 @@ async function main() {
   const branch = await resolveBranch(neon, options.branch);
   requireOrigins(options, branch.name, origins);
   const localhostAllowed = branch.name === DEV_BRANCH;
+  const endpoint = await ensureEndpoint(neon, branch.id);
+  if (endpoint.created)
+    console.log(
+      `created a read-write compute endpoint ${endpoint.id} on ${branch.name} (scales to zero when idle)`,
+    );
   const { auth, enabled } = await ensureAuth(neon, branch.id);
   if (!auth?.base_url) throw new Error('Neon returned no base_url for the Auth integration');
 
