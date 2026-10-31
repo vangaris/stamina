@@ -140,7 +140,7 @@ Stamina is a mobile-first web app (PWA) and an AI coach that plans my training, 
 - **Client layering**:
   - container component → one composable → `mediator.send(command | query)` → pipeline (validate → log-safe → offline-queue → error-map → timing) → handler function → domain + services from `createServices(env)` → API client or local storage.
   - Handlers write to stores; stores hold state only; presentational components take props and emit events.
-- **Server**: a Hono app on Deno Deploy EU.
+- **Server**: a Hono app. Phase A runs it on **Cloudflare Workers** (free plan, no card); at launch it moves to an EU-guaranteed host (Cloud Run europe-west1 or Deno Deploy EU), which needs an entry file and no rewrite. See **Phases**.
   - The domain rules run here and **the server is authoritative**: it computes Programs, Adaptations, targets and outcomes.
   - The client may reuse domain functions for instant feedback (e.g. a Load preview), but the server value wins.
 
@@ -241,14 +241,22 @@ Stamina is a mobile-first web app (PWA) and an AI coach that plans my training, 
 
 | Concern | Choice |
 |---|---|
-| Environments | local / per-PR preview (Cloudflare Pages + Deno Deploy + Neon branch) / production |
-| Infrastructure as code | OpenTofu (state in R2) for Cloudflare, Neon, Sentry; scripts for Deno Deploy, UptimeRobot, Brevo |
-| Backups | nightly encrypted `pg_dump` to EU R2, kept 30 days; monthly restore test |
+| Environments | local / per-PR preview (Cloudflare Pages + Cloudflare Worker + Neon branch) / production |
+| Infrastructure as code | OpenTofu for Cloudflare, Neon, Sentry (state in R2 from Phase B; local state until then); scripts for UptimeRobot, Brevo, Neon Auth; the Worker is deployed by `wrangler` in GitHub Actions |
+| Backups | Phase B: nightly encrypted `pg_dump` to EU R2, kept 30 days; monthly restore test |
 | Monitoring | Sentry EU with PII scrubbing; UptimeRobot on `/health`; daily digest |
 | Logging | allowlisted fields only, 14-day retention |
 | Rate limits | per user |
 
 **Engineering**: trunk-based squash merges; Conventional PR titles; release-please; CI per PR (nx affected lint / typecheck / tests / build, Gitleaks, OSV-Scanner, preview, Playwright + axe, prompt eval on prompt changes, `tofu plan` on infra changes); agents work only via PRs; CODEOWNERS on safety-critical paths.
+
+## Phases
+
+**Phase A, owner-only (now).** Vang is the only user. **Nothing may need a payment method**: every service is on a free tier that asks for no card, and the AI runs in rules-only mode (the "unavailable" provider: rules-picked Sessions, fixed meal templates). Tickets 01-20 and 25.
+
+**Phase B, launch.** Other users, real data, payment methods. Tickets 21-24: beta operations, Greek completion, launch hardening and R2 backups, plus the items that need a card: Anthropic with its monthly cap, an EU-guaranteed API host, R2, subscriptions. Vang adds production data and payments after Phase A, and only if the app earns a launch.
+
+Rule for Phase A work: never add a dependency or a service that needs a card. If one is unavoidable, stop and record it as a Phase B item.
 
 ## Testing Decisions
 
@@ -302,4 +310,4 @@ Stamina is a mobile-first web app (PWA) and an AI coach that plans my training, 
 
 ## Tickets
 
-Published by `/to-tickets`: 23 tracer-bullet tickets in `issues/` (01 walking skeleton → 23 launch hardening), numbered in dependency order with blocking edges and roadmap weeks. Frontier at publication: 01.
+Published by `/to-tickets`: 23 tracer-bullet tickets in `issues/` (01 walking skeleton → 23 launch hardening), numbered in dependency order with blocking edges and roadmap weeks. Frontier at publication: 01. Ticket 24 (R2) was added when ticket 02 closed, and ticket 25 (API on Cloudflare Workers) when Deno Deploy asked for a card.

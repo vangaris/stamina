@@ -42,4 +42,5 @@ Full layout, examples and the review checklist: `docs/development.md`, "Code sta
 - **Rules own the numbers**: every number, schedule and safety outcome comes from domain rules. The AI picks pre-filtered exercise IDs and writes meal ideas as ingredient IDs.
 - **Copy**: wellness wording only (see the never-advise list in Safety rules). Every string exists in EN and EL.
 - **Safety-critical paths need Vang's explicit sign-off note in the PR**: Screening and stop flags, copy, AI prompts and validators, migrations.
-- **No GitHub repo yet**: work on local branches and merge to `main` locally until `gh` is set up.
+- **Phase A (owner-only): nothing may need a payment method.** Free tiers without a card only; the AI runs as the "unavailable" provider (rules and templates). If something needs a card, stop and record it as a Phase B item (see the spec, "Phases").
+- **GitHub**: the repo is `vangaris/stamina`. Work on a `feat/NN-slug` branch, open a PR (squash-merge only; the title is a Conventional Commit), and merge it there once CI is green.

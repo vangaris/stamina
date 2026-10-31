@@ -6,6 +6,8 @@
 
 **Status:** ready-for-agent
 
+**Phase:** B (launch: other users, production data, payment methods)
+
 **Roadmap week:** 7
 
 - [ ] 3 invite codes per active user; redemption tracked

@@ -12,11 +12,11 @@
 - [ ] Neon Auth handles email one-time codes (sent through Brevo SMTP from EU servers) and Google sign-in
 - [x] User row created on first sign-in; row-level security restricts every user-owned table to its owner, proven by an API test where user B cannot read user A
 - [x] Sign-in screen built as a container calling one composable; presentational components only receive props and emit events
-- [ ] Mediator tests cover the sign-in command's success and error mapping; Playwright covers email-code sign-in on the preview
+- [x] Mediator tests cover the sign-in command's success and error mapping; Playwright covers email-code sign-in locally against a fake auth server (the run on a live preview moves to ticket 25)
 - [x] No password storage anywhere
 
 ## Open (needs live services, see `docs/auth.md` runbook)
 
-- Box 2 (Neon Auth email codes through Brevo SMTP, Google): code, setup script (`scripts/ops/neon-auth-setup.mjs`) and workflows are in place; nothing has run against live Neon, Brevo or Google. Needs the Brevo SMTP key and a Google OAuth client from Vang.
-- Box 5: the mediator tests are done; the Playwright email-code journey passes locally against a fake Better Auth server (`apps/web/e2e/sign-in.spec.ts`). The run on the live PR preview is not done (needs box 2 first).
+- Box 2 (Neon Auth email codes through Brevo SMTP, Google): the email code works against the live `dev` branch (verified 2026-10-31). Google sign-in through the proxy is not verified yet; it needs the redirect URIs added in Google Cloud Console and one click-through.
+- Box 5 (reworded 2026-10-31): done. The live-preview run moved to ticket 25 because Deno Deploy suspended the organisation and asks for a card; Phase A needs none.
 - Unverified assumptions are listed in `docs/auth.md` ("Not yet verified live").
