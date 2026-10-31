@@ -1,5 +1,11 @@
+<script setup lang="ts">
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
+</script>
+
 <template>
   <section>
-    <h1 class="text-2xl font-semibold">Meals</h1>
+    <h1 class="text-xl font-semibold">{{ t('nav.meals') }}</h1>
   </section>
 </template>

@@ -6,6 +6,8 @@
 
 **Status:** ready-for-agent
 
+**Phase:** B (launch: other users, production data, payment methods)
+
 **Roadmap week:** 1
 
 - [ ] R2 is enabled on the Cloudflare account; if it holds a card, a €5 budget alert exists; the decision is recorded in `docs/infra.md`

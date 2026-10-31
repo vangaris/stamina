@@ -1,0 +1,54 @@
+{
+  "id": "a6a6229f-6ee0-4fdc-924d-34299274c9a3",
+  "prevId": "79aa6874-7ad8-4388-b76d-46b5698911f2",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "public.app_user": {
+      "name": "app_user",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {
+        "app_user_owner": {
+          "name": "app_user_owner",
+          "as": "PERMISSIVE",
+          "for": "ALL",
+          "to": ["stamina_app"],
+          "using": "id = app_user_id()::uuid",
+          "withCheck": "id = app_user_id()::uuid"
+        }
+      },
+      "checkConstraints": {},
+      "isRLSEnabled": true
+    }
+  },
+  "enums": {},
+  "schemas": {},
+  "sequences": {},
+  "roles": {},
+  "policies": {},
+  "views": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}

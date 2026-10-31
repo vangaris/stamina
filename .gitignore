@@ -15,3 +15,6 @@ playwright-report
 .terraform/
 *.tfstate
 *.tfstate.*
+
+# Written at deploy time by scripts/ops/write-auth-proxy-config.mjs
+apps/web/functions/auth/auth-target.generated.json

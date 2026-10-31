@@ -5,3 +5,17 @@
 id = "GHSA-gcqx-w48m-w2h4"
 ignoreUntil = 2027-04-29
 reason = "Build-time only (workbox-build); no upstream fix; no untrusted input"
+
+# glob and minimatch advisories published 2026-10-30 (denial of service through an abort race in glob
+# 11/13 and pattern amplification in minimatch 5/10). Both are reached only through dev tooling (nx,
+# eslint, typescript-eslint, workbox-build) matching OUR OWN patterns and paths, never untrusted
+# input, and neither is shipped in a bundle. Short expiry: bump the tools once they release a fix.
+[[IgnoredVulns]]
+id = "GHSA-3g3m-2fjr-6pw4"
+ignoreUntil = 2026-12-01
+reason = "Dev/build tooling only (glob via build tools); no untrusted input; nothing shipped"
+
+[[IgnoredVulns]]
+id = "GHSA-g3hv-75wg-m249"
+ignoreUntil = 2026-12-01
+reason = "Dev tooling only (minimatch via nx, eslint, typescript-eslint); our own patterns; nothing shipped"

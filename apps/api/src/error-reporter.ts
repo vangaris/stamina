@@ -7,6 +7,7 @@ import {
 } from '@sentry/core';
 import { nodeStackLineParser, ServerRuntimeClient } from '@sentry/core/server';
 import { noDataCollection, scrubBreadcrumb, scrubEvent } from '@stamina/safe-log';
+import { ErrorMechanism } from './enums/error-mechanism.ts';
 
 /** Sends unexpected server errors to an external tracker. Never throws. */
 export interface ErrorReporter {
@@ -65,7 +66,11 @@ export function createErrorReporter(options: ErrorReporterOptions): ErrorReporte
         const scope = new Scope();
         scope.setClient(client);
         scope.setTag('request_id', requestId);
-        client.captureException(error, { mechanism: { type: 'hono', handled: false } }, scope);
+        client.captureException(
+          error,
+          { mechanism: { type: ErrorMechanism.Hono, handled: false } },
+          scope,
+        );
         // A serverless isolate can be frozen right after the response, so wait for delivery.
         await client.flush(FLUSH_TIMEOUT_MS);
       } catch {

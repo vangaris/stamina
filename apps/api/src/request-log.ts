@@ -1,5 +1,7 @@
 import type { Context, MiddlewareHandler } from 'hono';
 import { matchedRoutes } from 'hono/route';
+import { HttpHeader } from './enums/http-header.ts';
+import { RouteLabel } from './enums/route-label.ts';
 
 /** Variables handlers and middleware share through the Hono context. */
 export interface AppEnv {
@@ -28,7 +30,6 @@ export type LogSink = (line: string) => void;
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const CLASS_NAME = /^[A-Za-z_$][\w$]{0,63}$/;
-const UNMATCHED = 'unmatched';
 
 /** A caller's own request ID is kept only when it is a UUID, so it cannot smuggle free text into logs. */
 function resolveRequestId(inbound: string | undefined): string {
@@ -38,7 +39,7 @@ function resolveRequestId(inbound: string | undefined): string {
 /** The matched route pattern (`/meals/:id`), never the URL. Wildcard middleware does not count as a match. */
 function routePattern(c: Context): string {
   const handlers = matchedRoutes(c).filter((r) => r.path !== '*' && r.path !== '/*');
-  return handlers.at(-1)?.path ?? UNMATCHED;
+  return handlers.at(-1)?.path ?? RouteLabel.Unmatched;
 }
 
 /** Class name only: messages and stacks can embed what the user typed. */
@@ -51,9 +52,9 @@ export function errorType(error: unknown): string {
 export function requestLog(sink: LogSink): MiddlewareHandler<AppEnv> {
   return async (c, next) => {
     const started = performance.now();
-    const requestId = resolveRequestId(c.req.header('x-request-id'));
+    const requestId = resolveRequestId(c.req.header(HttpHeader.RequestId));
     c.set('requestId', requestId);
-    c.header('x-request-id', requestId);
+    c.header(HttpHeader.RequestId, requestId);
 
     await next();
 

@@ -8,7 +8,7 @@
 
 **Roadmap week:** 4
 
-- [ ] One AI provider interface; Anthropic Claude Haiku adapter in production; deterministic fake in tests
+- [ ] One AI provider interface; Anthropic Claude Haiku adapter written and tested against its API shape (switched on at launch: Phase A production runs the existing "unavailable" provider, so Sessions use the rules picker and no Anthropic key or card is needed); deterministic fake in tests
 - [ ] Prompt contains only slot spec, candidate and recent exercise IDs, sport, Goal, equipment: never user ID, age, sex, weight, Check-ins, Screening or stop flags (API test inspects the outgoing prompt via the fake)
 - [ ] Validators: strict schema, IDs ⊆ candidates, correct count per slot, no duplicates; failure → 1 retry → rules picker
 - [ ] Every call logged with purpose, model, tokens, cost and pseudonymous user; per-user cap 15 calls/day; global kill switch at 80 % of the monthly cap falls back to rules

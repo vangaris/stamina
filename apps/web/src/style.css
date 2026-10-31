@@ -1,4 +1,12 @@
 @import 'tailwindcss';
+/* Semantic tokens: light and dark CSS variables, and the only colours/sizes Tailwind may generate. */
+@import '@stamina/tokens/tokens.css';
 
 /* Utility classes used inside workspace UI packages must be compiled too. */
 @source "../../../packages/ui";
+
+@layer base {
+  body {
+    @apply bg-bg font-sans text-base text-text;
+  }
+}

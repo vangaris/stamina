@@ -15,8 +15,8 @@ Production is deployed by merging a release PR. Nothing else deploys to producti
    | --- | ------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
    | 0   | tag and build       | release-please tags `vX.Y.Z` and creates the GitHub release. The API and the web are built (web with the production API URL), so a build failure changes nothing in production.                   |
    | 1   | **migrate**         | `pnpm --filter @stamina/api db:migrate` against the production Neon branch (`PROD_DATABASE_URL`, direct connection).                                                                               |
-   | 2   | **API**             | `scripts/deno-deploy.mjs production`: a Deno Deploy production revision with the pooled `DATABASE_URL`, `CORS_ORIGINS`, optional Sentry settings. It waits for the build, promotes it and checks `/health`. |
-   | 3   | **web**             | `wrangler pages deploy apps/web/dist --branch=main` (Cloudflare Pages production). Runs only after `GET $PROD_API_URL/health` returns 200.                                                          |
+   | 2   | **API**             | `scripts/deno-deploy.mjs production`: a Deno Deploy production revision with the pooled `DATABASE_URL`, `CORS_ORIGINS`, `NEON_AUTH_BASE_URL`, optional Sentry settings. It waits for the build, promotes it and checks `/health`. |
+   | 3   | **web**             | `scripts/ops/write-auth-proxy-config.mjs` points the Pages Function that proxies `/auth/*` at `NEON_AUTH_BASE_URL`, then `wrangler pages deploy dist --branch=main` runs from `apps/web` (Cloudflare Pages production). Runs only after `GET $PROD_API_URL/health` returns 200. |
    | 4   | **smoke**           | `GET $PROD_API_URL/health` and `GET $PROD_WEB_URL/` return 200, and the live web bundle contains `PROD_API_URL`.                                                                                  |
 
    The run's **job summary** says whether it succeeded, or which step failed and what to do about it.
@@ -40,6 +40,7 @@ Everything is a repository secret or variable (GitHub Free private repositories 
 | variable | `CLOUDFLARE_PAGES_PROJECT` |   yes    | Already set for previews (`stamina-web`). The Pages project's production branch must be `main`.                                                      |
 | variable | `PROD_API_URL`             |   yes    | `https://` plus the production hostname of the Deno Deploy app, shown in the app's Production timeline (expected: `https://stamina-api.vangaris.deno.net`). No trailing slash. |
 | variable | `PROD_WEB_URL`             |   yes    | `https://stamina-web.pages.dev` until a custom domain exists. No trailing slash. It becomes the API's `CORS_ORIGINS`.                                |
+| variable | `NEON_AUTH_BASE_URL`       |   yes    | The production Neon branch's Neon Auth `base_url` (`https://ep-...neonauth.<region>.aws.neon.tech/<database>/auth`), printed by `node scripts/ops/neon-auth-setup.mjs --branch main`. It becomes the API's `NEON_AUTH_BASE_URL` and the target of the web's `/auth/*` proxy. See [auth.md](auth.md). |
 | variable | `DENO_ORG`                 |    no    | Deno Deploy organisation (`vangaris`); only used for the console link in the job summary.                                                            |
 | variable | `SENTRY_DSN_API`           |    no    | Sentry DSN of the API project. When unset, the API starts without Sentry. A DSN is a public identifier, so it is a variable.                         |
 | variable | `SENTRY_DSN_WEB`           |    no    | Sentry DSN of the web project, baked into the web build as `VITE_SENTRY_DSN`. When unset, the web has no error reporting.                            |
@@ -108,6 +109,7 @@ The workflow, the deploy script and the job summary only handle connection strin
 
 ```bash
 DENO_DEPLOY_TOKEN=x DENO_APP=stamina-api DATABASE_URL=x CORS_ORIGINS=https://stamina-web.pages.dev \
+  NEON_AUTH_BASE_URL=https://ep-x.neonauth.eu-central-1.aws.neon.tech/neondb/auth \
   node scripts/deno-deploy.mjs production --dry-run
 ```
 
