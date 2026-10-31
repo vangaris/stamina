@@ -45,5 +45,5 @@ export async function createTestAuth() {
     return jwt.sign(options.privateKey ?? privateKey);
   }
 
-  return { verifier, signToken };
+  return { verifier, signToken, jwks: { keys: [jwk] } };
 }

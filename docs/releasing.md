@@ -15,7 +15,7 @@ Production is deployed by merging a release PR. Nothing else deploys to producti
    | --- | ------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
    | 0   | tag and build       | release-please tags `vX.Y.Z` and creates the GitHub release. The API and the web are built (web with the production API URL), so a build failure changes nothing in production.                   |
    | 1   | **migrate**         | `pnpm --filter @stamina/api db:migrate` against the production Neon branch (`PROD_DATABASE_URL`, direct connection).                                                                               |
-   | 2   | **API**             | `scripts/deno-deploy.mjs production`: a Deno Deploy production revision with the pooled `DATABASE_URL`, `CORS_ORIGINS`, `NEON_AUTH_BASE_URL`, optional Sentry settings. It waits for the build, promotes it and checks `/health`. |
+   | 2   | **API**             | `scripts/workers-deploy.mjs production`: deploys the Worker `stamina-api` with `CORS_ORIGINS`, `NEON_AUTH_BASE_URL` and `SENTRY_ENVIRONMENT` as plain vars and the pooled `DATABASE_URL` (and `SENTRY_DSN` when set) as Worker secrets, then checks `/health`. The step fails if the deployed URL is not `PROD_API_URL`. |
    | 3   | **web**             | `scripts/ops/write-auth-proxy-config.mjs` points the Pages Function that proxies `/auth/*` at `NEON_AUTH_BASE_URL`, then `wrangler pages deploy dist --branch=main` runs from `apps/web` (Cloudflare Pages production). Runs only after `GET $PROD_API_URL/health` returns 200. |
    | 4   | **smoke**           | `GET $PROD_API_URL/health` and `GET $PROD_WEB_URL/` return 200, and the live web bundle contains `PROD_API_URL`.                                                                                  |
 
@@ -31,17 +31,14 @@ Everything is a repository secret or variable (GitHub Free private repositories 
 
 | Kind     | Name                       | Required | Where it comes from                                                                                                                                  |
 | -------- | -------------------------- | :------: | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
-| secret   | `DENO_DEPLOY_TOKEN`        |   yes    | Already set for previews (Deno Deploy organisation token).                                                                                           |
-| secret   | `CLOUDFLARE_API_TOKEN`     |   yes    | Already set for previews (Pages edit).                                                                                                               |
+| secret   | `CLOUDFLARE_API_TOKEN`     |   yes    | Already set for previews; it needs Pages edit **and** Workers Scripts edit (see [infra.md](infra.md), "Runbook: Cloudflare token and Workers").                                                                                                               |
 | secret   | `PROD_DATABASE_URL`        |   yes    | Direct connection string of the production Neon branch `main`, used for migrations. See below.                                                       |
 | secret   | `PROD_DATABASE_URL_POOLED` |   yes    | Pooled connection string of the same branch, used by the running API (Neon WebSocket driver). See below.                                             |
-| variable | `DENO_APP`                 |   yes    | Already set for previews (`stamina-api`).                                                                                                            |
 | variable | `CLOUDFLARE_ACCOUNT_ID`    |   yes    | Already set for previews.                                                                                                                            |
 | variable | `CLOUDFLARE_PAGES_PROJECT` |   yes    | Already set for previews (`stamina-web`). The Pages project's production branch must be `main`.                                                      |
-| variable | `PROD_API_URL`             |   yes    | `https://` plus the production hostname of the Deno Deploy app, shown in the app's Production timeline (expected: `https://stamina-api.vangaris.deno.net`). No trailing slash. |
+| variable | `PROD_API_URL`             |   yes    | The production Worker's URL, `https://stamina-api.<account workers.dev subdomain>.workers.dev`. No trailing slash. The preflight step checks it against the subdomain Cloudflare reports. |
 | variable | `PROD_WEB_URL`             |   yes    | `https://stamina-web.pages.dev` until a custom domain exists. No trailing slash. It becomes the API's `CORS_ORIGINS`.                                |
 | variable | `NEON_AUTH_BASE_URL`       |   yes    | The production Neon branch's Neon Auth `base_url` (`https://ep-...neonauth.<region>.aws.neon.tech/<database>/auth`), printed by `node scripts/ops/neon-auth-setup.mjs --branch main`. It becomes the API's `NEON_AUTH_BASE_URL` and the target of the web's `/auth/*` proxy. See [auth.md](auth.md). |
-| variable | `DENO_ORG`                 |    no    | Deno Deploy organisation (`vangaris`); only used for the console link in the job summary.                                                            |
 | variable | `SENTRY_DSN_API`           |    no    | Sentry DSN of the API project. When unset, the API starts without Sentry. A DSN is a public identifier, so it is a variable.                         |
 | variable | `SENTRY_DSN_WEB`           |    no    | Sentry DSN of the web project, baked into the web build as `VITE_SENTRY_DSN`. When unset, the web has no error reporting.                            |
 | secret   | `RELEASE_PLEASE_TOKEN`     |    no    | Fine-grained personal access token, see below.                                                                                                       |
@@ -77,22 +74,22 @@ The deploy does not depend on it. Fine-grained tokens expire (maximum one year);
 Decide by where the run stopped (the job summary tells you); the API and the web roll back independently.
 
 - **Redeploy the previous release (default).** Actions > Release > Run workflow, with `tag` set to the previous release tag (for example `v0.1.0`). It runs the same chain from that tag: migrations (already applied, so nothing happens), API, web, smoke.
-- **API only, fast.** Deno Deploy keeps old revisions. List the production ones and re-promote the previous one:
+- **API only, fast.** Cloudflare keeps the previous Worker versions. Roll `stamina-api` back to the previous one (or to a given version id from `wrangler versions list`, run in `apps/api`):
 
   ```bash
-  export DENO_DEPLOY_TOKEN=... DENO_APP=stamina-api
-  node scripts/deno-deploy.mjs revisions            # id, created, release tag, commit; newest first
-  node scripts/deno-deploy.mjs promote <revision-id>
+  export CLOUDFLARE_API_TOKEN=... CLOUDFLARE_ACCOUNT_ID=...
+  node scripts/workers-deploy.mjs rollback                # the version before the latest
+  node scripts/workers-deploy.mjs rollback <version-id>
   ```
 
-  `promote` pins production to that revision (Deno Deploy `POST /revisions/{id}/promote`), so it keeps serving even though a newer revision exists. The next release promotes its own new revision as part of the deploy, which moves the pin forward again. You can also promote in the Deno Deploy console.
+  It runs `wrangler rollback`, which makes that version the active deployment at once, then checks `/health`. Worker secrets and vars are part of a version, so the rollback restores the earlier configuration too. The next release deploys a new version and moves forward again. You can also roll back in the Cloudflare dashboard > Workers & Pages > `stamina-api` > Deployments.
 
 - **Web only.** Cloudflare dashboard > Workers & Pages > `stamina-web` > Deployments > the previous production deployment > **Rollback**.
 - **Database: no rollback.** Migrations are forward-only and are never reverted. See the next section.
 
 ## Migrations: expand and contract
 
-A release applies its migrations first, and the previous API revision keeps serving traffic until the new one is promoted (and again after a rollback). So every migration **must work with the code of the previous release**, and the previous release's code must work with the schema after the migration.
+A release applies its migrations first, and the previous API version keeps serving traffic until the new one is deployed (and again after a rollback). So every migration **must work with the code of the previous release**, and the previous release's code must work with the schema after the migration.
 
 Split destructive changes over two releases:
 
@@ -105,14 +102,14 @@ If a migration fails in production, the API and the web stay on the previous rel
 
 ## Health data and logs
 
-The workflow, the deploy script and the job summary only handle connection strings (as masked secrets), tags, URLs and revision ids. The deploy script's `--dry-run` prints the request shape with every environment variable value redacted:
+The workflow, the deploy script and the job summary only handle connection strings (as masked secrets), tags, URLs and version ids. The deploy script never puts a secret on a command line: secrets go to Wrangler through a temporary file that is deleted afterwards. Its `--dry-run` prints the plan with every value redacted and sends nothing:
 
 ```bash
-DENO_DEPLOY_TOKEN=x DENO_APP=stamina-api DATABASE_URL=x CORS_ORIGINS=https://stamina-web.pages.dev \
+CLOUDFLARE_API_TOKEN=x CLOUDFLARE_ACCOUNT_ID=x DATABASE_URL=x CORS_ORIGINS=https://stamina-web.pages.dev \
   NEON_AUTH_BASE_URL=https://ep-x.neonauth.eu-central-1.aws.neon.tech/neondb/auth \
-  node scripts/deno-deploy.mjs production --dry-run
+  node scripts/workers-deploy.mjs production --dry-run
 ```
 
 ## What is not verified by the repository's own checks
 
-The release chain cannot run end to end until the production secrets and variables above exist and a release PR has been merged. The first real release is the first full test; do it while nothing depends on production, and expect to fix configuration (for example the exact production hostname) on the first run. Re-running via **Run workflow** with the same tag is safe.
+The release chain cannot run end to end until the production secrets and variables above exist and a release PR has been merged. The first real release is the first full test; do it while nothing depends on production, and expect to fix configuration (for example the Worker URL in `PROD_API_URL`) on the first run. Re-running via **Run workflow** with the same tag is safe.

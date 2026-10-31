@@ -2,7 +2,7 @@ import { serve } from '@hono/node-server';
 import type { AddressInfo } from 'node:net';
 import { inject } from 'vitest';
 import { createApp, type AppDeps } from '../../src/app.ts';
-import { createDb } from '../../src/db/client.ts';
+import { createPgDb } from '../../src/db/pg-client.ts';
 import { createFakeAi } from './fake-ai.ts';
 import { createTestAuth } from './test-auth.ts';
 
@@ -17,7 +17,7 @@ export interface TestApiOptions {
 
 /** Boots the real Hono app on a real port, backed by real Postgres and a fake AI provider. */
 export async function startTestApi(options: TestApiOptions = {}) {
-  const dbHandle = createDb(options.databaseUrl ?? inject('databaseUrl'));
+  const dbHandle = createPgDb(options.databaseUrl ?? inject('databaseUrl'));
   const ai = createFakeAi();
   const testAuth = await createTestAuth();
   const app = createApp({

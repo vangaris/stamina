@@ -4,7 +4,7 @@ Logs and error reports exist to find bugs, never to describe a person. Health da
 
 ## API request log
 
-`apps/api/src/request-log.ts` is the first middleware of `createApp`, so every request (including 404s, CORS preflights and 500s) writes exactly one JSON line to stdout. On Deno Deploy they appear in the app's **Logs** view.
+`apps/api/src/request-log.ts` is the first middleware of `createApp`, so every request (including 404s, CORS preflights and 500s) writes exactly one JSON line to stdout. On Cloudflare Workers they appear in the Worker's **Logs** (dashboard > Workers & Pages > `stamina-api` > Logs, or `wrangler tail` from `apps/api`).
 
 | Field        | Meaning                                                                                              |
 | ------------ | ---------------------------------------------------------------------------------------------------- |
@@ -25,7 +25,7 @@ Sentry is optional: with no DSN configured nothing is initialised and nothing is
 
 | Where | Name                                 | Notes                                                              |
 | ----- | ------------------------------------ | ------------------------------------------------------------------ |
-| API   | `SENTRY_DSN`, `SENTRY_ENVIRONMENT`   | `production` (default) or `preview`. Runtime env on the Deno Deploy revision. |
+| API   | `SENTRY_DSN`, `SENTRY_ENVIRONMENT`   | `production` (default) or `preview`. Set as a Worker var by `scripts/workers-deploy.mjs`. |
 | Web   | `VITE_SENTRY_DSN`, `VITE_SENTRY_ENVIRONMENT` | Build-time. Without `VITE_SENTRY_DSN` the build contains no Sentry code at all. |
 
 Deploy workflows copy the repository variables `SENTRY_DSN_API` to `SENTRY_DSN` and `SENTRY_DSN_WEB` to `VITE_SENTRY_DSN`. DSNs are public identifiers, so they are variables, not secrets. Only DSNs on `*.de.sentry.io` (the EU region) are accepted; the API refuses to start with any other host and the web app stays off.
@@ -37,9 +37,9 @@ What leaves the process, via `@stamina/safe-log`:
 - `request_id` tag (API), `environment`, `level`, timestamp, SDK name.
 - Everything else is dropped: request data, headers, cookies, query strings, user, extra data, contexts, breadcrumbs, source lines, local variables, component props. SDK data collection is switched off as well (`noDataCollection`), so those are not even gathered. Transactions and messages are discarded; there is no tracing, no session replay and no client reports.
 
-API only: unexpected errors (5xx) are reported; `HTTPException`s below 500 are not. The API uses `@sentry/core` with a `fetch` transport instead of `@sentry/node`, because the Node SDK relies on OpenTelemetry module patching that neither an esbuild bundle nor Deno Deploy supports. Tests capture the outgoing envelope with a fake transport (`apps/api/test/error-reporting.test.ts`); the web journey is `apps/web/e2e/sentry.spec.ts`, which builds the web app with a fake DSN, intercepts the envelope and checks it.
+API only: unexpected errors (5xx) are reported; `HTTPException`s below 500 are not. The API uses `@sentry/core` with a `fetch` transport instead of `@sentry/node`, because the Node SDK relies on OpenTelemetry module patching that neither an esbuild bundle nor Deno Deploy or Cloudflare Workers supports. Tests capture the outgoing envelope with a fake transport (`apps/api/test/error-reporting.test.ts`); the web journey is `apps/web/e2e/sentry.spec.ts`, which builds the web app with a fake DSN, intercepts the envelope and checks it.
 
-To see events: Sentry (EU, `de.sentry.io`) → project → **Issues**. A report shows the exception type and stack but no message by design; find the request in the Deno Deploy logs through the `request_id` tag.
+To see events: Sentry (EU, `de.sentry.io`) → project → **Issues**. A report shows the exception type and stack but no message by design; find the request in the Worker logs through the `request_id` tag.
 
 Stack frames refer to the bundled files; without uploaded source maps lines point into the bundle.
 

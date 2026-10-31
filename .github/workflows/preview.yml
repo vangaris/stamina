@@ -1,11 +1,11 @@
-# Per-PR preview: Neon branch (migrated) + Deno Deploy API revision + Cloudflare Pages web,
-# then the Playwright + axe smoke test against it. Torn down (Neon branch) when the PR closes.
+# Per-PR preview: Neon branch (migrated) + Cloudflare Worker API (stamina-api-pr-<N>) + Cloudflare Pages web,
+# then the Playwright + axe smoke test against it. Torn down (Neon branch and Worker) when the PR closes.
 #
 # Needs (see docs/development.md, "One-time setup"):
-#   secrets: NEON_API_KEY, DENO_DEPLOY_TOKEN, CLOUDFLARE_API_TOKEN
+#   secrets: NEON_API_KEY, CLOUDFLARE_API_TOKEN (Pages edit + Workers Scripts edit)
 #   vars:    NEON_PROJECT_ID, NEON_PARENT_BRANCH (a data-free branch, never production; it must have Neon
 #            Auth set up with scripts/ops/neon-auth-setup.mjs so previews inherit it, see docs/auth.md),
-#            DENO_APP, CLOUDFLARE_ACCOUNT_ID, CLOUDFLARE_PAGES_PROJECT
+#            CLOUDFLARE_ACCOUNT_ID, CLOUDFLARE_PAGES_PROJECT
 #   optional vars: SENTRY_DSN_API, SENTRY_DSN_WEB (Sentry stays off when unset)
 #
 # Dependabot PRs get no Actions secrets, so every job here is skipped for them (CI still runs).
@@ -103,11 +103,11 @@ jobs:
 
       - run: pnpm --filter @stamina/api build
       - id: api
-        name: Deploy API (Deno Deploy)
-        run: node scripts/deno-deploy.mjs preview
+        name: Deploy API (Cloudflare Workers)
+        run: node scripts/workers-deploy.mjs preview
         env:
-          DENO_DEPLOY_TOKEN: ${{ secrets.DENO_DEPLOY_TOKEN }}
-          DENO_APP: ${{ vars.DENO_APP }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
           # Pooled URL: the API reaches Neon over WebSockets at runtime.
           DATABASE_URL: ${{ steps.neon.outputs.db_url_pooled }}
           CORS_ORIGINS: ${{ env.WEB_URL }}
@@ -161,7 +161,7 @@ jobs:
             - Database: Neon branch `preview/pr-${{ github.event.pull_request.number }}`
 
   cleanup:
-    name: Delete preview database branch
+    name: Delete preview Worker and database branch
     if: >-
       github.event.action == 'closed'
       && github.event.pull_request.head.repo.full_name == github.repository
@@ -170,8 +170,27 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
+      # The PR's head commit, not the default branch: it is what has scripts/workers-deploy.mjs and wrangler.
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
       - uses: neondatabase/delete-branch-action@v3.2.1
         with:
           project_id: ${{ vars.NEON_PROJECT_ID }}
           api_key: ${{ secrets.NEON_API_KEY }}
           branch: preview/pr-${{ github.event.pull_request.number }}
+      # A Worker that was never deployed (docs-only PR) is fine: the script tolerates "not found".
+      # Runs even if the Neon step failed, so one failure does not leave the other resource behind.
+      - name: Delete preview Worker
+        if: ${{ !cancelled() }}
+        run: node scripts/workers-deploy.mjs delete
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}

@@ -23,7 +23,7 @@ pnpm --filter @stamina/web dev             # web on :5173 (VITE_API_URL defaults
 | new migration                          | edit `src/db/schema.ts`, `pnpm --filter @stamina/api db:generate` |
 
 - Seam 1 uses `TEST_DATABASE_URL` when set (CI points it at a Postgres service container), otherwise starts an embedded Postgres.
-- `pnpm --filter @stamina/web e2e` starts its own Postgres (:54330), API (:8788) and built web (:4173). Set `PLAYWRIGHT_BASE_URL` to run it against a deployed preview instead.
+- `pnpm --filter @stamina/web e2e` starts its own Postgres (:54330, data in `apps/api/.pgdata-e2e`, so it never clashes with a `db:dev` that is already running), API (:8788) and built web (:4173). Set `PLAYWRIGHT_BASE_URL` to run it against a deployed preview instead.
 - The onboarding and sign-in Playwright specs need the local stack (they skip against `PLAYWRIGHT_BASE_URL`): onboarding seeds a fresh invite per test by running the `invites:create` script (below) through `e2e/support/create-invites.ts`, and signs in with the fake Neon Auth server (code `424242`). With `VITE_SERVICES_MODE=dev` (no API) the in-memory fake API knows two invite codes, `FAKE_INVITE.validCode` (redeemable once per page load) and `FAKE_INVITE.usedCode` (never valid), exported from `@stamina/app-core`.
 - **Onboarding (web).** Flow: `/start` (invite code, checked by `CheckInvite`, remembered in `localStorage` through the `InviteStorage` service) → `/sign-in` → `/onboarding`, which asks `GetProfile` where the person stands (profile saved → Today; no invite remembered → `/start`; otherwise the four screens). Under-18 and non-EU/EEA people are stopped on the device by the domain's `checkEligibility` with nothing sent; the final `SaveProfile` redeems the invite on the server, which applies the same rule again. Code: `apps/web/src/features/onboarding`, `packages/app-core` (requests, fake API, storage), `@stamina/ui-select` (country picker).
 - Migrations are forward-only: never edit an applied file, add a new one.
@@ -55,7 +55,7 @@ Workflows are in `.github/workflows/`.
 
 - **`ci.yml`**: `nx affected` lint, typecheck, test, build; the UI kit Playwright job (`e2e:ui`, contrast, tap size, focus, reduced motion, sheet focus trap); Gitleaks (pinned binary, full history); OSV-Scanner on `pnpm-lock.yaml`.
 - **`pr-title.yml`**: the PR title must be a Conventional Commit (the squash commit message is the title), e.g. `feat: 02 Release, infrastructure and ops pipeline`.
-- **`preview.yml`**: per PR, a Neon branch (migrated) + that branch's own Neon Auth (its origin trusted, its `base_url` read) + a Deno Deploy preview revision with that branch's `DATABASE_URL` and `NEON_AUTH_BASE_URL` + a Cloudflare Pages alias `pr-<N>` whose `/auth/*` proxy points at that branch's Neon Auth, then `e2e` against it. Closing the PR deletes the Neon branch (it also expires after 14 days). PRs that only touch docs, tickets or templates skip it.
+- **`preview.yml`**: per PR, a Neon branch (migrated) + that branch's own Neon Auth (its origin trusted, its `base_url` read) + a Cloudflare Worker `stamina-api-pr-<N>` (`scripts/workers-deploy.mjs preview`) with that branch's `DATABASE_URL` (secret) and `NEON_AUTH_BASE_URL` (var) + a Cloudflare Pages alias `pr-<N>` whose `/auth/*` proxy points at that branch's Neon Auth, then `e2e` against it. Closing the PR deletes the Worker and the Neon branch (the branch also expires after 14 days). PRs that only touch docs, tickets or templates skip it.
 - **`release.yml`**: release-please keeps a release PR open; merging it tags, migrates production, deploys the API, then the web, then smoke-checks. See [releasing.md](releasing.md).
 - **Dependabot** (`.github/dependabot.yml`): weekly grouped npm and GitHub Actions updates. Dependabot PRs get no Actions secrets, so `preview.yml` skips them; CI still runs.
 
@@ -63,22 +63,21 @@ Free-minutes levers: concurrency cancels superseded runs, `nx affected` skips un
 
 ### One-time setup (needs accounts, not in the repo)
 
-Run `./scripts/setup-services.sh`. It signs `gh` in, creates the private repo, creates the Neon project (Frankfurt, plus a data-free `dev` branch), the Deno Deploy app (`eu`) and the Cloudflare Pages project, sets every secret and variable below, and opens the first PR. You paste in three tokens; it creates everything else. Safe to re-run. Values are kept in the gitignored `.env`.
+Run `./scripts/setup-services.sh`. It signs `gh` in, creates the private repo, creates the Neon project (Frankfurt, plus a data-free `dev` branch) and the Cloudflare Pages project, sets every secret and variable below, and opens the first PR. You paste in two tokens; it creates everything else. Safe to re-run. Values are kept in the gitignored `.env`.
 
 What it sets:
 
 | Where                         | Name                                   | Value                                                                   |
 | ----------------------------- | -------------------------------------- | ----------------------------------------------------------------------- |
 | Actions secret                | `NEON_API_KEY`                         | Neon API key                                                            |
-| Actions secret                | `DENO_DEPLOY_TOKEN`                    | Deno Deploy organisation token                                          |
-| Actions secret                | `CLOUDFLARE_API_TOKEN`                 | token with Pages edit                                                   |
+| Actions secret                | `CLOUDFLARE_API_TOKEN`                 | token with Pages edit **and Workers Scripts edit** (the API Worker; see [infra.md](infra.md), "Runbook: Cloudflare token and Workers") |
 | Actions variable              | `NEON_PROJECT_ID`                      | the Frankfurt project                                                   |
 | Actions variable              | `NEON_PARENT_BRANCH`                   | a branch **without real user data** (e.g. `dev`); never production      |
-| Actions variable              | `DENO_APP`                             | app slug, created with `deno deploy create --region eu`                 |
 | Actions variables             | `CLOUDFLARE_ACCOUNT_ID`, `CLOUDFLARE_PAGES_PROJECT` | Pages project (direct upload)                              |
 | Actions variable              | `NEON_AUTH_BASE_URL`                   | the production branch's Neon Auth `base_url` (`scripts/ops/neon-auth-setup.mjs --branch main` prints it; not set by `setup-services.sh`, see [auth.md](auth.md)) |
+| Actions variables             | `PROD_API_URL`, `PROD_WEB_URL`         | production Worker URL (`https://stamina-api.<subdomain>.workers.dev`) and web URL; set by hand, see [releasing.md](releasing.md) and [infra.md](infra.md) |
 
-Each preview API revision gets its own `DATABASE_URL`, `CORS_ORIGINS` and `NEON_AUTH_BASE_URL` as immutable revision env vars (`scripts/deno-deploy.mjs`), so app-level Deno variables are not used for previews. The `dev` branch (`NEON_PARENT_BRANCH`) must have Neon Auth set up once with `scripts/ops/neon-auth-setup.mjs`, because every preview branch inherits its auth configuration; see [auth.md](auth.md).
+Each preview Worker gets its own `DATABASE_URL` and `SENTRY_DSN` as Worker secrets and its own `CORS_ORIGINS`, `NEON_AUTH_BASE_URL` and `SENTRY_ENVIRONMENT` as vars, set by `scripts/workers-deploy.mjs`; nothing is configured on the Worker by hand. The `dev` branch (`NEON_PARENT_BRANCH`) must have Neon Auth set up once with `scripts/ops/neon-auth-setup.mjs`, because every preview branch inherits its auth configuration; see [auth.md](auth.md).
 
 ## Code standards
 

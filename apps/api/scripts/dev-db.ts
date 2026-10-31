@@ -6,10 +6,14 @@ import { runMigrations } from '../src/db/migrate.ts';
 
 /**
  * Local Postgres for development and the Playwright run: real Postgres, no Docker.
- * Data lives in apps/api/.pgdata (gitignored). Stop with Ctrl-C.
+ * Data lives in apps/api/.pgdata, or `DEV_DB_DIR` (gitignored). Stop with Ctrl-C.
  */
 const port = Number(process.env.DEV_DB_PORT ?? 54329);
-const dir = join(fileURLToPath(new URL('..', import.meta.url)), '.pgdata');
+// A separate folder per database, so the Playwright run never fights a dev database that is already up.
+const dir = join(
+  fileURLToPath(new URL('..', import.meta.url)),
+  process.env.DEV_DB_DIR ?? '.pgdata',
+);
 
 const exists = await stat(join(dir, 'PG_VERSION')).then(
   () => true,

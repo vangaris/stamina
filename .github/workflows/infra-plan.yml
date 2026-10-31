@@ -14,11 +14,11 @@ on:
   pull_request:
     paths:
       - infra/**
-      - scripts/ops/deno-setup.sh
       - scripts/ops/uptimerobot-setup.sh
       - scripts/ops/brevo-setup.sh
       - scripts/ops/neon-auth-setup.mjs
-      - scripts/deno-deploy.mjs
+      - scripts/workers-deploy.mjs
+      - scripts/ops/test/fake-bin/**
       - .github/workflows/infra-plan.yml
 
 concurrency:
@@ -60,7 +60,7 @@ jobs:
 
       - name: Shell scripts and their offline tests
         run: |
-          shellcheck infra/*.sh scripts/ops/deno-setup.sh scripts/ops/uptimerobot-setup.sh scripts/ops/brevo-setup.sh
+          shellcheck infra/*.sh scripts/ops/uptimerobot-setup.sh scripts/ops/brevo-setup.sh
           node --test infra/test/ops-scripts.test.mjs
       - name: Format
         run: tofu fmt -check -recursive -diff infra

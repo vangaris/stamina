@@ -11,10 +11,18 @@ Infrastructure is declared in code. **OpenTofu** manages Cloudflare, Neon and Se
 | Neon per-PR `preview/pr-N` branches            | `preview.yml` (created and deleted per PR)                  |
 | Sentry (EU): team, projects, client keys       | OpenTofu                                                    |
 | OpenTofu state bucket `stamina-tfstate`        | `infra/bootstrap.sh` (it cannot create its own home)        |
-| Deno Deploy app `stamina-api`                  | `scripts/setup-services.sh` creates; `scripts/ops/deno-setup.sh` verifies |
+| Cloudflare Worker `stamina-api` (+ `stamina-api-pr-N`) | `scripts/workers-deploy.mjs` in `release.yml` / `preview.yml`; config in `apps/api/wrangler.jsonc` |
 | UptimeRobot monitor                            | `scripts/ops/uptimerobot-setup.sh`                          |
 | Brevo sender + SMTP settings                   | `scripts/ops/brevo-setup.sh`                                |
 | Neon Auth (sign-in) per branch                 | `scripts/ops/neon-auth-setup.mjs` (previews: `preview.yml`); runbook in [auth.md](auth.md) |
+
+## API host
+
+Phase A (owner only, no payment method): the Hono API runs on **Cloudflare Workers** (free plan, no card), deployed with Wrangler by `scripts/workers-deploy.mjs`. Production is the Worker `stamina-api`, each pull request gets `stamina-api-pr-<N>` (deleted when the PR closes), at `https://<name>.<account subdomain>.workers.dev`. A Worker runs at the Cloudflare location nearest the caller and the free plan does not promise EU processing, which is fine for the owner alone and not for real users' health data.
+
+Launch options (ticket 23, EU-guaranteed host): **Deno Deploy EU** or **Cloud Run europe-west1**. The app is portable Hono; each host needs only an entry file. The Deno Deploy scripts (`scripts/deno-deploy.mjs`, `scripts/ops/deno-setup.sh`) and the Deno parts of the setup wizards were removed when the API moved to Workers; they are in git history before the commit that added `scripts/workers-deploy.mjs`. Deno Deploy suspended the free organisation (`402 BILLING_SUSPENDED`) and asks for a card.
+
+Free-plan limits (100k requests/day, about 10 ms CPU per request; from the hosting research, **not yet measured on the deployed Worker**) and the CPU time of `GET /me` (JWT verification and the RLS transaction) are recorded here once the first Worker is deployed.
 
 ## Layout
 
@@ -29,7 +37,7 @@ infra/
     tests/plan.tftest.hcl   offline tests, providers mocked
     .terraform.lock.hcl     committed; linux_amd64 + darwin_arm64
   test/ops-scripts.test.mjs offline tests of the scripts, against mock HTTP servers
-scripts/ops/{deno,uptimerobot,brevo}-setup.sh   scripts/ops/neon-auth-setup.mjs
+scripts/ops/{uptimerobot,brevo}-setup.sh   scripts/ops/neon-auth-setup.mjs   scripts/workers-deploy.mjs
 ```
 
 Providers: `cloudflare/cloudflare` 5.28.1 (official), `kislerdm/neon` 0.18.0 (community, Neon-sponsored), `jianyuan/sentry` 0.15.8 (community, Sentry-sponsored). Bump a version in `versions.tf`, then `tofu -chdir=infra/envs/production init -upgrade -backend=false` and `tofu -chdir=infra/envs/production providers lock -platform=linux_amd64 -platform=darwin_arm64`.
@@ -50,7 +58,7 @@ Secrets never go in files. Locally they are in the gitignored `.env` (`infra/tof
 | `BREVO_API_KEY`, `SENDER_EMAIL`                               | local only                 | Brevo > SMTP & API > API keys; the From address                                                                                                                                                |
 | `BREVO_SMTP_LOGIN`, `BREVO_SMTP_KEY`                          | local only                 | Brevo > SMTP & API > SMTP: the login, and "Generate a new SMTP key" (not the API key). Read by `neon-auth-setup.mjs`; Neon Auth stores them for its sign-in emails                              |
 | `GOOGLE_OAUTH_CLIENT_ID`, `GOOGLE_OAUTH_CLIENT_SECRET`        | local only, optional       | Google Cloud Console > APIs & Services > Credentials > OAuth client ID (Web application). Read by `neon-auth-setup.mjs`; without them Neon's shared Google credentials stay (development only) |
-| `DENO_DEPLOY_TOKEN`, `DENO_APP`, `DENO_ORG`                   | secret + variable (exist); `DENO_ORG` only in `.env` unless the release workflow adds it | set by `setup-services.sh`                                                                                                                                                                     |
+| `CLOUDFLARE_API_TOKEN`                                        | secret (exists)            | Pages edit **plus Workers Scripts edit**; used by `wrangler` in the deploy workflows and `scripts/workers-deploy.mjs`. Created by hand: see "Runbook: Cloudflare token and Workers" below |
 
 Plan-only CI also needs the secrets above that are not "local only". Any missing one makes `infra-plan.yml` skip the plan with a note and still run the other checks.
 
@@ -65,7 +73,7 @@ Outputs feed these repository variables (run `gh variable set NAME --body "$(...
 
 ## Bootstrap order (first time)
 
-1. **Accounts and one-time console steps.** Run `scripts/setup-services.sh` (repo, Neon project and `dev` branch, Deno app, Pages project). Create the Sentry organisation by hand with the **EU data region** (the region is chosen at sign-up and an integration token cannot create organisations), then the internal integration above. Enable R2 on the Cloudflare account.
+1. **Accounts and one-time console steps.** Run `scripts/setup-services.sh` (repo, Neon project and `dev` branch, Pages project and its API token). Create the Sentry organisation by hand with the **EU data region** (the region is chosen at sign-up and an integration token cannot create organisations), then the internal integration above. Enable R2 on the Cloudflare account.
 2. **State bucket.** Put `TOFU_CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` in `.env` and run `infra/bootstrap.sh`. It creates `stamina-tfstate` in the EU jurisdiction, or does nothing if it exists. Then create the scoped R2 key it describes and put it in `.env` as `TF_STATE_R2_ACCESS_KEY_ID` / `TF_STATE_R2_SECRET_ACCESS_KEY`.
 3. **Neon `dev` branch id.** `dev` is only ever adopted, never created here (a branch cut from `main` after launch would copy user data into the Preview parent). Find its id and put it in `.env` as `NEON_DEV_BRANCH_ID`:
    ```bash
@@ -83,7 +91,6 @@ Outputs feed these repository variables (run `gh variable set NAME --body "$(...
 5. **Repository variables** from the outputs (table above).
 6. **Scripts**, after the first production deploy so `PROD_API_URL` is known:
    ```bash
-   scripts/ops/deno-setup.sh                      # verifies token, app, production hostname
    scripts/ops/uptimerobot-setup.sh --dry-run     # review, then run without --dry-run
    scripts/ops/brevo-setup.sh --dry-run           # review, then run without --dry-run
    node scripts/ops/neon-auth-setup.mjs --dry-run # sign-in: review, then run for dev and main (docs/auth.md has the runbook)
@@ -124,7 +131,7 @@ infra/tofu.sh production apply
 
 State is in `stamina-tfstate/production/terraform.tfstate` (EU jurisdiction) with a lock object beside it. R2 has no object versioning, so keep a copy before risky changes: `infra/tofu.sh production state pull > state-backup.tfstate` (gitignored; keep it out of the repo). The state holds no database passwords (`store_password = "no"`).
 
-CI (`.github/workflows/infra-plan.yml`) runs on PRs that touch `infra/**` or the ops scripts (including `neon-auth-setup.mjs` and `deno-deploy.mjs`): shellcheck, the script tests, `tofu fmt -check`, `tofu validate`, `tofu test`, and, when its secrets exist, a read-only `tofu plan` posted as one sticky comment (credentials redacted). It never applies.
+CI (`.github/workflows/infra-plan.yml`) runs on PRs that touch `infra/**` or the ops scripts (including `neon-auth-setup.mjs` and `workers-deploy.mjs`): shellcheck, the script tests, `tofu fmt -check`, `tofu validate`, `tofu test`, and, when its secrets exist, a read-only `tofu plan` posted as one sticky comment (credentials redacted). It never applies.
 
 Offline checks you can run without any account:
 
@@ -137,7 +144,7 @@ node --test infra/test/ops-scripts.test.mjs
 
 ## Adding another environment or region
 
-One full stack per region: its own Neon project, R2 bucket, Deno/Cloud Run region and Pages project.
+One full stack per region: its own Neon project, R2 bucket, API host region (Cloud Run or Deno Deploy at launch) and Pages project.
 
 1. `cp -r infra/envs/production infra/envs/<name>` (without `.terraform/`).
 2. In `versions.tf` change the backend `key` to `<name>/terraform.tfstate`.
@@ -157,8 +164,7 @@ Rule: every account that holds a card gets a **€5 budget alert**, plus a hard 
 | Account                                | Card on file today?                                                                           | When a card is added                                                                                                                  |
 | -------------------------------------- | --------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
 | Neon (free)                            | No                                                                                            | Billing: set a spend/consumption limit and an email alert at €5                                                                       |
-| Deno Deploy (free)                     | No, but the organisation was **suspended for exceeding usage limits and asks for a card**. Not used in Phase A. | If used at launch: Pro ($20/mo), usage budget alert at €5                                                                             |
-| Cloudflare Workers (free)              | No (the Workers free plan needs no card; only R2 does)                                         | Paid plan only if the free limits are outgrown: set a usage alert at €5                                                               |
+| Cloudflare Workers (free)              | **No.** The Workers free plan needs no payment method (Phase A API host). Only R2 may ask for one. | Paid plan ($5/mo) only if the free limits are outgrown: set a usage alert at €5                                                       |
 | Sentry Developer                       | No                                                                                            | Team plan: set the on-demand budget to 0 and a quota alert at €5                                                                      |
 | UptimeRobot (free)                     | No                                                                                            | Paid plan: no usage billing, but note the renewal date                                                                                |
 | Brevo (free, 300/day)                  | No                                                                                            | Paid plan: set the sending-limit alert and a budget alert at €5                                                                       |
@@ -170,7 +176,7 @@ Exact setting names change; confirm them in each console when you add a card, an
 
 ## Gaps until a domain exists
 
-No domain is owned, so: no DNS record or Pages custom domain is created (`zone_id` is `null`; the web app is served at `stamina-web.pages.dev`, the API at its `*.deno.net` hostname); Brevo domain authentication (SPF, DKIM, DMARC) is not set up, so sign-in emails come from a verified single sender address and may be spam-filtered; Sentry and UptimeRobot are unaffected. When a domain is bought: add it to Cloudflare, set `zone_id`, `web_hostname` and the Brevo DNS records via `dns_records` (see `variables.tf`), attach the API hostname in Deno Deploy, and re-run `brevo-setup.sh` and `uptimerobot-setup.sh` with the new `PROD_API_URL`.
+No domain is owned, so: no DNS record or Pages custom domain is created (`zone_id` is `null`; the web app is served at `stamina-web.pages.dev`, the API at its `*.workers.dev` hostname); Brevo domain authentication (SPF, DKIM, DMARC) is not set up, so sign-in emails come from a verified single sender address and may be spam-filtered; Sentry and UptimeRobot are unaffected. When a domain is bought: add it to Cloudflare, set `zone_id`, `web_hostname` and the Brevo DNS records via `dns_records` (see `variables.tf`), attach the API hostname in Deno Deploy, and re-run `brevo-setup.sh` and `uptimerobot-setup.sh` with the new `PROD_API_URL`.
 
 ## Unverified until applied with real credentials
 
@@ -183,6 +189,22 @@ Verified locally: `tofu fmt`, `validate`, `tofu test` (providers mocked), the S3
 - The Sentry token permission names, the `deno` platform slug, and that `sentry_key.dsn["public"]` is present (documented by the provider).
 - UptimeRobot: the v3 request shapes were taken from the published OpenAPI document (`https://cdn.uptimerobot.com/api/openapi.yaml`); the free plan accepting `httpMethodType: GET` and a 300 s interval, the pagination `nextLink` format, and the Email contact's `type` casing are unconfirmed.
 - Brevo: endpoints and fields are from the reference pages; the SMTP key still has to be generated in the console.
-- Deno: that revision timelines report `context: production` for the production revision, and the region (the REST API does not expose it).
-- Cloudflare: that enabling R2 needs a card (see the budget table), and the exact token permission labels.
+- Workers (`scripts/workers-deploy.mjs`, `[INFERENCE]` list in its header): the Wrangler flags and output formats it relies on (`delete --force`, `--var KEY:VALUE` with URL values, `secret bulk` right after `deploy`, `rollback --message`, the version id line), and that a token with Workers Scripts Edit is enough. Not run against Cloudflare: the token available when it was written could not write Workers, and the account had no workers.dev subdomain.
+- Cloudflare: that enabling R2 needs a card (see the budget table), and the exact token permission labels ("Workers Scripts" > Edit in the token form).
 - Neon Auth: the management API calls of `scripts/ops/neon-auth-setup.mjs` (what its header lists as `[INFERENCE]`) and the sign-in flow itself; see [auth.md](auth.md), "Not yet verified live".
+
+## Runbook: Cloudflare token and Workers
+
+What only Vang can do (the token in `.env` can read Workers but cannot write them, and the account has no verified workers.dev subdomain). None of it needs a card.
+
+1. **Create a token that can deploy Workers.** Cloudflare dashboard > My Profile > API Tokens > Create Token > Custom token > Get started. Permissions: **Account > Cloudflare Pages > Edit** (what the current token has) **and Account > Workers Scripts > Edit**. Account Resources: Include > your account. Continue to summary > Create Token, copy it (shown once). Editing the existing token (API Tokens > the token > Edit > add the permission row) works too and keeps its value.
+2. **Store it.** Put it in `.env` as `CLOUDFLARE_API_TOKEN`, then `gh secret set CLOUDFLARE_API_TOKEN` (reads the value from the prompt; do not pass it on the command line). `CLOUDFLARE_ACCOUNT_ID` is already a variable.
+3. **Register the free workers.dev subdomain** if the account has none: dashboard > Workers & Pages; the first visit asks you to pick a subdomain (free, no card). Check it:
+   ```bash
+   set -a; . ./.env; set +a
+   curl -s -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
+     "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/workers/subdomain"   # {"result":{"subdomain":"..."}}
+   ```
+4. **Set `PROD_API_URL`** to `https://stamina-api.<subdomain>.workers.dev` (no trailing slash): `gh variable set PROD_API_URL --body "https://stamina-api.<subdomain>.workers.dev"`. The release preflight compares it with the subdomain Cloudflare reports.
+5. **First production deploy.** Merge the release PR (or Actions > Release > Run workflow with a tag). The deploy step creates the Worker, uploads its secrets and checks `/health`. Then run `scripts/ops/uptimerobot-setup.sh` (monitor on `PROD_API_URL/health`) if it is not set up yet.
+6. **Delete the unused Deno secrets and variables:** `gh secret delete DENO_DEPLOY_TOKEN`, `gh variable delete DENO_APP`, `gh variable delete DENO_ORG`, and remove `DENO_DEPLOY_TOKEN`, `DENO_APP`, `DENO_ORG` from `.env`.

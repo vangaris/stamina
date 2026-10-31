@@ -1,7 +1,6 @@
 import { sql } from 'drizzle-orm';
-import type { Db } from './client.ts';
 import { APP_ROLE, USER_ID_SETTING } from './config.ts';
-import type { UserTx } from './types.ts';
+import type { Db, UserTx } from './types.ts';
 
 /**
  * The only way user-owned tables are touched. Runs `fn` in one transaction as the `stamina_app`

@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { ZodError } from 'zod';
 import { loadConfig } from '../src/config.ts';
 
 const BASE = {
@@ -24,7 +25,15 @@ describe('loadConfig: Neon Auth', () => {
 
   it('is required and must be an http(s) URL', () => {
     expect(() => loadConfig({ DATABASE_URL: BASE.DATABASE_URL })).toThrow();
-    expect(() => loadConfig({ ...BASE, NEON_AUTH_BASE_URL: 'not a url' })).toThrow();
-    expect(() => loadConfig({ ...BASE, NEON_AUTH_BASE_URL: 'ftp://host/auth' })).toThrow();
+    expect(() => loadConfig({ ...BASE, NEON_AUTH_BASE_URL: 'not a url' })).toThrow(ZodError);
+    expect(() => loadConfig({ ...BASE, NEON_AUTH_BASE_URL: 'ftp://host/auth' })).toThrow(ZodError);
+  });
+
+  it('accepts localhost and IP hosts, which local development and the e2e stack use', () => {
+    for (const host of ['http://127.0.0.1:8789/auth', 'http://localhost:8789/auth']) {
+      expect(loadConfig({ ...BASE, NEON_AUTH_BASE_URL: host }).neonAuth.issuer).toBe(
+        new URL(host).origin,
+      );
+    }
   });
 });
