@@ -4,7 +4,7 @@
 
 **Blocked by:** 04: Sign-in through app-core
 
-**Status:** ready-for-agent
+**Status:** in-progress
 
 **Phase:** A (owner-only, no payment method)
 
