@@ -1,4 +1,4 @@
-import type { SportKind } from '@stamina/contracts';
+import { SportKind } from '@stamina/contracts';
 import type { Goal, Intensity, LaunchSport, Need, Units, Weekday } from '@stamina/domain';
 import { sql } from 'drizzle-orm';
 import {
@@ -33,11 +33,16 @@ export const appUser = pgTable(
   ],
 ).enableRLS();
 
+/** A SQL string literal for a code constant (never user input), so a check constraint is built from an enum. */
+const literal = (value: string) => sql.raw(`'${value}'`);
+
 /**
  * A code that lets one person in. It is redeemed when their profile is first saved (never when
  * typed), so someone turned away at onboarding does not burn it. Codes are issued by the
  * `invites:create` script on the connection role, and the public check reads them there too. The
- * app role may only see unredeemed codes (plus its own) and set the redemption columns.
+ * app role may only see open codes (plus its own) and set the redemption columns.
+ * A code is open while `redeemed_at` is null: `redeemed_by` is nulled when its user is deleted,
+ * and that must never reopen a used code.
  */
 export const invite = pgTable(
   'invite',
@@ -53,12 +58,12 @@ export const invite = pgTable(
     pgPolicy('invite_app_select', {
       for: 'select',
       to: APP_ROLE,
-      using: sql`redeemed_by is null or redeemed_by = app_user_id()::uuid`,
+      using: sql`redeemed_at is null or redeemed_by = app_user_id()::uuid`,
     }),
     pgPolicy('invite_app_redeem', {
       for: 'update',
       to: APP_ROLE,
-      using: sql`redeemed_by is null`,
+      using: sql`redeemed_at is null`,
       withCheck: sql`redeemed_by = app_user_id()::uuid`,
     }),
   ],
@@ -101,8 +106,8 @@ export const profile = pgTable(
   (table) => [
     check(
       'profile_sport_matches_kind',
-      sql`(${table.sportKind} = 'launch' and ${table.launchSport} is not null and ${table.otherSportName} is null)
-        or (${table.sportKind} = 'other' and ${table.launchSport} is null and ${table.otherSportName} is not null)`,
+      sql`(${table.sportKind} = ${literal(SportKind.Launch)} and ${table.launchSport} is not null and ${table.otherSportName} is null)
+        or (${table.sportKind} = ${literal(SportKind.Other)} and ${table.launchSport} is null and ${table.otherSportName} is not null)`,
     ),
     check(
       'profile_training_week_all_or_none',

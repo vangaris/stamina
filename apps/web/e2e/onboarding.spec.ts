@@ -125,7 +125,7 @@ test('someone under 18 is told Stamina is for adults, nothing is sent and the in
 
   await answerAbout(page, {
     needs: 'Both',
-    birthYear: String(new Date().getFullYear() - 10),
+    birthYear: String(new Date().getUTCFullYear() - 10),
     country: 'GR',
   });
 
@@ -169,7 +169,7 @@ test('a minor outside the EU/EEA is told about age, not about where they live', 
 
   await answerAbout(page, {
     needs: 'Both',
-    birthYear: String(new Date().getFullYear() - 10),
+    birthYear: String(new Date().getUTCFullYear() - 10),
     country: 'US',
   });
 

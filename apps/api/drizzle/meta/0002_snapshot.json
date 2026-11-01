@@ -1,5 +1,5 @@
 {
-  "id": "df30bdce-5c0c-40d2-b5e3-7684d4ff8595",
+  "id": "6ff4f354-af23-4086-adb1-2da0c368c0e2",
   "prevId": "a6a6229f-6ee0-4fdc-924d-34299274c9a3",
   "version": "7",
   "dialect": "postgresql",
@@ -104,14 +104,14 @@
           "as": "PERMISSIVE",
           "for": "SELECT",
           "to": ["stamina_app"],
-          "using": "redeemed_by is null or redeemed_by = app_user_id()::uuid"
+          "using": "redeemed_at is null or redeemed_by = app_user_id()::uuid"
         },
         "invite_app_redeem": {
           "name": "invite_app_redeem",
           "as": "PERMISSIVE",
           "for": "UPDATE",
           "to": ["stamina_app"],
-          "using": "redeemed_by is null",
+          "using": "redeemed_at is null",
           "withCheck": "redeemed_by = app_user_id()::uuid"
         }
       },

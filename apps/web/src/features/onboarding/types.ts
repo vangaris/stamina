@@ -1,22 +1,15 @@
 import type { Mediator } from '@stamina/app-core';
-import type {
-  Eligibility,
-  Goal,
-  Intensity,
-  LaunchSport,
-  Need,
-  Units,
-  Weekday,
-} from '@stamina/domain';
-import type { SportKind } from '@stamina/contracts';
+import type { ProfileRejection, SportKind } from '@stamina/contracts';
+import type { Goal, Intensity, LaunchSport, Need, Units, Weekday } from '@stamina/domain';
 import type { Locale } from '@stamina/i18n';
 import type { OnboardingExit } from './enums/onboarding-exit.ts';
 import type { OnboardingMessageKey } from './enums/onboarding-message-key.ts';
 import type { StartMessageKey } from './enums/start-message-key.ts';
+import type { StartExit } from './enums/start-exit.ts';
 import type { StartNotice } from './enums/start-notice.ts';
 
-/** Why someone cannot go on: the two ways `checkEligibility` says no. */
-export type StopReason = Eligibility.UnderAge | Eligibility.OutsideEea;
+/** Why someone cannot go on: the two eligibility rejections (an invite problem is not a stop). */
+export type StopReason = ProfileRejection.UnderAge | ProfileRejection.OutsideEea;
 
 /**
  * Everything typed or picked on the screens, as the screens hold it: not yet validated, so
@@ -47,8 +40,10 @@ export interface OnboardingDraft {
 export type FieldErrors = Partial<Record<keyof OnboardingDraft, OnboardingMessageKey>>;
 
 export interface UseInviteStartOptions {
-  /** Called once the code is valid and remembered. */
-  onValid: () => void;
+  /** Called when the person leaves the screen. */
+  onExit: (exit: StartExit) => void;
+  /** Whether someone is signed in; decides where a valid code leads. */
+  isSignedIn: () => boolean;
   /** Why the screen was opened, when it was not by the person's own choice. */
   notice?: StartNotice | undefined;
   /** Defaults to the app mediator. */

@@ -4,16 +4,18 @@ import { Card } from '@stamina/ui-card';
 import { onMounted, type Component } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
+import { ROUTE_FOR_EXIT } from '../config.ts';
 import { useOnboarding } from '../composables/useOnboarding.ts';
 import { OnboardingPhase } from '../enums/onboarding-phase.ts';
 import { OnboardingStep } from '../enums/onboarding-step.ts';
-import { routeForExit } from '../utils/route-for-exit.ts';
 import AboutStep from './AboutStep.vue';
 import GoalStep from './GoalStep.vue';
 import SportStep from './SportStep.vue';
 import StopNotice from './StopNotice.vue';
 import WeekStep from './WeekStep.vue';
 
+// Lives here, not in config.ts: the step components import config.ts, so a map of them in
+// config.ts would be a circular import.
 const STEP_COMPONENTS: Record<OnboardingStep, Component> = {
   [OnboardingStep.About]: AboutStep,
   [OnboardingStep.Sport]: SportStep,
@@ -38,7 +40,7 @@ const {
   next,
   back,
   changeAnswers,
-} = useOnboarding({ onExit: (exit) => void router.replace(routeForExit(exit)) });
+} = useOnboarding({ onExit: (exit) => void router.replace(ROUTE_FOR_EXIT[exit]) });
 
 onMounted(load);
 </script>

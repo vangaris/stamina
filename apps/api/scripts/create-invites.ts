@@ -1,22 +1,13 @@
-import { randomInt } from 'node:crypto';
-import { INVITE_CODE_ALPHABET, INVITE_CODE_LENGTH } from '@stamina/domain';
 import { createDb } from '../src/db/client.ts';
 import { invite } from '../src/db/schema.ts';
+import { MAX_INVITES_PER_RUN } from '../src/invites/config.ts';
+import { generateInviteCode } from '../src/invites/generate-invite-code.ts';
 
 /**
  * Issues invite codes: `DATABASE_URL=... pnpm --filter @stamina/api --silent invites:create <count>`.
  * Prints exactly the new codes, one per line, on stdout and nothing else (the Playwright helper
  * reads them from there). Problems go to stderr with a non-zero exit.
  */
-const MAX_COUNT = 500;
-
-function newCode(): string {
-  return Array.from(
-    { length: INVITE_CODE_LENGTH },
-    () => INVITE_CODE_ALPHABET[randomInt(INVITE_CODE_ALPHABET.length)]!,
-  ).join('');
-}
-
 function fail(message: string): never {
   console.error(message);
   process.exit(1);
@@ -25,8 +16,8 @@ function fail(message: string): never {
 const url = process.env.DATABASE_URL;
 if (!url) fail('DATABASE_URL is required');
 const count = Number(process.argv[2] ?? 1);
-if (!Number.isInteger(count) || count < 1 || count > MAX_COUNT) {
-  fail(`usage: invites:create <count 1-${MAX_COUNT}>`);
+if (!Number.isInteger(count) || count < 1 || count > MAX_INVITES_PER_RUN) {
+  fail(`usage: invites:create <count 1-${MAX_INVITES_PER_RUN}>`);
 }
 
 const { db, close } = createDb(url);
@@ -37,7 +28,9 @@ try {
   while (created.length < count) {
     const rows = await db
       .insert(invite)
-      .values(Array.from({ length: count - created.length }, () => ({ code: newCode() })))
+      .values(
+        Array.from({ length: count - created.length }, () => ({ code: generateInviteCode() })),
+      )
       .onConflictDoNothing()
       .returning({ code: invite.code });
     created.push(...rows.map((row) => row.code));

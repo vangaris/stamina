@@ -1,3 +1,4 @@
+import { HttpStatus } from '@stamina/contracts';
 import type { MiddlewareHandler } from 'hono';
 import { ApiErrorCode } from '../enums/api-error-code.ts';
 import { HttpHeader } from '../enums/http-header.ts';
@@ -16,7 +17,7 @@ export function authenticate(verifier: TokenVerifier): MiddlewareHandler<AppEnv>
     const result = token === undefined ? undefined : await verifier.verify(token);
     if (result?.ok !== true) {
       c.header(HttpHeader.WwwAuthenticate, WWW_AUTHENTICATE_CHALLENGE);
-      return c.json({ error: ApiErrorCode.Unauthorized }, 401);
+      return c.json({ error: ApiErrorCode.Unauthorized }, HttpStatus.Unauthorized);
     }
     c.set('userId', result.userId);
     await next();

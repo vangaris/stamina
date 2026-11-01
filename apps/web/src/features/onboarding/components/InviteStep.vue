@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { INVITE_CODE_INPUT_MAX_LENGTH } from '@stamina/domain';
 import { Button, ButtonType, ButtonVariant } from '@stamina/ui-button';
 import { Card, CardElement } from '@stamina/ui-card';
 import { TextField } from '@stamina/ui-text-field';
@@ -38,6 +39,7 @@ onMounted(() => field.value?.focus());
         :hint="t('start.hint')"
         :error="error"
         autocomplete="off"
+        :maxlength="INVITE_CODE_INPUT_MAX_LENGTH"
         autocapitalize="characters"
         spellcheck="false"
         required

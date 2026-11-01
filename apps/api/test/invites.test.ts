@@ -1,4 +1,5 @@
 import { inviteCheckResponseSchema } from '@stamina/contracts';
+import { INVITE_CODE_INPUT_MAX_LENGTH } from '@stamina/domain';
 import { eq } from 'drizzle-orm';
 import { execFile } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
@@ -6,7 +7,8 @@ import { promisify } from 'node:util';
 import { afterAll, beforeAll, describe, expect, it, inject } from 'vitest';
 import { appUser, invite } from '../src/db/schema.ts';
 import { ApiErrorCode } from '../src/enums/api-error-code.ts';
-import { issueInvite, randomInviteCode } from './support/profile-fixtures.ts';
+import { generateInviteCode } from '../src/invites/generate-invite-code.ts';
+import { issueInvite } from './support/profile-fixtures.ts';
 import { startTestApi } from './support/test-api.ts';
 
 const run = promisify(execFile);
@@ -55,14 +57,15 @@ describe('POST /invites/check', () => {
       .where(eq(invite.code, used));
 
     expect(await validOf(used)).toBe(false);
-    expect(await validOf(randomInviteCode())).toBe(false);
+    expect(await validOf(generateInviteCode())).toBe(false);
     expect(await validOf('short')).toBe(false);
     expect(await validOf("'; drop table invite; --")).toBe(false);
     expect(await validOf('0OIL0OIL0O')).toBe(false);
   });
 
-  it('answers 400 to a body that is not { code: string }, without echoing it', async () => {
-    for (const body of [{}, { code: 12 }, { code: '' }]) {
+  it('answers 400 to a body that is not { code: string } within the length bound, without echoing it', async () => {
+    const padded = `${generateInviteCode()}${' '.repeat(INVITE_CODE_INPUT_MAX_LENGTH)}`;
+    for (const body of [{}, { code: 12 }, { code: '' }, { code: padded }]) {
       const response = await check(body);
       expect(response.status).toBe(400);
       expect(await response.json()).toEqual({ error: ApiErrorCode.InvalidRequest });

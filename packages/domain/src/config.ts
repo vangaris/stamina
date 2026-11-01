@@ -313,3 +313,6 @@ export const COUNTRY_CODES: readonly string[] = [
 /** Invite codes: unambiguous characters only (no 0/O, 1/I/L), so they survive being read aloud. */
 export const INVITE_CODE_ALPHABET = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
 export const INVITE_CODE_LENGTH = 10;
+
+/** Longest invite code input accepted anywhere (typed or pasted, spaces and hyphens included). */
+export const INVITE_CODE_INPUT_MAX_LENGTH = 64;

@@ -4,7 +4,7 @@ import { ChipGroup } from '@stamina/ui-chip-group';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import type { StepEmits, StepProps } from '../types.ts';
-import { pickedOne } from '../utils/picked-value.ts';
+import { pickedOne } from '../utils/picked-one.ts';
 import { toOptions } from '../utils/to-options.ts';
 import FieldError from './FieldError.vue';
 import StepFrame from './StepFrame.vue';
@@ -14,8 +14,9 @@ const emit = defineEmits<StepEmits>();
 
 const { t } = useI18n();
 const error = computed(() => (props.errors.goal ? t(props.errors.goal) : undefined));
+const GOALS = Object.values(Goal);
 const goalOptions = computed(() =>
-  toOptions(Object.values(Goal), (goal) => t(`onboarding.goal.options.${goal}`)),
+  toOptions(GOALS, (goal) => t(`onboarding.goal.options.${goal}`)),
 );
 </script>
 
@@ -34,7 +35,7 @@ const goalOptions = computed(() =>
         :model-value="draft.goal ?? null"
         :options="goalOptions"
         :label="t('onboarding.goal.label')"
-        @update:model-value="emit('update', { field: 'goal', value: pickedOne<Goal>($event) })"
+        @update:model-value="emit('update', { field: 'goal', value: pickedOne($event, GOALS) })"
       />
       <FieldError :message="error" />
     </div>

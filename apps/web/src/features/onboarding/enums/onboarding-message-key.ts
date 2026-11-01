@@ -13,4 +13,8 @@ export enum OnboardingMessageKey {
   AvailableDays = 'onboarding.errors.availableDays',
   Offline = 'onboarding.errors.offline',
   Unknown = 'onboarding.errors.unknown',
+  UnderAgeTitle = 'onboarding.stop.underAge.title',
+  UnderAgeBody = 'onboarding.stop.underAge.body',
+  OutsideEeaTitle = 'onboarding.stop.outsideEea.title',
+  OutsideEeaBody = 'onboarding.stop.outsideEea.body',
 }

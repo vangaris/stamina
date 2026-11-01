@@ -4,13 +4,11 @@ import {
   createAppMediator,
   createServices,
   FAKE_INVITE,
-  ProfileStatus,
   ServicesMode,
-  type ProfileState,
   type Services,
 } from '@stamina/app-core';
-import { SportKind, type ApiClient } from '@stamina/contracts';
-import { Eligibility, Goal, Intensity, LaunchSport, Need, Weekday } from '@stamina/domain';
+import { ProfileRejection, SportKind, type ApiClient } from '@stamina/contracts';
+import { Goal, Intensity, LaunchSport, Need, Weekday } from '@stamina/domain';
 import { Locale } from '@stamina/i18n';
 import { describe, expect, it, vi } from 'vitest';
 import { OnboardingExit } from '../enums/onboarding-exit.ts';
@@ -41,19 +39,17 @@ async function setup({
   if (api) services.api = { ...services.api, ...api(services.api) };
   if (signedIn) await services.auth.verifyEmailCode(EMAIL, FAKE_CODE);
   if (invite) services.inviteStorage.save(FAKE_INVITE.validCode);
-  const profileWrites: ProfileState[] = [];
   const mediator = createAppMediator({
     services,
     stores: {
       health: { set: () => undefined },
       session: { set: () => undefined },
-      profile: { set: (state) => profileWrites.push(state) },
     },
   });
   const onExit = vi.fn();
   const applyLocale = vi.fn();
   const flow = useOnboarding({ onExit, mediator, currentYear: NOW, languages, applyLocale });
-  return { flow, onExit, applyLocale, services, profileWrites };
+  return { flow, onExit, applyLocale, services };
 }
 
 type Flow = Awaited<ReturnType<typeof setup>>['flow'];
@@ -192,7 +188,7 @@ describe('useOnboarding: about you', () => {
 
   it('stops someone under 18 on this device, even without a country, and sends nothing', async () => {
     const sent: string[] = [];
-    const { flow, profileWrites } = await setup({
+    const { flow } = await setup({
       api: (base) => ({
         saveProfile: async (s) => (sent.push('save'), base.saveProfile(s)),
         checkInvite: async (c) => (sent.push('check'), base.checkInvite(c)),
@@ -202,9 +198,8 @@ describe('useOnboarding: about you', () => {
 
     await flow.next();
 
-    expect(flow.stop.value).toBe(Eligibility.UnderAge);
+    expect(flow.stop.value).toBe(ProfileRejection.UnderAge);
     expect(sent).toEqual([]);
-    expect(profileWrites).toEqual([]);
   });
 
   it('stops an adult outside the EU/EEA once everything else is answered', async () => {
@@ -213,7 +208,7 @@ describe('useOnboarding: about you', () => {
 
     await flow.next();
 
-    expect(flow.stop.value).toBe(Eligibility.OutsideEea);
+    expect(flow.stop.value).toBe(ProfileRejection.OutsideEea);
     expect(flow.step.value).toBe(OnboardingStep.About);
   });
 
@@ -233,7 +228,7 @@ describe('useOnboarding: about you', () => {
 
 describe('useOnboarding: the screens', () => {
   it('goes through every screen, with progress, and saves at the end', async () => {
-    const { flow, onExit, profileWrites } = await setup();
+    const { flow, onExit } = await setup();
 
     answerAbout(flow);
     expect([flow.stepNumber.value, flow.stepCount.value]).toEqual([1, 4]);
@@ -250,10 +245,6 @@ describe('useOnboarding: the screens', () => {
     await flow.next();
 
     expect(onExit).toHaveBeenCalledExactlyOnceWith(OnboardingExit.Finished);
-    expect(profileWrites.at(-1)).toMatchObject({
-      status: ProfileStatus.Present,
-      profile: { hotConditionsDefault: true, goal: Goal.Strength },
-    });
   });
 
   it('skips the training week and saves after the Goal for food only', async () => {
@@ -324,11 +315,11 @@ describe('useOnboarding: saving', () => {
     const { flow, onExit } = await setup({ signedIn: true });
     await reachLastScreen(flow);
     // A clock that disagrees with the server's: the device thinks the year is earlier.
-    set(flow, { field: 'birthYear', value: String(new Date().getFullYear() - 10) });
+    set(flow, { field: 'birthYear', value: String(new Date().getUTCFullYear() - 10) });
 
     await flow.next();
 
-    expect(flow.stop.value).toBe(Eligibility.UnderAge);
+    expect(flow.stop.value).toBe(ProfileRejection.UnderAge);
     expect(flow.step.value).toBe(OnboardingStep.About);
     expect(onExit).not.toHaveBeenCalled();
   });

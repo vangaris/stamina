@@ -1,13 +1,9 @@
 import { profileAnswersSchema, SportKind, type ProfileAnswers } from '@stamina/contracts';
-import { Need, type Weekday } from '@stamina/domain';
-import { WEEKDAYS } from '../config.ts';
+import { Need } from '@stamina/domain';
 import type { OnboardingDraft } from '../types.ts';
 
-const inWeekOrder = (days: readonly Weekday[]) => WEEKDAYS.filter((day) => days.includes(day));
-
 /**
- * What is sent: the draft as the contract's answers, days in week order, no training week for
- * food only. The contract's own schema has the last word, so anything the screens let through
+ * What is sent: the draft as the contract's answers, no training week for food only. The contract's own schema has the last word, so anything the screens let through
  * that the server would refuse comes back as `undefined` here instead.
  */
 export function toProfileAnswers(draft: OnboardingDraft): ProfileAnswers | undefined {
@@ -20,7 +16,7 @@ export function toProfileAnswers(draft: OnboardingDraft): ProfileAnswers | undef
       draft.sport === SportKind.Other
         ? { kind: SportKind.Other, name: draft.otherSportName.trim() }
         : { kind: SportKind.Launch, sport: draft.sport },
-    playDays: draft.playVaries ? [] : inWeekOrder(draft.playDays),
+    playDays: draft.playVaries ? [] : draft.playDays,
     playVaries: draft.playVaries,
     playMinutes: draft.playMinutes,
     playIntensity: draft.playIntensity,
@@ -29,7 +25,7 @@ export function toProfileAnswers(draft: OnboardingDraft): ProfileAnswers | undef
       trainingWeek: {
         sessionsPerWeek: draft.sessionsPerWeek,
         sessionMinutes: draft.sessionMinutes,
-        availableDays: inWeekOrder(draft.availableDays),
+        availableDays: draft.availableDays,
       },
     }),
     locale: draft.locale,

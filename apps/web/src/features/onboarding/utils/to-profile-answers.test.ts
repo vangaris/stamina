@@ -12,17 +12,17 @@ const complete: OnboardingDraft = {
   birthYear: '1990',
   country: 'GR',
   sport: LaunchSport.Padel,
-  playDays: [Weekday.Sat, Weekday.Tue],
+  playDays: [Weekday.Tue, Weekday.Sat],
   playMinutes: 90,
   playIntensity: Intensity.Moderate,
   goal: Goal.SportPerformance,
   sessionsPerWeek: 3,
   sessionMinutes: 45,
-  availableDays: [Weekday.Fri, Weekday.Mon, Weekday.Wed],
+  availableDays: [Weekday.Mon, Weekday.Wed, Weekday.Fri],
 };
 
 describe('toProfileAnswers', () => {
-  it('turns a complete draft into the answers, with days in week order', () => {
+  it('turns a complete draft into the answers', () => {
     expect(toProfileAnswers(complete)).toEqual({
       needs: Need.Both,
       birthYear: 1990,

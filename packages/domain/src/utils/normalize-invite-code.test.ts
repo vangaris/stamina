@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { INVITE_CODE_INPUT_MAX_LENGTH } from '../config.ts';
 import { normalizeInviteCode } from './normalize-invite-code.ts';
 
 describe('normalizeInviteCode', () => {
@@ -15,5 +16,10 @@ describe('normalizeInviteCode', () => {
     for (const bad of ['ABCDEFGH20', 'ABCDEFGH2O', 'ABCDEFGH21', 'ABCDEFGH2I', 'ABCDEFGH2L']) {
       expect(normalizeInviteCode(bad)).toBeUndefined();
     }
+  });
+
+  it('rejects over-long input even when it normalises to a valid code', () => {
+    const padded = `ABCDEFGH23${' '.repeat(INVITE_CODE_INPUT_MAX_LENGTH)}`;
+    expect(normalizeInviteCode(padded)).toBeUndefined();
   });
 });

@@ -3,23 +3,14 @@ import {
   DatabaseStatus,
   HealthStatus,
   ProfileRejection,
+  profileRejectionFor,
   SaveProfileStatus,
   SportKind,
   type ApiClient,
   type SavedProfile,
 } from '@stamina/contracts';
-import {
-  checkEligibility,
-  Eligibility,
-  isHotDefaultSport,
-  normalizeInviteCode,
-} from '@stamina/domain';
+import { checkEligibility, isHotDefaultSport, normalizeInviteCode } from '@stamina/domain';
 import { FAKE_AUTH, FAKE_INVITE, HTTP_UNAUTHORIZED } from '../config.ts';
-
-const REJECTION_FOR_ELIGIBILITY = {
-  [Eligibility.UnderAge]: ProfileRejection.UnderAge,
-  [Eligibility.OutsideEea]: ProfileRejection.OutsideEea,
-} as const;
 
 /**
  * In-memory stand-in for the API, with the same rules: healthy; `me` answers from the fake auth
@@ -51,14 +42,11 @@ export function createFakeApiClient(getToken: () => Promise<string | undefined>)
       const eligibility = checkEligibility({
         birthYear: answers.birthYear,
         country: answers.country,
-        currentYear: new Date().getFullYear(),
+        // UTC, like the server, so both agree on the year around New Year.
+        currentYear: new Date().getUTCFullYear(),
       });
-      if (eligibility !== Eligibility.Eligible) {
-        return {
-          status: SaveProfileStatus.Rejected,
-          reason: REJECTION_FOR_ELIGIBILITY[eligibility],
-        };
-      }
+      const rejection = profileRejectionFor(eligibility);
+      if (rejection) return { status: SaveProfileStatus.Rejected, reason: rejection };
       if (!profiles.has(userId)) {
         if (!isUsable(inviteCode)) {
           return { status: SaveProfileStatus.Rejected, reason: ProfileRejection.InviteInvalid };

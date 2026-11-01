@@ -14,13 +14,12 @@ export const getProfile = (): GetProfile => ({ type: RequestType.GetProfile });
 export const getProfileDefinition = defineRequest<GetProfile, Services, Stores>({
   schema: z.object({ type: z.literal(RequestType.GetProfile) }),
   offline: OfflinePolicy.Never,
-  handler: async (_request, { services, stores }) => {
+  handler: async (_request, { services }) => {
     const profile = await services.api.getProfile();
     let state: ProfileState;
     if (profile) state = { status: ProfileStatus.Present, profile };
     else if (services.inviteStorage.get()) state = { status: ProfileStatus.NotStarted };
     else state = { status: ProfileStatus.InviteNeeded };
-    stores.profile.set(state);
     return state;
   },
 });

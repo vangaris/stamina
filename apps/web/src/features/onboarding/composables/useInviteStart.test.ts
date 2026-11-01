@@ -8,35 +8,55 @@ import {
 } from '@stamina/app-core';
 import { describe, expect, it, vi } from 'vitest';
 import { StartMessageKey } from '../enums/start-message-key.ts';
+import { StartExit } from '../enums/start-exit.ts';
 import { StartNotice } from '../enums/start-notice.ts';
 import { useInviteStart } from './useInviteStart.ts';
 
 /** The real mediator over the in-memory services: the same seam the app crosses. */
-function setup(overrides: Partial<ReturnType<typeof createServices>> = {}, notice?: StartNotice) {
+function setup(
+  overrides: Partial<ReturnType<typeof createServices>> = {},
+  { notice, signedIn = false }: { notice?: StartNotice; signedIn?: boolean } = {},
+) {
   const services = { ...createServices({ mode: ServicesMode.Test }), ...overrides };
   const mediator = createAppMediator({
     services,
     stores: {
       health: { set: () => undefined },
       session: { set: () => undefined },
-      profile: { set: () => undefined },
     },
   });
-  const onValid = vi.fn();
-  const start = useInviteStart({ onValid, mediator, notice });
-  return { start, onValid, services };
+  const onExit = vi.fn();
+  const start = useInviteStart({ onExit, isSignedIn: () => signedIn, mediator, notice });
+  return { start, onExit, services };
 }
 
 describe('useInviteStart', () => {
   it('goes on with a valid code, however it was typed, and the code is remembered', async () => {
-    const { start, onValid, services } = setup();
+    const { start, onExit, services } = setup();
 
     start.setCode(` ${FAKE_INVITE.validCode.toLowerCase()} `);
     await start.submit();
 
-    expect(onValid).toHaveBeenCalledOnce();
+    expect(onExit).toHaveBeenCalledExactlyOnceWith(StartExit.SignIn);
     expect(start.errorKey.value).toBeUndefined();
     expect(services.inviteStorage.get()).toBe(FAKE_INVITE.validCode);
+  });
+
+  it('goes straight to the screens when the person is already signed in', async () => {
+    const { start, onExit } = setup({}, { signedIn: true });
+
+    start.setCode(FAKE_INVITE.validCode);
+    await start.submit();
+
+    expect(onExit).toHaveBeenCalledExactlyOnceWith(StartExit.Onboarding);
+  });
+
+  it('lets someone with an account sign in without a code', () => {
+    const { start, onExit } = setup();
+
+    start.haveAccount();
+
+    expect(onExit).toHaveBeenCalledExactlyOnceWith(StartExit.SignIn);
   });
 
   it.each([
@@ -44,22 +64,22 @@ describe('useInviteStart', () => {
     ['a used code', FAKE_INVITE.usedCode],
     ['something that is not a code', 'hello'],
   ])('stays put with a message for %s', async (_name, code) => {
-    const { start, onValid } = setup();
+    const { start, onExit } = setup();
 
     start.setCode(code);
     await start.submit();
 
-    expect(onValid).not.toHaveBeenCalled();
+    expect(onExit).not.toHaveBeenCalled();
     expect(start.errorKey.value).toBe(StartMessageKey.Invalid);
     expect(start.busy.value).toBe(false);
   });
 
   it('asks for a code when the field is empty', async () => {
-    const { start, onValid } = setup();
+    const { start, onExit } = setup();
 
     await start.submit();
 
-    expect(onValid).not.toHaveBeenCalled();
+    expect(onExit).not.toHaveBeenCalled();
     expect(start.errorKey.value).toBe(StartMessageKey.Empty);
   });
 
@@ -113,7 +133,7 @@ describe('useInviteStart', () => {
   });
 
   it('shows the notice the screen was opened with', () => {
-    expect(setup({}, StartNotice.InviteRejected).start.noticeKey.value).toBe(
+    expect(setup({}, { notice: StartNotice.InviteRejected }).start.noticeKey.value).toBe(
       StartMessageKey.InviteRejected,
     );
     expect(setup().start.noticeKey.value).toBeUndefined();

@@ -7,12 +7,11 @@ import {
   saveProfile,
   SessionStatus,
 } from '@stamina/app-core';
-import { SaveProfileStatus, ProfileRejection } from '@stamina/contracts';
-import { Eligibility } from '@stamina/domain';
+import { ProfileRejection, profileRejectionFor, SaveProfileStatus } from '@stamina/contracts';
 import { computed, ref } from 'vue';
 import { i18n } from '../../../i18n.ts';
 import { useMediator } from '../../../mediator.ts';
-import { ERRORS_CLEARED_WITH } from '../config.ts';
+import { ERRORS_CLEARED_WITH, SAVE_ERROR_KEYS } from '../config.ts';
 import { OnboardingExit } from '../enums/onboarding-exit.ts';
 import { OnboardingMessageKey } from '../enums/onboarding-message-key.ts';
 import { OnboardingPhase } from '../enums/onboarding-phase.ts';
@@ -29,7 +28,7 @@ import { createDraft } from '../utils/create-draft.ts';
 import { localEligibility } from '../utils/local-eligibility.ts';
 import { stepsForNeeds } from '../utils/steps-for-needs.ts';
 import { toProfileAnswers } from '../utils/to-profile-answers.ts';
-import { toSaveErrorKey } from '../utils/to-save-error-key.ts';
+import { toMessageKey } from '../utils/to-message-key.ts';
 import { validateStep } from '../utils/validate-step.ts';
 
 /**
@@ -41,7 +40,7 @@ import { validateStep } from '../utils/validate-step.ts';
  */
 export function useOnboarding(options: UseOnboardingOptions) {
   const mediator = options.mediator ?? useMediator();
-  const currentYear = options.currentYear ?? new Date().getFullYear();
+  const currentYear = options.currentYear ?? new Date().getUTCFullYear();
   const languages = options.languages ?? navigator.languages;
   const applyLocale =
     options.applyLocale ??
@@ -97,14 +96,15 @@ export function useOnboarding(options: UseOnboardingOptions) {
   /** Age first, then the other answers, then country: the order the rule and the person expect. */
   function checkAbout(): boolean {
     const eligibility = localEligibility(draft.value, currentYear);
-    if (eligibility === Eligibility.UnderAge) {
-      stop.value = Eligibility.UnderAge;
+    const rejection = eligibility && profileRejectionFor(eligibility);
+    if (rejection === ProfileRejection.UnderAge) {
+      stop.value = rejection;
       return false;
     }
     errors.value = validateStep(OnboardingStep.About, draft.value, currentYear);
     if (Object.keys(errors.value).length > 0) return false;
-    if (eligibility === Eligibility.OutsideEea) {
-      stop.value = Eligibility.OutsideEea;
+    if (rejection === ProfileRejection.OutsideEea) {
+      stop.value = rejection;
       return false;
     }
     return true;
@@ -125,14 +125,13 @@ export function useOnboarding(options: UseOnboardingOptions) {
         return options.onExit(OnboardingExit.InviteRejected);
       }
       // The server applies the same rule: show the same stop, from the first screen.
-      stop.value =
-        result.reason === ProfileRejection.UnderAge ? Eligibility.UnderAge : Eligibility.OutsideEea;
+      stop.value = result.reason;
       step.value = OnboardingStep.About;
     } catch (error) {
       if (error instanceof AppError && error.code === AppErrorCode.Unauthorized) {
         return options.onExit(OnboardingExit.SignedOut);
       }
-      errorKey.value = toSaveErrorKey(error);
+      errorKey.value = toMessageKey(error, SAVE_ERROR_KEYS, OnboardingMessageKey.Unknown);
     } finally {
       busy.value = false;
     }

@@ -2,6 +2,7 @@ import {
   ApiPath,
   DatabaseStatus,
   HealthStatus,
+  HttpStatus,
   healthResponseSchema,
   type HealthResponse,
 } from '@stamina/contracts';
@@ -51,10 +52,10 @@ export function createApp({
     if (error instanceof HTTPException && error.status < 500) return error.getResponse();
     await errorReporter?.report(error, { requestId: c.get('requestId') });
     // The message is never echoed: it can embed what the user sent.
-    return c.json({ error: ApiErrorCode.InternalError }, 500);
+    return c.json({ error: ApiErrorCode.InternalError }, HttpStatus.InternalServerError);
   });
 
-  app.get('/health', async (c) => {
+  app.get(ApiPath.Health, async (c) => {
     let body: HealthResponse;
     try {
       await db.execute(sql`select 1`);
@@ -62,7 +63,10 @@ export function createApp({
     } catch {
       body = { status: HealthStatus.Degraded, database: DatabaseStatus.Down };
     }
-    return c.json(healthResponseSchema.parse(body), body.status === HealthStatus.Ok ? 200 : 503);
+    return c.json(
+      healthResponseSchema.parse(body),
+      body.status === HealthStatus.Ok ? HttpStatus.Ok : HttpStatus.ServiceUnavailable,
+    );
   });
 
   app.route(ApiPath.Me, meRoutes({ db, auth }));

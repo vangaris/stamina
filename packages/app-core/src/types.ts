@@ -171,7 +171,6 @@ export type SessionState =
   | { status: SessionStatus.SignedIn; userId: string };
 
 export type ProfileState =
-  | { status: ProfileStatus.Unknown }
   | { status: ProfileStatus.Present; profile: SavedProfile }
   | { status: ProfileStatus.NotStarted }
   | { status: ProfileStatus.InviteNeeded };
@@ -180,7 +179,6 @@ export interface Stores {
   /** Stores hold state only; the web app backs these with Pinia. */
   health: { set(state: HealthState): void };
   session: { set(state: SessionState): void };
-  profile: { set(state: ProfileState): void };
 }
 
 export interface AppMediatorOptions {

@@ -1,5 +1,6 @@
 import { SportKind } from '@stamina/contracts';
-import { COUNTRY_CODES, TrainingWeekProblem, validateTrainingWeek } from '@stamina/domain';
+import { COUNTRY_CODES, validateTrainingWeek } from '@stamina/domain';
+import { KEY_FOR_PROBLEM, MESSAGE_FOR_PROBLEM } from '../config.ts';
 import { OnboardingMessageKey } from '../enums/onboarding-message-key.ts';
 import { OnboardingStep } from '../enums/onboarding-step.ts';
 import type { FieldErrors, OnboardingDraft } from '../types.ts';
@@ -31,17 +32,6 @@ function validateSport(draft: OnboardingDraft): FieldErrors {
 function validateGoal(draft: OnboardingDraft): FieldErrors {
   return draft.goal ? {} : { goal: OnboardingMessageKey.Goal };
 }
-
-const KEY_FOR_PROBLEM: Record<TrainingWeekProblem, keyof OnboardingDraft> = {
-  [TrainingWeekProblem.SessionsOutOfRange]: 'sessionsPerWeek',
-  [TrainingWeekProblem.LengthNotOffered]: 'sessionMinutes',
-  [TrainingWeekProblem.TooFewAvailableDays]: 'availableDays',
-};
-const MESSAGE_FOR_PROBLEM: Record<TrainingWeekProblem, OnboardingMessageKey> = {
-  [TrainingWeekProblem.SessionsOutOfRange]: OnboardingMessageKey.SessionsPerWeek,
-  [TrainingWeekProblem.LengthNotOffered]: OnboardingMessageKey.SessionMinutes,
-  [TrainingWeekProblem.TooFewAvailableDays]: OnboardingMessageKey.AvailableDays,
-};
 
 function validateWeek(draft: OnboardingDraft): FieldErrors {
   const problems = validateTrainingWeek({

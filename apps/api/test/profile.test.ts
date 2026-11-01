@@ -3,10 +3,11 @@ import {
   SaveProfileStatus,
   SportKind,
   getProfileResponseSchema,
+  inviteCheckResponseSchema,
   saveProfileResultSchema,
   type ProfileSubmission,
 } from '@stamina/contracts';
-import { Goal, LaunchSport, Need, Weekday } from '@stamina/domain';
+import { Goal, INVITE_CODE_INPUT_MAX_LENGTH, LaunchSport, Need, Weekday } from '@stamina/domain';
 import { eq, sql } from 'drizzle-orm';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { appUser, invite, profile } from '../src/db/schema.ts';
@@ -130,7 +131,7 @@ describe('/profile', () => {
     });
 
     it('turns hot conditions on for kite, windsurf and beach volleyball only', async () => {
-      const outcomes: Record<string, boolean | undefined> = {};
+      const hotSports: LaunchSport[] = [];
       for (const sport of Object.values(LaunchSport)) {
         const { token } = await newUser();
         await save(
@@ -140,15 +141,12 @@ describe('/profile', () => {
             sport: { kind: SportKind.Launch, sport },
           }),
         );
-        outcomes[sport] = (await read(token))?.hotConditionsDefault;
+        if ((await read(token))?.hotConditionsDefault) hotSports.push(sport);
       }
 
-      expect(Object.keys(outcomes).filter((sport) => outcomes[sport])).toEqual(
-        [LaunchSport.BeachVolleyball, LaunchSport.Kitesurfing, LaunchSport.Windsurfing].sort(
-          (a, b) => Object.keys(outcomes).indexOf(a) - Object.keys(outcomes).indexOf(b),
-        ),
+      expect(hotSports.sort()).toEqual(
+        [LaunchSport.BeachVolleyball, LaunchSport.Kitesurfing, LaunchSport.Windsurfing].sort(),
       );
-      expect(Object.values(outcomes).every((hot) => typeof hot === 'boolean')).toBe(true);
     });
 
     it('derives hot conditions on the server and ignores what the client sends', async () => {
@@ -208,6 +206,7 @@ describe('/profile', () => {
       ],
       ['an adult in the US', { country: 'US' }, ProfileRejection.OutsideEea],
       ['an adult in the UK', { country: 'GB' }, ProfileRejection.OutsideEea],
+      ['an adult in Switzerland', { country: 'CH' }, ProfileRejection.OutsideEea],
     ] as const;
 
     it.each(turnedAway)(
@@ -266,6 +265,47 @@ describe('/profile', () => {
     });
   });
 
+  describe('rule boundaries', () => {
+    const week = (sessionsPerWeek: number, sessionMinutes: number, days = 4) => ({
+      sessionsPerWeek,
+      sessionMinutes,
+      availableDays: Object.values(Weekday).slice(0, days),
+    });
+    const statusFor = async (overrides: Partial<ProfileSubmission>) => {
+      const { token } = await newUser();
+      const inviteCode = await issueInvite(api.db);
+      return (await save(token, validSubmission({ inviteCode, ...overrides }))).status;
+    };
+
+    it('admits someone whose age in years is 18 and turns away 17', async () => {
+      expect(await statusFor({ birthYear: CURRENT_YEAR - 18 })).toBe(200);
+      expect(await statusFor({ birthYear: CURRENT_YEAR - 17 })).toBe(422);
+    });
+
+    it('admits an EEA resident outside the EU', async () => {
+      expect(await statusFor({ country: 'NO' })).toBe(200);
+    });
+
+    it('takes 2 to 4 sessions a week and rejects 1 and 5', async () => {
+      expect(await statusFor({ trainingWeek: week(2, 45) })).toBe(200);
+      expect(await statusFor({ trainingWeek: week(4, 45) })).toBe(200);
+      expect(await statusFor({ trainingWeek: week(1, 45) })).toBe(400);
+      expect(await statusFor({ trainingWeek: week(5, 45, 5) })).toBe(400);
+    });
+
+    it('offers 30, 45 and 60 minute sessions and rejects 50', async () => {
+      for (const minutes of [30, 45, 60]) {
+        expect(await statusFor({ trainingWeek: week(3, minutes) })).toBe(200);
+      }
+      expect(await statusFor({ trainingWeek: week(3, 50) })).toBe(400);
+    });
+
+    it('needs at least as many available days as sessions', async () => {
+      expect(await statusFor({ trainingWeek: week(3, 45, 3) })).toBe(200);
+      expect(await statusFor({ trainingWeek: week(3, 45, 2) })).toBe(400);
+    });
+  });
+
   describe('invite problems', () => {
     it('rejects an unknown code with 422 invite-invalid and stores nothing', async () => {
       const { userId, token } = await newUser();
@@ -306,6 +346,34 @@ describe('/profile', () => {
       expect(await response.json()).toMatchObject({ reason: ProfileRejection.InviteInvalid });
       expect(await profileRows(second.userId)).toEqual([]);
       expect((await inviteRow(code)).redeemedBy).toBe(first.userId);
+    });
+
+    it('keeps a used code used after the person who used it is deleted', async () => {
+      const code = await issueInvite(api.db);
+      const first = await newUser();
+      const second = await newUser();
+      await save(first.token, validSubmission({ inviteCode: code }));
+
+      // Account deletion: the connection role removes the user; the profile cascades and
+      // `invite.redeemed_by` is cleared.
+      await api.db.delete(appUser).where(eq(appUser.id, first.userId));
+
+      expect(await inviteRow(code)).toMatchObject({ redeemedBy: null });
+      expect(
+        inviteCheckResponseSchema.parse(
+          await (
+            await fetch(`${api.baseUrl}/invites/check`, {
+              method: 'POST',
+              headers: { 'content-type': 'application/json' },
+              body: JSON.stringify({ code }),
+            })
+          ).json(),
+        ),
+      ).toEqual({ valid: false });
+      const response = await save(second.token, validSubmission({ inviteCode: code }));
+      expect(response.status).toBe(422);
+      expect(await response.json()).toMatchObject({ reason: ProfileRejection.InviteInvalid });
+      expect(await profileRows(second.userId)).toEqual([]);
     });
 
     it('lets exactly one of two people racing for one code win', async () => {
@@ -413,6 +481,14 @@ describe('/profile', () => {
         }),
       ],
       ['no invite code field', omit(validSubmission(), 'inviteCode')],
+      [
+        'an over-long invite code',
+        validSubmission({ inviteCode: 'A'.repeat(INVITE_CODE_INPUT_MAX_LENGTH + 1) }),
+      ],
+      [
+        'a valid invite code padded past the length bound',
+        validSubmission({ inviteCode: `ABCDEFGH23${' '.repeat(INVITE_CODE_INPUT_MAX_LENGTH)}` }),
+      ],
     ];
 
     it.each(bad)('answers 400 to %s, stores nothing and echoes nothing', async (_name, body) => {

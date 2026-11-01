@@ -1,18 +1,9 @@
 import { SportKind, type ProfileSubmission } from '@stamina/contracts';
-import {
-  Goal,
-  INVITE_CODE_ALPHABET,
-  INVITE_CODE_LENGTH,
-  Intensity,
-  LaunchSport,
-  Need,
-  Units,
-  Weekday,
-} from '@stamina/domain';
+import { Goal, Intensity, LaunchSport, Need, Units, Weekday } from '@stamina/domain';
 import { Locale } from '@stamina/i18n';
-import { randomInt } from 'node:crypto';
 import type { Db } from '../../src/db/client.ts';
 import { invite } from '../../src/db/schema.ts';
+import { generateInviteCode } from '../../src/invites/generate-invite-code.ts';
 
 export const CURRENT_YEAR = new Date().getUTCFullYear();
 
@@ -40,17 +31,9 @@ export function validSubmission(overrides: Partial<ProfileSubmission> = {}): Pro
   };
 }
 
-/** A random code in the invite alphabet, so tests never collide. */
-export function randomInviteCode(): string {
-  return Array.from(
-    { length: INVITE_CODE_LENGTH },
-    () => INVITE_CODE_ALPHABET[randomInt(INVITE_CODE_ALPHABET.length)]!,
-  ).join('');
-}
-
 /** Issues one unredeemed invite straight into the table, as the seed script does. */
 export async function issueInvite(db: Db): Promise<string> {
-  const code = randomInviteCode();
+  const code = generateInviteCode();
   await db.insert(invite).values({ code });
   return code;
 }

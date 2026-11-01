@@ -33,7 +33,7 @@ import { setupMediator } from '../testing/setup-mediator.ts';
 const EMAIL = 'ada@example.com';
 const GREECE = 'GR';
 const ADULT_BIRTH_YEAR = 1990;
-const UNDER_18_BIRTH_YEAR = new Date().getFullYear() - 10;
+const UNDER_18_BIRTH_YEAR = new Date().getUTCFullYear() - 10;
 
 function answers(overrides: Partial<ProfileAnswers> = {}): ProfileAnswers {
   return {
@@ -127,18 +127,16 @@ describe('checkInvite through the mediator', () => {
 
 describe('getProfile through the mediator', () => {
   it('says an invite is needed when there is no profile and no remembered code', async () => {
-    const { mediator, services, profileWrites } = setupMediator();
+    const { mediator, services } = setupMediator();
     await services.auth.verifyEmailCode(EMAIL, FAKE_AUTH.validCode);
 
     expect(await mediator.send(getProfile())).toEqual({ status: ProfileStatus.InviteNeeded });
-    expect(profileWrites).toEqual([{ status: ProfileStatus.InviteNeeded }]);
   });
 
   it('says onboarding can start when there is no profile but a code is remembered', async () => {
-    const { mediator, profileWrites } = await signedInWithInvite();
+    const { mediator } = await signedInWithInvite();
 
     expect(await mediator.send(getProfile())).toEqual({ status: ProfileStatus.NotStarted });
-    expect(profileWrites.at(-1)).toEqual({ status: ProfileStatus.NotStarted });
   });
 
   it('returns the saved profile once onboarding is done', async () => {
@@ -160,20 +158,11 @@ describe('getProfile through the mediator', () => {
       code: AppErrorCode.Unauthorized,
     });
   });
-
-  it('is reset to Unknown by signing out, so the next person never sees this profile', async () => {
-    const { mediator, profileWrites } = await signedInWithInvite();
-    await mediator.send(saveProfile(answers()));
-
-    await mediator.send(signOut());
-
-    expect(profileWrites.at(-1)).toEqual({ status: ProfileStatus.Unknown });
-  });
 });
 
 describe('saveProfile through the mediator', () => {
-  it('saves the answers, derives hot conditions, fills the store and uses up the remembered invite', async () => {
-    const { mediator, services, profileWrites } = await signedInWithInvite();
+  it('saves the answers, derives hot conditions and uses up the remembered invite', async () => {
+    const { mediator, services } = await signedInWithInvite();
 
     const result = await mediator.send(
       saveProfile(answers({ sport: { kind: SportKind.Launch, sport: LaunchSport.Kitesurfing } })),
@@ -183,7 +172,6 @@ describe('saveProfile through the mediator', () => {
       status: SaveProfileStatus.Saved,
       profile: { hotConditionsDefault: true, country: GREECE },
     });
-    expect(profileWrites.at(-1)).toMatchObject({ status: ProfileStatus.Present });
     expect(services.inviteStorage.get()).toBeUndefined();
   });
 
@@ -213,7 +201,7 @@ describe('saveProfile through the mediator', () => {
   });
 
   it('turns away someone under 18 with a typed result, stores nothing and keeps the invite for later', async () => {
-    const { mediator, services, profileWrites } = await signedInWithInvite();
+    const { mediator, services } = await signedInWithInvite();
 
     const result = await mediator.send(saveProfile(answers({ birthYear: UNDER_18_BIRTH_YEAR })));
 
@@ -221,7 +209,7 @@ describe('saveProfile through the mediator', () => {
       status: SaveProfileStatus.Rejected,
       reason: ProfileRejection.UnderAge,
     });
-    expect(profileWrites).toEqual([]);
+    expect(await mediator.send(getProfile())).toEqual({ status: ProfileStatus.NotStarted });
     expect(services.inviteStorage.get()).toBe(FAKE_INVITE.validCode);
     expect(await mediator.send(saveProfile(answers()))).toMatchObject({
       status: SaveProfileStatus.Saved,
@@ -239,7 +227,7 @@ describe('saveProfile through the mediator', () => {
   });
 
   it('turns away a resident outside the EU/EEA, stores nothing and does not burn the invite', async () => {
-    const { mediator, services, profileWrites } = await signedInWithInvite();
+    const { mediator, services } = await signedInWithInvite();
     expect(EEA_COUNTRY_CODES).not.toContain('US');
 
     const result = await mediator.send(saveProfile(answers({ country: 'US' })));
@@ -248,7 +236,7 @@ describe('saveProfile through the mediator', () => {
       status: SaveProfileStatus.Rejected,
       reason: ProfileRejection.OutsideEea,
     });
-    expect(profileWrites).toEqual([]);
+    expect(await mediator.send(getProfile())).toEqual({ status: ProfileStatus.NotStarted });
     expect(services.inviteStorage.get()).toBe(FAKE_INVITE.validCode);
   });
 

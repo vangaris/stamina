@@ -12,9 +12,10 @@ import {
   COUNTRY_AUTOCOMPLETE,
   LOCALE_NAMES,
 } from '../config.ts';
-import type { OnboardingDraft, StepEmits, StepProps } from '../types.ts';
+import { useFieldMessages } from '../composables/useFieldMessages.ts';
+import type { StepEmits, StepProps } from '../types.ts';
 import { countryOptions } from '../utils/country-options.ts';
-import { pickedOne, pickedOneOr } from '../utils/picked-value.ts';
+import { pickedOne } from '../utils/picked-one.ts';
 import { toOptions } from '../utils/to-options.ts';
 import FieldError from './FieldError.vue';
 import StepFrame from './StepFrame.vue';
@@ -23,18 +24,19 @@ const props = defineProps<StepProps>();
 const emit = defineEmits<StepEmits>();
 
 const { t } = useI18n();
-const message = (field: keyof OnboardingDraft) => {
-  const key = props.errors[field];
-  return key ? t(key) : undefined;
-};
+const message = useFieldMessages(() => props.errors);
+
+const NEEDS = Object.values(Need);
+const LOCALES = Object.values(Locale);
+const UNITS = Object.values(Units);
 
 const needsOptions = computed(() =>
-  toOptions(Object.values(Need), (need) => t(`onboarding.about.needs.options.${need}`)),
+  toOptions(NEEDS, (need) => t(`onboarding.about.needs.options.${need}`)),
 );
 const countries = computed(() => countryOptions(props.draft.locale));
-const localeOptions = toOptions(Object.values(Locale), (locale) => LOCALE_NAMES[locale]);
+const localeOptions = toOptions(LOCALES, (locale) => LOCALE_NAMES[locale]);
 const unitsOptions = computed(() =>
-  toOptions(Object.values(Units), (units) => t(`onboarding.about.units.options.${units}`)),
+  toOptions(UNITS, (units) => t(`onboarding.about.units.options.${units}`)),
 );
 </script>
 
@@ -53,7 +55,7 @@ const unitsOptions = computed(() =>
         :model-value="draft.needs ?? null"
         :options="needsOptions"
         :label="t('onboarding.about.needs.label')"
-        @update:model-value="emit('update', { field: 'needs', value: pickedOne<Need>($event) })"
+        @update:model-value="emit('update', { field: 'needs', value: pickedOne($event, NEEDS) })"
       />
       <FieldError :message="message('needs')" />
     </div>
@@ -83,7 +85,7 @@ const unitsOptions = computed(() =>
       :options="localeOptions"
       :label="t('onboarding.about.language.label')"
       @update:model-value="
-        emit('update', { field: 'locale', value: pickedOneOr<Locale>($event, draft.locale) })
+        emit('update', { field: 'locale', value: pickedOne($event, LOCALES) ?? draft.locale })
       "
     />
     <ChipGroup
@@ -91,7 +93,7 @@ const unitsOptions = computed(() =>
       :options="unitsOptions"
       :label="t('onboarding.about.units.label')"
       @update:model-value="
-        emit('update', { field: 'units', value: pickedOneOr<Units>($event, draft.units) })
+        emit('update', { field: 'units', value: pickedOne($event, UNITS) ?? draft.units })
       "
     />
   </StepFrame>
