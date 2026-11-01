@@ -37,3 +37,15 @@ export const FAKE_AUTH = {
 
 /** A cached API token is dropped this long before its `exp`, so it never expires in flight. */
 export const TOKEN_EXPIRY_MARGIN_MS = 30_000;
+
+/** Where the browser keeps the checked invite code while the person signs in (it may leave the app for Google and come back). */
+export const INVITE_STORAGE_KEY = 'stamina.invite-code';
+
+/**
+ * Invite codes the fake API (Test and Dev modes) knows, in canonical form. The valid one can be
+ * redeemed once per fake API; the used one never can.
+ */
+export const FAKE_INVITE = {
+  validCode: 'KWDMX7PQ4R',
+  usedCode: 'UBSED2HT5V',
+} as const;

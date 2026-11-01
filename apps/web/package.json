@@ -23,6 +23,8 @@
   "dependencies": {
     "@sentry/vue": "^11.10.0",
     "@stamina/app-core": "workspace:^",
+    "@stamina/contracts": "workspace:^",
+    "@stamina/domain": "workspace:^",
     "@stamina/i18n": "workspace:^",
     "@stamina/safe-log": "workspace:^",
     "@stamina/tokens": "workspace:^",
@@ -33,6 +35,7 @@
     "@stamina/ui-chip": "workspace:^",
     "@stamina/ui-chip-group": "workspace:^",
     "@stamina/ui-progress-bar": "workspace:^",
+    "@stamina/ui-select": "workspace:^",
     "@stamina/ui-sheet": "workspace:^",
     "@stamina/ui-stepper": "workspace:^",
     "@stamina/ui-tabs": "workspace:^",

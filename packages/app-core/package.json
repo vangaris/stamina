@@ -19,6 +19,8 @@
   },
   "dependencies": {
     "@stamina/contracts": "workspace:^",
+    "@stamina/domain": "workspace:^",
+    "@stamina/i18n": "workspace:^",
     "zod": "^4.6.7"
   }
 }

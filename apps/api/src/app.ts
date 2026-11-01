@@ -1,4 +1,5 @@
 import {
+  ApiPath,
   DatabaseStatus,
   HealthStatus,
   healthResponseSchema,
@@ -15,7 +16,9 @@ import type { Db } from './db/client.ts';
 import { ApiErrorCode } from './enums/api-error-code.ts';
 import type { ErrorReporter } from './error-reporter.ts';
 import { requestLog, type AppEnv, type LogSink } from './request-log.ts';
+import { inviteRoutes } from './routes/invite-routes.ts';
 import { meRoutes } from './routes/me-routes.ts';
+import { profileRoutes } from './routes/profile-routes.ts';
 
 export interface AppDeps {
   db: Db;
@@ -62,7 +65,9 @@ export function createApp({
     return c.json(healthResponseSchema.parse(body), body.status === HealthStatus.Ok ? 200 : 503);
   });
 
-  app.route('/me', meRoutes({ db, auth }));
+  app.route(ApiPath.Me, meRoutes({ db, auth }));
+  app.route(ApiPath.Profile, profileRoutes({ db, auth }));
+  app.route(ApiPath.InviteCheck, inviteRoutes({ db }));
 
   return app;
 }

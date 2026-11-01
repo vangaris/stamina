@@ -5,5 +5,7 @@ export enum RoutePath {
   Meals = '/meals',
   Progress = '/progress',
   SignIn = '/sign-in',
+  Start = '/start',
+  Onboarding = '/onboarding',
   DevUi = '/dev/ui',
 }

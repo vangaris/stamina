@@ -11,7 +11,8 @@
     "build": "esbuild src/server.ts --bundle --platform=node --format=esm --target=es2023 --external:pg-native --banner:js=\"import{createRequire as __cr}from'node:module';const require=__cr(import.meta.url);\" --outfile=dist/server.js",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "tsx --env-file-if-exists=.env src/db/migrate-cli.ts",
-    "db:dev": "tsx scripts/dev-db.ts"
+    "db:dev": "tsx scripts/dev-db.ts",
+    "invites:create": "tsx --env-file-if-exists=.env scripts/create-invites.ts"
   },
   "nx": {
     "tags": [
@@ -24,6 +25,7 @@
     "@neondatabase/serverless": "^1.2.0",
     "@sentry/core": "^11.10.0",
     "@stamina/contracts": "workspace:^",
+    "@stamina/domain": "workspace:^",
     "@stamina/safe-log": "workspace:^",
     "drizzle-orm": "^0.45.4",
     "hono": "^4.13.14",
@@ -33,6 +35,7 @@
   },
   "devDependencies": {
     "@types/node": "22",
+    "@stamina/i18n": "workspace:^",
     "@types/pg": "^8.23.1",
     "drizzle-kit": "^0.31.11",
     "embedded-postgres": "18.4.0-beta.17",

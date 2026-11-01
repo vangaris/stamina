@@ -19,7 +19,7 @@ async function requestCode(page: Page, email: string) {
   await expect(page.getByRole('heading', { name: 'Check your email' })).toBeVisible();
 }
 
-test('email, then the code, signs in: the API accepts the bearer token and /today opens', async ({
+test('email, then the code, signs in: the API accepts the bearer token and, with no invite yet, /start opens', async ({
   page,
 }, testInfo) => {
   const email = uniqueEmail(testInfo.title);
@@ -37,8 +37,9 @@ test('email, then the code, signs in: the API accepts the bearer token and /toda
   const response = await me;
   expect(response.status()).toBe(200);
   expect((await response.request().allHeaders()).authorization).toMatch(/^Bearer ey/);
-  await expect(page).toHaveURL(/\/today$/);
-  await expect(page.getByRole('heading', { name: 'Today' })).toBeVisible();
+  // Signed in, no profile and no remembered invite: the invite screen comes first.
+  await expect(page).toHaveURL(/\/start$/);
+  await expect(page.getByRole('heading', { name: 'Stamina is invite-only for now' })).toBeVisible();
 });
 
 test('a wrong code is explained and can be corrected', async ({ page }, testInfo) => {
@@ -51,7 +52,7 @@ test('a wrong code is explained and can be corrected', async ({ page }, testInfo
 
   await page.getByLabel(/6-digit code/).fill(CODE);
   await page.getByRole('button', { name: 'Sign in' }).click();
-  await expect(page).toHaveURL(/\/today$/);
+  await expect(page).toHaveURL(/\/start$/);
 });
 
 test('three wrong codes ask for a new code', async ({ page }, testInfo) => {

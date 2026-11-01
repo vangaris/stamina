@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { defineRequest } from '../define-request.ts';
 import { OfflinePolicy } from '../enums/offline-policy.ts';
+import { ProfileStatus } from '../enums/profile-status.ts';
 import { RequestType } from '../enums/request-type.ts';
 import { SessionStatus } from '../enums/session-status.ts';
 import type { Services, SignOut, Stores } from '../types.ts';
@@ -13,5 +14,7 @@ export const signOutDefinition = defineRequest<SignOut, Services, Stores>({
   handler: async (_request, { services, stores }) => {
     await services.auth.signOut();
     stores.session.set({ status: SessionStatus.SignedOut });
+    // The next person to sign in on this device must not see this person's profile.
+    stores.profile.set({ status: ProfileStatus.Unknown });
   },
 });

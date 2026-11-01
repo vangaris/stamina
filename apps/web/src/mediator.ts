@@ -1,6 +1,7 @@
 import { createAppMediator, createServices, type Mediator } from '@stamina/app-core';
 import { DEV_API_URL } from './config.ts';
 import { useHealthStore } from './stores/health.ts';
+import { useProfileStore } from './stores/profile.ts';
 import { useSessionStore } from './stores/session.ts';
 import { resolveServicesEnv } from './utils/resolve-services-env.ts';
 
@@ -19,6 +20,7 @@ export function useMediator(): Mediator {
     stores: {
       health: { set: (state) => useHealthStore().set(state) },
       session: { set: (state) => useSessionStore().set(state) },
+      profile: { set: (state) => useProfileStore().set(state) },
     },
   });
   return mediator;

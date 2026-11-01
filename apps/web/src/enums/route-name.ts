@@ -4,5 +4,7 @@ export enum RouteName {
   Meals = 'meals',
   Progress = 'progress',
   SignIn = 'sign-in',
+  Start = 'start',
+  Onboarding = 'onboarding',
   DevUi = 'dev-ui',
 }

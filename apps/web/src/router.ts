@@ -38,6 +38,16 @@ const routes: RouteRecordRaw[] = [
     name: RouteName.SignIn,
     component: () => import('./features/sign-in/index.ts').then((m) => m.SignInContainer),
   },
+  {
+    path: RoutePath.Start,
+    name: RouteName.Start,
+    component: () => import('./features/onboarding/index.ts').then((m) => m.StartContainer),
+  },
+  {
+    path: RoutePath.Onboarding,
+    name: RouteName.Onboarding,
+    component: () => import('./features/onboarding/index.ts').then((m) => m.OnboardingContainer),
+  },
 ];
 
 // Developer-only UI kit page. `import.meta.env.DEV` is a build-time constant, so a production
