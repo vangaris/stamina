@@ -36,7 +36,7 @@ Tags live in each package's `package.json` (`nx.tags`); the rules are in `eslint
 | `type:util`       | `type:util`                                             |
 | `type:ui`         | `type:ui`, `type:util`                                  |
 | `type:domain`     | `type:domain`, `type:util`                              |
-| `type:contracts`  | `type:contracts`, `type:util`                           |
+| `type:contracts`  | `type:contracts`, `type:domain`, `type:util`                         |
 | `type:app-core`   | `type:app-core`, `type:domain`, `type:contracts`, `type:util` |
 | `type:app`        | anything                                                |
 | `scope:shared`    | `scope:shared` (no Vue, no React)                       |

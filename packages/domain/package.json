@@ -1,0 +1,23 @@
+{
+  "name": "@stamina/domain",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "typecheck": "tsc -p tsconfig.json",
+    "test": "vitest run"
+  },
+  "nx": {
+    "tags": [
+      "type:domain",
+      "scope:shared"
+    ]
+  },
+  "devDependencies": {
+    "vitest": "^5.0.5"
+  }
+}

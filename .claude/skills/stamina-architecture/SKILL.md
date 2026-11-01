@@ -47,7 +47,7 @@ Give each feature, UI component and util the folder shape in `docs/development.m
 | `apps/api`                         | app, server       | anything                | Hono routes, DB, auth; the server is authoritative for every number                            |
 | `packages/domain`                  | domain, shared    | util                    | pure rules: Load, Blocks, progression, Deload, targets, Screening, stop flags                  |
 | `packages/app-core`                | app-core, shared  | domain, contracts, util | mediator, commands/queries, pipeline, handlers, service interfaces; no Vue or React            |
-| `packages/contracts`               | contracts, shared | util                    | zod schemas, OpenAPI, typed client                                                             |
+| `packages/contracts`               | contracts, shared | domain, util            | zod schemas, OpenAPI, typed client                                                             |
 | `packages/ui/<name>`               | ui, vue           | ui, util                | one presentational component per package; props in, events out                                 |
 | `packages/tokens`, `packages/i18n` | util, shared      | util                    | design tokens; EN/EL messages                                                                  |
 | `packages/util/<name>`             | util              | util                    | one shared utility per package                                                                 |

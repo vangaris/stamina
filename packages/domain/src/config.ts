@@ -1,0 +1,54 @@
+import { LaunchSport } from './enums/launch-sport.ts';
+
+/** Stamina is for adults. Age is the difference between the current year and the birth year. */
+export const ADULT_AGE = 18;
+/** Earliest birth year the form accepts, so a typo is caught before it reaches the rules. */
+export const MIN_BIRTH_YEAR = 1900;
+
+export const MIN_SESSIONS_PER_WEEK = 2;
+export const MAX_SESSIONS_PER_WEEK = 4;
+/** Session lengths in minutes the training week offers. */
+export const SESSION_LENGTHS_MINUTES = [30, 45, 60] as const;
+
+/** Usual time on the court, water or pitch, in minutes. */
+export const MIN_PLAY_MINUTES = 15;
+export const MAX_PLAY_MINUTES = 300;
+
+export const OTHER_SPORT_NAME_MAX_LENGTH = 60;
+
+/** Sports where "hot conditions" is on by default in summer. */
+export const HOT_DEFAULT_SPORTS: readonly LaunchSport[] = [
+  LaunchSport.Kitesurfing,
+  LaunchSport.Windsurfing,
+  LaunchSport.BeachVolleyball,
+];
+
+/** ISO 3166-1 alpha-2 codes of the EU and EEA countries; the only residents the beta admits. */
+export const EEA_COUNTRY_CODES: readonly string[] = [
+  'AT', 'BE', 'BG', 'HR', 'CY', 'CZ', 'DK', 'EE', 'FI', 'FR', 'DE', 'GR', 'HU', 'IE', 'IT', 'LV',
+  'LT', 'LU', 'MT', 'NL', 'PL', 'PT', 'RO', 'SK', 'SI', 'ES', 'SE', 'IS', 'LI', 'NO',
+];
+
+/** Every ISO 3166-1 alpha-2 code the country picker offers. Names come from `Intl.DisplayNames`. */
+export const COUNTRY_CODES: readonly string[] = [
+  'AD', 'AE', 'AF', 'AG', 'AI', 'AL', 'AM', 'AO', 'AQ', 'AR', 'AS', 'AT', 'AU', 'AW', 'AX', 'AZ',
+  'BA', 'BB', 'BD', 'BE', 'BF', 'BG', 'BH', 'BI', 'BJ', 'BL', 'BM', 'BN', 'BO', 'BQ', 'BR', 'BS',
+  'BT', 'BV', 'BW', 'BY', 'BZ', 'CA', 'CC', 'CD', 'CF', 'CG', 'CH', 'CI', 'CK', 'CL', 'CM', 'CN',
+  'CO', 'CR', 'CU', 'CV', 'CW', 'CX', 'CY', 'CZ', 'DE', 'DJ', 'DK', 'DM', 'DO', 'DZ', 'EC', 'EE',
+  'EG', 'EH', 'ER', 'ES', 'ET', 'FI', 'FJ', 'FK', 'FM', 'FO', 'FR', 'GA', 'GB', 'GD', 'GE', 'GF',
+  'GG', 'GH', 'GI', 'GL', 'GM', 'GN', 'GP', 'GQ', 'GR', 'GS', 'GT', 'GU', 'GW', 'GY', 'HK', 'HM',
+  'HN', 'HR', 'HT', 'HU', 'ID', 'IE', 'IL', 'IM', 'IN', 'IO', 'IQ', 'IR', 'IS', 'IT', 'JE', 'JM',
+  'JO', 'JP', 'KE', 'KG', 'KH', 'KI', 'KM', 'KN', 'KP', 'KR', 'KW', 'KY', 'KZ', 'LA', 'LB', 'LC',
+  'LI', 'LK', 'LR', 'LS', 'LT', 'LU', 'LV', 'LY', 'MA', 'MC', 'MD', 'ME', 'MF', 'MG', 'MH', 'MK',
+  'ML', 'MM', 'MN', 'MO', 'MP', 'MQ', 'MR', 'MS', 'MT', 'MU', 'MV', 'MW', 'MX', 'MY', 'MZ', 'NA',
+  'NC', 'NE', 'NF', 'NG', 'NI', 'NL', 'NO', 'NP', 'NR', 'NU', 'NZ', 'OM', 'PA', 'PE', 'PF', 'PG',
+  'PH', 'PK', 'PL', 'PM', 'PN', 'PR', 'PS', 'PT', 'PW', 'PY', 'QA', 'RE', 'RO', 'RS', 'RU', 'RW',
+  'SA', 'SB', 'SC', 'SD', 'SE', 'SG', 'SH', 'SI', 'SJ', 'SK', 'SL', 'SM', 'SN', 'SO', 'SR', 'SS',
+  'ST', 'SV', 'SX', 'SY', 'SZ', 'TC', 'TD', 'TF', 'TG', 'TH', 'TJ', 'TK', 'TL', 'TM', 'TN', 'TO',
+  'TR', 'TT', 'TV', 'TW', 'TZ', 'UA', 'UG', 'UM', 'US', 'UY', 'UZ', 'VA', 'VC', 'VE', 'VG', 'VI',
+  'VN', 'VU', 'WF', 'WS', 'YE', 'YT', 'ZA', 'ZM', 'ZW',
+];
+
+/** Invite codes: unambiguous characters only (no 0/O, 1/I/L), so they survive being read aloud. */
+export const INVITE_CODE_ALPHABET = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
+export const INVITE_CODE_LENGTH = 10;
