@@ -138,7 +138,7 @@ Stamina is a mobile-first web app (PWA) and an AI coach that plans my training, 
   - **UI component packages**: button, chip, chip-group, stepper, checkbox, text-field, card, sheet, tabs, bottom-nav, progress-bar, ring, load-bars, rest-timer, toast, suggestion-card, meal-card;
   - **util packages**: dates, units, ids, format, safe-log.
 - **Client layering**:
-  - container component → one composable → `mediator.send(command | query)` → pipeline (validate → log-safe → offline-queue → error-map → timing) → handler function → domain + services from `createServices(env)` → API client or local storage.
+  - container component → one composable → `mediator.send(command | query)` → pipeline (outermost first: timing → error-map → log-safe → validate → offline-queue) → handler function → domain + services from `createServices(env)` → API client or local storage.
   - Handlers write to stores; stores hold state only; presentational components take props and emit events.
 - **Server**: a Hono app. Phase A runs it on **Cloudflare Workers** (free plan, no card); at launch it moves to an EU-guaranteed host (Cloud Run europe-west1 or Deno Deploy EU), which needs an entry file and no rewrite. See **Phases**.
   - The domain rules run here and **the server is authoritative**: it computes Programs, Adaptations, targets and outcomes.

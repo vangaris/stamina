@@ -123,6 +123,13 @@ export interface AuthService {
   signOut(): Promise<void>;
 }
 
+export interface BetterAuthServiceOptions {
+  authUrl: string;
+  fetch?: typeof fetch;
+  /** Epoch milliseconds; compared with the token's `exp`. Tests inject it. */
+  now?: () => number;
+}
+
 export interface Services extends PipelineServices {
   api: ApiClient;
   auth: AuthService;

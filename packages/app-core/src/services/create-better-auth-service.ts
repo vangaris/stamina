@@ -20,15 +20,8 @@ import { AuthProvider } from '../enums/auth-provider.ts';
 import { BetterAuthEndpoint } from '../enums/better-auth-endpoint.ts';
 import { EmailCodeType } from '../enums/email-code-type.ts';
 import { AuthError } from '../errors/auth-error.ts';
-import type { AuthService } from '../types.ts';
+import type { AuthService, BetterAuthServiceOptions } from '../types.ts';
 import { readTokenExpiry } from '../utils/read-token-expiry.ts';
-
-export interface BetterAuthServiceOptions {
-  authUrl: string;
-  fetch?: typeof fetch;
-  /** Epoch milliseconds; compared with the token's `exp`. Tests inject it. */
-  now?: () => number;
-}
 
 const errorBodySchema = z.object({ code: z.string() });
 const tokenBodySchema = z.object({ token: z.string() });

@@ -1,9 +1,7 @@
 import { sql } from 'drizzle-orm';
 import type { Db } from './client.ts';
 import { APP_ROLE, USER_ID_SETTING } from './config.ts';
-
-/** The transaction handle `fn` receives; the same shape on the `pg` and Neon serverless drivers. */
-export type UserTx = Parameters<Parameters<Db['transaction']>[0]>[0];
+import type { UserTx } from './types.ts';
 
 /**
  * The only way user-owned tables are touched. Runs `fn` in one transaction as the `stamina_app`

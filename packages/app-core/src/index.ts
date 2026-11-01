@@ -20,11 +20,11 @@ export { signOut } from './handlers/sign-out.ts';
 export { startGoogleSignIn } from './handlers/start-google-sign-in.ts';
 export { verifyEmailCode } from './handlers/verify-email-code.ts';
 export { createBetterAuthService } from './services/create-better-auth-service.ts';
-export type { BetterAuthServiceOptions } from './services/create-better-auth-service.ts';
 export type {
   AppMediatorOptions,
   AuthService,
   AuthSession,
+  BetterAuthServiceOptions,
   Clock,
   Context,
   GetHealth,

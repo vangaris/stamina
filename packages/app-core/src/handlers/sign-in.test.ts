@@ -251,6 +251,27 @@ describe('session requests through the mediator', () => {
     expect(sessionWrites.at(-1)).toEqual(signedIn);
   });
 
+  it('getSession loads the user from the API for a live session, so a Google sign-in creates the row', async () => {
+    const { api, calls } = countingApi();
+    const { mediator, services, sessionWrites } = setupMediator({ api });
+    await services.auth.verifyEmailCode(EMAIL, FAKE_AUTH.validCode);
+
+    const result = await mediator.send(getSession());
+
+    expect(calls.me).toBe(1);
+    expect(result).toEqual({ status: SessionStatus.SignedIn, userId: USER_ID });
+    expect(sessionWrites).toEqual([{ status: SessionStatus.SignedIn, userId: USER_ID }]);
+  });
+
+  it('getSession does not call the API when there is no session', async () => {
+    const { api, calls } = countingApi();
+    const { mediator } = setupMediator({ api });
+
+    await mediator.send(getSession());
+
+    expect(calls.me).toBe(0);
+  });
+
   it('starts Google sign-in and resolves the URL to continue at', async () => {
     const base = createServices({ mode: ServicesMode.Test }).auth;
     const seen: string[] = [];

@@ -4,12 +4,12 @@
 
 **Blocked by:** 01: Walking skeleton, 03: Theme tokens, core UI kit and i18n
 
-**Status:** in-progress
+**Status:** done
 
 **Roadmap week:** 2
 
 - [x] app-core package introduced (no Vue or React imports): mediator with typed commands and queries, pipeline steps (validate, log-safe, offline queue, error map, timing), createServices for production, test and dev
-- [ ] Neon Auth handles email one-time codes (sent through Brevo SMTP from EU servers) and Google sign-in
+- [x] Neon Auth handles email one-time codes (sent through Brevo SMTP from EU servers) and Google sign-in
 - [x] User row created on first sign-in; row-level security restricts every user-owned table to its owner, proven by an API test where user B cannot read user A
 - [x] Sign-in screen built as a container calling one composable; presentational components only receive props and emit events
 - [x] Mediator tests cover the sign-in command's success and error mapping; Playwright covers email-code sign-in locally against a fake auth server (the run on a live preview moves to ticket 25)
@@ -17,6 +17,6 @@
 
 ## Open (needs live services, see `docs/auth.md` runbook)
 
-- Box 2 (Neon Auth email codes through Brevo SMTP, Google): the email code works against the live `dev` branch (verified 2026-10-31). Google sign-in through the proxy is not verified yet; it needs the redirect URIs added in Google Cloud Console and one click-through.
+- Box 2 (Neon Auth email codes through Brevo SMTP, Google): done. The email code works against the live `dev` branch (verified 2026-10-31) and Google sign-in through the proxy works on `dev` (verified 2026-11-02, click-through from localhost). Production (`main` branch) Google setup is runbook step 3 and is part of the launch checks.
 - Box 5 (reworded 2026-10-31): done. The live-preview run moved to ticket 25 because Deno Deploy suspended the organisation and asks for a card; Phase A needs none.
 - Unverified assumptions are listed in `docs/auth.md` ("Not yet verified live").
