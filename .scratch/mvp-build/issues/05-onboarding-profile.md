@@ -4,7 +4,7 @@
 
 **Blocked by:** 04: Sign-in through app-core
 
-**Status:** ready-for-agent
+**Status:** in-progress
 
 **Roadmap week:** 2–3
 
