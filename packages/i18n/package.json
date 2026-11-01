@@ -1,0 +1,27 @@
+{
+  "name": "@stamina/i18n",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "typecheck": "tsc -p tsconfig.json",
+    "test": "vitest run"
+  },
+  "nx": {
+    "tags": [
+      "type:util",
+      "scope:shared"
+    ]
+  },
+  "dependencies": {
+    "@formatjs/icu-messageformat-parser": "^3.5.22",
+    "intl-messageformat": "^12.1.4"
+  },
+  "devDependencies": {
+    "vitest": "^5.0.5"
+  }
+}

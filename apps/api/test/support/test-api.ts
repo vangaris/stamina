@@ -4,9 +4,12 @@ import { inject } from 'vitest';
 import { createApp, type AppDeps } from '../../src/app.ts';
 import { createDb } from '../../src/db/client.ts';
 import { createFakeAi } from './fake-ai.ts';
+import { createTestAuth } from './test-auth.ts';
 
 export interface TestApiOptions {
   databaseUrl?: string;
+  /** Replaces the verifier built from the test's local JWKS (for example one whose key source is down). */
+  auth?: AppDeps['auth'];
   corsOrigins?: string[];
   log?: AppDeps['log'];
   errorReporter?: AppDeps['errorReporter'];
@@ -16,9 +19,11 @@ export interface TestApiOptions {
 export async function startTestApi(options: TestApiOptions = {}) {
   const dbHandle = createDb(options.databaseUrl ?? inject('databaseUrl'));
   const ai = createFakeAi();
+  const testAuth = await createTestAuth();
   const app = createApp({
     db: dbHandle.db,
     ai: ai.provider,
+    auth: options.auth ?? testAuth.verifier,
     corsOrigins: options.corsOrigins ?? [],
     // Request log lines are noise in test output unless a test captures them.
     log: options.log ?? (() => {}),
@@ -35,6 +40,10 @@ export async function startTestApi(options: TestApiOptions = {}) {
     app,
     baseUrl: `http://127.0.0.1:${port}`,
     ai,
+    /** The same database the app uses, connected as the migrating user (a superuser here, so RLS-exempt). */
+    db: dbHandle.db,
+    /** Signs a token the app accepts for `userId` (or a deliberately bad one, via options). */
+    signToken: testAuth.signToken,
     async close() {
       await new Promise<void>((resolve, reject) =>
         server.close((e) => (e ? reject(e) : resolve())),

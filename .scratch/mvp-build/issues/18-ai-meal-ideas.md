@@ -8,7 +8,7 @@
 
 **Roadmap week:** 6
 
-- [ ] Prompt contains slot targets, eating pattern, cooking effort and an unlabelled avoid list; no health data or identifiers
+- [ ] Prompt contains slot targets, eating pattern, cooking effort and an unlabelled avoid list; no health data or identifiers (Phase A production runs the "unavailable" provider, so meals come from templates; the AI path is proven with the fake provider)
 - [ ] AI returns ingredient IDs with household portions, a protein estimate and text in the user's locale
 - [ ] Validators: schema; every ingredient ID exists; allergen check by ID; EN/EL never-advise term filter (supplements, conditions, cure/treat/detox, dose patterns); protein within ±30 % of target
 - [ ] Failure → up to 2 regenerations → template

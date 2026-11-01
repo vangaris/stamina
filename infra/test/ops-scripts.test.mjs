@@ -1,13 +1,16 @@
-// Offline tests for the setup scripts OpenTofu cannot replace: infra/bootstrap.sh and
-// scripts/ops/{uptimerobot,brevo,deno}-setup.sh. Each script runs for real against a mock HTTP
-// server started here, so argument handling, find-or-create idempotency and secret hygiene are
-// exercised without any vendor account.
+// Offline tests for the setup scripts OpenTofu cannot replace: infra/bootstrap.sh,
+// scripts/ops/{uptimerobot,brevo,deno}-setup.sh, scripts/ops/neon-auth-setup.mjs and the request
+// shape of scripts/deno-deploy.mjs. Each script runs for real against a mock HTTP server started
+// here, so argument handling, find-or-create idempotency and secret hygiene are exercised without
+// any vendor account.
 //
 //   node --test infra/test/ops-scripts.test.mjs
 import assert from 'node:assert/strict';
 import { execFile } from 'node:child_process';
 import { once } from 'node:events';
+import { cpSync, mkdirSync, mkdtempSync, readFileSync, writeFileSync } from 'node:fs';
 import { createServer } from 'node:http';
+import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { describe, it } from 'node:test';
 import { fileURLToPath } from 'node:url';
@@ -40,18 +43,21 @@ async function mock(handler) {
   return state;
 }
 
-/** Runs a script with a clean environment (no .env, no inherited secrets). */
-function run(script, args, env) {
+/** Runs `command file args` with a clean environment (no .env, no inherited secrets). */
+function exec(command, file, args, env) {
   return new Promise((resolve) => {
     execFile(
-      'bash',
-      [join(root, script), ...args],
+      command,
+      [file, ...args],
       { env: { PATH: process.env.PATH, HOME: process.env.HOME, ENV_FILE: '/nonexistent', ...env } },
       (error, stdout, stderr) =>
         resolve({ code: error ? error.code : 0, stdout, stderr, all: stdout + stderr }),
     );
   });
 }
+
+const run = (script, args, env) => exec('bash', join(root, script), args, env);
+const runNode = (script, args, env) => exec('node', script, args, env);
 
 describe('uptimerobot-setup.sh', () => {
   const key = 'ur-secret-key-123';
@@ -404,6 +410,389 @@ describe('deno-setup.sh', () => {
   it('rejects an invalid app slug', async () => {
     const result = await run('scripts/ops/deno-setup.sh', ['--dry-run'], { DENO_APP: 'Bad_Slug' });
     assert.equal(result.code, 2);
+  });
+});
+
+describe('neon-auth-setup.mjs', () => {
+  const script = join(root, 'scripts/ops/neon-auth-setup.mjs');
+  const apiKey = 'napi-secret-key-111';
+  const smtpKey = 'xsmtp-secret-222';
+  const googleSecret = 'GOCSPX-secret-333';
+  const baseUrl = 'https://ep-test.neonauth.eu-central-1.aws.neon.tech/neondb/auth';
+  const prefix = '/api/v2/projects/proj-1/branches';
+
+  /** A Neon project with branches dev (br-dev-1) and main (br-main-1); `auth` maps branch id -> state. */
+  const neon = () => {
+    const auth = {};
+    // Every branch has a read-write compute endpoint unless a test removes it.
+    const endpoints = {
+      'br-dev-1': [{ id: 'ep-dev-1', type: 'read_write', current_state: 'idle' }],
+      'br-main-1': [{ id: 'ep-main-1', type: 'read_write', current_state: 'idle' }],
+      'br-pr-7': [{ id: 'ep-pr-7', type: 'read_write', current_state: 'idle' }],
+    };
+    const state = { auth, endpoints };
+    return [
+      (req, url, body) => {
+        const path = url.pathname;
+        if (path === '/api/v2/projects/proj-1/endpoints' && req.method === 'POST') {
+          const created = {
+            id: `ep-new-${body.endpoint.branch_id}`,
+            ...body.endpoint,
+            current_state: 'init',
+          };
+          endpoints[body.endpoint.branch_id] = [created];
+          return [201, { endpoint: created }];
+        }
+        if (path.startsWith('/api/v2/projects/proj-1/endpoints/')) {
+          const id = path.split('/').pop();
+          const found = Object.values(endpoints)
+            .flat()
+            .find((e) => e.id === id);
+          if (!found) return [404, {}];
+          found.current_state = 'idle';
+          return [200, { endpoint: found }];
+        }
+        if (!path.startsWith(prefix)) return [404, {}];
+        const rest = path.slice(prefix.length);
+        const branches = [
+          { id: 'br-dev-1', name: 'dev' },
+          { id: 'br-main-1', name: 'main' },
+          { id: 'br-pr-7', name: 'preview/pr-7' },
+        ];
+        if (rest === '') return [200, { branches }];
+        const [, id, ...tail] = rest.split('/');
+        const branch = branches.find((b) => b.id === id);
+        if (!branch) return [404, { code: 'NOT_FOUND' }];
+        if (tail.length === 0) return [200, { branch }];
+        if (tail[0] === 'endpoints') return [200, { endpoints: endpoints[id] ?? [] }];
+        if (tail[0] !== 'auth') return [404, {}];
+        const section = tail.slice(1).join('/');
+        const a = auth[id];
+        if (section === '') {
+          if (req.method === 'GET') return a ? [200, a.info] : [404, { code: 'AUTH_NOT_ENABLED' }];
+          if (a) return [409, { code: 'CONFLICT', message: 'Neon Auth is already enabled' }];
+          auth[id] = {
+            info: { auth_provider: 'better_auth', base_url: `${baseUrl}/${id}` },
+            domains: [],
+            providers: [{ id: 'google', type: 'shared' }],
+            patches: {},
+          };
+          return [201, auth[id].info];
+        }
+        if (!a) return [404, { code: 'AUTH_NOT_ENABLED' }];
+        if (section === 'domains' && req.method === 'GET') return [200, { domains: a.domains }];
+        if (section === 'domains') {
+          a.domains.push({ domain: body.domain, auth_provider: body.auth_provider });
+          return [201, {}];
+        }
+        if (section === 'oauth_providers' && req.method === 'GET')
+          return [200, { providers: a.providers }];
+        if (section === 'oauth_providers') {
+          a.providers.push({ id: body.id, type: 'standard' });
+          return [200, body];
+        }
+        if (section.startsWith('oauth_providers/')) {
+          a.patches[section] = body;
+          return [200, body];
+        }
+        if (req.method === 'PATCH') {
+          a.patches[section] = body;
+          return [200, body];
+        }
+        return [404, {}];
+      },
+      state,
+    ];
+  };
+  const start = async (initial) => {
+    const [handler, state] = neon(initial);
+    const api = await mock(handler);
+    return { api, state };
+  };
+  const envFor = (api, extra = {}) => ({
+    NEON_API_KEY: apiKey,
+    NEON_PROJECT_ID: 'proj-1',
+    NEON_API_BASE: `${api.url}/api/v2`,
+    BREVO_SMTP_LOGIN: 'login@smtp-brevo.com',
+    BREVO_SMTP_KEY: smtpKey,
+    SENDER_EMAIL: 'hello@example.eu',
+    ...extra,
+  });
+  const google = { GOOGLE_OAUTH_CLIENT_ID: 'client-123', GOOGLE_OAUTH_CLIENT_SECRET: googleSecret };
+  const secrets = [apiKey, smtpKey, googleSecret];
+  const noSecrets = (result) => {
+    for (const secret of secrets) assert.ok(!result.all.includes(secret), `leaked ${secret}`);
+  };
+  const sent = (api, method, suffix) =>
+    api.requests.filter((r) => r.method === method && r.path.endsWith(suffix));
+
+  it('creates a read-write endpoint on a branch that has none, and leaves an existing one alone', async () => {
+    const { api, state } = await start();
+    state.endpoints['br-dev-1'] = [];
+    const first = await runNode(script, ['--branch', 'dev'], {
+      ...envFor(api, { NEON_ENDPOINT_POLL_MS: '1' }),
+      ...google,
+    });
+    assert.equal(first.code, 0, first.all);
+    const created = api.requests.filter(
+      (r) => r.method === 'POST' && r.path === '/api/v2/projects/proj-1/endpoints',
+    );
+    assert.equal(created.length, 1);
+    assert.deepEqual(created[0].body.endpoint, {
+      branch_id: 'br-dev-1',
+      type: 'read_write',
+    });
+    assert.match(first.stdout, /created a read-write compute endpoint/);
+    // Auth is enabled only after the endpoint exists.
+    const order = api.requests.map((r) => `${r.method} ${r.path}`);
+    assert.ok(
+      order.indexOf('POST /api/v2/projects/proj-1/endpoints') <
+        order.indexOf('POST /api/v2/projects/proj-1/branches/br-dev-1/auth'),
+    );
+
+    const again = await runNode(script, ['--branch', 'dev'], envFor(api, google));
+    api.close();
+    assert.equal(again.code, 0, again.all);
+    assert.equal(
+      api.requests.filter(
+        (r) => r.method === 'POST' && r.path.endsWith('/projects/proj-1/endpoints'),
+      ).length,
+      1,
+    );
+    noSecrets(first);
+  });
+
+  it('--dry-run sends nothing, needs no keys and redacts secrets', async () => {
+    const api = await mock(() => [500, {}]);
+    const result = await runNode(script, ['--branch', 'main', '--dry-run'], {
+      BREVO_SMTP_KEY: smtpKey,
+      SENDER_EMAIL: 'hello@example.eu',
+      PROD_WEB_URL: 'https://stamina-web.pages.dev',
+      NEON_API_BASE: `${api.url}/api/v2`,
+      ...google,
+    });
+    api.close();
+    assert.equal(result.code, 0, result.all);
+    assert.equal(api.requests.length, 0);
+    assert.match(result.stdout, /POST .*\/auth\/domains/);
+    assert.match(result.stdout, /"domain":"https:\/\/stamina-web\.pages\.dev"/);
+    assert.match(result.stdout, /"host":"smtp-relay\.brevo\.com","port":587/);
+    assert.match(result.stdout, /"allow_localhost":false/);
+    assert.match(result.stdout, /"client_secret":"<redacted>"/);
+    noSecrets(result);
+  });
+
+  it('configures the dev branch, then reports everything up to date', async () => {
+    const { api, state } = await start();
+    const first = await runNode(script, [], envFor(api, google));
+    const second = await runNode(script, [], envFor(api, google));
+    api.close();
+    assert.equal(first.code, 0, first.all);
+    assert.match(first.stdout, /enabled just now/);
+    assert.match(second.stdout, /already enabled/);
+    assert.equal(sent(api, 'POST', '/br-dev-1/auth').length, 1, 'Auth is enabled once');
+    const a = state.auth['br-dev-1'];
+    assert.deepEqual(a.patches.email_and_password, { enabled: true });
+    assert.deepEqual(a.patches.allow_localhost, { allow_localhost: true });
+    assert.deepEqual(a.patches.email_provider, {
+      type: 'standard',
+      host: 'smtp-relay.brevo.com',
+      port: 587,
+      username: 'login@smtp-brevo.com',
+      password: smtpKey,
+      sender_email: 'hello@example.eu',
+      sender_name: 'Stamina',
+    });
+    assert.deepEqual(a.patches['oauth_providers/google'], {
+      client_id: 'client-123',
+      client_secret: googleSecret,
+    });
+    assert.equal(
+      sent(api, 'POST', '/oauth_providers').length,
+      0,
+      'the shared Google entry is patched',
+    );
+    assert.match(first.stdout, new RegExp(`NEON_AUTH_BASE_URL\\s+${baseUrl}/br-dev-1`));
+    assert.match(first.stdout, new RegExp(`redirect URI\\s+${baseUrl}/br-dev-1/callback/google`));
+    for (const r of api.requests) assert.equal(r.headers.authorization, `Bearer ${apiKey}`);
+    noSecrets(first);
+    noSecrets(second);
+  });
+
+  it('trusts the web origins once, blocks localhost and adds Google when it is not listed', async () => {
+    const { api, state } = await start();
+    state.auth['br-main-1'] = {
+      info: { base_url: `${baseUrl}/br-main-1` },
+      domains: [{ domain: 'https://stamina-web.pages.dev/' }],
+      providers: [],
+      patches: {},
+    };
+    const env = envFor(api, {
+      ...google,
+      WEB_ORIGINS: 'https://stamina-web.pages.dev, https://www.example.eu',
+    });
+    const first = await runNode(script, ['--branch', 'main'], env);
+    const second = await runNode(script, ['--branch', 'main'], env);
+    api.close();
+    assert.equal(first.code, 0, first.all);
+    const posted = sent(api, 'POST', '/auth/domains').map((r) => r.body.domain);
+    assert.deepEqual(posted, ['https://www.example.eu'], 'present domains are not added again');
+    assert.deepEqual(state.auth['br-main-1'].patches.allow_localhost, { allow_localhost: false });
+    assert.equal(sent(api, 'POST', '/oauth_providers').length, 1);
+    assert.match(first.stdout, /gh variable set NEON_AUTH_BASE_URL --body '.*\/br-main-1'/);
+    assert.match(second.stdout, /trusted domain present\s+https:\/\/www\.example\.eu/);
+  });
+
+  it('skips Google with a clear note when no client is configured', async () => {
+    const { api, state } = await start();
+    const result = await runNode(script, [], envFor(api));
+    api.close();
+    assert.equal(result.code, 0, result.all);
+    assert.match(result.stdout, /Google OAuth\s+skipped: GOOGLE_OAUTH_CLIENT_ID/);
+    assert.equal(state.auth['br-dev-1'].patches['oauth_providers/google'], undefined);
+    assert.equal(sent(api, 'GET', '/oauth_providers').length, 0);
+  });
+
+  it('falls back to reading the integration when enabling says it is already enabled', async () => {
+    let gets = 0;
+    const api = await mock((req, url) => {
+      const path = url.pathname.slice('/api/v2'.length);
+      if (path === '/projects/proj-1/branches/br-dev-1')
+        return [200, { branch: { id: 'br-dev-1', name: 'dev' } }];
+      if (path.endsWith('/auth') && req.method === 'GET')
+        return ++gets === 1 ? [404, {}] : [200, { base_url: baseUrl }];
+      if (path.endsWith('/auth') && req.method === 'POST')
+        return [400, { message: 'Auth already enabled for this branch' }];
+      if (path.endsWith('/auth/domains') && req.method === 'GET') return [200, { domains: [] }];
+      return [200, {}];
+    });
+    const result = await runNode(script, ['--branch', 'br-dev-1'], envFor(api));
+    api.close();
+    assert.equal(result.code, 0, result.all);
+    assert.match(result.stdout, /already enabled/);
+  });
+
+  it('--preview only enables Auth, trusts the origin and writes base_url to GITHUB_OUTPUT', async () => {
+    const { api, state } = await start();
+    state.auth['br-pr-7'] = {
+      info: { base_url: `${baseUrl}/br-pr-7` },
+      domains: [],
+      providers: [],
+      patches: {},
+    };
+    const outputFile = join(mkdtempSync(join(tmpdir(), 'neon-auth-')), 'output');
+    writeFileSync(outputFile, '');
+    const result = await runNode(
+      script,
+      ['--preview', '--branch', 'br-pr-7', '--web-origin', 'https://pr-7.stamina-web.pages.dev'],
+      {
+        NEON_API_KEY: apiKey,
+        NEON_PROJECT_ID: 'proj-1',
+        NEON_API_BASE: `${api.url}/api/v2`,
+        GITHUB_OUTPUT: outputFile,
+      },
+    );
+    api.close();
+    assert.equal(result.code, 0, result.all);
+    assert.equal(readFileSync(outputFile, 'utf-8'), `base_url=${baseUrl}/br-pr-7\n`);
+    assert.deepEqual(
+      sent(api, 'POST', '/auth/domains').map((r) => r.body.domain),
+      ['https://pr-7.stamina-web.pages.dev'],
+    );
+    assert.equal(
+      api.requests.filter((r) => r.method === 'PATCH').length,
+      0,
+      'inherited settings are untouched',
+    );
+    noSecrets(result);
+  });
+
+  it('rejects bad arguments and configuration before sending anything', async () => {
+    const api = await mock(() => [500, {}]);
+    const env = envFor(api);
+    const bad = [
+      [['--bogus'], env],
+      [['--branch'], env],
+      [['--preview', '--branch', 'br-pr-7'], env],
+      [['--branch', 'main'], env], // production needs a web origin
+      [['--branch', 'main', '--web-origin', 'http://stamina-web.pages.dev'], env],
+      [['--branch', 'main', '--web-origin', 'https://stamina-web.pages.dev/app'], env],
+      [['--branch', 'main', '--web-origin', 'https://*.pages.dev'], env],
+      [['--dry-run'], { ...env, SENDER_EMAIL: 'nope' }],
+      [[], { ...env, BREVO_SMTP_KEY: '' }],
+      [[], { ...env, GOOGLE_OAUTH_CLIENT_ID: 'only-the-id' }],
+    ];
+    for (const [args, e] of bad) {
+      const result = await runNode(script, args, e);
+      assert.equal(result.code, 2, `${args.join(' ')}: ${result.all}`);
+    }
+    api.close();
+    assert.equal(api.requests.length, 0);
+  });
+
+  it('fails clearly when the branch does not exist or Neon rejects the key', async () => {
+    const { api } = await start();
+    const missing = await runNode(
+      script,
+      ['--branch', 'nope', '--web-origin', 'https://a.example.eu'],
+      envFor(api),
+    );
+    assert.equal(missing.code, 1);
+    assert.match(
+      missing.stderr,
+      /no branch named "nope" in the project \(found: dev, main, preview\/pr-7\)/,
+    );
+    api.close();
+    const rejected = await mock(() => [401, { code: 'UNAUTHORIZED', message: 'bad key' }]);
+    const denied = await runNode(script, [], envFor(rejected));
+    rejected.close();
+    assert.equal(denied.code, 1);
+    assert.match(denied.stderr, /listing branches failed: HTTP 401/);
+    noSecrets(denied);
+  });
+});
+
+describe('deno-deploy.mjs', () => {
+  // The script reads ../apps/api/dist/server.js relative to itself, so it runs from a scratch tree.
+  const tree = mkdtempSync(join(tmpdir(), 'deno-deploy-'));
+  mkdirSync(join(tree, 'scripts'));
+  mkdirSync(join(tree, 'apps/api/dist'), { recursive: true });
+  cpSync(join(root, 'scripts/deno-deploy.mjs'), join(tree, 'scripts/deno-deploy.mjs'));
+  writeFileSync(join(tree, 'apps/api/dist/server.js'), 'export default {};');
+  const script = join(tree, 'scripts/deno-deploy.mjs');
+  const authUrl = 'https://ep-test.neonauth.eu-central-1.aws.neon.tech/neondb/auth';
+  const env = {
+    DENO_DEPLOY_TOKEN: 'deno-secret-token-789',
+    DENO_APP: 'stamina-api',
+    DATABASE_URL: 'postgres://user:db-secret@host/db',
+    CORS_ORIGINS: 'https://stamina-web.pages.dev',
+    NEON_AUTH_BASE_URL: authUrl,
+  };
+
+  for (const mode of ['preview', 'production']) {
+    it(`${mode} --dry-run lists NEON_AUTH_BASE_URL with its value redacted`, async () => {
+      const result = await runNode(script, [mode, '--dry-run'], env);
+      assert.equal(result.code, 0, result.all);
+      const sent = JSON.parse(
+        result.stdout.slice(result.stdout.indexOf('{'), result.stdout.lastIndexOf('}') + 1),
+      );
+      assert.deepEqual(
+        sent.env_vars.map((v) => v.key),
+        ['DATABASE_URL', 'CORS_ORIGINS', 'NEON_AUTH_BASE_URL'],
+      );
+      for (const secret of [authUrl, 'db-secret', env.DENO_DEPLOY_TOKEN]) {
+        assert.ok(!result.all.includes(secret), `leaked ${secret}`);
+      }
+    });
+  }
+
+  it('refuses to deploy a revision without NEON_AUTH_BASE_URL', async () => {
+    const result = await runNode(script, ['production', '--dry-run'], {
+      ...env,
+      NEON_AUTH_BASE_URL: '',
+    });
+    assert.notEqual(result.code, 0);
+    assert.match(result.stderr, /NEON_AUTH_BASE_URL is required/);
   });
 });
 

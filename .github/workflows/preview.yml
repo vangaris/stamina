@@ -3,7 +3,8 @@
 #
 # Needs (see docs/development.md, "One-time setup"):
 #   secrets: NEON_API_KEY, DENO_DEPLOY_TOKEN, CLOUDFLARE_API_TOKEN
-#   vars:    NEON_PROJECT_ID, NEON_PARENT_BRANCH (a data-free branch, never production),
+#   vars:    NEON_PROJECT_ID, NEON_PARENT_BRANCH (a data-free branch, never production; it must have Neon
+#            Auth set up with scripts/ops/neon-auth-setup.mjs so previews inherit it, see docs/auth.md),
 #            DENO_APP, CLOUDFLARE_ACCOUNT_ID, CLOUDFLARE_PAGES_PROJECT
 #   optional vars: SENTRY_DSN_API, SENTRY_DSN_WEB (Sentry stays off when unset)
 #
@@ -90,6 +91,16 @@ jobs:
         env:
           DATABASE_URL: ${{ steps.neon.outputs.db_url }}
 
+      # Every PR branch has its own Neon Auth (users, sessions, config are copied from the parent branch, then
+      # independent). This trusts the preview's web origin on it and reads its base_url.
+      - id: auth
+        name: Neon Auth for the preview branch
+        run: node scripts/ops/neon-auth-setup.mjs --preview --branch "$NEON_BRANCH_ID" --web-origin "$WEB_URL"
+        env:
+          NEON_API_KEY: ${{ secrets.NEON_API_KEY }}
+          NEON_PROJECT_ID: ${{ vars.NEON_PROJECT_ID }}
+          NEON_BRANCH_ID: ${{ steps.neon.outputs.branch_id }}
+
       - run: pnpm --filter @stamina/api build
       - id: api
         name: Deploy API (Deno Deploy)
@@ -100,6 +111,7 @@ jobs:
           # Pooled URL: the API reaches Neon over WebSockets at runtime.
           DATABASE_URL: ${{ steps.neon.outputs.db_url_pooled }}
           CORS_ORIGINS: ${{ env.WEB_URL }}
+          NEON_AUTH_BASE_URL: ${{ steps.auth.outputs.base_url }}
           SENTRY_DSN: ${{ vars.SENTRY_DSN_API }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
           GIT_SHA: ${{ github.event.pull_request.head.sha }}
@@ -110,13 +122,20 @@ jobs:
           VITE_API_URL: ${{ steps.api.outputs.url }}
           VITE_SENTRY_DSN: ${{ vars.SENTRY_DSN_WEB }}
           VITE_SENTRY_ENVIRONMENT: preview
+      - name: Point the /auth proxy at the preview branch's Neon Auth
+        run: node scripts/ops/write-auth-proxy-config.mjs
+        env:
+          NEON_AUTH_BASE_URL: ${{ steps.auth.outputs.base_url }}
       - id: pages
         name: Deploy web (Cloudflare Pages)
         uses: cloudflare/wrangler-action@v4.1.3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy apps/web/dist --project-name=${{ vars.CLOUDFLARE_PAGES_PROJECT }} --branch=pr-${{ github.event.pull_request.number }} --commit-dirty=true
+          # Run from apps/web so wrangler finds its functions/ directory (the /auth/* proxy).
+          workingDirectory: apps/web
+          packageManager: pnpm
+          command: pages deploy dist --project-name=${{ vars.CLOUDFLARE_PAGES_PROJECT }} --branch=pr-${{ github.event.pull_request.number }} --commit-dirty=true
 
       - name: Install browser
         run: pnpm --filter @stamina/web exec playwright install --with-deps chromium

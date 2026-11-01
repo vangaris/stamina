@@ -266,7 +266,7 @@ flowchart LR
 
 Sources: [Generation engine](../.scratch/mvp-plan/issues/18-generation-engine.md), [Cloud setup](../.scratch/mvp-plan/issues/21-cloud-and-environments.md), [Data model](../.scratch/mvp-plan/issues/20-data-model-and-db.md).
 
-**API.** **Hono** (TypeScript, web standards) on **Deno Deploy, EU region**, close to Neon Frankfurt. zod schemas are published as OpenAPI, and a typed client lives in `packages/contracts`. Rate limits per user.
+**API.** **Hono** (TypeScript, web standards). **Phase A (owner-only, no payment method): Cloudflare Workers, free plan.** At launch: an EU-guaranteed host, Cloud Run europe-west1 or Deno Deploy EU, because a Worker runs at the nearest Cloudflare location and the free plan does not promise EU processing. Deno Deploy suspended the free organisation and asked for a card, so it is no longer the Phase A host. zod schemas are published as OpenAPI, and a typed client lives in `packages/contracts`. Rate limits per user.
 
 **Auth.** Neon Auth: an email code (sent through **Brevo**) or Google, no passwords. Sign in with Apple comes with the iOS app.
 
@@ -289,8 +289,8 @@ Sources: [Generation engine](../.scratch/mvp-plan/issues/18-generation-engine.md
 
 Source: [Cloud setup, environments, monitoring and cost guardrails](../.scratch/mvp-plan/issues/21-cloud-and-environments.md).
 
-- **Environments:** local (on a Neon `dev` branch) · **one preview per pull request** (Cloudflare Pages + Deno Deploy + its own Neon branch, deleted on merge) · production. **No staging** until there are paying users.
-- **Infrastructure as code:** **OpenTofu**, with its state in R2. It manages Cloudflare, Neon and Sentry. Deno Deploy, UptimeRobot and Brevo are set up by script. App deploys run in GitHub Actions.
+- **Environments:** local (on a Neon `dev` branch) · **one preview per pull request** (Cloudflare Pages + a Cloudflare Worker + its own Neon branch, deleted on merge) · production. **No staging** until there are paying users.
+- **Infrastructure as code:** **OpenTofu**, with its state in R2. It manages Cloudflare, Neon and Sentry. UptimeRobot, Brevo and Neon Auth are set up by script; the Worker is deployed by `wrangler` in GitHub Actions. App deploys run in GitHub Actions.
 - **Secrets:** CI keys in GitHub repository secrets; runtime secrets in each platform's own settings; separate keys for previews. The encryption key exists only in Deno production and your password manager.
 - **Monitoring:**
   - **Sentry, EU region**, with personal data scrubbed.
@@ -344,7 +344,7 @@ Source: [8-week roadmap and top risks](../.scratch/mvp-plan/issues/27-roadmap-an
 | Web app | Vue 3 + Vite + TS PWA, Pinia, Tailwind v4, vue-i18n | Your strongest stack; one build for every device; €0 to distribute | Open source | – |
 | Mobile apps (increment 2) | React Native + Expo (EAS) | Your choice; Apple Health and Health Connect libraries | EAS free limits unverified | **Apple $99/yr, Google Play $25 once** |
 | Shared core | `packages/app-core` + `domain` (plain TS), pnpm + Nx | Reused by web and mobile; boundaries enforced | Open source | – |
-| API | Hono on **Deno Deploy (EU)** | Web standards, portable, EU region, hard free limits | 1M requests, 20 GiB, 10 h CPU / month | Pro $20/mo, or **Cloud Run europe-west1** pay-per-use |
+| API | Hono on **Cloudflare Workers** (Phase A); **Cloud Run europe-west1** or Deno Deploy EU at launch | Web standards, portable, no card; Workers do not guarantee EU processing, so launch moves host | Workers free: about 100k requests/day, about 10 ms CPU per request (unverified) | Cloud Run pay-per-use, Deno Pro $20/mo |
 | Web hosting | **Cloudflare Pages** | Commercial use allowed, a preview per PR, global CDN | Free plan | Workers Paid $5/mo |
 | Database | **Neon Postgres, Frankfurt** + Drizzle | Postgres + row-level security, EU, no idle pause, 6 h restore | 1 GB, 100 compute-hours/mo | Launch: $0.106 per compute-hour, $0.35 per GB-month, no minimum |
 | Auth | **Neon Auth** (Better Auth) | Bundled with the database; email code + Google | 60k monthly users | Neon Launch |

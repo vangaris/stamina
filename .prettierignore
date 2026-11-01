@@ -6,3 +6,5 @@ node_modules
 docs
 seed
 GLOSSARY.md
+packages/tokens/src/tokens.css
+CHANGELOG.md

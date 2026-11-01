@@ -6,6 +6,8 @@
 
 **Status:** ready-for-agent
 
+**Phase:** B (launch: other users, production data, payment methods)
+
 **Roadmap week:** 7
 
 - [ ] Style guide applied: informal «εσύ», sentence case, gym terms with the English name in brackets on first use, Greek number format

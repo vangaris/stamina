@@ -1,4 +1,7 @@
 import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
+import { ApiErrorCode } from '../src/enums/api-error-code.ts';
+import { HttpHeader } from '../src/enums/http-header.ts';
+import { RouteLabel } from '../src/enums/route-label.ts';
 import { expectNoSentinel, SENTINELS } from './support/sentinel.ts';
 import { startTestApi } from './support/test-api.ts';
 
@@ -65,7 +68,7 @@ describe('request logging', () => {
 
     expect(responses.map((r) => r.status)).toEqual([404, 200, 500, 404]);
     const failure = await responses[2]!.text();
-    expect(JSON.parse(failure)).toEqual({ error: 'internal_error' });
+    expect(JSON.parse(failure)).toEqual({ error: ApiErrorCode.InternalError });
 
     const logged = records();
     expect(logged).toHaveLength(4);
@@ -77,15 +80,15 @@ describe('request logging', () => {
     }
 
     expect(logged.map((r) => [r.route, r.status, r.error_type])).toEqual([
-      ['unmatched', 404, undefined], // POST /health is not a route
+      [RouteLabel.Unmatched, 404, undefined], // POST /health is not a route
       ['/notes/:note', 200, undefined],
       ['/boom/:note', 500, 'PlanGenerationError'],
-      ['unmatched', 404, undefined],
+      [RouteLabel.Unmatched, 404, undefined],
     ]);
 
     expectNoSentinel(lines);
     expectNoSentinel(consoleOutput);
-    expectNoSentinel(await Promise.all(responses.map((r) => r.headers.get('x-request-id'))));
+    expectNoSentinel(await Promise.all(responses.map((r) => r.headers.get(HttpHeader.RequestId))));
   });
 
   it('logs a successful health check with route, status and latency only', async () => {
@@ -102,16 +105,18 @@ describe('request logging', () => {
     lines.length = 0;
     const inbound = '3f2b8c1e-5d7a-4e0b-9c64-0a1b2c3d4e5f';
 
-    const kept = await fetch(`${api.baseUrl}/health`, { headers: { 'x-request-id': inbound } });
+    const kept = await fetch(`${api.baseUrl}/health`, {
+      headers: { [HttpHeader.RequestId]: inbound },
+    });
     const replaced = await fetch(`${api.baseUrl}/health`, {
-      headers: { 'x-request-id': SENTINELS.requestId },
+      headers: { [HttpHeader.RequestId]: SENTINELS.requestId },
     });
 
-    expect(kept.headers.get('x-request-id')).toBe(inbound);
-    expect(replaced.headers.get('x-request-id')).toMatch(UUID);
+    expect(kept.headers.get(HttpHeader.RequestId)).toBe(inbound);
+    expect(replaced.headers.get(HttpHeader.RequestId)).toMatch(UUID);
     expect(records().map((r) => r.request_id)).toEqual([
       inbound,
-      replaced.headers.get('x-request-id'),
+      replaced.headers.get(HttpHeader.RequestId),
     ]);
     expectNoSentinel(lines);
   });
@@ -131,6 +136,6 @@ describe('request logging', () => {
     const response = await fetch(`${api.baseUrl}/boom/x`, { method: 'POST' });
 
     expect(response.status).toBe(500);
-    expect(response.headers.get('x-request-id')).toMatch(UUID);
+    expect(response.headers.get(HttpHeader.RequestId)).toMatch(UUID);
   });
 });

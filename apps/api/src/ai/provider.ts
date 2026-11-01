@@ -1,6 +1,5 @@
 import type { z } from 'zod';
-
-export type AiPurpose = 'session-picks' | 'meal-idea';
+import type { AiPurpose } from './enums/ai-purpose.ts';
 
 export interface AiRequest<T> {
   purpose: AiPurpose;

@@ -1,0 +1,31 @@
+{
+  "$description": "Semantic colour roles, light theme. Green accent, blue for Load, amber for suggestions.",
+  "color": {
+    "$type": "color",
+    "bg": { "$value": "{color.neutral.50}" },
+    "surface": { "$value": "{color.neutral.0}" },
+    "surface-sunken": { "$value": "{color.neutral.100}" },
+    "text": { "$value": "{color.neutral.900}" },
+    "text-muted": { "$value": "{color.neutral.600}" },
+    "border": { "$value": "{color.neutral.300}" },
+    "border-strong": { "$value": "{color.neutral.500}" },
+    "accent": { "$value": "{color.green.700}" },
+    "on-accent": { "$value": "{color.neutral.0}" },
+    "accent-soft": { "$value": "{color.green.50}" },
+    "on-accent-soft": { "$value": "{color.green.800}" },
+    "load": { "$value": "{color.blue.600}" },
+    "on-load": { "$value": "{color.neutral.0}" },
+    "load-soft": { "$value": "{color.blue.50}" },
+    "on-load-soft": { "$value": "{color.blue.900}" },
+    "suggest": { "$value": "{color.amber.400}" },
+    "on-suggest": { "$value": "{color.neutral.900}" },
+    "suggest-soft": { "$value": "{color.amber.50}" },
+    "on-suggest-soft": { "$value": "{color.amber.800}" },
+    "danger": { "$value": "{color.red.600}" },
+    "on-danger": { "$value": "{color.neutral.0}" },
+    "danger-soft": { "$value": "{color.red.50}" },
+    "on-danger-soft": { "$value": "{color.red.700}" },
+    "focus": { "$value": "{color.blue.600}" },
+    "scrim": { "$value": "{color.black-50}" }
+  }
+}

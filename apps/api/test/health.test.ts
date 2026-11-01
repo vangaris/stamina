@@ -1,4 +1,4 @@
-import { createApiClient } from '@stamina/contracts';
+import { createApiClient, DatabaseStatus, HealthStatus } from '@stamina/contracts';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { startTestApi } from './support/test-api.ts';
 
@@ -13,13 +13,13 @@ describe('GET /health', () => {
     const response = await fetch(`${api.baseUrl}/health`);
 
     expect(response.status).toBe(200);
-    expect(await response.json()).toEqual({ status: 'ok', database: 'up' });
+    expect(await response.json()).toEqual({ status: HealthStatus.Ok, database: DatabaseStatus.Up });
   });
 
   it('is readable through the typed client', async () => {
     const client = createApiClient({ baseUrl: api.baseUrl });
 
-    expect(await client.health()).toEqual({ status: 'ok', database: 'up' });
+    expect(await client.health()).toEqual({ status: HealthStatus.Ok, database: DatabaseStatus.Up });
   });
 
   it('reports degraded with 503 when the database is unreachable', async () => {
@@ -28,7 +28,10 @@ describe('GET /health', () => {
       const response = await fetch(`${broken.baseUrl}/health`);
 
       expect(response.status).toBe(503);
-      expect(await response.json()).toEqual({ status: 'degraded', database: 'down' });
+      expect(await response.json()).toEqual({
+        status: HealthStatus.Degraded,
+        database: DatabaseStatus.Down,
+      });
     } finally {
       await broken.close();
     }

@@ -17,6 +17,8 @@ on:
       - scripts/ops/deno-setup.sh
       - scripts/ops/uptimerobot-setup.sh
       - scripts/ops/brevo-setup.sh
+      - scripts/ops/neon-auth-setup.mjs
+      - scripts/deno-deploy.mjs
       - .github/workflows/infra-plan.yml
 
 concurrency:

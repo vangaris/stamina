@@ -6,13 +6,15 @@
 //   node scripts/deno-deploy.mjs revisions                list the production revisions, newest first
 //   node scripts/deno-deploy.mjs promote <revision-id> [--dry-run]   roll back (or forward) to a revision
 //
-// `preview` and `production` upload the bundle with its own DATABASE_URL / CORS_ORIGINS (revision env
-// vars are immutable and override app-level ones), wait for the build, check /health and write `url=`
-// and `revision=` to $GITHUB_OUTPUT. `production` also promotes (pins) the new revision, so a release
-// after a rollback is served again instead of the pinned older revision.
+// `preview` and `production` upload the bundle with its own DATABASE_URL / CORS_ORIGINS / NEON_AUTH_BASE_URL
+// (revision env vars are immutable and override app-level ones), wait for the build, check /health and
+// write `url=` and `revision=` to $GITHUB_OUTPUT. `production` also promotes (pins) the new revision, so
+// a release after a rollback is served again instead of the pinned older revision.
 //
 // Env (all modes): DENO_DEPLOY_TOKEN, DENO_APP
-// Env (preview, production): DATABASE_URL, CORS_ORIGINS, GIT_SHA (optional),
+// Env (preview, production): DATABASE_URL, CORS_ORIGINS, NEON_AUTH_BASE_URL (the branch's Neon Auth URL,
+//   which the API verifies sign-in tokens against: production's from the NEON_AUTH_BASE_URL Actions
+//   variable, a preview's from scripts/ops/neon-auth-setup.mjs --preview), GIT_SHA (optional),
 //   SENTRY_DSN (optional: Sentry stays off when unset), PR_NUMBER (preview), RELEASE_TAG (production)
 //
 // --dry-run prints the request shape with environment variable VALUES redacted and sends nothing.
@@ -74,6 +76,7 @@ function deployBody() {
   const envVars = [
     { key: 'DATABASE_URL', value: need('DATABASE_URL') },
     { key: 'CORS_ORIGINS', value: need('CORS_ORIGINS') },
+    { key: 'NEON_AUTH_BASE_URL', value: need('NEON_AUTH_BASE_URL') },
     ...(sentryDsn
       ? [
           { key: 'SENTRY_DSN', value: sentryDsn },

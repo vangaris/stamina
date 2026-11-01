@@ -1,0 +1,33 @@
+{
+  "name": "@stamina/ui-sheet",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "typecheck": "vue-tsc --noEmit -p tsconfig.json",
+    "test": "vitest run"
+  },
+  "nx": {
+    "tags": [
+      "type:ui",
+      "scope:vue"
+    ]
+  },
+  "peerDependencies": {
+    "vue": "^3.5.0"
+  },
+  "devDependencies": {
+    "@stamina/ui-test": "workspace:^",
+    "@vue/test-utils": "^2.5.1",
+    "vitest": "^5.0.5",
+    "vue": "^3.5.44",
+    "vue-tsc": "^3.3.14"
+  },
+  "dependencies": {
+    "@stamina/a11y": "workspace:^"
+  }
+}

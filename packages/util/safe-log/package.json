@@ -8,12 +8,16 @@
   },
   "scripts": {
     "lint": "eslint .",
-    "typecheck": "tsc -p tsconfig.json"
+    "typecheck": "tsc -p tsconfig.json",
+    "test": "vitest run"
   },
   "nx": {
     "tags": [
       "type:util",
       "scope:shared"
     ]
+  },
+  "devDependencies": {
+    "vitest": "^5.0.5"
   }
 }
