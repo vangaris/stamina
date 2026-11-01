@@ -19,7 +19,7 @@
     "@commitlint/cli": "^21.2.4",
     "@commitlint/config-conventional": "^21.2.4",
     "@nx/eslint-plugin": "24.0.2",
-    "@types/node": "22",
+    "@types/node": "26",
     "eslint": "10",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-vue": "^10.12.0",
