@@ -653,6 +653,14 @@ describe('workers-deploy.mjs', () => {
         return [200, { success: true, result: { subdomain: 'vang' } }];
       }
       if (url.pathname === '/health') return [config.unhealthy ? 503 : 200, { ok: true }];
+      if (
+        req.method === 'DELETE' &&
+        url.pathname === '/accounts/acc123/workers/scripts/stamina-api-pr-7'
+      ) {
+        if (config.deleteStatus)
+          return [config.deleteStatus, { success: false, errors: [{ code: 10000 }] }];
+        return [200, { success: true, result: { id: 'deleted' } }];
+      }
       return [404, {}];
     };
 
@@ -778,21 +786,25 @@ describe('workers-deploy.mjs', () => {
     noSecrets(result);
   });
 
-  it('delete removes the preview Worker, tolerates "not found" and still fails on other errors', async () => {
+  it('delete removes the preview Worker through the API, tolerates "not found" and still fails on other errors', async () => {
     const ok = await runWith(['delete']);
     assert.equal(ok.code, 0, ok.all);
+    assert.equal(ok.calls.length, 0, 'wrangler is not involved');
+    const sent = ok.api.requests.filter((r) => r.method === 'DELETE');
     assert.deepEqual(
-      ok.calls.map((c) => c.argv),
-      [['delete', '--name', 'stamina-api-pr-7', '--force']],
+      sent.map((r) => r.path),
+      ['/accounts/acc123/workers/scripts/stamina-api-pr-7?force=true'],
     );
-    const missing = await runWith(['delete'], { FAKE_WRANGLER_FAIL: 'delete-not-found' });
+    assert.equal(sent[0].headers.authorization, `Bearer ${secretsUnderTest.token}`);
+    const missing = await runWith(['delete'], {}, { deleteStatus: 404 });
     assert.equal(missing.code, 0, missing.all);
     assert.match(missing.stdout, /does not exist; nothing to delete/);
-    const denied = await runWith(['delete'], { FAKE_WRANGLER_FAIL: 'delete-denied' });
+    const denied = await runWith(['delete'], {}, { deleteStatus: 403 });
     assert.equal(denied.code, 1);
     assert.match(denied.stderr, /Workers Scripts > Edit/);
+    noSecrets(denied);
     const dry = await runWith(['delete', '--dry-run']);
-    assert.equal(dry.calls.length, 0);
+    assert.equal(dry.api.requests.length, 0);
   });
 
   it('delete needs a numeric PR_NUMBER, so it can never target production', async () => {
