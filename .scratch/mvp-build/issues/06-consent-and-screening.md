@@ -4,7 +4,7 @@
 
 **Blocked by:** 05: Onboarding: who you are and how you play
 
-**Status:** ready-for-agent
+**Status:** in-progress
 
 **Roadmap week:** 3
 
