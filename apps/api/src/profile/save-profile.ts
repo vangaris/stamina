@@ -7,7 +7,7 @@ import {
 } from '@stamina/contracts';
 import { checkEligibility, normalizeInviteCode } from '@stamina/domain';
 import { eq, sql } from 'drizzle-orm';
-import type { Db } from '../db/client.ts';
+import type { Db } from '../db/types.ts';
 import { appUser, profile } from '../db/schema.ts';
 import { withUser } from '../db/with-user.ts';
 import { redeemInvite } from '../invites/redeem-invite.ts';

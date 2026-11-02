@@ -1,4 +1,4 @@
-import { createDb } from '../src/db/client.ts';
+import { createPgDb } from '../src/db/pg-client.ts';
 import { invite } from '../src/db/schema.ts';
 import { MAX_INVITES_PER_RUN } from '../src/invites/config.ts';
 import { generateInviteCode } from '../src/invites/generate-invite-code.ts';
@@ -20,7 +20,7 @@ if (!Number.isInteger(count) || count < 1 || count > MAX_INVITES_PER_RUN) {
   fail(`usage: invites:create <count 1-${MAX_INVITES_PER_RUN}>`);
 }
 
-const { db, close } = createDb(url);
+const { db, close } = createPgDb(url);
 try {
   // A collision with an existing code is astronomically unlikely; `returning` still reports only
   // the codes that were actually inserted, and the loop tops up until `count` are.
