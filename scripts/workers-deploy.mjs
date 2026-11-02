@@ -29,7 +29,6 @@
 //
 // [INFERENCE] Not confirmed against a live account (the token available while writing this could not write
 // Workers), taken from the Wrangler docs or from memory of Wrangler's behaviour:
-//   - `wrangler delete --force` (the docs list --name and --dry-run only; --force skips the confirmation prompt).
 //   - `wrangler deploy --var KEY:VALUE` splits on the first colon, so URLs as values work.
 //   - `wrangler secret bulk <file> --name <name>` works on a Worker that `deploy` has just created, and a
 //     later `deploy` keeps secrets (the docs say secrets are never deleted by a deployment).
@@ -271,16 +270,23 @@ async function remove() {
   const name = workerName();
   if (!name.startsWith(PREVIEW_PREFIX)) throw new Error(`refusing to delete ${name}`);
   if (dryRun) {
-    console.log(`dry run: nothing is sent. Would run: wrangler delete --name ${name} --force`);
+    console.log(
+      `dry run: nothing is sent. Would run: DELETE /accounts/<id>/workers/scripts/${name}`,
+    );
     return;
   }
-  const result = await wrangler(['delete', '--name', name, '--force']);
-  console.log(result.output.trim());
-  if (result.code === 0) return console.log(`deleted Worker ${name}`);
-  if (/not found|does not exist|could not be found|\b10007\b/i.test(result.output)) {
+  // The API call, not `wrangler delete`: wrangler also lists KV namespaces afterwards, which needs a
+  // permission the deploy token does not have, and it then exits 1 although the Worker is gone.
+  const response = await fetch(
+    `${apiBase}/accounts/${accountId}/workers/scripts/${name}?force=true`,
+    { method: 'DELETE', headers: { authorization: `Bearer ${token}` } },
+  );
+  const text = await response.text();
+  if (response.ok) return console.log(`deleted Worker ${name}`);
+  if (response.status === 404) {
     return console.log(`Worker ${name} does not exist; nothing to delete`);
   }
-  fail(`wrangler delete of ${name}`, result.output);
+  fail(`deleting Worker ${name} (HTTP ${response.status})`, text);
 }
 
 async function rollback() {

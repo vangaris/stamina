@@ -27,3 +27,10 @@
 
 - Verified locally (2026-10-31): the Worker bundles without `pg`, and `wrangler dev --local` against a throwaway Neon branch answers `/health`, `/me` (401 without a token, 200 and the `app_user` row with a real Neon Auth JWT) and CORS. The branch was deleted afterwards.
 - Not verified: any deploy (the token lacks Account > Workers Scripts > Edit), the workers.dev subdomain, secrets on a deployed Worker, per-PR deploy and delete, the release workflow, CPU time against the free plan's 10 ms limit (not measurable locally).
+
+## Live results (2026-11-02, after the token gained Workers Scripts > Edit)
+
+- Preview of PR 13 deployed `stamina-api-pr-13` against its own Neon branch; `/health` answered `{"status":"ok","database":"up"}`, `/me` answered 401 without a token, CORS echoed the preview web origin; Playwright + axe passed on the preview.
+- Closing PR 13 removed the Neon branch and the Worker, but the cleanup job exited 1: `wrangler delete` lists KV namespaces, which the token cannot read. Fixed by deleting through the Cloudflare API (`scripts/workers-deploy.mjs`); the next PR's close proves it.
+- CPU time (Cloudflare GraphQL `workersInvocationsAdaptive`, free plan limit 10 ms): warm `/health` and unauthenticated `/me` p50 2.3 ms, p99 12.1 ms over 108 requests; the first requests of a fresh Worker (cold start, first Neon connection) p50 7.6 to 8.5 ms, p99 24 to 30 ms. Not yet measured: `/me` with a real JWT (JWT verification plus the RLS transaction) and the real email-code sign-in; both need someone to sign in on a preview with a real mailbox.
+- Production: the Worker `stamina-api` does not exist yet (`/health` answers Cloudflare error 1042). It is created by merging release PR 10.
