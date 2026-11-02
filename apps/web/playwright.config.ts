@@ -1,12 +1,13 @@
 import { defineConfig, devices } from '@playwright/test';
+import { E2E_API_PORT, E2E_DATABASE_URL, E2E_DB_PORT } from './e2e/support/e2e-stack.ts';
 
 /**
  * Seam 3: phone-sized browser journeys. Against a deployed preview set `PLAYWRIGHT_BASE_URL`;
  * otherwise a local stack (dev Postgres + API + built web) is started.
  */
 const remote = process.env.PLAYWRIGHT_BASE_URL;
-const dbPort = 54330;
-const apiPort = 8788;
+const dbPort = E2E_DB_PORT;
+const apiPort = E2E_API_PORT;
 // Fake Neon Auth (e2e/support/fake-better-auth.ts). Served under /auth like Neon's base_url, so
 // the API gets it as NEON_AUTH_BASE_URL and the web previews proxy /auth to it.
 const authPort = 8789;
@@ -18,7 +19,7 @@ const sentryWebPort = 4174;
 const devWebPort = 5174;
 const sentryDsn = 'https://e2ekey@o0.ingest.de.sentry.io/1';
 const sentryBuildDir = 'node_modules/.cache/e2e-sentry';
-const databaseUrl = `postgres://stamina:stamina@127.0.0.1:${dbPort}/stamina`;
+const databaseUrl = E2E_DATABASE_URL;
 
 export default defineConfig({
   testDir: './e2e',

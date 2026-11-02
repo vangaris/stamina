@@ -1,0 +1,296 @@
+{
+  "id": "6ff4f354-af23-4086-adb1-2da0c368c0e2",
+  "prevId": "a6a6229f-6ee0-4fdc-924d-34299274c9a3",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "public.app_user": {
+      "name": "app_user",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {
+        "app_user_owner": {
+          "name": "app_user_owner",
+          "as": "PERMISSIVE",
+          "for": "ALL",
+          "to": ["stamina_app"],
+          "using": "id = app_user_id()::uuid",
+          "withCheck": "id = app_user_id()::uuid"
+        }
+      },
+      "checkConstraints": {},
+      "isRLSEnabled": true
+    },
+    "public.invite": {
+      "name": "invite",
+      "schema": "",
+      "columns": {
+        "code": {
+          "name": "code",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "issuer": {
+          "name": "issuer",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "redeemed_by": {
+          "name": "redeemed_by",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "redeemed_at": {
+          "name": "redeemed_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "invite_issuer_app_user_id_fk": {
+          "name": "invite_issuer_app_user_id_fk",
+          "tableFrom": "invite",
+          "tableTo": "app_user",
+          "columnsFrom": ["issuer"],
+          "columnsTo": ["id"],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        },
+        "invite_redeemed_by_app_user_id_fk": {
+          "name": "invite_redeemed_by_app_user_id_fk",
+          "tableFrom": "invite",
+          "tableTo": "app_user",
+          "columnsFrom": ["redeemed_by"],
+          "columnsTo": ["id"],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {
+        "invite_app_select": {
+          "name": "invite_app_select",
+          "as": "PERMISSIVE",
+          "for": "SELECT",
+          "to": ["stamina_app"],
+          "using": "redeemed_at is null or redeemed_by = app_user_id()::uuid"
+        },
+        "invite_app_redeem": {
+          "name": "invite_app_redeem",
+          "as": "PERMISSIVE",
+          "for": "UPDATE",
+          "to": ["stamina_app"],
+          "using": "redeemed_at is null",
+          "withCheck": "redeemed_by = app_user_id()::uuid"
+        }
+      },
+      "checkConstraints": {},
+      "isRLSEnabled": true
+    },
+    "public.profile": {
+      "name": "profile",
+      "schema": "",
+      "columns": {
+        "user_id": {
+          "name": "user_id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "needs": {
+          "name": "needs",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "birth_year": {
+          "name": "birth_year",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "country": {
+          "name": "country",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "sport_kind": {
+          "name": "sport_kind",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "launch_sport": {
+          "name": "launch_sport",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "other_sport_name": {
+          "name": "other_sport_name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "play_days": {
+          "name": "play_days",
+          "type": "text[]",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "play_varies": {
+          "name": "play_varies",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "play_minutes": {
+          "name": "play_minutes",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "play_intensity": {
+          "name": "play_intensity",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "goal": {
+          "name": "goal",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "sessions_per_week": {
+          "name": "sessions_per_week",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "session_minutes": {
+          "name": "session_minutes",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "available_days": {
+          "name": "available_days",
+          "type": "text[]",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "locale": {
+          "name": "locale",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "units": {
+          "name": "units",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "hot_conditions_default": {
+          "name": "hot_conditions_default",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "profile_user_id_app_user_id_fk": {
+          "name": "profile_user_id_app_user_id_fk",
+          "tableFrom": "profile",
+          "tableTo": "app_user",
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {
+        "profile_owner": {
+          "name": "profile_owner",
+          "as": "PERMISSIVE",
+          "for": "ALL",
+          "to": ["stamina_app"],
+          "using": "user_id = app_user_id()::uuid",
+          "withCheck": "user_id = app_user_id()::uuid"
+        }
+      },
+      "checkConstraints": {
+        "profile_sport_matches_kind": {
+          "name": "profile_sport_matches_kind",
+          "value": "(\"profile\".\"sport_kind\" = 'launch' and \"profile\".\"launch_sport\" is not null and \"profile\".\"other_sport_name\" is null)\n        or (\"profile\".\"sport_kind\" = 'other' and \"profile\".\"launch_sport\" is null and \"profile\".\"other_sport_name\" is not null)"
+        },
+        "profile_training_week_all_or_none": {
+          "name": "profile_training_week_all_or_none",
+          "value": "(\"profile\".\"sessions_per_week\" is null) = (\"profile\".\"session_minutes\" is null)\n        and (\"profile\".\"sessions_per_week\" is null) = (\"profile\".\"available_days\" is null)"
+        }
+      },
+      "isRLSEnabled": true
+    }
+  },
+  "enums": {},
+  "schemas": {},
+  "sequences": {},
+  "roles": {},
+  "policies": {},
+  "views": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}

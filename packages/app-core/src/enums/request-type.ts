@@ -5,4 +5,7 @@ export enum RequestType {
   StartGoogleSignIn = 'StartGoogleSignIn',
   SignOut = 'SignOut',
   GetSession = 'GetSession',
+  CheckInvite = 'CheckInvite',
+  GetProfile = 'GetProfile',
+  SaveProfile = 'SaveProfile',
 }

@@ -20,5 +20,11 @@ export function setupMediator(overrides: Partial<Services> = {}) {
       session: { set: (state) => sessionWrites.push(state) },
     },
   });
-  return { mediator, services: loggedServices, sessionWrites, healthWrites, logLines };
+  return {
+    mediator,
+    services: loggedServices,
+    sessionWrites,
+    healthWrites,
+    logLines,
+  };
 }

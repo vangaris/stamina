@@ -1,0 +1,20 @@
+/** i18n keys the composable hands to the screens; the components translate them. */
+export enum OnboardingMessageKey {
+  Needs = 'onboarding.errors.needs',
+  BirthYear = 'onboarding.errors.birthYear',
+  Country = 'onboarding.errors.country',
+  Sport = 'onboarding.errors.sport',
+  OtherSportName = 'onboarding.errors.otherSportName',
+  PlayDays = 'onboarding.errors.playDays',
+  Intensity = 'onboarding.errors.intensity',
+  Goal = 'onboarding.errors.goal',
+  SessionsPerWeek = 'onboarding.errors.sessionsPerWeek',
+  SessionMinutes = 'onboarding.errors.sessionMinutes',
+  AvailableDays = 'onboarding.errors.availableDays',
+  Offline = 'onboarding.errors.offline',
+  Unknown = 'onboarding.errors.unknown',
+  UnderAgeTitle = 'onboarding.stop.underAge.title',
+  UnderAgeBody = 'onboarding.stop.underAge.body',
+  OutsideEeaTitle = 'onboarding.stop.outsideEea.title',
+  OutsideEeaBody = 'onboarding.stop.outsideEea.body',
+}

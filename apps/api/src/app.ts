@@ -1,6 +1,8 @@
 import {
+  ApiPath,
   DatabaseStatus,
   HealthStatus,
+  HttpStatus,
   healthResponseSchema,
   type HealthResponse,
 } from '@stamina/contracts';
@@ -15,7 +17,9 @@ import type { Db } from './db/client.ts';
 import { ApiErrorCode } from './enums/api-error-code.ts';
 import type { ErrorReporter } from './error-reporter.ts';
 import { requestLog, type AppEnv, type LogSink } from './request-log.ts';
+import { inviteRoutes } from './routes/invite-routes.ts';
 import { meRoutes } from './routes/me-routes.ts';
+import { profileRoutes } from './routes/profile-routes.ts';
 
 export interface AppDeps {
   db: Db;
@@ -48,10 +52,10 @@ export function createApp({
     if (error instanceof HTTPException && error.status < 500) return error.getResponse();
     await errorReporter?.report(error, { requestId: c.get('requestId') });
     // The message is never echoed: it can embed what the user sent.
-    return c.json({ error: ApiErrorCode.InternalError }, 500);
+    return c.json({ error: ApiErrorCode.InternalError }, HttpStatus.InternalServerError);
   });
 
-  app.get('/health', async (c) => {
+  app.get(ApiPath.Health, async (c) => {
     let body: HealthResponse;
     try {
       await db.execute(sql`select 1`);
@@ -59,10 +63,15 @@ export function createApp({
     } catch {
       body = { status: HealthStatus.Degraded, database: DatabaseStatus.Down };
     }
-    return c.json(healthResponseSchema.parse(body), body.status === HealthStatus.Ok ? 200 : 503);
+    return c.json(
+      healthResponseSchema.parse(body),
+      body.status === HealthStatus.Ok ? HttpStatus.Ok : HttpStatus.ServiceUnavailable,
+    );
   });
 
-  app.route('/me', meRoutes({ db, auth }));
+  app.route(ApiPath.Me, meRoutes({ db, auth }));
+  app.route(ApiPath.Profile, profileRoutes({ db, auth }));
+  app.route(ApiPath.InviteCheck, inviteRoutes({ db }));
 
   return app;
 }

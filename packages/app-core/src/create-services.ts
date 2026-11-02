@@ -1,10 +1,12 @@
 import { createApiClient } from '@stamina/contracts';
 import { ServicesMode } from './enums/services-mode.ts';
 import { createBetterAuthService } from './services/create-better-auth-service.ts';
+import { createBrowserInviteStorage } from './services/create-browser-invite-storage.ts';
 import { createBrowserNetwork } from './services/create-browser-network.ts';
 import { createConsoleLogger } from './services/create-console-logger.ts';
 import { createFakeApiClient } from './services/create-fake-api-client.ts';
 import { createFakeAuthService } from './services/create-fake-auth-service.ts';
+import { createMemoryInviteStorage } from './services/create-memory-invite-storage.ts';
 import { createMemoryOfflineQueue } from './services/create-memory-offline-queue.ts';
 import { createSilentLogger } from './services/create-silent-logger.ts';
 import { createSystemClock } from './services/create-system-clock.ts';
@@ -20,6 +22,7 @@ export function createServices(env: ServicesEnv): Services {
       return {
         api: createFakeApiClient(() => auth.getToken()),
         auth,
+        inviteStorage: createMemoryInviteStorage(),
         logger: test ? createSilentLogger() : createConsoleLogger(),
         clock: test ? { now: () => 0 } : createSystemClock(),
         network: test ? { isOnline: () => true } : createBrowserNetwork(),
@@ -36,6 +39,7 @@ export function createServices(env: ServicesEnv): Services {
           ...fetchOption,
         }),
         auth,
+        inviteStorage: createBrowserInviteStorage(),
         logger: createConsoleLogger(),
         clock: createSystemClock(),
         network: createBrowserNetwork(),

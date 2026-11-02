@@ -23,8 +23,9 @@ const {
   signInWithGoogle,
   back,
 } = useSignIn({
-  onSignedIn: () => void router.push(RoutePath.Today),
-  callbackUrl: new URL(RoutePath.Today, window.location.origin).href,
+  // Onboarding decides where a signed-in person goes: Today, the screens, or the invite first.
+  onSignedIn: () => void router.push(RoutePath.Onboarding),
+  callbackUrl: new URL(RoutePath.Onboarding, window.location.origin).href,
 });
 </script>
 

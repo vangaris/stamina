@@ -1,7 +1,14 @@
-import type { ApiClient } from '@stamina/contracts';
+import type {
+  ApiClient,
+  InviteCheckResponse,
+  ProfileAnswers,
+  SavedProfile,
+  SaveProfileResult,
+} from '@stamina/contracts';
 import type { z } from 'zod';
 import type { HealthStateKind } from './enums/health-state-kind.ts';
 import type { OfflinePolicy } from './enums/offline-policy.ts';
+import type { ProfileStatus } from './enums/profile-status.ts';
 import type { RequestOutcome } from './enums/request-outcome.ts';
 import type { RequestType } from './enums/request-type.ts';
 import type { ServicesMode } from './enums/services-mode.ts';
@@ -130,9 +137,21 @@ export interface BetterAuthServiceOptions {
   now?: () => number;
 }
 
+/**
+ * Remembers the invite code the person already proved valid, across the sign-in redirect. A
+ * code is not a secret worth protecting and says nothing about health, but it is still never logged.
+ */
+export interface InviteStorage {
+  /** The remembered code in canonical form, or `undefined`. */
+  get(): string | undefined;
+  save(code: string): void;
+  clear(): void;
+}
+
 export interface Services extends PipelineServices {
   api: ApiClient;
   auth: AuthService;
+  inviteStorage: InviteStorage;
 }
 
 /** Test: silent in-memory mocks. Dev: in-memory mocks with a console logger. Production: real. */
@@ -150,6 +169,11 @@ export type SessionState =
   | { status: SessionStatus.Unknown }
   | { status: SessionStatus.SignedOut }
   | { status: SessionStatus.SignedIn; userId: string };
+
+export type ProfileState =
+  | { status: ProfileStatus.Present; profile: SavedProfile }
+  | { status: ProfileStatus.NotStarted }
+  | { status: ProfileStatus.InviteNeeded };
 
 export interface Stores {
   /** Stores hold state only; the web app backs these with Pinia. */
@@ -188,4 +212,19 @@ export interface SignOut extends Request<void> {
 
 export interface GetSession extends Request<SessionState> {
   readonly type: RequestType.GetSession;
+}
+
+export interface CheckInvite extends Request<InviteCheckResponse> {
+  readonly type: RequestType.CheckInvite;
+  /** As typed or pasted; the handler normalises it. */
+  readonly code: string;
+}
+
+export interface GetProfile extends Request<ProfileState> {
+  readonly type: RequestType.GetProfile;
+}
+
+export interface SaveProfile extends Request<SaveProfileResult> {
+  readonly type: RequestType.SaveProfile;
+  readonly answers: ProfileAnswers;
 }

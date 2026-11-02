@@ -69,6 +69,9 @@ importers:
       '@stamina/contracts':
         specifier: workspace:^
         version: link:../../packages/contracts
+      '@stamina/domain':
+        specifier: workspace:^
+        version: link:../../packages/domain
       '@stamina/safe-log':
         specifier: workspace:^
         version: link:../../packages/util/safe-log
@@ -88,6 +91,9 @@ importers:
         specifier: ^4.6.7
         version: 4.6.7
     devDependencies:
+      '@stamina/i18n':
+        specifier: workspace:^
+        version: link:../../packages/i18n
       '@types/node':
         specifier: '22'
         version: 22.20.5
@@ -118,6 +124,12 @@ importers:
       '@stamina/app-core':
         specifier: workspace:^
         version: link:../../packages/app-core
+      '@stamina/contracts':
+        specifier: workspace:^
+        version: link:../../packages/contracts
+      '@stamina/domain':
+        specifier: workspace:^
+        version: link:../../packages/domain
       '@stamina/i18n':
         specifier: workspace:^
         version: link:../../packages/i18n
@@ -148,6 +160,9 @@ importers:
       '@stamina/ui-progress-bar':
         specifier: workspace:^
         version: link:../../packages/ui/progress-bar
+      '@stamina/ui-select':
+        specifier: workspace:^
+        version: link:../../packages/ui/select
       '@stamina/ui-sheet':
         specifier: workspace:^
         version: link:../../packages/ui/sheet
@@ -224,15 +239,34 @@ importers:
       '@stamina/contracts':
         specifier: workspace:^
         version: link:../contracts
+      '@stamina/domain':
+        specifier: workspace:^
+        version: link:../domain
       zod:
         specifier: ^4.6.7
         version: 4.6.7
+    devDependencies:
+      '@stamina/i18n':
+        specifier: workspace:^
+        version: link:../i18n
 
   packages/contracts:
     dependencies:
+      '@stamina/domain':
+        specifier: workspace:^
+        version: link:../domain
+      '@stamina/i18n':
+        specifier: workspace:^
+        version: link:../i18n
       zod:
         specifier: ^4.6.7
         version: 4.6.7
+    devDependencies:
+      vitest:
+        specifier: ^5.0.5
+        version: 5.0.5(@types/node@22.20.5)(jsdom@30.1.3)(vite@8.3.5(@types/node@22.20.5)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(tsx@4.23.15)(yaml@2.9.0))
+
+  packages/domain:
     devDependencies:
       vitest:
         specifier: ^5.0.5
@@ -387,6 +421,28 @@ importers:
         version: 3.3.14(typescript@6.0.3)
 
   packages/ui/progress-bar:
+    devDependencies:
+      '@stamina/ui-test':
+        specifier: workspace:^
+        version: link:../../util/ui-test
+      '@vue/test-utils':
+        specifier: ^2.5.1
+        version: 2.5.1(@vue/compiler-dom@3.5.44)(@vue/server-renderer@3.5.44)(vue@3.5.44(typescript@6.0.3))
+      vitest:
+        specifier: ^5.0.5
+        version: 5.0.5(@types/node@22.20.5)(jsdom@30.1.3)(vite@8.3.5(@types/node@22.20.5)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(tsx@4.23.15)(yaml@2.9.0))
+      vue:
+        specifier: ^3.5.44
+        version: 3.5.44(typescript@6.0.3)
+      vue-tsc:
+        specifier: ^3.3.14
+        version: 3.3.14(typescript@6.0.3)
+
+  packages/ui/select:
+    dependencies:
+      '@stamina/a11y':
+        specifier: workspace:^
+        version: link:../../util/a11y
     devDependencies:
       '@stamina/ui-test':
         specifier: workspace:^

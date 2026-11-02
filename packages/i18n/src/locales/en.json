@@ -43,5 +43,170 @@
     "notices": {
       "codeResent": "A new code is on its way."
     }
+  },
+  "start": {
+    "title": "Stamina is invite-only for now",
+    "description": "Enter your invite code to get started.",
+    "label": "Invite code",
+    "hint": "Letters and numbers. Spaces and dashes do not matter.",
+    "submit": "Continue",
+    "haveAccount": "I already have an account",
+    "errors": {
+      "empty": "Enter your invite code.",
+      "invalid": "That invite code is not valid, or it has already been used.",
+      "offline": "You are offline. Connect to the internet and try again.",
+      "unknown": "Something went wrong. Please try again."
+    },
+    "notices": {
+      "inviteRejected": "Your invite code could not be used. Enter a valid code to continue."
+    }
+  },
+  "onboarding": {
+    "loading": "Getting things ready…",
+    "loadFailed": {
+      "message": "We could not load your details. Check your connection and try again.",
+      "retry": "Try again"
+    },
+    "progress": {
+      "label": "Setup progress",
+      "step": "Step {step} of {total}"
+    },
+    "actions": {
+      "back": "Back",
+      "next": "Continue",
+      "finish": "Finish"
+    },
+    "about": {
+      "title": "Tell us about you",
+      "needs": {
+        "label": "What do you want from Stamina?",
+        "options": {
+          "training": "A training program",
+          "food": "What to eat and drink",
+          "both": "Both"
+        }
+      },
+      "birthYear": {
+        "label": "Birth year",
+        "hint": "Only the year. Stamina is for adults."
+      },
+      "country": {
+        "label": "Country of residence",
+        "placeholder": "Choose a country"
+      },
+      "language": {
+        "label": "Language"
+      },
+      "units": {
+        "label": "Units",
+        "options": {
+          "metric": "Metric (kg, cm)",
+          "imperial": "Imperial (lb, in)"
+        }
+      }
+    },
+    "stop": {
+      "underAge": {
+        "title": "Stamina is for adults",
+        "body": "You need to be 18 or older to use Stamina. We have not saved anything you entered."
+      },
+      "outsideEea": {
+        "title": "Stamina is available in the EU/EEA for now",
+        "body": "We are not open where you live yet. We have not saved anything you entered."
+      },
+      "change": "Change my answers"
+    },
+    "sport": {
+      "title": "Your sport",
+      "sport": {
+        "label": "Which sport do you play?",
+        "options": {
+          "padel": "Padel",
+          "tennis": "Tennis",
+          "beach-volleyball": "Beach volleyball",
+          "kitesurfing": "Kitesurfing",
+          "windsurfing": "Windsurfing",
+          "basketball": "Basketball",
+          "five-a-side-football": "Five-a-side football",
+          "running": "Running",
+          "crossfit": "CrossFit",
+          "hyrox": "Hyrox",
+          "calisthenics": "Calisthenics",
+          "other": "Other…"
+        }
+      },
+      "otherName": {
+        "label": "Name of your sport",
+        "hint": "We will review it and add it if we can."
+      },
+      "playDays": {
+        "label": "Which days do you usually play?",
+        "varies": "It varies"
+      },
+      "playMinutes": {
+        "label": "Usual time playing",
+        "unit": "min",
+        "decrease": "Decrease usual time playing",
+        "increase": "Increase usual time playing"
+      },
+      "intensity": {
+        "label": "How hard do you usually play?",
+        "options": {
+          "easy": "Easy",
+          "moderate": "Moderate",
+          "hard": "Hard"
+        }
+      },
+      "hotConditions": "Hot conditions will be on by default for kitesurfing, windsurfing and beach volleyball."
+    },
+    "goal": {
+      "title": "Your Goal",
+      "label": "What is your main Goal?",
+      "options": {
+        "sport-performance": "Play my sport better",
+        "strength": "Get stronger",
+        "general-fitness": "General fitness",
+        "body-composition": "Body composition"
+      }
+    },
+    "week": {
+      "title": "Your training week",
+      "sessionsPerWeek": {
+        "label": "Sessions per week",
+        "decrease": "Fewer Sessions per week",
+        "increase": "More Sessions per week"
+      },
+      "sessionMinutes": {
+        "label": "Length of a Session",
+        "option": "{minutes} min"
+      },
+      "availableDays": {
+        "label": "Which days can you train?"
+      }
+    },
+    "weekdays": {
+      "mon": "Mon",
+      "tue": "Tue",
+      "wed": "Wed",
+      "thu": "Thu",
+      "fri": "Fri",
+      "sat": "Sat",
+      "sun": "Sun"
+    },
+    "errors": {
+      "needs": "Choose what you want from Stamina.",
+      "birthYear": "Enter the year you were born, like 1990.",
+      "country": "Choose your country of residence.",
+      "sport": "Choose your sport.",
+      "otherSportName": "Tell us the name of your sport.",
+      "playDays": "Choose the days you play, or “It varies”.",
+      "intensity": "Choose how hard you usually play.",
+      "goal": "Choose your main Goal.",
+      "sessionsPerWeek": "Choose between {min} and {max} Sessions per week.",
+      "sessionMinutes": "Choose how long a Session lasts.",
+      "availableDays": "Choose at least {count} days, one for each Session.",
+      "offline": "You are offline. Connect to the internet and try again.",
+      "unknown": "Something went wrong. Please try again."
+    }
   }
 }

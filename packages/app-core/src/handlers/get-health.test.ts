@@ -42,6 +42,7 @@ describe('getHealth query through the mediator', () => {
     const { mediator } = setupMediator({
       network: { isOnline: () => false },
       api: {
+        ...createServices({ mode: ServicesMode.Test }).api,
         health: async () => {
           throw new TypeError('Failed to fetch');
         },

@@ -1,8 +1,11 @@
 import { createMediator } from './create-mediator.ts';
 import { RequestType } from './enums/request-type.ts';
+import { checkInviteDefinition } from './handlers/check-invite.ts';
 import { getHealthDefinition } from './handlers/get-health.ts';
+import { getProfileDefinition } from './handlers/get-profile.ts';
 import { getSessionDefinition } from './handlers/get-session.ts';
 import { requestEmailCodeDefinition } from './handlers/request-email-code.ts';
+import { saveProfileDefinition } from './handlers/save-profile.ts';
 import { signOutDefinition } from './handlers/sign-out.ts';
 import { startGoogleSignInDefinition } from './handlers/start-google-sign-in.ts';
 import { verifyEmailCodeDefinition } from './handlers/verify-email-code.ts';
@@ -19,6 +22,9 @@ export function createAppMediator({ services, stores }: AppMediatorOptions): Med
       [RequestType.StartGoogleSignIn]: startGoogleSignInDefinition,
       [RequestType.SignOut]: signOutDefinition,
       [RequestType.GetSession]: getSessionDefinition,
+      [RequestType.CheckInvite]: checkInviteDefinition,
+      [RequestType.GetProfile]: getProfileDefinition,
+      [RequestType.SaveProfile]: saveProfileDefinition,
     } satisfies Record<RequestType, unknown>,
   });
 }

@@ -109,3 +109,35 @@ describe('createApiClient', () => {
     });
   });
 });
+
+describe('createApiClient profile and invite calls', () => {
+  it('treats a 422 with a Rejected body as a result, and any other failure as an ApiError', async () => {
+    const rejected = stubFetch({ status: 'rejected', reason: 'under-18' }, 422);
+    const client = createApiClient({ baseUrl: 'https://api.example', fetch: rejected.fetchStub });
+    const submission = {} as Parameters<typeof client.saveProfile>[0];
+
+    expect(await client.saveProfile(submission)).toEqual({
+      status: 'rejected',
+      reason: 'under-18',
+    });
+
+    const broken = createApiClient({
+      baseUrl: 'https://api.example',
+      fetch: stubFetch({ error: 'bad' }, 400).fetchStub,
+    });
+    await expect(broken.saveProfile(submission)).rejects.toMatchObject({ status: 400 });
+  });
+
+  it('checks an invite without needing a token, and reads a null profile', async () => {
+    const invite = stubFetch({ valid: true });
+    const client = createApiClient({ baseUrl: 'https://api.example', fetch: invite.fetchStub });
+    expect(await client.checkInvite('ABCDEFGH23')).toEqual({ valid: true });
+    expect(invite.requested).toEqual(['https://api.example/invites/check']);
+
+    const empty = createApiClient({
+      baseUrl: 'https://api.example',
+      fetch: stubFetch({ profile: null }).fetchStub,
+    });
+    expect(await empty.getProfile()).toBeNull();
+  });
+});

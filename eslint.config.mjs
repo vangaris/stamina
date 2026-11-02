@@ -23,7 +23,7 @@ const semanticClassSyntax = [
 /**
  * Module boundaries (spec: "Nx tags enforce boundaries"):
  * - ui and util depend on nothing app-specific.
- * - domain depends only on util.
+ * - domain depends only on util; contracts on domain and util (wire schemas reuse domain enums).
  * - app-core depends on domain, contracts and util.
  * - scope tags keep Vue and React apart; shared code is framework-free.
  */
@@ -60,7 +60,7 @@ export default tseslint.config(
             { sourceTag: 'type:domain', onlyDependOnLibsWithTags: ['type:domain', 'type:util'] },
             {
               sourceTag: 'type:contracts',
-              onlyDependOnLibsWithTags: ['type:contracts', 'type:util'],
+              onlyDependOnLibsWithTags: ['type:contracts', 'type:domain', 'type:util'],
             },
             {
               sourceTag: 'type:app-core',
