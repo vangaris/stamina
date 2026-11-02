@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.1.0](https://github.com/vangaris/stamina/compare/v1.0.1...v1.1.0) (2026-11-02)
+
+
+### Features
+
+* 04 Sign-in through app-core ([9ea0dc4](https://github.com/vangaris/stamina/commit/9ea0dc48c4a51bce3bc7475d6aeba7d295384f7a))
+* 05 Onboarding: who you are and how you play ([c813699](https://github.com/vangaris/stamina/commit/c8136990a81cc2f48a114e73d0d58beeff948eb9))
+* 25 API on Cloudflare Workers (no card) ([df52208](https://github.com/vangaris/stamina/commit/df52208ba10eab90febeca7c35c84a6f85c6d8f7))
+
+
+### Bug Fixes
+
+* delete preview Workers through the Cloudflare API ([88f522d](https://github.com/vangaris/stamina/commit/88f522db3ef87bc389ac1218d7a2355da0035d80))
+
 ## [1.0.1](https://github.com/vangaris/stamina/compare/v1.0.0...v1.0.1) (2026-10-29)
 
 
