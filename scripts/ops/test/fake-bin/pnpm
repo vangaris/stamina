@@ -1,0 +1,52 @@
+#!/usr/bin/env node
+// Test double for `pnpm --filter @stamina/api exec wrangler ...` as run by scripts/workers-deploy.mjs.
+// Appends one JSON line per call ({argv, secrets}) to $FAKE_WRANGLER_LOG; `secret bulk` also records the
+// parsed temp file it was given. $FAKE_WRANGLER_FAIL picks a failure: deploy-denied | delete-not-found | delete-denied.
+import { appendFileSync, readFileSync } from 'node:fs';
+
+const argv = process.argv.slice(2);
+const prefix = ['--filter', '@stamina/api', 'exec', 'wrangler'];
+if (prefix.some((part, index) => argv[index] !== part)) {
+  console.error(`fake pnpm: unsupported: ${argv.join(' ')}`);
+  process.exit(64);
+}
+const wranglerArgs = argv.slice(prefix.length);
+const [command, subcommand] = wranglerArgs;
+const secrets =
+  command === 'secret' && subcommand === 'bulk'
+    ? JSON.parse(readFileSync(wranglerArgs[2], 'utf-8'))
+    : undefined;
+appendFileSync(
+  process.env.FAKE_WRANGLER_LOG,
+  `${JSON.stringify({ argv: wranglerArgs, secrets })}\n`,
+);
+
+const fail = process.env.FAKE_WRANGLER_FAIL;
+const denied =
+  'A request to the Cloudflare API failed: No access to the specified resource [code: 10000]';
+if (command === 'deploy') {
+  if (fail === 'deploy-denied') {
+    console.error(denied);
+    process.exit(1);
+  }
+  console.log(
+    'Uploaded stamina-api\nDeployed stamina-api triggers\nCurrent Version ID: 11111111-2222-3333-4444-555555555555',
+  );
+} else if (command === 'delete') {
+  if (fail === 'delete-not-found') {
+    console.error('Worker "stamina-api-pr-7" not found. [code: 10007]');
+    process.exit(1);
+  }
+  if (fail === 'delete-denied') {
+    console.error(denied);
+    process.exit(1);
+  }
+  console.log('Successfully deleted stamina-api-pr-7');
+} else if (command === 'secret') {
+  console.log(`Success! Uploaded ${Object.keys(secrets).length} secrets`);
+} else if (command === 'rollback') {
+  console.log('Successfully rolled back\nCurrent Version ID: 99999999-2222-3333-4444-555555555555');
+} else {
+  console.error(`fake wrangler: unsupported: ${wranglerArgs.join(' ')}`);
+  process.exit(64);
+}

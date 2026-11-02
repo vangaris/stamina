@@ -1,6 +1,6 @@
 // Offline tests for the setup scripts OpenTofu cannot replace: infra/bootstrap.sh,
-// scripts/ops/{uptimerobot,brevo,deno}-setup.sh, scripts/ops/neon-auth-setup.mjs and the request
-// shape of scripts/deno-deploy.mjs. Each script runs for real against a mock HTTP server started
+// scripts/ops/{uptimerobot,brevo}-setup.sh, scripts/ops/neon-auth-setup.mjs and scripts/workers-deploy.mjs
+// (with a stub wrangler on PATH). Each script runs for real against a mock HTTP server started
 // here, so argument handling, find-or-create idempotency and secret hygiene are exercised without
 // any vendor account.
 //
@@ -8,7 +8,7 @@
 import assert from 'node:assert/strict';
 import { execFile } from 'node:child_process';
 import { once } from 'node:events';
-import { cpSync, mkdirSync, mkdtempSync, readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdtempSync, readFileSync, writeFileSync } from 'node:fs';
 import { createServer } from 'node:http';
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
@@ -63,7 +63,7 @@ describe('uptimerobot-setup.sh', () => {
   const key = 'ur-secret-key-123';
   const baseEnv = (api) => ({
     UPTIMEROBOT_API_KEY: key,
-    PROD_API_URL: 'https://stamina-api.example.deno.net/',
+    PROD_API_URL: 'https://stamina-api.example.workers.dev/',
     ALERT_EMAIL: 'Vang@Example.com',
     UPTIMEROBOT_API_BASE: `${api.url}/v3`,
   });
@@ -113,7 +113,7 @@ describe('uptimerobot-setup.sh', () => {
     assert.equal(api.requests.length, 0);
     assert.match(result.stdout, /POST .*\/monitors/);
     assert.match(result.stdout, /"interval":300/);
-    assert.match(result.stdout, /https:\/\/stamina-api\.example\.deno\.net\/health/);
+    assert.match(result.stdout, /https:\/\/stamina-api\.example\.workers\.dev\/health/);
   });
 
   it('rejects unknown arguments, a non-https URL and a bad email', async () => {
@@ -147,7 +147,7 @@ describe('uptimerobot-setup.sh', () => {
     assert.match(first.stdout, /created alert contact/);
     assert.match(first.stdout, /created monitor/);
     const monitor = api.monitors[0];
-    assert.equal(monitor.url, 'https://stamina-api.example.deno.net/health');
+    assert.equal(monitor.url, 'https://stamina-api.example.workers.dev/health');
     assert.equal(monitor.interval, 300);
     assert.equal(monitor.type, 'HTTP');
     assert.deepEqual(monitor.assignedAlertContacts, [
@@ -195,7 +195,7 @@ describe('uptimerobot-setup.sh', () => {
     assert.equal(api.count('POST'), 0);
     assert.match(result.stdout, /exists \(id 2\)/);
     assert.match(result.stdout, /updated monitor/);
-    assert.equal(api.monitors[0].url, 'https://stamina-api.example.deno.net/health');
+    assert.equal(api.monitors[0].url, 'https://stamina-api.example.workers.dev/health');
     assert.equal(api.monitors[0].interval, 300);
     assert.deepEqual(
       api.monitors[0].assignedAlertContacts.map((c) => c.alertContactId).sort(),
@@ -284,131 +284,6 @@ describe('brevo-setup.sh', () => {
 
   it('rejects a malformed sender address', async () => {
     const result = await run('scripts/ops/brevo-setup.sh', ['--dry-run'], { SENDER_EMAIL: 'nope' });
-    assert.equal(result.code, 2);
-  });
-});
-
-describe('deno-setup.sh', () => {
-  const token = 'deno-secret-token-789';
-  const handler = (config) => (req, url) => {
-    if (url.pathname === '/v2/apps/stamina-api') {
-      if (!config.exists) return [404, { code: 'APP_NOT_FOUND' }];
-      return [
-        200,
-        {
-          id: 'app-uuid',
-          slug: 'stamina-api',
-          env_vars: [
-            { key: 'FIELD_ENCRYPTION_KEY', secret: true },
-            { key: 'LOG_LEVEL', value: 'super-visible-value', secret: false },
-            ...(config.appDatabaseUrl ? [{ key: 'DATABASE_URL', secret: true }] : []),
-          ],
-        },
-      ];
-    }
-    if (url.pathname === '/v2/apps/stamina-api/revisions') {
-      return [
-        200,
-        [
-          { id: 'rev-preview', status: 'succeeded' },
-          { id: 'rev-prod', status: 'succeeded' },
-        ],
-      ];
-    }
-    if (url.pathname === '/v2/revisions/rev-preview') {
-      return [
-        200,
-        { timelines: [{ name: 'pr-1', context: 'preview', hostnames: ['preview.example.net'] }] },
-      ];
-    }
-    if (url.pathname === '/v2/revisions/rev-prod') {
-      return [
-        200,
-        {
-          timelines: config.production
-            ? [
-                {
-                  name: 'Production',
-                  context: 'production',
-                  hostnames: ['stamina-api.vangaris.deno.net'],
-                },
-              ]
-            : [],
-        },
-      ];
-    }
-    return [404, {}];
-  };
-  const envFor = (api, extra = {}) => ({
-    DENO_DEPLOY_TOKEN: token,
-    DENO_API_BASE: `${api.url}/v2`,
-    ...extra,
-  });
-
-  it('reports the app, variable names (never values) and the production hostname', async () => {
-    const api = await mock(handler({ exists: true, production: true }));
-    const result = await run(
-      'scripts/ops/deno-setup.sh',
-      [],
-      envFor(api, { PROD_API_URL: 'https://stamina-api.vangaris.deno.net' }),
-    );
-    api.close();
-    assert.equal(result.code, 0, result.all);
-    assert.match(result.stdout, /app stamina-api exists in organisation vangaris/);
-    assert.match(result.stdout, /FIELD_ENCRYPTION_KEY \(secret\), LOG_LEVEL/);
-    assert.ok(!result.all.includes('super-visible-value'), 'values must not be printed');
-    assert.match(result.stdout, /production hostname\(s\): stamina-api\.vangaris\.deno\.net/);
-    assert.match(result.stdout, /PROD_API_URL matches/);
-    assert.ok(!result.all.includes(token));
-    assert.equal(api.requests.filter((r) => r.method !== 'GET').length, 0);
-    for (const r of api.requests) assert.equal(r.headers.authorization, `Bearer ${token}`);
-  });
-
-  it('fails when PROD_API_URL is not the production hostname', async () => {
-    const api = await mock(handler({ exists: true, production: true }));
-    const result = await run(
-      'scripts/ops/deno-setup.sh',
-      [],
-      envFor(api, { PROD_API_URL: 'https://elsewhere.example.net' }),
-    );
-    api.close();
-    assert.equal(result.code, 1);
-    assert.match(result.stderr, /not one of the production hostnames/);
-  });
-
-  it('says so when no production revision exists yet', async () => {
-    const api = await mock(handler({ exists: true, production: false }));
-    const result = await run('scripts/ops/deno-setup.sh', [], envFor(api));
-    api.close();
-    assert.equal(result.code, 0, result.all);
-    assert.match(result.stdout, /none yet/);
-  });
-
-  it('warns about an app-level DATABASE_URL', async () => {
-    const api = await mock(handler({ exists: true, appDatabaseUrl: true }));
-    const result = await run('scripts/ops/deno-setup.sh', [], envFor(api));
-    api.close();
-    assert.match(result.stderr, /DATABASE_URL is set at app level/);
-  });
-
-  it('fails with the create command when the app is missing, and --dry-run --create sends nothing', async () => {
-    const api = await mock(handler({ exists: false }));
-    const missing = await run('scripts/ops/deno-setup.sh', [], envFor(api));
-    assert.equal(missing.code, 1);
-    assert.match(missing.stderr, /does not exist/);
-    assert.match(missing.stderr, /--create/);
-    const before = api.requests.length;
-    const dry = await run('scripts/ops/deno-setup.sh', ['--dry-run', '--create'], {
-      DENO_API_BASE: `${api.url}/v2`,
-    });
-    api.close();
-    assert.equal(dry.code, 0);
-    assert.equal(api.requests.length, before);
-    assert.match(dry.stdout, /deno deploy create --org vangaris --app stamina-api .* --region eu/);
-  });
-
-  it('rejects an invalid app slug', async () => {
-    const result = await run('scripts/ops/deno-setup.sh', ['--dry-run'], { DENO_APP: 'Bad_Slug' });
     assert.equal(result.code, 2);
   });
 });
@@ -752,47 +627,201 @@ describe('neon-auth-setup.mjs', () => {
   });
 });
 
-describe('deno-deploy.mjs', () => {
-  // The script reads ../apps/api/dist/server.js relative to itself, so it runs from a scratch tree.
-  const tree = mkdtempSync(join(tmpdir(), 'deno-deploy-'));
-  mkdirSync(join(tree, 'scripts'));
-  mkdirSync(join(tree, 'apps/api/dist'), { recursive: true });
-  cpSync(join(root, 'scripts/deno-deploy.mjs'), join(tree, 'scripts/deno-deploy.mjs'));
-  writeFileSync(join(tree, 'apps/api/dist/server.js'), 'export default {};');
-  const script = join(tree, 'scripts/deno-deploy.mjs');
+describe('workers-deploy.mjs', () => {
+  const script = join(root, 'scripts/workers-deploy.mjs');
+  const fakeBin = join(root, 'scripts/ops/test/fake-bin');
   const authUrl = 'https://ep-test.neonauth.eu-central-1.aws.neon.tech/neondb/auth';
-  const env = {
-    DENO_DEPLOY_TOKEN: 'deno-secret-token-789',
-    DENO_APP: 'stamina-api',
-    DATABASE_URL: 'postgres://user:db-secret@host/db',
+  const secretsUnderTest = {
+    token: 'cf-secret-token-789',
+    database: 'postgres://user:db-secret@host/db',
+    sentry: 'https://sentry-secret@o1.ingest.de.sentry.io/2',
+  };
+  const baseEnv = {
+    CLOUDFLARE_API_TOKEN: secretsUnderTest.token,
+    CLOUDFLARE_ACCOUNT_ID: 'acc123',
+    DATABASE_URL: secretsUnderTest.database,
     CORS_ORIGINS: 'https://stamina-web.pages.dev',
     NEON_AUTH_BASE_URL: authUrl,
+    PR_NUMBER: '7',
+    GIT_SHA: 'abcdef1234567890',
+  };
+  const handler =
+    (config = {}) =>
+    (req, url) => {
+      if (url.pathname === '/accounts/acc123/workers/subdomain') {
+        if (config.noSubdomain) return [404, { success: false, errors: [{ code: 10007 }] }];
+        return [200, { success: true, result: { subdomain: 'vang' } }];
+      }
+      if (url.pathname === '/health') return [config.unhealthy ? 503 : 200, { ok: true }];
+      return [404, {}];
+    };
+
+  /** Runs the script with the stub wrangler on PATH; returns the result plus the stub's call log. */
+  async function runWith(args, extra = {}, config = {}) {
+    const api = await mock(handler(config));
+    const dir = mkdtempSync(join(tmpdir(), 'workers-deploy-'));
+    const log = join(dir, 'wrangler.log');
+    writeFileSync(log, '');
+    const githubOutput = join(dir, 'github-output');
+    writeFileSync(githubOutput, '');
+    const result = await runNode(script, args, {
+      ...baseEnv,
+      PATH: `${fakeBin}:${process.env.PATH}`,
+      FAKE_WRANGLER_LOG: log,
+      GITHUB_OUTPUT: githubOutput,
+      CLOUDFLARE_API_BASE: api.url,
+      HEALTH_CHECK_ORIGIN: api.url,
+      HEALTH_RETRY_MS: '1',
+      ...extra,
+    });
+    api.close();
+    const calls = readFileSync(log, 'utf-8')
+      .split('\n')
+      .filter(Boolean)
+      .map((line) => JSON.parse(line));
+    return { ...result, api, calls, githubOutput: readFileSync(githubOutput, 'utf-8') };
+  }
+
+  const noSecrets = (result) => {
+    for (const secret of Object.values(secretsUnderTest)) {
+      assert.ok(!result.all.includes(secret), `leaked ${secret}`);
+    }
   };
 
+  it('preview deploys stamina-api-pr-<N>: vars on the command line, secrets only in the temp file', async () => {
+    const result = await runWith(['preview'], { SENTRY_DSN: secretsUnderTest.sentry });
+    assert.equal(result.code, 0, result.all);
+    const [deploy, bulk] = result.calls;
+    assert.deepEqual(deploy.argv.slice(0, 3), ['deploy', '--name', 'stamina-api-pr-7']);
+    assert.deepEqual(
+      deploy.argv.filter((_, i) => deploy.argv[i - 1] === '--var'),
+      [
+        'CORS_ORIGINS:https://stamina-web.pages.dev',
+        `NEON_AUTH_BASE_URL:${authUrl}`,
+        'SENTRY_ENVIRONMENT:preview',
+      ],
+    );
+    assert.equal(bulk.argv[0], 'secret');
+    assert.equal(bulk.argv[1], 'bulk');
+    assert.deepEqual(bulk.argv.slice(3), ['--name', 'stamina-api-pr-7']);
+    assert.deepEqual(bulk.secrets, {
+      DATABASE_URL: secretsUnderTest.database,
+      SENTRY_DSN: secretsUnderTest.sentry,
+    });
+    for (const call of result.calls) {
+      const argv = call.argv.join(' ');
+      assert.ok(!argv.includes('db-secret') && !argv.includes('sentry-secret'), 'secret in argv');
+    }
+    assert.ok(!existsSync(bulk.argv[2]), 'the secrets file must be deleted');
+    noSecrets(result);
+    assert.ok(result.api.requests.some((r) => r.path === '/health'));
+    assert.equal(
+      result.githubOutput,
+      'url=https://stamina-api-pr-7.vang.workers.dev\nversion=11111111-2222-3333-4444-555555555555\n',
+    );
+  });
+
+  it('production deploys stamina-api and leaves SENTRY_DSN out when unset', async () => {
+    const result = await runWith(['production'], { PR_NUMBER: '', RELEASE_TAG: 'v1.2.3' });
+    assert.equal(result.code, 0, result.all);
+    const [deploy, bulk] = result.calls;
+    assert.deepEqual(deploy.argv.slice(0, 3), ['deploy', '--name', 'stamina-api']);
+    assert.ok(deploy.argv.includes('SENTRY_ENVIRONMENT:production'));
+    assert.deepEqual(Object.keys(bulk.secrets), ['DATABASE_URL']);
+    assert.match(result.githubOutput, /^url=https:\/\/stamina-api\.vang\.workers\.dev\n/);
+    noSecrets(result);
+  });
+
   for (const mode of ['preview', 'production']) {
-    it(`${mode} --dry-run lists NEON_AUTH_BASE_URL with its value redacted`, async () => {
-      const result = await runNode(script, [mode, '--dry-run'], env);
+    it(`${mode} --dry-run redacts every value and sends nothing`, async () => {
+      const result = await runWith([mode, '--dry-run'], { SENTRY_DSN: secretsUnderTest.sentry });
       assert.equal(result.code, 0, result.all);
-      const sent = JSON.parse(
-        result.stdout.slice(result.stdout.indexOf('{'), result.stdout.lastIndexOf('}') + 1),
-      );
-      assert.deepEqual(
-        sent.env_vars.map((v) => v.key),
-        ['DATABASE_URL', 'CORS_ORIGINS', 'NEON_AUTH_BASE_URL'],
-      );
-      for (const secret of [authUrl, 'db-secret', env.DENO_DEPLOY_TOKEN]) {
-        assert.ok(!result.all.includes(secret), `leaked ${secret}`);
+      assert.equal(result.calls.length, 0, 'wrangler must not run');
+      assert.equal(result.api.requests.length, 0, 'no HTTP request');
+      assert.equal(result.githubOutput, '');
+      assert.match(result.stdout, /DATABASE_URL, SENTRY_DSN/);
+      for (const value of [authUrl, 'stamina-web.pages.dev']) {
+        assert.ok(!result.all.includes(value), `leaked ${value}`);
       }
+      noSecrets(result);
     });
   }
 
-  it('refuses to deploy a revision without NEON_AUTH_BASE_URL', async () => {
-    const result = await runNode(script, ['production', '--dry-run'], {
-      ...env,
-      NEON_AUTH_BASE_URL: '',
-    });
-    assert.notEqual(result.code, 0);
-    assert.match(result.stderr, /NEON_AUTH_BASE_URL is required/);
+  it('refuses to deploy without NEON_AUTH_BASE_URL or DATABASE_URL', async () => {
+    for (const name of ['NEON_AUTH_BASE_URL', 'DATABASE_URL']) {
+      const result = await runWith(['production', '--dry-run'], { [name]: '' });
+      assert.notEqual(result.code, 0);
+      assert.match(result.stderr, new RegExp(`${name} is required`));
+    }
+  });
+
+  it('explains a token without Workers Scripts Edit and sends no secrets', async () => {
+    const result = await runWith(['preview'], { FAKE_WRANGLER_FAIL: 'deploy-denied' });
+    assert.equal(result.code, 1);
+    assert.match(result.stderr, /Workers Scripts > Edit/);
+    assert.equal(result.calls.length, 1, 'secret bulk must not run after a failed deploy');
+    noSecrets(result);
+  });
+
+  it('explains a missing workers.dev subdomain before deploying anything', async () => {
+    const result = await runWith(['preview'], {}, { noSubdomain: true });
+    assert.equal(result.code, 1);
+    assert.match(result.stderr, /no workers\.dev subdomain/);
+    assert.equal(result.calls.length, 0);
+  });
+
+  it('fails when /health never answers 200', async () => {
+    const result = await runWith(['production'], {}, { unhealthy: true });
+    assert.equal(result.code, 1);
+    assert.match(result.stderr, /never became healthy; last: 503/);
+    assert.equal(result.githubOutput, '');
+    noSecrets(result);
+  });
+
+  it('delete removes the preview Worker, tolerates "not found" and still fails on other errors', async () => {
+    const ok = await runWith(['delete']);
+    assert.equal(ok.code, 0, ok.all);
+    assert.deepEqual(
+      ok.calls.map((c) => c.argv),
+      [['delete', '--name', 'stamina-api-pr-7', '--force']],
+    );
+    const missing = await runWith(['delete'], { FAKE_WRANGLER_FAIL: 'delete-not-found' });
+    assert.equal(missing.code, 0, missing.all);
+    assert.match(missing.stdout, /does not exist; nothing to delete/);
+    const denied = await runWith(['delete'], { FAKE_WRANGLER_FAIL: 'delete-denied' });
+    assert.equal(denied.code, 1);
+    assert.match(denied.stderr, /Workers Scripts > Edit/);
+    const dry = await runWith(['delete', '--dry-run']);
+    assert.equal(dry.calls.length, 0);
+  });
+
+  it('delete needs a numeric PR_NUMBER, so it can never target production', async () => {
+    for (const pr of ['', 'x', '7; stamina-api']) {
+      const result = await runWith(['delete'], { PR_NUMBER: pr });
+      assert.notEqual(result.code, 0);
+      assert.equal(result.calls.length, 0);
+    }
+  });
+
+  it('rollback runs wrangler rollback on stamina-api, checks /health and writes outputs', async () => {
+    const result = await runWith(['rollback', 'aaaaaaaa-1111-2222-3333-444444444444']);
+    assert.equal(result.code, 0, result.all);
+    const [call] = result.calls;
+    assert.deepEqual(call.argv.slice(0, 4), [
+      'rollback',
+      'aaaaaaaa-1111-2222-3333-444444444444',
+      '--name',
+      'stamina-api',
+    ]);
+    assert.ok(call.argv.includes('--message'), 'non-interactive rollback needs --message');
+    assert.match(result.githubOutput, /^url=https:\/\/stamina-api\.vang\.workers\.dev\n/);
+    const dry = await runWith(['rollback', '--dry-run']);
+    assert.equal(dry.calls.length, 0);
+  });
+
+  it('rejects an unknown mode', async () => {
+    const result = await runWith(['promote']);
+    assert.equal(result.code, 2);
   });
 });
 

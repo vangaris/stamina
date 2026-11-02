@@ -8,7 +8,7 @@ import {
 import { eq } from 'drizzle-orm';
 import { Hono } from 'hono';
 import { authenticate, requireUserId, type TokenVerifier } from '../auth/index.ts';
-import type { Db } from '../db/client.ts';
+import type { Db } from '../db/types.ts';
 import { profile } from '../db/schema.ts';
 import { withUser } from '../db/with-user.ts';
 import { ApiErrorCode } from '../enums/api-error-code.ts';

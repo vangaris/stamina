@@ -5,7 +5,7 @@ Production data is copied every night to an EU-jurisdiction Cloudflare R2 bucket
 ## What is backed up
 
 - The whole production Neon database (`main` branch, Frankfurt): every schema, including `drizzle.__drizzle_migrations`, as a `pg_dump` custom-format archive taken with `--no-owner --no-acl`. Roles and grants are not included, so a dump restores into any empty Postgres.
-- Not backed up: R2 itself, Cloudflare/Deno/Sentry configuration (declared in OpenTofu and the repo), secrets.
+- Not backed up: R2 itself, Cloudflare/Sentry configuration (declared in OpenTofu and the repo), secrets.
 - Neon's own point-in-time history is a separate, short safety net. This backup is the independent copy that survives losing the Neon project.
 
 The dump contains health data. It is encrypted on the runner with [age](https://age-encryption.org) to a public key, streamed straight from `pg_dump` into `age`, so plaintext never touches the runner's disk, R2 or any log. Scripts discard `pg_restore`/`age` output because a failed `COPY` can echo row values; they print counts and exit codes only.
@@ -96,7 +96,7 @@ age --decrypt --identity stamina-backup.key "$KEY" \
 psql "$TARGET" -c 'select count(*) from drizzle.__drizzle_migrations' -c '\df app_user_id'
 ```
 
-To go live on the restored database: point `PROD_DATABASE_URL` and `PROD_DATABASE_URL_POOLED` (GitHub secrets) at it, redeploy the API so the Deno revision picks up the pooled URL, and re-apply any account deletions made since the backup.
+To go live on the restored database: point `PROD_DATABASE_URL` and `PROD_DATABASE_URL_POOLED` (GitHub secrets) at it, redeploy the API so the Worker picks up the pooled URL, and re-apply any account deletions made since the backup.
 
 ## Local checks
 

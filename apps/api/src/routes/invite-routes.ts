@@ -4,7 +4,7 @@ import {
   inviteCheckResponseSchema,
 } from '@stamina/contracts';
 import { Hono } from 'hono';
-import type { Db } from '../db/client.ts';
+import type { Db } from '../db/types.ts';
 import { ApiErrorCode } from '../enums/api-error-code.ts';
 import { isInviteOpen } from '../invites/is-invite-open.ts';
 import type { AppEnv } from '../request-log.ts';

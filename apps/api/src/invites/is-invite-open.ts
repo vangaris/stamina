@@ -1,6 +1,6 @@
 import { normalizeInviteCode } from '@stamina/domain';
 import { and, eq, isNull } from 'drizzle-orm';
-import type { Db } from '../db/client.ts';
+import type { Db } from '../db/types.ts';
 import { invite } from '../db/schema.ts';
 
 /**

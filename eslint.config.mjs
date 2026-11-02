@@ -31,6 +31,7 @@ export default tseslint.config(
   {
     ignores: [
       '**/dist',
+      '**/.wrangler',
       '**/node_modules',
       '**/.nx',
       '**/coverage',

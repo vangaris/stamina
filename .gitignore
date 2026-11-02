@@ -10,6 +10,11 @@ coverage
 test-results
 playwright-report
 .pgdata
+.pgdata-e2e
+
+# Wrangler (Cloudflare Workers)
+.wrangler/
+.dev.vars
 
 # OpenTofu
 .terraform/
@@ -18,3 +23,8 @@ playwright-report
 
 # Written at deploy time by scripts/ops/write-auth-proxy-config.mjs
 apps/web/functions/auth/auth-target.generated.json
+
+# Wrangler local state and secrets for `wrangler dev`
+.wrangler
+.dev.vars
+.dev.vars.*

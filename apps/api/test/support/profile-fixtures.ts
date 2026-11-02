@@ -1,7 +1,7 @@
 import { SportKind, type ProfileSubmission } from '@stamina/contracts';
 import { Goal, Intensity, LaunchSport, Need, Units, Weekday } from '@stamina/domain';
 import { Locale } from '@stamina/i18n';
-import type { Db } from '../../src/db/client.ts';
+import type { Db } from '../../src/db/types.ts';
 import { invite } from '../../src/db/schema.ts';
 import { generateInviteCode } from '../../src/invites/generate-invite-code.ts';
 
