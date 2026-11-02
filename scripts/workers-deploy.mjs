@@ -9,7 +9,7 @@
 //
 // `preview` and `production` run `wrangler deploy --name <name>` with the plain vars (CORS_ORIGINS,
 // NEON_AUTH_BASE_URL, SENTRY_ENVIRONMENT) as `--var`, then `wrangler secret bulk` with the secrets
-// (DATABASE_URL, SENTRY_DSN when set) from a 0600 temp file that is deleted afterwards: secret values are
+// (DATABASE_URL, SCREENING_ENCRYPTION_KEY, SENTRY_DSN when set) from a 0600 temp file that is deleted afterwards: secret values are
 // never on a command line, never printed. They then resolve the public URL, wait for `<url>/health` to
 // answer 200 and write `url=` and `version=` to $GITHUB_OUTPUT.
 //
@@ -18,7 +18,8 @@
 // in wrangler's output as a fallback.
 //
 // Env (all modes): CLOUDFLARE_API_TOKEN (needs Account > Workers Scripts > Edit), CLOUDFLARE_ACCOUNT_ID
-// Env (preview, production): DATABASE_URL (pooled), CORS_ORIGINS, NEON_AUTH_BASE_URL (the branch's Neon Auth
+// Env (preview, production): DATABASE_URL (pooled), SCREENING_ENCRYPTION_KEY (base64 of 32 bytes, one per
+//   environment: the preview key for previews, the production key for production, never shared), CORS_ORIGINS, NEON_AUTH_BASE_URL (the branch's Neon Auth
 //   URL the API verifies tokens against), SENTRY_DSN (optional: Sentry stays off when unset),
 //   GIT_SHA and RELEASE_TAG (optional, only recorded in the deployment message)
 // Env (preview, delete): PR_NUMBER
@@ -50,7 +51,13 @@ const Mode = {
   Delete: 'delete',
   Rollback: 'rollback',
 };
-const SecretKey = { DatabaseUrl: 'DATABASE_URL', SentryDsn: 'SENTRY_DSN' };
+const SecretKey = {
+  DatabaseUrl: 'DATABASE_URL',
+  ScreeningEncryptionKey: 'SCREENING_ENCRYPTION_KEY',
+  SentryDsn: 'SENTRY_DSN',
+};
+// AES-256 key: standard base64 of exactly 32 bytes (43 characters and one '=').
+const ENCRYPTION_KEY_PATTERN = /^[A-Za-z0-9+/]{43}=$/;
 const VarKey = {
   CorsOrigins: 'CORS_ORIGINS',
   NeonAuthBaseUrl: 'NEON_AUTH_BASE_URL',
@@ -197,8 +204,16 @@ function plan() {
     [VarKey.NeonAuthBaseUrl, need(VarKey.NeonAuthBaseUrl)],
     [VarKey.SentryEnvironment, production ? 'production' : 'preview'],
   ];
+  const encryptionKey = need(SecretKey.ScreeningEncryptionKey);
+  // The value is never printed, so the error names only the setting.
+  if (!ENCRYPTION_KEY_PATTERN.test(encryptionKey)) {
+    throw new Error(
+      `${SecretKey.ScreeningEncryptionKey} must be base64 of exactly 32 bytes (openssl rand -base64 32)`,
+    );
+  }
   const secrets = {
     [SecretKey.DatabaseUrl]: need(SecretKey.DatabaseUrl),
+    [SecretKey.ScreeningEncryptionKey]: encryptionKey,
     ...(sentryDsn ? { [SecretKey.SentryDsn]: sentryDsn } : {}),
   };
   const sha = optional('GIT_SHA');

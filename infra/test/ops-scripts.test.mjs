@@ -635,11 +635,14 @@ describe('workers-deploy.mjs', () => {
     token: 'cf-secret-token-789',
     database: 'postgres://user:db-secret@host/db',
     sentry: 'https://sentry-secret@o1.ingest.de.sentry.io/2',
+    // base64 of 32 bytes (0..31), the shape the API requires
+    encryptionKey: 'AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8=',
   };
   const baseEnv = {
     CLOUDFLARE_API_TOKEN: secretsUnderTest.token,
     CLOUDFLARE_ACCOUNT_ID: 'acc123',
     DATABASE_URL: secretsUnderTest.database,
+    SCREENING_ENCRYPTION_KEY: secretsUnderTest.encryptionKey,
     CORS_ORIGINS: 'https://stamina-web.pages.dev',
     NEON_AUTH_BASE_URL: authUrl,
     PR_NUMBER: '7',
@@ -714,11 +717,17 @@ describe('workers-deploy.mjs', () => {
     assert.deepEqual(bulk.argv.slice(3), ['--name', 'stamina-api-pr-7']);
     assert.deepEqual(bulk.secrets, {
       DATABASE_URL: secretsUnderTest.database,
+      SCREENING_ENCRYPTION_KEY: secretsUnderTest.encryptionKey,
       SENTRY_DSN: secretsUnderTest.sentry,
     });
     for (const call of result.calls) {
       const argv = call.argv.join(' ');
-      assert.ok(!argv.includes('db-secret') && !argv.includes('sentry-secret'), 'secret in argv');
+      assert.ok(
+        !argv.includes('db-secret') &&
+          !argv.includes('sentry-secret') &&
+          !argv.includes(secretsUnderTest.encryptionKey),
+        'secret in argv',
+      );
     }
     assert.ok(!existsSync(bulk.argv[2]), 'the secrets file must be deleted');
     noSecrets(result);
@@ -735,7 +744,7 @@ describe('workers-deploy.mjs', () => {
     const [deploy, bulk] = result.calls;
     assert.deepEqual(deploy.argv.slice(0, 3), ['deploy', '--name', 'stamina-api']);
     assert.ok(deploy.argv.includes('SENTRY_ENVIRONMENT:production'));
-    assert.deepEqual(Object.keys(bulk.secrets), ['DATABASE_URL']);
+    assert.deepEqual(Object.keys(bulk.secrets), ['DATABASE_URL', 'SCREENING_ENCRYPTION_KEY']);
     assert.match(result.githubOutput, /^url=https:\/\/stamina-api\.vang\.workers\.dev\n/);
     noSecrets(result);
   });
@@ -747,7 +756,7 @@ describe('workers-deploy.mjs', () => {
       assert.equal(result.calls.length, 0, 'wrangler must not run');
       assert.equal(result.api.requests.length, 0, 'no HTTP request');
       assert.equal(result.githubOutput, '');
-      assert.match(result.stdout, /DATABASE_URL, SENTRY_DSN/);
+      assert.match(result.stdout, /DATABASE_URL, SCREENING_ENCRYPTION_KEY, SENTRY_DSN/);
       for (const value of [authUrl, 'stamina-web.pages.dev']) {
         assert.ok(!result.all.includes(value), `leaked ${value}`);
       }
@@ -755,11 +764,24 @@ describe('workers-deploy.mjs', () => {
     });
   }
 
-  it('refuses to deploy without NEON_AUTH_BASE_URL or DATABASE_URL', async () => {
-    for (const name of ['NEON_AUTH_BASE_URL', 'DATABASE_URL']) {
+  it('refuses to deploy without NEON_AUTH_BASE_URL, DATABASE_URL or SCREENING_ENCRYPTION_KEY', async () => {
+    for (const name of ['NEON_AUTH_BASE_URL', 'DATABASE_URL', 'SCREENING_ENCRYPTION_KEY']) {
       const result = await runWith(['production', '--dry-run'], { [name]: '' });
       assert.notEqual(result.code, 0);
       assert.match(result.stderr, new RegExp(`${name} is required`));
+    }
+  });
+
+  it('refuses an encryption key that is not base64 of 32 bytes, without printing it', async () => {
+    for (const key of [
+      'short-key-value',
+      'AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8',
+      `${secretsUnderTest.encryptionKey}A`,
+    ]) {
+      const result = await runWith(['production', '--dry-run'], { SCREENING_ENCRYPTION_KEY: key });
+      assert.notEqual(result.code, 0);
+      assert.match(result.stderr, /SCREENING_ENCRYPTION_KEY must be base64 of exactly 32 bytes/);
+      assert.ok(!result.all.includes(key), 'the key must not be printed');
     }
   });
 

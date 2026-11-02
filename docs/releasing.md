@@ -15,7 +15,7 @@ Production is deployed by merging a release PR. Nothing else deploys to producti
    | --- | ------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
    | 0   | tag and build       | release-please tags `vX.Y.Z` and creates the GitHub release. The API and the web are built (web with the production API URL), so a build failure changes nothing in production.                   |
    | 1   | **migrate**         | `pnpm --filter @stamina/api db:migrate` against the production Neon branch (`PROD_DATABASE_URL`, direct connection).                                                                               |
-   | 2   | **API**             | `scripts/workers-deploy.mjs production`: deploys the Worker `stamina-api` with `CORS_ORIGINS`, `NEON_AUTH_BASE_URL` and `SENTRY_ENVIRONMENT` as plain vars and the pooled `DATABASE_URL` (and `SENTRY_DSN` when set) as Worker secrets, then checks `/health`. The step fails if the deployed URL is not `PROD_API_URL`. |
+   | 2   | **API**             | `scripts/workers-deploy.mjs production`: deploys the Worker `stamina-api` with `CORS_ORIGINS`, `NEON_AUTH_BASE_URL` and `SENTRY_ENVIRONMENT` as plain vars and the pooled `DATABASE_URL`, `SCREENING_ENCRYPTION_KEY` (from `SCREENING_ENCRYPTION_KEY_PRODUCTION`) and `SENTRY_DSN` when set as Worker secrets, then checks `/health`. The step fails if the deployed URL is not `PROD_API_URL`. |
    | 3   | **web**             | `scripts/ops/write-auth-proxy-config.mjs` points the Pages Function that proxies `/auth/*` at `NEON_AUTH_BASE_URL`, then `wrangler pages deploy dist --branch=main` runs from `apps/web` (Cloudflare Pages production). Runs only after `GET $PROD_API_URL/health` returns 200. |
    | 4   | **smoke**           | `GET $PROD_API_URL/health` and `GET $PROD_WEB_URL/` return 200, and the live web bundle contains `PROD_API_URL`.                                                                                  |
 
@@ -34,6 +34,7 @@ Everything is a repository secret or variable (GitHub Free private repositories 
 | secret   | `CLOUDFLARE_API_TOKEN`     |   yes    | Already set for previews; it needs Pages edit **and** Workers Scripts edit (see [infra.md](infra.md), "Runbook: Cloudflare token and Workers").                                                                                                               |
 | secret   | `PROD_DATABASE_URL`        |   yes    | Direct connection string of the production Neon branch `main`, used for migrations. See below.                                                       |
 | secret   | `PROD_DATABASE_URL_POOLED` |   yes    | Pooled connection string of the same branch, used by the running API (Neon WebSocket driver). See below.                                             |
+| secret   | `SCREENING_ENCRYPTION_KEY_PRODUCTION` |   yes    | Base64 of exactly 32 random bytes: the key that encrypts Screening answers in production. See "Screening encryption key" below. |
 | variable | `CLOUDFLARE_ACCOUNT_ID`    |   yes    | Already set for previews.                                                                                                                            |
 | variable | `CLOUDFLARE_PAGES_PROJECT` |   yes    | Already set for previews (`stamina-web`). The Pages project's production branch must be `main`.                                                      |
 | variable | `PROD_API_URL`             |   yes    | The production Worker's URL, `https://stamina-api.<account workers.dev subdomain>.workers.dev`. No trailing slash. The preflight step checks it against the subdomain Cloudflare reports. |
@@ -56,6 +57,19 @@ gh secret set PROD_DATABASE_URL_POOLED --body "$(npx neonctl connection-string m
 ```
 
 In the Neon console the same two strings are under the project's **Connect** dialog: pick branch `main`, the role and database, and toggle "Connection pooling" off (direct) or on (pooled; the host contains `-pooler`). Do not use the preview or `dev` branch's strings.
+
+### Screening encryption key
+
+Screening answers are health data and are encrypted in the API (AES-256-GCM) before they reach the database; the key lives only in the Worker secret `SCREENING_ENCRYPTION_KEY`, set by `scripts/workers-deploy.mjs` from `SCREENING_ENCRYPTION_KEY_PRODUCTION`. Create it once, without printing it:
+
+```bash
+openssl rand -base64 32 | gh secret set SCREENING_ENCRYPTION_KEY_PRODUCTION
+```
+
+- It must be base64 of exactly 32 bytes (44 characters ending in `=`). The release preflight and the Worker both refuse anything else, and neither prints the value.
+- Previews use a different key (`SCREENING_ENCRYPTION_KEY_PREVIEW`); never reuse the production key anywhere else, and never put it in a variable, a log or a ticket.
+- **Keep a copy in the password manager.** The answers are unreadable without the key: a lost key means every stored Screening answer (and the answers in a user's export) is gone, and people must retake the Screening. Backups of the database (see [backups.md](backups.md)) do not contain the key.
+- Changing the key makes existing answers undecryptable. Rotation needs a key-version step (envelopes carry a `v1.` prefix for it) and is not built yet.
 
 ### `RELEASE_PLEASE_TOKEN` (optional)
 
@@ -105,7 +119,7 @@ If a migration fails in production, the API and the web stay on the previous rel
 The workflow, the deploy script and the job summary only handle connection strings (as masked secrets), tags, URLs and version ids. The deploy script never puts a secret on a command line: secrets go to Wrangler through a temporary file that is deleted afterwards. Its `--dry-run` prints the plan with every value redacted and sends nothing:
 
 ```bash
-CLOUDFLARE_API_TOKEN=x CLOUDFLARE_ACCOUNT_ID=x DATABASE_URL=x CORS_ORIGINS=https://stamina-web.pages.dev \
+CLOUDFLARE_API_TOKEN=x CLOUDFLARE_ACCOUNT_ID=x DATABASE_URL=x SCREENING_ENCRYPTION_KEY="$(openssl rand -base64 32)" CORS_ORIGINS=https://stamina-web.pages.dev \
   NEON_AUTH_BASE_URL=https://ep-x.neonauth.eu-central-1.aws.neon.tech/neondb/auth \
   node scripts/workers-deploy.mjs production --dry-run
 ```

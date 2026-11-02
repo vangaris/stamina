@@ -8,4 +8,10 @@ export enum RequestType {
   CheckInvite = 'CheckInvite',
   GetProfile = 'GetProfile',
   SaveProfile = 'SaveProfile',
+  GetSafety = 'GetSafety',
+  GrantConsent = 'GrantConsent',
+  SaveScreening = 'SaveScreening',
+  RecordDoctorOk = 'RecordDoctorOk',
+  ExportData = 'ExportData',
+  DeleteAccount = 'DeleteAccount',
 }

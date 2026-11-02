@@ -1,16 +1,25 @@
 import type {
   ApiClient,
+  ConsentGrant,
+  ConsentState,
   InviteCheckResponse,
   ProfileAnswers,
+  RecordDoctorOkResult,
   SavedProfile,
+  SavedScreening,
   SaveProfileResult,
+  SaveScreeningResult,
+  ScreeningSubmission,
+  UserExport,
 } from '@stamina/contracts';
+import type { ConsentPurpose } from '@stamina/domain';
 import type { z } from 'zod';
 import type { HealthStateKind } from './enums/health-state-kind.ts';
 import type { OfflinePolicy } from './enums/offline-policy.ts';
 import type { ProfileStatus } from './enums/profile-status.ts';
 import type { RequestOutcome } from './enums/request-outcome.ts';
 import type { RequestType } from './enums/request-type.ts';
+import type { SafetyStatus } from './enums/safety-status.ts';
 import type { ServicesMode } from './enums/services-mode.ts';
 import type { SessionStatus } from './enums/session-status.ts';
 
@@ -175,6 +184,17 @@ export type ProfileState =
   | { status: ProfileStatus.NotStarted }
   | { status: ProfileStatus.InviteNeeded };
 
+export type SafetyState =
+  | { status: SafetyStatus.ProfileNeeded }
+  | {
+      status: SafetyStatus.ConsentNeeded;
+      /** The consents still to give, in the order the screen asks for them. */
+      missing: ConsentPurpose[];
+    }
+  | { status: SafetyStatus.ScreeningNeeded }
+  | { status: SafetyStatus.Referred; screening: SavedScreening }
+  | { status: SafetyStatus.Ready; screening: SavedScreening };
+
 export interface Stores {
   /** Stores hold state only; the web app backs these with Pinia. */
   health: { set(state: HealthState): void };
@@ -227,4 +247,30 @@ export interface GetProfile extends Request<ProfileState> {
 export interface SaveProfile extends Request<SaveProfileResult> {
   readonly type: RequestType.SaveProfile;
   readonly answers: ProfileAnswers;
+}
+
+export interface GetSafety extends Request<SafetyState> {
+  readonly type: RequestType.GetSafety;
+}
+
+export interface GrantConsent extends Request<ConsentState> {
+  readonly type: RequestType.GrantConsent;
+  readonly grant: ConsentGrant;
+}
+
+export interface SaveScreening extends Request<SaveScreeningResult> {
+  readonly type: RequestType.SaveScreening;
+  readonly submission: ScreeningSubmission;
+}
+
+export interface RecordDoctorOk extends Request<RecordDoctorOkResult> {
+  readonly type: RequestType.RecordDoctorOk;
+}
+
+export interface ExportData extends Request<UserExport> {
+  readonly type: RequestType.ExportData;
+}
+
+export interface DeleteAccount extends Request<void> {
+  readonly type: RequestType.DeleteAccount;
 }

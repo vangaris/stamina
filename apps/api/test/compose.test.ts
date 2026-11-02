@@ -8,6 +8,7 @@ import { appUser } from '../src/db/schema.ts';
 import type { Db, DbHandle, OpenDb } from '../src/db/types.ts';
 import { HttpHeader } from '../src/enums/http-header.ts';
 import { createTestAuth, TEST_ISSUER } from './support/test-auth.ts';
+import { TEST_ENCRYPTION_KEY } from './support/test-encryption-key.ts';
 
 const JWKS_URL = `${TEST_ISSUER}/auth/.well-known/jwks.json`;
 const EU_DSN = 'https://publickey@o1.ingest.de.sentry.io/1';
@@ -18,6 +19,7 @@ const USER_ID = '8c1f6f0e-5b1e-4d6e-9d44-3f0a4b1d2c11';
 const baseEnv = () => ({
   DATABASE_URL: 'postgres://unused/db',
   NEON_AUTH_BASE_URL: `${TEST_ISSUER}/auth`,
+  SCREENING_ENCRYPTION_KEY: TEST_ENCRYPTION_KEY,
   CORS_ORIGINS: ALLOWED_ORIGIN,
 });
 

@@ -6,6 +6,7 @@ import { SentryEnvironment } from '../src/enums/sentry-environment.ts';
 import { createErrorReporter } from '../src/error-reporter.ts';
 import { expectNoSentinel, SENTINELS } from './support/sentinel.ts';
 import { startTestApi } from './support/test-api.ts';
+import { TEST_ENCRYPTION_KEY } from './support/test-encryption-key.ts';
 
 const EU_DSN = 'https://publickey@o1.ingest.de.sentry.io/1';
 
@@ -81,6 +82,7 @@ describe('error reporting', () => {
 describe('Sentry configuration', () => {
   const base = {
     DATABASE_URL: 'postgres://x',
+    SCREENING_ENCRYPTION_KEY: TEST_ENCRYPTION_KEY,
     NEON_AUTH_BASE_URL: 'https://ep-x.neonauth.example.neon.tech/neondb/auth',
   };
 

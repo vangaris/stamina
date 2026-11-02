@@ -3,6 +3,7 @@ import { unavailableAiProvider } from './ai/provider.ts';
 import { createApp } from './app.ts';
 import { createTokenVerifier } from './auth/index.ts';
 import type { Config } from './config.ts';
+import { createFieldCipher } from './crypto/index.ts';
 import type { OpenDb } from './db/types.ts';
 import { createErrorReporter } from './error-reporter.ts';
 
@@ -22,7 +23,7 @@ export interface Api {
 
 /**
  * The one place the API is assembled from its config: the verifier (with its JWKS cache), the
- * AI provider, the request log and the error reporter are built once; the database handle per
+ * AI provider, the field cipher, the request log and the error reporter are built once; the database handle per
  * request. The Node dev server and the Worker differ only in the `openDb` they pass.
  *
  * Phase A runs the "unavailable" AI provider (rules and templates only).
@@ -32,6 +33,7 @@ export function composeApi(config: Config, openDb: OpenDb): Api {
     keys: createRemoteJWKSet(new URL(config.neonAuth.jwksUrl)),
     issuer: config.neonAuth.issuer,
   });
+  const cipher = createFieldCipher(config.screeningEncryptionKey);
   const errorReporter = config.sentry ? createErrorReporter(config.sentry) : undefined;
 
   return {
@@ -41,6 +43,7 @@ export function composeApi(config: Config, openDb: OpenDb): Api {
         db: handle.db,
         ai: unavailableAiProvider,
         auth,
+        cipher,
         corsOrigins: config.corsOrigins,
         // One allowlisted JSON line per request goes to stdout (see `request-log.ts`).
         log: (line) => console.log(line),

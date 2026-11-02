@@ -2,14 +2,18 @@ import { serve } from '@hono/node-server';
 import type { AddressInfo } from 'node:net';
 import { inject } from 'vitest';
 import { createApp, type AppDeps } from '../../src/app.ts';
+import { createFieldCipher } from '../../src/crypto/index.ts';
 import { createPgDb } from '../../src/db/pg-client.ts';
 import { createFakeAi } from './fake-ai.ts';
+import { TEST_ENCRYPTION_KEY } from './test-encryption-key.ts';
 import { createTestAuth } from './test-auth.ts';
 
 export interface TestApiOptions {
   databaseUrl?: string;
   /** Replaces the verifier built from the test's local JWKS (for example one whose key source is down). */
   auth?: AppDeps['auth'];
+  /** Replaces the cipher built from the fixed test key (for example one with another key). */
+  cipher?: AppDeps['cipher'];
   corsOrigins?: string[];
   log?: AppDeps['log'];
   errorReporter?: AppDeps['errorReporter'];
@@ -20,10 +24,12 @@ export async function startTestApi(options: TestApiOptions = {}) {
   const dbHandle = createPgDb(options.databaseUrl ?? inject('databaseUrl'));
   const ai = createFakeAi();
   const testAuth = await createTestAuth();
+  const cipher = options.cipher ?? createFieldCipher(TEST_ENCRYPTION_KEY);
   const app = createApp({
     db: dbHandle.db,
     ai: ai.provider,
     auth: options.auth ?? testAuth.verifier,
+    cipher,
     corsOrigins: options.corsOrigins ?? [],
     // Request log lines are noise in test output unless a test captures them.
     log: options.log ?? (() => {}),
@@ -40,6 +46,8 @@ export async function startTestApi(options: TestApiOptions = {}) {
     app,
     baseUrl: `http://127.0.0.1:${port}`,
     ai,
+    /** The cipher the app uses, so a test can read an encrypted column. */
+    cipher,
     /** The same database the app uses, connected as the migrating user (a superuser here, so RLS-exempt). */
     db: dbHandle.db,
     /** Signs a token the app accepts for `userId` (or a deliberately bad one, via options). */

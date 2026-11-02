@@ -1,15 +1,31 @@
 import { SportKind } from '@stamina/contracts';
-import type { Goal, Intensity, LaunchSport, Need, Units, Weekday } from '@stamina/domain';
+import {
+  ConsentPurpose,
+  ReferralKind,
+  ScreeningStatus,
+  StartingLevel,
+  type BodyArea,
+  type Goal,
+  type Intensity,
+  type LaunchSport,
+  type Need,
+  type Units,
+  type Weekday,
+} from '@stamina/domain';
+import { Locale } from '@stamina/i18n';
 import { sql } from 'drizzle-orm';
 import {
   boolean,
   check,
+  index,
   integer,
   pgPolicy,
   pgTable,
   text,
   timestamp,
+  uniqueIndex,
   uuid,
+  type AnyPgColumn,
 } from 'drizzle-orm/pg-core';
 import { APP_ROLE } from './config.ts';
 
@@ -119,6 +135,121 @@ export const profile = pgTable(
       to: APP_ROLE,
       using: sql`user_id = app_user_id()::uuid`,
       withCheck: sql`user_id = app_user_id()::uuid`,
+    }),
+  ],
+).enableRLS();
+
+/** `column in ('a', 'b')` for the values of a code enum, so a check constraint can never drift from it. */
+const isOneOf = (column: AnyPgColumn, values: readonly string[]) =>
+  sql`${column} in (${sql.raw(values.map((value) => `'${value}'`).join(', '))})`;
+
+/**
+ * What a person agreed to, one row per grant. Append-only: the app role can read and insert its
+ * own rows, and the only thing it can ever change is `withdrawn_at`, once, from null to a time
+ * (column grant plus the update policy). A row is never rewritten or deleted by the app; it goes
+ * only when its user does. `text_version` is the version of the text the person read, in `locale`.
+ */
+export const consent = pgTable(
+  'consent',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    userId: uuid('user_id')
+      .notNull()
+      .references(() => appUser.id, { onDelete: 'cascade' }),
+    purpose: text('purpose').$type<ConsentPurpose>().notNull(),
+    textVersion: text('text_version').notNull(),
+    locale: text('locale').$type<Locale>().notNull(),
+    grantedAt: timestamp('granted_at', { withTimezone: true }).notNull().defaultNow(),
+    withdrawnAt: timestamp('withdrawn_at', { withTimezone: true }),
+  },
+  (table) => [
+    check('consent_purpose_valid', isOneOf(table.purpose, Object.values(ConsentPurpose))),
+    check('consent_locale_valid', isOneOf(table.locale, Object.values(Locale))),
+    // One active grant per purpose and text version: a repeated grant is a no-op, even concurrently.
+    uniqueIndex('consent_active_grant')
+      .on(table.userId, table.purpose, table.textVersion)
+      .where(sql`${table.withdrawnAt} is null`),
+    pgPolicy('consent_owner_select', {
+      for: 'select',
+      to: APP_ROLE,
+      using: sql`user_id = app_user_id()::uuid`,
+    }),
+    pgPolicy('consent_owner_insert', {
+      for: 'insert',
+      to: APP_ROLE,
+      withCheck: sql`user_id = app_user_id()::uuid`,
+    }),
+    pgPolicy('consent_owner_withdraw', {
+      for: 'update',
+      to: APP_ROLE,
+      using: sql`user_id = app_user_id()::uuid and withdrawn_at is null`,
+      withCheck: sql`user_id = app_user_id()::uuid and withdrawn_at is not null`,
+    }),
+  ],
+).enableRLS();
+
+/**
+ * One Screening taken. The answers (and body areas) are one AES-GCM envelope in
+ * `answers_encrypted` (`src/crypto`); the outcome sits beside them in plain columns because rules
+ * read it on every request. Append-only like `consent`: a retake is a new row and the latest wins.
+ * The only change the app role can make is stamping `doctor_ok_at` once, and only on a
+ * general referral ("a doctor has said I can train"; pregnancy has no such path, and a cleared
+ * row, whose referral is null, cannot be stamped: hence `is not distinct from`, not `=`).
+ * Health data: never logged, returned only by the user's own export.
+ */
+export const screening = pgTable(
+  'screening',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    userId: uuid('user_id')
+      .notNull()
+      .references(() => appUser.id, { onDelete: 'cascade' }),
+    instrument: text('instrument').notNull(),
+    instrumentVersion: integer('instrument_version').notNull(),
+    answersEncrypted: text('answers_encrypted').notNull(),
+    status: text('status').$type<ScreeningStatus>().notNull(),
+    /** Set exactly when `status` is `referred`. */
+    referral: text('referral').$type<ReferralKind>(),
+    nutritionOff: boolean('nutrition_off').notNull(),
+    excludedAreas: text('excluded_areas').array().$type<BodyArea[]>().notNull(),
+    startingLevel: text('starting_level').$type<StartingLevel>().notNull(),
+    takenAt: timestamp('taken_at', { withTimezone: true }).notNull().defaultNow(),
+    doctorOkAt: timestamp('doctor_ok_at', { withTimezone: true }),
+  },
+  (table) => [
+    check('screening_status_valid', isOneOf(table.status, Object.values(ScreeningStatus))),
+    check(
+      'screening_referral_valid',
+      sql`${table.referral} is null or ${isOneOf(table.referral, Object.values(ReferralKind))}`,
+    ),
+    check(
+      'screening_starting_level_valid',
+      isOneOf(table.startingLevel, Object.values(StartingLevel)),
+    ),
+    check(
+      'screening_referral_iff_referred',
+      sql`(${table.referral} is not null) = (${table.status} = ${literal(ScreeningStatus.Referred)})`,
+    ),
+    check(
+      'screening_doctor_ok_only_general',
+      sql`${table.doctorOkAt} is null or ${table.referral} is not distinct from ${literal(ReferralKind.General)}`,
+    ),
+    index('screening_user_taken_at').on(table.userId, table.takenAt.desc()),
+    pgPolicy('screening_owner_select', {
+      for: 'select',
+      to: APP_ROLE,
+      using: sql`user_id = app_user_id()::uuid`,
+    }),
+    pgPolicy('screening_owner_insert', {
+      for: 'insert',
+      to: APP_ROLE,
+      withCheck: sql`user_id = app_user_id()::uuid`,
+    }),
+    pgPolicy('screening_owner_doctor_ok', {
+      for: 'update',
+      to: APP_ROLE,
+      using: sql`user_id = app_user_id()::uuid and doctor_ok_at is null`,
+      withCheck: sql`user_id = app_user_id()::uuid and doctor_ok_at is not null`,
     }),
   ],
 ).enableRLS();

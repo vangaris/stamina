@@ -11,6 +11,7 @@ export enum OnboardingMessageKey {
   SessionsPerWeek = 'onboarding.errors.sessionsPerWeek',
   SessionMinutes = 'onboarding.errors.sessionMinutes',
   AvailableDays = 'onboarding.errors.availableDays',
+  GoalUnavailable = 'onboarding.errors.goalUnavailable',
   Offline = 'onboarding.errors.offline',
   Unknown = 'onboarding.errors.unknown',
   UnderAgeTitle = 'onboarding.stop.underAge.title',

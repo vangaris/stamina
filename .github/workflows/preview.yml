@@ -2,7 +2,8 @@
 # then the Playwright + axe smoke test against it. Torn down (Neon branch and Worker) when the PR closes.
 #
 # Needs (see docs/development.md, "One-time setup"):
-#   secrets: NEON_API_KEY, CLOUDFLARE_API_TOKEN (Pages edit + Workers Scripts edit)
+#   secrets: NEON_API_KEY, CLOUDFLARE_API_TOKEN (Pages edit + Workers Scripts edit),
+#            SCREENING_ENCRYPTION_KEY_PREVIEW (base64 of 32 random bytes; never the production key)
 #   vars:    NEON_PROJECT_ID, NEON_PARENT_BRANCH (a data-free branch, never production; it must have Neon
 #            Auth set up with scripts/ops/neon-auth-setup.mjs so previews inherit it, see docs/auth.md),
 #            CLOUDFLARE_ACCOUNT_ID, CLOUDFLARE_PAGES_PROJECT
@@ -110,6 +111,8 @@ jobs:
           CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
           # Pooled URL: the API reaches Neon over WebSockets at runtime.
           DATABASE_URL: ${{ steps.neon.outputs.db_url_pooled }}
+          # Encrypts Screening answers on the preview Worker. Its own key, never the production one.
+          SCREENING_ENCRYPTION_KEY: ${{ secrets.SCREENING_ENCRYPTION_KEY_PREVIEW }}
           CORS_ORIGINS: ${{ env.WEB_URL }}
           NEON_AUTH_BASE_URL: ${{ steps.auth.outputs.base_url }}
           SENTRY_DSN: ${{ vars.SENTRY_DSN_API }}

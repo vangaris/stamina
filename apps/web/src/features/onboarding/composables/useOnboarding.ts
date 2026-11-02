@@ -28,7 +28,7 @@ import { createDraft } from '../utils/create-draft.ts';
 import { localEligibility } from '../utils/local-eligibility.ts';
 import { stepsForNeeds } from '../utils/steps-for-needs.ts';
 import { toProfileAnswers } from '../utils/to-profile-answers.ts';
-import { toMessageKey } from '../utils/to-message-key.ts';
+import { toMessageKey } from '../../../utils/to-message-key.ts';
 import { validateStep } from '../utils/validate-step.ts';
 
 /**
@@ -123,6 +123,12 @@ export function useOnboarding(options: UseOnboardingOptions) {
       if (result.status === SaveProfileStatus.Saved) return options.onExit(OnboardingExit.Finished);
       if (result.reason === ProfileRejection.InviteInvalid) {
         return options.onExit(OnboardingExit.InviteRejected);
+      }
+      if (result.reason === ProfileRejection.GoalUnavailable) {
+        // Screening turned Nutrition off since the Goal was chosen: ask for another one.
+        errors.value = { goal: OnboardingMessageKey.GoalUnavailable };
+        step.value = OnboardingStep.Goal;
+        return;
       }
       // The server applies the same rule: show the same stop, from the first screen.
       stop.value = result.reason;
