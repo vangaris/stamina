@@ -12,6 +12,8 @@ pnpm --filter @stamina/api dev             # API on :8787
 pnpm --filter @stamina/web dev             # web on :5173 (VITE_API_URL defaults to :8787)
 ```
 
+One terminal instead of three: `pnpm dev` starts the database, waits until it is migrated, then the API and the web app, prefixes each line with its process name, and stops all three on Ctrl-C. It creates `apps/api/.env` from `.env.example` when missing (the `NEON_AUTH_BASE_URL` in it is a placeholder, so real sign-in needs a real Neon Auth URL; `VITE_SERVICES_MODE=dev pnpm --filter @stamina/web dev` runs the web app on the in-memory fake API instead).
+
 | Task                                   | Command                                    |
 | -------------------------------------- | ------------------------------------------ |
 | lint (incl. module boundaries)         | `pnpm lint`                                |
