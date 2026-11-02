@@ -1,69 +1,21 @@
-import AxeBuilder from '@axe-core/playwright';
-import { expect, test, type Page } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 import { createInvites } from './support/create-invites.ts';
-import { E2E_API_URL } from './support/e2e-stack.ts';
+import {
+  ADULT_BIRTH_YEAR,
+  answerAbout,
+  answerGoal,
+  answerSport,
+  expectNoAccessibilityViolations,
+  inviteIsUsable,
+  isProfilePost,
+  OTP,
+  startAndSignIn,
+  UNKNOWN_CODE,
+  uniqueEmail,
+} from './support/onboarding-flow.ts';
 
 // Needs the local stack: the seed script for invites and the fake auth server for sign-in.
 test.skip(!!process.env.PLAYWRIGHT_BASE_URL, 'needs the local stack with the seed script');
-
-const OTP = '424242';
-const ADULT_BIRTH_YEAR = '1990';
-const UNKNOWN_CODE = 'ABCDEFGHJK';
-
-/** One email per test: the fake auth server keeps its state per address across parallel tests. */
-function uniqueEmail(testTitle: string): string {
-  return `${testTitle.replace(/\W+/g, '-').toLowerCase()}-${Date.now()}@example.com`;
-}
-
-async function inviteIsUsable(page: Page, code: string): Promise<boolean> {
-  const response = await page.request.post(`${E2E_API_URL}/invites/check`, { data: { code } });
-  return ((await response.json()) as { valid: boolean }).valid;
-}
-
-/** Invite code, then sign in with the emailed code: lands on the first onboarding screen. */
-async function startAndSignIn(page: Page, code: string, email: string) {
-  await page.goto('/start');
-  await page.getByLabel('Invite code').fill(code);
-  await page.getByRole('button', { name: 'Continue' }).click();
-  await expect(page).toHaveURL(/\/sign-in$/);
-
-  await page.getByRole('textbox', { name: 'Email', exact: true }).fill(email);
-  await page.getByRole('button', { name: 'Send code' }).click();
-  await page.getByLabel(/6-digit code/).fill(OTP);
-  await page.getByRole('button', { name: 'Sign in' }).click();
-  await expect(page.getByRole('heading', { name: 'Tell us about you' })).toBeVisible();
-}
-
-async function answerAbout(
-  page: Page,
-  { needs, birthYear, country }: { needs: string; birthYear: string; country: string },
-) {
-  await page.getByRole('radio', { name: needs, exact: true }).click();
-  await page.getByLabel('Birth year').fill(birthYear);
-  await page.getByLabel('Country of residence').selectOption(country);
-  await page.getByRole('button', { name: 'Continue' }).click();
-}
-
-async function answerSport(page: Page) {
-  await expect(page.getByRole('heading', { name: 'Your sport' })).toBeVisible();
-  await page.getByRole('radio', { name: 'Kitesurfing', exact: true }).click();
-  await page.getByRole('checkbox', { name: 'Sat', exact: true }).click();
-  await page.getByRole('radio', { name: 'Hard', exact: true }).click();
-  await page.getByRole('button', { name: 'Continue' }).click();
-}
-
-async function answerGoal(page: Page, goal: string, button: 'Continue' | 'Finish') {
-  await expect(page.getByRole('heading', { name: 'Your Goal' })).toBeVisible();
-  await page.getByRole('radio', { name: goal, exact: true }).click();
-  await page.getByRole('button', { name: button }).click();
-}
-
-async function expectNoAccessibilityViolations(page: Page) {
-  expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
-}
-
-const isProfilePost = (request: { url(): string; method(): string }) =>
-  new URL(request.url()).pathname === '/profile' && request.method() === 'POST';
 
 test('an invite code that is not valid is explained and does not go on to sign-in', async ({
   page,
@@ -189,7 +141,7 @@ test('the first screen names what is missing', async ({ page }, testInfo) => {
   await expect(page.getByRole('heading', { name: 'Tell us about you' })).toBeVisible();
 });
 
-test('the happy path: invite, sign-in, every screen, saved, Today; the invite is then used up', async ({
+test('the happy path: invite, sign-in, every screen, saved, consent; the invite is then used up', async ({
   page,
 }, testInfo) => {
   const [code] = await createInvites();
@@ -253,8 +205,9 @@ test('the happy path: invite, sign-in, every screen, saved, Today; the invite is
       hotConditionsDefault: true,
     },
   });
-  await expect(page).toHaveURL(/\/today$/);
-  await expect(page.getByRole('heading', { name: 'Today' })).toBeVisible();
+  // Onboarding ends at Today; nobody gets in before consent and Screening, so this lands on consent.
+  await expect(page).toHaveURL(/\/consent$/);
+  await expect(page.getByRole('heading', { name: 'Before you start' })).toBeVisible();
 
   // Redeemed when the profile was first saved, not before.
   expect(await inviteIsUsable(page, code!)).toBe(false);
@@ -265,9 +218,9 @@ test('the happy path: invite, sign-in, every screen, saved, Today; the invite is
     page.getByText('That invite code is not valid, or it has already been used.'),
   ).toBeVisible();
 
-  // Signed in with a profile: the onboarding address goes straight to Today.
+  // Signed in with a profile: the onboarding address leaves the screens (to the consent screen, as Screening is not done).
   await page.goto('/onboarding');
-  await expect(page).toHaveURL(/\/today$/);
+  await expect(page).toHaveURL(/\/consent$/);
 });
 
 test('food only skips the training week and saves after the Goal', async ({ page }, testInfo) => {
@@ -289,7 +242,7 @@ test('food only skips the training week and saves after the Goal', async ({ page
   await expect(page.getByRole('button', { name: 'Continue' })).toHaveCount(0);
   await answerGoal(page, 'General fitness', 'Finish');
 
-  await expect(page).toHaveURL(/\/today$/);
+  await expect(page).toHaveURL(/\/consent$/);
   await expect(page.getByRole('heading', { name: 'Your training week' })).toHaveCount(0);
   expect(bodies).toHaveLength(1);
   expect(bodies[0]).toMatchObject({ needs: 'food', goal: 'general-fitness' });
@@ -321,7 +274,7 @@ test('"Other…" asks for the sport name and "It varies" replaces the play days'
   await page.getByRole('button', { name: 'Continue' }).click();
   await answerGoal(page, 'Body composition', 'Finish');
 
-  await expect(page).toHaveURL(/\/today$/);
+  await expect(page).toHaveURL(/\/consent$/);
   expect(bodies[0]).toMatchObject({
     sport: { kind: 'other', name: 'Surf-ski' },
     playVaries: true,
@@ -329,7 +282,7 @@ test('"Other…" asks for the sport name and "It varies" replaces the play days'
   });
 });
 
-test('a profile that was already saved goes straight to Today after signing in', async ({
+test('a profile that was already saved skips the screens after signing in', async ({
   page,
 }, testInfo) => {
   const [code] = await createInvites();
@@ -342,7 +295,7 @@ test('a profile that was already saved goes straight to Today after signing in',
   });
   await answerSport(page);
   await answerGoal(page, 'General fitness', 'Finish');
-  await expect(page).toHaveURL(/\/today$/);
+  await expect(page).toHaveURL(/\/consent$/);
 
   await page.context().clearCookies();
   await page.evaluate(() => localStorage.clear());
@@ -352,7 +305,7 @@ test('a profile that was already saved goes straight to Today after signing in',
   await page.getByLabel(/6-digit code/).fill(OTP);
   await page.getByRole('button', { name: 'Sign in' }).click();
 
-  await expect(page).toHaveURL(/\/today$/);
+  await expect(page).toHaveURL(/\/consent$/);
 });
 
 test('signing in without an invite asks for one first', async ({ page }, testInfo) => {
@@ -372,6 +325,19 @@ test('opening the onboarding address while signed out goes to the invite screen'
   await page.goto('/onboarding');
 
   await expect(page).toHaveURL(/\/start$/);
+});
+
+test('a signed-in person without a profile is sent to onboarding, not to consent', async ({
+  page,
+}, testInfo) => {
+  const [code] = await createInvites();
+  await startAndSignIn(page, code!, uniqueEmail(testInfo.title));
+
+  for (const address of ['/today', '/consent', '/screening']) {
+    await page.goto(address);
+    await expect(page).toHaveURL(/\/onboarding$/);
+    await expect(page.getByRole('heading', { name: 'Tell us about you' })).toBeVisible();
+  }
 });
 
 test('an invite the server turns down sends the person back to the invite screen', async ({

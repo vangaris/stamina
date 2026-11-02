@@ -11,4 +11,22 @@ export const ROUTES_WITHOUT_TABS: readonly RouteName[] = [
   RouteName.SignIn,
   RouteName.Start,
   RouteName.Onboarding,
+  RouteName.Consent,
+  RouteName.Screening,
+  RouteName.Referred,
+];
+
+/**
+ * Screens anyone may open: signing in, onboarding and the safety steps themselves. Every other
+ * screen needs onboarding, both consents and a Screening that allows training, so a new route is
+ * gated until it is listed here on purpose.
+ */
+export const UNGATED_ROUTES: readonly RouteName[] = [
+  RouteName.SignIn,
+  RouteName.Start,
+  RouteName.Onboarding,
+  RouteName.Consent,
+  RouteName.Screening,
+  RouteName.Referred,
+  RouteName.DevUi,
 ];

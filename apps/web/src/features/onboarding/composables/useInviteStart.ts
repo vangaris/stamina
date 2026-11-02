@@ -6,7 +6,7 @@ import { StartExit } from '../enums/start-exit.ts';
 import { StartNotice } from '../enums/start-notice.ts';
 import { START_ERROR_KEYS } from '../config.ts';
 import type { UseInviteStartOptions } from '../types.ts';
-import { toMessageKey } from '../utils/to-message-key.ts';
+import { toMessageKey } from '../../../utils/to-message-key.ts';
 
 /**
  * The invite screen: one code, checked through the mediator. A valid code is remembered by the

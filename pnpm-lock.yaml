@@ -72,6 +72,9 @@ importers:
       '@stamina/domain':
         specifier: workspace:^
         version: link:../../packages/domain
+      '@stamina/i18n':
+        specifier: workspace:^
+        version: link:../../packages/i18n
       '@stamina/safe-log':
         specifier: workspace:^
         version: link:../../packages/util/safe-log
@@ -91,9 +94,6 @@ importers:
         specifier: ^4.6.7
         version: 4.6.7
     devDependencies:
-      '@stamina/i18n':
-        specifier: workspace:^
-        version: link:../../packages/i18n
       '@types/node':
         specifier: '22'
         version: 22.20.5

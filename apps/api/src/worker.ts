@@ -11,6 +11,8 @@ import { createNeonDb } from './db/neon-client.ts';
 export interface WorkerEnv {
   /** Secret. */
   DATABASE_URL?: string;
+  /** Secret: base64 of the 32-byte Screening encryption key. */
+  SCREENING_ENCRYPTION_KEY?: string;
   /** Secret, optional. */
   SENTRY_DSN?: string;
   NEON_AUTH_BASE_URL?: string;

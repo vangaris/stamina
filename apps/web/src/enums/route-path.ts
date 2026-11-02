@@ -7,5 +7,8 @@ export enum RoutePath {
   SignIn = '/sign-in',
   Start = '/start',
   Onboarding = '/onboarding',
+  Consent = '/consent',
+  Screening = '/screening',
+  Referred = '/referred',
   DevUi = '/dev/ui',
 }

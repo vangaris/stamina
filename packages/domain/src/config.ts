@@ -1,4 +1,6 @@
+import { ConsentPurpose } from './enums/consent-purpose.ts';
 import { LaunchSport } from './enums/launch-sport.ts';
+import { ScreeningQuestion } from './enums/screening-question.ts';
 
 /** Stamina is for adults. Age is the difference between the current year and the birth year. */
 export const ADULT_AGE = 18;
@@ -316,3 +318,40 @@ export const INVITE_CODE_LENGTH = 10;
 
 /** Longest invite code input accepted anywhere (typed or pasted, spaces and hyphens included). */
 export const INVITE_CODE_INPUT_MAX_LENGTH = 64;
+
+/** Screening wording is Stamina's own, never called PAR-Q+ or "validated". */
+export const SCREENING_INSTRUMENT = 'stamina-own';
+/** Bumped whenever a question or an outcome rule changes, so old answers stay readable. */
+export const SCREENING_INSTRUMENT_VERSION = 1;
+
+/** The questions in the order the page shows them. */
+export const SCREENING_QUESTIONS: readonly ScreeningQuestion[] = [
+  ScreeningQuestion.HeartCondition,
+  ScreeningQuestion.ChestPain,
+  ScreeningQuestion.Fainting,
+  ScreeningQuestion.DiabetesOrKidney,
+  ScreeningQuestion.Breathing,
+  ScreeningQuestion.BoneJointMuscle,
+  ScreeningQuestion.HeadInjury,
+  ScreeningQuestion.Pregnancy,
+  ScreeningQuestion.SupervisedExercise,
+  ScreeningQuestion.EatingDisorder,
+];
+
+/** A yes to any of these refers the person to a professional before a Program. */
+export const REFERRAL_QUESTIONS: readonly ScreeningQuestion[] = [
+  ScreeningQuestion.HeartCondition,
+  ScreeningQuestion.ChestPain,
+  ScreeningQuestion.Fainting,
+  ScreeningQuestion.DiabetesOrKidney,
+  ScreeningQuestion.Breathing,
+  ScreeningQuestion.HeadInjury,
+  ScreeningQuestion.Pregnancy,
+  ScreeningQuestion.SupervisedExercise,
+];
+
+/** Version of each consent text (the EN and EL texts change together), recorded with every grant. */
+export const CONSENT_TEXT_VERSIONS: Readonly<Record<ConsentPurpose, string>> = {
+  [ConsentPurpose.Disclaimer]: 'disclaimer-v1',
+  [ConsentPurpose.HealthData]: 'health-data-v1',
+};

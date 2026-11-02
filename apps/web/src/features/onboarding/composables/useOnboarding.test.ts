@@ -7,7 +7,7 @@ import {
   ServicesMode,
   type Services,
 } from '@stamina/app-core';
-import { ProfileRejection, SportKind, type ApiClient } from '@stamina/contracts';
+import { ProfileRejection, SaveProfileStatus, SportKind, type ApiClient } from '@stamina/contracts';
 import { Goal, Intensity, LaunchSport, Need, Weekday } from '@stamina/domain';
 import { Locale } from '@stamina/i18n';
 import { describe, expect, it, vi } from 'vitest';
@@ -321,6 +321,25 @@ describe('useOnboarding: saving', () => {
 
     expect(flow.stop.value).toBe(ProfileRejection.UnderAge);
     expect(flow.step.value).toBe(OnboardingStep.About);
+    expect(onExit).not.toHaveBeenCalled();
+  });
+
+  it('asks for another Goal when the server says body composition is unavailable', async () => {
+    const { flow, onExit } = await setup({
+      api: () => ({
+        saveProfile: async () => ({
+          status: SaveProfileStatus.Rejected,
+          reason: ProfileRejection.GoalUnavailable,
+        }),
+      }),
+    });
+    await reachLastScreen(flow);
+
+    await flow.next();
+
+    expect(flow.step.value).toBe(OnboardingStep.Goal);
+    expect(flow.errors.value).toEqual({ goal: OnboardingMessageKey.GoalUnavailable });
+    expect(flow.stop.value).toBeUndefined();
     expect(onExit).not.toHaveBeenCalled();
   });
 

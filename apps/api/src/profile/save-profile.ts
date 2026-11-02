@@ -5,12 +5,14 @@ import {
   type ProfileSubmission,
   type SaveProfileResult,
 } from '@stamina/contracts';
-import { checkEligibility, normalizeInviteCode } from '@stamina/domain';
+import { checkEligibility, isGoalAvailable, normalizeInviteCode } from '@stamina/domain';
 import { eq, sql } from 'drizzle-orm';
+import { lockUser } from '../db/lock-user.ts';
 import type { Db } from '../db/types.ts';
-import { appUser, profile } from '../db/schema.ts';
+import { profile } from '../db/schema.ts';
 import { withUser } from '../db/with-user.ts';
 import { redeemInvite } from '../invites/redeem-invite.ts';
+import { readLatestScreening } from '../safety/read-latest-screening.ts';
 import { toProfileValues } from './to-profile-values.ts';
 import { toSavedProfile } from './to-saved-profile.ts';
 
@@ -23,7 +25,9 @@ const rejected = (reason: ProfileRejection): SaveProfileResult => ({
  * Saves the signed-in user's profile, or says why not. Order: eligibility (touches no table, so
  * a minor or non-EEA resident leaves nothing behind and keeps their invite) -> if the user
  * already has a profile, update it without needing or using the invite -> otherwise redeem the
- * invite and insert, in one transaction. An invalid, used or unknown code stores nothing.
+ * invite and insert, in one transaction. An invalid, used or unknown code stores nothing. A Goal
+ * that the latest Screening has made unavailable (body composition while Nutrition is off) is
+ * turned away before anything is stored or redeemed.
  */
 export async function saveProfile(
   db: Db,
@@ -44,8 +48,12 @@ export async function saveProfile(
   const saved = await withUser(db, userId, async (tx) => {
     // The user row exists after `GET /me`; make sure of it, then lock it so two saves by the
     // same person (two tabs) run one after the other and cannot redeem two invites.
-    await tx.insert(appUser).values({ id: userId }).onConflictDoNothing();
-    await tx.select({ id: appUser.id }).from(appUser).where(eq(appUser.id, userId)).for('update');
+    await lockUser(tx, userId);
+
+    const latestScreening = await readLatestScreening(tx, userId);
+    if (latestScreening && !isGoalAvailable(answers.goal, latestScreening)) {
+      return ProfileRejection.GoalUnavailable;
+    }
 
     const [existing] = await tx
       .select({ userId: profile.userId })
@@ -53,7 +61,9 @@ export async function saveProfile(
       .where(eq(profile.userId, userId));
     if (!existing) {
       const code = normalizeInviteCode(inviteCode);
-      if (code === undefined || !(await redeemInvite(tx, code, userId))) return undefined;
+      if (code === undefined || !(await redeemInvite(tx, code, userId))) {
+        return ProfileRejection.InviteInvalid;
+      }
     }
 
     const [row] = await tx
@@ -61,9 +71,9 @@ export async function saveProfile(
       .values({ userId, ...values })
       .onConflictDoUpdate({ target: profile.userId, set: { ...values, updatedAt: sql`now()` } })
       .returning();
-    return row;
+    return row!;
   });
 
-  if (!saved) return rejected(ProfileRejection.InviteInvalid);
+  if (typeof saved === 'string') return rejected(saved);
   return { status: SaveProfileStatus.Saved, profile: toSavedProfile(saved) };
 }

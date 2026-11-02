@@ -206,7 +206,123 @@
       "sessionMinutes": "Choose how long a Session lasts.",
       "availableDays": "Choose at least {count} days, one for each Session.",
       "offline": "You are offline. Connect to the internet and try again.",
+      "unknown": "Something went wrong. Please try again.",
+      "goalUnavailable": "That Goal isn't available while Nutrition is off for you. Choose another Goal."
+    }
+  },
+  "consent": {
+    "title": "Before you start",
+    "disclaimer": {
+      "text": "Stamina gives general fitness and nutrition guidance for healthy adults. It is not a medical device and doesn't diagnose, treat or replace advice from a doctor, physiotherapist or dietitian. Stop and seek medical help if you feel unwell.",
+      "accept": "I have read and accept",
+      "error": "Accept this to continue."
+    },
+    "healthData": {
+      "title": "Your health data",
+      "intro": "To keep your training safe, Stamina asks about your health. This is separate from the notice above, and it is your choice.",
+      "collects": "What we collect: your Screening answers now, and later your check-ins, training and body data.",
+      "where": "Where it is kept: in the EU, encrypted.",
+      "sharing": "It is never sent to AI providers or to analytics.",
+      "withdraw": "You can withdraw this consent at any time. Then you can export or delete your data.",
+      "accept": "I agree that Stamina may process my health data as described above.",
+      "error": "Agree to this to continue."
+    },
+    "actions": {
+      "continue": "Continue"
+    },
+    "errors": {
+      "offline": "You are offline. Connect to the internet and try again.",
       "unknown": "Something went wrong. Please try again."
+    }
+  },
+  "screening": {
+    "title": "A few health questions",
+    "intro": "These help keep your training safe. Answer for how things are for you today.",
+    "unsure": "If unsure, answer yes.",
+    "yes": "Yes",
+    "no": "No",
+    "questions": {
+      "heart-condition": "Has a doctor ever told you that you have a heart condition, have had a stroke, or have high blood pressure?",
+      "chest-pain": "In the last 12 months, have you had chest pain, pressure or discomfort, at rest or during activity?",
+      "fainting": "In the last 12 months, have you fainted, lost consciousness, or lost your balance because of dizziness?",
+      "diabetes-or-kidney": "Do you have diabetes (type 1 or 2) or kidney disease?",
+      "breathing": "Do you get short of breath at rest or with light effort, or did you need medical care for asthma in the last 12 months?",
+      "bone-joint-muscle": "Do you have a bone, joint or muscle problem that activity could make worse?",
+      "head-injury": "Have you had a concussion or head injury in the last 12 months?",
+      "pregnancy": "Are you pregnant?",
+      "supervised-exercise": "Has a doctor told you to exercise only under medical supervision?",
+      "eating-disorder": "Are you being treated for an eating disorder?"
+    },
+    "bodyAreas": {
+      "label": "Which areas? Choose all that apply.",
+      "options": {
+        "neck": "Neck",
+        "shoulder": "Shoulder",
+        "elbow": "Elbow",
+        "wrist": "Wrist",
+        "upper-back": "Upper back",
+        "lower-back": "Lower back",
+        "hip": "Hip",
+        "knee": "Knee",
+        "ankle": "Ankle"
+      }
+    },
+    "startingLevel": {
+      "question": "Have you trained at least 3 times a week for 30 minutes or more for the last 3 months?"
+    },
+    "actions": {
+      "submit": "Continue"
+    },
+    "errors": {
+      "answer": "Choose yes or no.",
+      "areas": "Choose at least one area.",
+      "offline": "You are offline. Connect to the internet and try again.",
+      "unknown": "Something went wrong. Please try again."
+    },
+    "outcome": {
+      "title": "Thanks, that's everything we need",
+      "nutritionOff": "Nutrition is switched off for you, so Stamina won't give food guidance. Your training carries on.",
+      "goalChanged": "The body composition Goal isn't available while Nutrition is off, so your Goal is now General fitness. You can change it later.",
+      "excludedAreas": "{count, plural, one {Get professional advice before training this area: {areas}. Stamina will keep exercises away from it.} other {Get professional advice before training these areas: {areas}. Stamina will keep exercises away from them.}}",
+      "continue": "Continue to Today"
+    }
+  },
+  "referred": {
+    "title": "Let's check with a professional first",
+    "body": {
+      "general": "Please talk to a doctor before starting. Stamina can't build you a Program until then.",
+      "pregnancy": "Please talk to your doctor or midwife before starting. Stamina can't build you a Program until then."
+    },
+    "yourData": "Your data is yours. You can export it or delete it at any time.",
+    "actions": {
+      "export": "Export my data",
+      "delete": "Delete my data",
+      "doctorOk": "A doctor has said I can train",
+      "signOut": "Sign out"
+    },
+    "doctorOkHint": "Tap this only if a doctor has told you that you can train. Stamina records what you tell us and doesn't check it.",
+    "deleteConfirm": {
+      "title": "Delete all your data?",
+      "body": "This deletes your profile, your consent records and your Screening answers from Stamina. It doesn't remove your sign-in account yet; that arrives with account deletion. It can't be undone. After deleting, signing in again needs a new invite code.",
+      "confirm": "Yes, delete everything",
+      "cancel": "Keep my data"
+    },
+    "exported": "Your data was downloaded.",
+    "limited": {
+      "title": "Limited mode is on",
+      "body": "Stamina has recorded what you told us. Your training will stay gentle: moderate effort and no explosive exercises.",
+      "continue": "Continue to Today"
+    },
+    "errors": {
+      "offline": "You are offline. Connect to the internet and try again.",
+      "unknown": "Something went wrong. Please try again."
+    }
+  },
+  "safety": {
+    "loading": "Getting things ready…",
+    "loadFailed": {
+      "message": "We could not load your details. Check your connection and try again.",
+      "retry": "Try again"
     }
   }
 }

@@ -91,6 +91,8 @@ export default defineConfig({
               DATABASE_URL: databaseUrl,
               NEON_AUTH_BASE_URL: authBaseUrl,
               CORS_ORIGINS: `http://127.0.0.1:${webPort},http://127.0.0.1:${sentryWebPort}`,
+              // A throwaway key: 32 bytes, base64. Screening answers are encrypted with it at rest.
+              SCREENING_ENCRYPTION_KEY: 'AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8=',
             },
             url: `http://127.0.0.1:${apiPort}/health`,
             reuseExistingServer: !process.env.CI,

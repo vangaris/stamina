@@ -1,4 +1,4 @@
-# Extend the default ruleset; allow only two test files that contain fake values shaped like keys.
+# Extend the default ruleset; allow only fake values shaped like keys (two test files and the public development Screening key).
 [extend]
 useDefault = true
 
@@ -9,3 +9,7 @@ paths = ['''scripts/ops/test/retention\.test\.sh''']
 [[allowlists]]
 description = "Mock-server tests use a fake API key"
 paths = ['''infra/test/ops-scripts\.test\.mjs''']
+
+[[allowlists]]
+description = "The public development and test Screening key (base64 of bytes 0..31). Never used in a deployed environment: previews and production have their own GitHub secrets."
+regexes = ['''AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8=''']

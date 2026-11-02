@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { signUpToToday } from './support/screening-flow.ts';
 
 // Needs the web build with a fake DSN that only the local stack provides (see playwright.config.ts).
 test.skip(!!process.env.PLAYWRIGHT_BASE_URL, 'runs only against the local stack');
@@ -10,7 +11,11 @@ const SENTINELS = {
   storage: 'SENTINEL-STORAGE-diabetes-type-2',
 };
 
-test('a browser error reaches Sentry without the user data around it', async ({ page }) => {
+test('a browser error reaches Sentry without the user data around it', async ({
+  page,
+}, testInfo) => {
+  // Today is behind sign-in, consent and Screening, so sign up first; the sentinels come after.
+  await signUpToToday(page, testInfo.title);
   const envelopes: string[] = [];
   await page.route('**/api/1/envelope/**', async (route) => {
     envelopes.push(route.request().postData() ?? '');
