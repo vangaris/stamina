@@ -20,6 +20,7 @@ import type { ErrorReporter } from './error-reporter.ts';
 import { requestLog, type AppEnv, type LogSink } from './request-log.ts';
 import { consentRoutes } from './routes/consent-routes.ts';
 import { doctorOkRoutes } from './routes/doctor-ok-routes.ts';
+import { exerciseRoutes } from './routes/exercise-routes.ts';
 import { exportRoutes } from './routes/export-routes.ts';
 import { inviteRoutes } from './routes/invite-routes.ts';
 import { meRoutes } from './routes/me-routes.ts';
@@ -86,6 +87,7 @@ export function createApp({
   app.route(ApiPath.Screening, screeningRoutes({ db, auth, cipher }));
   app.route(ApiPath.DoctorOk, doctorOkRoutes({ db, auth }));
   app.route(ApiPath.InviteCheck, inviteRoutes({ db }));
+  app.route(ApiPath.Exercises, exerciseRoutes({ db, auth }));
 
   return app;
 }

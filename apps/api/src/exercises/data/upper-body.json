@@ -1,0 +1,1245 @@
+[
+  {
+    "id": "incline-push-up",
+    "source": "free-exercise-db",
+    "sourceId": "Incline_Push-Up",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Incline Push-Up",
+      "el": null
+    },
+    "instructions": {
+      "en": [
+        "Stand facing bench or sturdy elevated platform. Place hands on edge of bench or platform, slightly wider than shoulder width.",
+        "Position forefoot back from bench or platform with arms and body straight. Arms should be perpendicular to body. Keeping body straight, lower chest to edge of box or platform by bending arms.",
+        "Push body up until arms are extended. Repeat."
+      ],
+      "el": null
+    },
+    "equipment": ["box"],
+    "locations": ["gym", "home", "court"],
+    "movementPattern": "push",
+    "highLoadAreas": ["shoulder", "elbow", "wrist", "lower-back"],
+    "slots": ["main-strength"],
+    "rirSuitable": true,
+    "easierId": null,
+    "harderId": "pushups",
+    "image": null
+  },
+  {
+    "id": "pushups",
+    "source": "free-exercise-db",
+    "sourceId": "Pushups",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Pushups",
+      "el": null
+    },
+    "instructions": {
+      "en": [
+        "Lie on the floor face down and place your hands about 36 inches apart while holding your torso up at arms length.",
+        "Next, lower yourself downward until your chest almost touches the floor as you inhale.",
+        "Now breathe out and press your upper body back up to the starting position while squeezing your chest.",
+        "After a brief pause at the top contracted position, you can begin to lower yourself downward again for as many repetitions as needed."
+      ],
+      "el": null
+    },
+    "equipment": [],
+    "locations": ["gym", "home", "court", "beach"],
+    "movementPattern": "push",
+    "highLoadAreas": ["shoulder", "elbow", "wrist", "lower-back"],
+    "slots": ["main-strength", "accessories-core"],
+    "rirSuitable": true,
+    "easierId": "incline-push-up",
+    "harderId": "push-ups-with-feet-elevated",
+    "image": null
+  },
+  {
+    "id": "push-up-wide",
+    "source": "free-exercise-db",
+    "sourceId": "Push-Up_Wide",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Push-Up Wide",
+      "el": null
+    },
+    "instructions": {
+      "en": [
+        "With your hands wide apart, support your body on your toes and hands in a plank position. Your elbows should be extended and your body straight. Do not allow your hips to sag. This will be your starting position.",
+        "To begin, allow the elbows to flex, lowering your chest to the floor as you inhale.",
+        "Using your pectoral muscles, press your upper body back up to the starting position by extending the elbows. Exhale as you perform this step.",
+        "After pausing at the contracted position, repeat the movement for the prescribed amount of repetitions."
+      ],
+      "el": null
+    },
+    "equipment": [],
+    "locations": ["gym", "home", "court", "beach"],
+    "movementPattern": "push",
+    "highLoadAreas": ["shoulder", "elbow", "wrist", "lower-back"],
+    "slots": ["main-strength"],
+    "rirSuitable": true,
+    "easierId": "pushups",
+    "harderId": null,
+    "image": null
+  },
+  {
+    "id": "push-ups-close-triceps-position",
+    "source": "free-exercise-db",
+    "sourceId": "Push-Ups_-_Close_Triceps_Position",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Push-Ups - Close Triceps Position",
+      "el": null
+    },
+    "instructions": {
+      "en": [
+        "Lie on the floor face down and place your hands closer than shoulder width for a close hand position. Make sure that you are holding your torso up at arms' length.",
+        "Lower yourself until your chest almost touches the floor as you inhale.",
+        "Using your triceps and some of your pectoral muscles, press your upper body back up to the starting position and squeeze your chest. Breathe out as you perform this step.",
+        "After a second pause at the contracted position, repeat the movement for the prescribed amount of repetitions."
+      ],
+      "el": null
+    },
+    "equipment": [],
+    "locations": ["gym", "home", "court", "beach"],
+    "movementPattern": "push",
+    "highLoadAreas": ["shoulder", "elbow", "wrist", "lower-back"],
+    "slots": ["main-strength", "accessories-core"],
+    "rirSuitable": true,
+    "easierId": "pushups",
+    "harderId": null,
+    "image": null
+  },
+  {
+    "id": "push-ups-with-feet-elevated",
+    "source": "free-exercise-db",
+    "sourceId": "Push-Ups_With_Feet_Elevated",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Push-Ups With Feet Elevated",
+      "el": null
+    },
+    "instructions": {
+      "en": [
+        "Lie on the floor face down and place your hands about 36 inches apart from each other holding your torso up at arms length.",
+        "Place your toes on top of a flat bench. This will allow your body to be elevated. Note: The higher the elevation of the flat bench, the higher the resistance of the exercise is.",
+        "Lower yourself until your chest almost touches the floor as you inhale.",
+        "Using your pectoral muscles, press your upper body back up to the starting position and squeeze your chest. Breathe out as you perform this step.",
+        "After a second pause at the contracted position, repeat the movement for the prescribed amount of repetitions."
+      ],
+      "el": null
+    },
+    "equipment": ["bench"],
+    "locations": ["gym", "home"],
+    "movementPattern": "push",
+    "highLoadAreas": ["shoulder", "elbow", "wrist", "lower-back"],
+    "slots": ["main-strength"],
+    "rirSuitable": true,
+    "easierId": "pushups",
+    "harderId": null,
+    "image": {
+      "url": "https://wger.de/media/exercise-images/1112/81f40bee-4adf-4317-8476-1a87706e3031.png",
+      "author": "anon1337",
+      "authorUrl": null,
+      "licence": "CC-BY-SA 4.0",
+      "licenceUrl": "https://creativecommons.org/licenses/by-sa/4.0/deed.en",
+      "sourceUrl": "https://wger.de/en/exercise/1112/view/",
+      "wgerExerciseId": 1112
+    }
+  },
+  {
+    "id": "single-arm-push-up",
+    "source": "free-exercise-db",
+    "sourceId": "Single-Arm_Push-Up",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Single-Arm Push-Up",
+      "el": null
+    },
+    "instructions": {
+      "en": [
+        "Begin laying prone on the ground. Move yourself into a position supporting your weight on your toes and one arm. Your working arm should be placed directly under the shoulder, fully extended. Your legs should be extended, and for this movement you may need a wider base, placing your feet further apart than in a normal push-up.",
+        "Maintain good posture, and place your free hand behind your back. This will be your starting position.",
+        "Lower yourself by allowing the elbow to flex until you touch the ground.",
+        "Descend slowly, and reverse direction be extending the arm to return to the starting position."
+      ],
+      "el": null
+    },
+    "equipment": [],
+    "locations": ["gym", "home", "court", "beach"],
+    "movementPattern": "push",
+    "highLoadAreas": ["shoulder", "elbow", "wrist", "lower-back"],
+    "slots": ["main-strength"],
+    "rirSuitable": true,
+    "easierId": null,
+    "harderId": null,
+    "image": null
+  },
+  {
+    "id": "clock-push-up",
+    "source": "free-exercise-db",
+    "sourceId": "Clock_Push-Up",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Clock Push-Up",
+      "el": null
+    },
+    "instructions": {
+      "en": [
+        "Move into a prone position on the floor, supporting your weight on your hands and toes.",
+        "Your arms should be fully extended with the hands around shoulder width. Keep your body straight throughout the movement. This will be your starting position.",
+        "Descend by flexing at the elbow, lowering your chest toward the ground.",
+        "At the bottom, reverse the motion by pushing yourself up through elbow extension as quickly as possible until you are air borne. Aim to \"jump\" 12-18 inches to one side.",
+        "As you accelerate up, move your outside foot away from your direction of travel. Leaving the ground, shift your body about 30 degrees for the next repetition.",
+        "Return to the starting position and repeat the exercise, working all the way around until you are back where you started."
+      ],
+      "el": null
+    },
+    "equipment": [],
+    "locations": ["gym", "home", "court", "beach"],
+    "movementPattern": "push",
+    "highLoadAreas": ["shoulder", "elbow", "wrist", "lower-back"],
+    "slots": ["sport-support"],
+    "rirSuitable": false,
+    "easierId": "pushups",
+    "harderId": null,
+    "image": null
+  },
+  {
+    "id": "isometric-wipers",
+    "source": "free-exercise-db",
+    "sourceId": "Isometric_Wipers",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Isometric Wipers",
+      "el": null
+    },
+    "instructions": {
+      "en": [
+        "Assume a push-up position, supporting your weight on your hands and toes while keeping your body straight. Your hands should be just outside of shoulder width. This will be your starting position.",
+        "Begin by shifting your body weight as far to one side as possible, allowing the elbow on that side to flex as you lower your body.",
+        "Reverse the motion by extending the flexed arm, pushing yourself up and then dropping to the other side.",
+        "Repeat for the desired number of repetitions."
+      ],
+      "el": null
+    },
+    "equipment": [],
+    "locations": ["gym", "home", "court", "beach"],
+    "movementPattern": "push",
+    "highLoadAreas": ["shoulder", "elbow", "wrist", "lower-back"],
+    "slots": ["accessories-core"],
+    "rirSuitable": true,
+    "easierId": null,
+    "harderId": null,
+    "image": null
+  },
+  {
+    "id": "dumbbell-bench-press",
+    "source": "free-exercise-db",
+    "sourceId": "Dumbbell_Bench_Press",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Dumbbell Bench Press",
+      "el": null
+    },
+    "instructions": {
+      "en": [
+        "Lie down on a flat bench with a dumbbell in each hand resting on top of your thighs. The palms of your hands will be facing each other.",
+        "Then, using your thighs to help raise the dumbbells up, lift the dumbbells one at a time so that you can hold them in front of you at shoulder width.",
+        "Once at shoulder width, rotate your wrists forward so that the palms of your hands are facing away from you. The dumbbells should be just to the sides of your chest, with your upper arm and forearm creating a 90 degree angle. Be sure to maintain full control of the dumbbells at all times. This will be your starting position.",
+        "Then, as you breathe out, use your chest to push the dumbbells up. Lock your arms at the top of the lift and squeeze your chest, hold for a second and then begin coming down slowly. Tip: Ideally, lowering the weight should take about twice as long as raising it.",
+        "Repeat the movement for the prescribed amount of repetitions of your training program."
+      ],
+      "el": null
+    },
+    "equipment": ["dumbbell", "bench"],
+    "locations": ["gym", "home"],
+    "movementPattern": "push",
+    "highLoadAreas": ["shoulder", "elbow", "wrist"],
+    "slots": ["main-strength"],
+    "rirSuitable": true,
+    "easierId": null,
+    "harderId": null,
+    "image": {
+      "url": "https://wger.de/media/exercise-images/97/Dumbbell-bench-press-1.png",
+      "author": "Everkinetic",
+      "authorUrl": null,
+      "licence": "CC-BY-SA 3.0",
+      "licenceUrl": "https://creativecommons.org/licenses/by-sa/3.0/deed.en",
+      "sourceUrl": "https://wger.de/en/exercise/75/view/",
+      "wgerExerciseId": 75
+    }
+  },
+  {
+    "id": "incline-dumbbell-press",
+    "source": "free-exercise-db",
+    "sourceId": "Incline_Dumbbell_Press",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Incline Dumbbell Press",
+      "el": null
+    },
+    "instructions": {
+      "en": [
+        "Lie back on an incline bench with a dumbbell in each hand atop your thighs. The palms of your hands will be facing each other.",
+        "Then, using your thighs to help push the dumbbells up, lift the dumbbells one at a time so that you can hold them at shoulder width.",
+        "Once you have the dumbbells raised to shoulder width, rotate your wrists forward so that the palms of your hands are facing away from you. This will be your starting position.",
+        "Be sure to keep full control of the dumbbells at all times. Then breathe out and push the dumbbells up with your chest.",
+        "Lock your arms at the top, hold for a second, and then start slowly lowering the weight. Tip Ideally, lowering the weights should take about twice as long as raising them.",
+        "Repeat the movement for the prescribed amount of repetitions.",
+        "When you are done, place the dumbbells back on your thighs and then on the floor. This is the safest manner to release the dumbbells."
+      ],
+      "el": null
+    },
+    "equipment": ["dumbbell", "bench"],
+    "locations": ["gym", "home"],
+    "movementPattern": "push",
+    "highLoadAreas": ["shoulder", "elbow", "wrist"],
+    "slots": ["main-strength"],
+    "rirSuitable": true,
+    "easierId": "dumbbell-bench-press",
+    "harderId": null,
+    "image": {
+      "url": "https://wger.de/media/exercise-images/16/Incline-press-1.png",
+      "author": "Everkinetic",
+      "authorUrl": null,
+      "licence": "CC-BY-SA 3.0",
+      "licenceUrl": "https://creativecommons.org/licenses/by-sa/3.0/deed.en",
+      "sourceUrl": "https://wger.de/en/exercise/537/view/",
+      "wgerExerciseId": 537
+    }
+  },
+  {
+    "id": "barbell-bench-press-medium-grip",
+    "source": "free-exercise-db",
+    "sourceId": "Barbell_Bench_Press_-_Medium_Grip",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Barbell Bench Press - Medium Grip",
+      "el": null
+    },
+    "instructions": {
+      "en": [
+        "Lie back on a flat bench. Using a medium width grip (a grip that creates a 90-degree angle in the middle of the movement between the forearms and the upper arms), lift the bar from the rack and hold it straight over you with your arms locked. This will be your starting position.",
+        "From the starting position, breathe in and begin coming down slowly until the bar touches your middle chest.",
+        "After a brief pause, push the bar back to the starting position as you breathe out. Focus on pushing the bar using your chest muscles. Lock your arms and squeeze your chest in the contracted position at the top of the motion, hold for a second and then start coming down slowly again. Tip: Ideally, lowering the weight should take about twice as long as raising it.",
+        "Repeat the movement for the prescribed amount of repetitions.",
+        "When you are done, place the bar back in the rack."
+      ],
+      "el": null
+    },
+    "equipment": ["barbell", "bench"],
+    "locations": ["gym"],
+    "movementPattern": "push",
+    "highLoadAreas": ["shoulder", "elbow", "wrist", "upper-back"],
+    "slots": ["main-strength"],
+    "rirSuitable": true,
+    "easierId": "dumbbell-bench-press",
+    "harderId": null,
+    "image": {
+      "url": "https://wger.de/media/exercise-images/192/Bench-press-1.png",
+      "author": "Everkinetic",
+      "authorUrl": null,
+      "licence": "CC-BY-SA 3.0",
+      "licenceUrl": "https://creativecommons.org/licenses/by-sa/3.0/deed.en",
+      "sourceUrl": "https://wger.de/en/exercise/73/view/",
+      "wgerExerciseId": 73
+    }
+  },
+  {
+    "id": "one-arm-kettlebell-floor-press",
+    "source": "free-exercise-db",
+    "sourceId": "One-Arm_Kettlebell_Floor_Press",
+    "licence": "Unlicense",
+    "name": {
+      "en": "One-Arm Kettlebell Floor Press",
+      "el": null
+    },
+    "instructions": {
+      "en": [
+        "Lie on the floor holding a kettlebell with one hand, with your upper arm supported by the floor. The palm should be facing in.",
+        "Press the kettlebell straight up toward the ceiling, rotating your wrist.",
+        "Lower the kettlebell back to the starting position and repeat."
+      ],
+      "el": null
+    },
+    "equipment": ["kettlebell"],
+    "locations": ["gym", "home"],
+    "movementPattern": "push",
+    "highLoadAreas": ["shoulder", "elbow", "wrist"],
+    "slots": ["main-strength"],
+    "rirSuitable": true,
+    "easierId": null,
+    "harderId": null,
+    "image": null
+  },
+  {
+    "id": "shoulder-press-with-bands",
+    "source": "free-exercise-db",
+    "sourceId": "Shoulder_Press_-_With_Bands",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Shoulder Press - With Bands",
+      "el": null
+    },
+    "instructions": {
+      "en": [
+        "To begin, stand on an exercise band so that tension begins at arm's length. Grasp the handles and lift them so that the hands are at shoulder height at each side.",
+        "Rotate the wrists so that the palms of your hands are facing forward. Your elbows should be bent, with the upper arms and forearms in line to the torso. This is your starting position.",
+        "As you exhale, lift the handles up until your arms are fully extended overhead."
+      ],
+      "el": null
+    },
+    "equipment": ["resistance-band"],
+    "locations": ["gym", "home", "court", "beach"],
+    "movementPattern": "overhead",
+    "highLoadAreas": ["shoulder", "elbow", "wrist", "lower-back"],
+    "slots": ["main-strength"],
+    "rirSuitable": true,
+    "easierId": null,
+    "harderId": "standing-dumbbell-press",
+    "image": null
+  },
+  {
+    "id": "standing-dumbbell-press",
+    "source": "free-exercise-db",
+    "sourceId": "Standing_Dumbbell_Press",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Standing Dumbbell Press",
+      "el": null
+    },
+    "instructions": {
+      "en": [
+        "Standing with your feet shoulder width apart, take a dumbbell in each hand. Raise the dumbbells to head height, the elbows out and about 90 degrees. This will be your starting position.",
+        "Maintaining strict technique with no leg drive or leaning back, extend through the elbow to raise the weights together directly above your head.",
+        "Pause, and slowly return the weight to the starting position."
+      ],
+      "el": null
+    },
+    "equipment": ["dumbbell"],
+    "locations": ["gym", "home"],
+    "movementPattern": "overhead",
+    "highLoadAreas": ["shoulder", "elbow", "wrist", "upper-back", "lower-back"],
+    "slots": ["main-strength"],
+    "rirSuitable": true,
+    "easierId": "shoulder-press-with-bands",
+    "harderId": "dumbbell-one-arm-shoulder-press",
+    "image": null
+  },
+  {
+    "id": "dumbbell-one-arm-shoulder-press",
+    "source": "free-exercise-db",
+    "sourceId": "Dumbbell_One-Arm_Shoulder_Press",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Dumbbell One-Arm Shoulder Press",
+      "el": null
+    },
+    "instructions": {
+      "en": [
+        "Grab a dumbbell and either sit on a military press bench or a utility bench that has a back support on it as you place the dumbbells upright on top of your thighs or stand up straight.",
+        "Clean the dumbbell up to bring it to shoulder height. The other hand can be kept fully extended to the side, by the waist or grabbing a fixed surface.",
+        "Rotate the wrist so that the palm of your hand is facing forward. This is your starting position.",
+        "As you exhale, push the dumbbell up until your arm is fully extended.",
+        "After a second pause, slowly come down back to the starting position as you inhale.",
+        "Repeat for the recommended amount of repetitions and then switch arms."
+      ],
+      "el": null
+    },
+    "equipment": ["dumbbell"],
+    "locations": ["gym", "home"],
+    "movementPattern": "overhead",
+    "highLoadAreas": ["shoulder", "elbow", "wrist", "upper-back", "lower-back"],
+    "slots": ["main-strength"],
+    "rirSuitable": true,
+    "easierId": "standing-dumbbell-press",
+    "harderId": null,
+    "image": null
+  },
+  {
+    "id": "arnold-dumbbell-press",
+    "source": "free-exercise-db",
+    "sourceId": "Arnold_Dumbbell_Press",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Arnold Dumbbell Press",
+      "el": null
+    },
+    "instructions": {
+      "en": [
+        "Sit on an exercise bench with back support and hold two dumbbells in front of you at about upper chest level with your palms facing your body and your elbows bent. Tip: Your arms should be next to your torso. The starting position should look like the contracted portion of a dumbbell curl.",
+        "Now to perform the movement, raise the dumbbells as you rotate the palms of your hands until they are facing forward.",
+        "Continue lifting the dumbbells until your arms are extended above you in straight arm position. Breathe out as you perform this portion of the movement.",
+        "After a second pause at the top, begin to lower the dumbbells to the original position by rotating the palms of your hands towards you. Tip: The left arm will be rotated in a counter clockwise manner while the right one will be rotated clockwise. Breathe in as you perform this portion of the movement.",
+        "Repeat for the recommended amount of repetitions."
+      ],
+      "el": null
+    },
+    "equipment": ["dumbbell", "bench"],
+    "locations": ["gym", "home"],
+    "movementPattern": "overhead",
+    "highLoadAreas": ["shoulder", "elbow", "wrist", "upper-back", "lower-back"],
+    "slots": ["main-strength"],
+    "rirSuitable": true,
+    "easierId": "standing-dumbbell-press",
+    "harderId": null,
+    "image": null
+  },
+  {
+    "id": "standing-military-press",
+    "source": "free-exercise-db",
+    "sourceId": "Standing_Military_Press",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Standing Military Press",
+      "el": null
+    },
+    "instructions": {
+      "en": [
+        "Start by placing a barbell that is about chest high on a squat rack. Once you have selected the weights, grab the barbell using a pronated (palms facing forward) grip. Make sure to grip the bar wider than shoulder width apart from each other.",
+        "Slightly bend the knees and place the barbell on your collar bone. Lift the barbell up keeping it lying on your chest. Take a step back and position your feet shoulder width apart from each other.",
+        "Once you pick up the barbell with the correct grip length, lift the bar up over your head by locking your arms. Hold at about shoulder level and slightly in front of your head. This is your starting position.",
+        "Lower the bar down to the collarbone slowly as you inhale.",
+        "Lift the bar back up to the starting position as you exhale.",
+        "Repeat for the recommended amount of repetitions."
+      ],
+      "el": null
+    },
+    "equipment": ["barbell"],
+    "locations": ["gym"],
+    "movementPattern": "overhead",
+    "highLoadAreas": ["shoulder", "elbow", "wrist", "upper-back", "lower-back", "neck"],
+    "slots": ["main-strength"],
+    "rirSuitable": true,
+    "easierId": "standing-dumbbell-press",
+    "harderId": null,
+    "image": null
+  },
+  {
+    "id": "two-arm-kettlebell-military-press",
+    "source": "free-exercise-db",
+    "sourceId": "Two-Arm_Kettlebell_Military_Press",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Two-Arm Kettlebell Military Press",
+      "el": null
+    },
+    "instructions": {
+      "en": [
+        "Clean two kettlebells to your shoulders. Clean the kettlebells to your shoulders by extending through the legs and hips as you swing the kettlebells towards your shoulders. Rotate your wrists as you do so, so that the palms face forward.",
+        "Press the kettlebells up and out. As the kettlebells pass your head, lean into the weights so that the kettlebells are racked behind your head. Make sure to contract your lats, butt, and stomach for added stability."
+      ],
+      "el": null
+    },
+    "equipment": ["kettlebell"],
+    "locations": ["gym", "home"],
+    "movementPattern": "overhead",
+    "highLoadAreas": ["shoulder", "elbow", "wrist", "upper-back", "lower-back"],
+    "slots": ["main-strength"],
+    "rirSuitable": true,
+    "easierId": null,
+    "harderId": null,
+    "image": null
+  },
+  {
+    "id": "lateral-raise-with-bands",
+    "source": "free-exercise-db",
+    "sourceId": "Lateral_Raise_-_With_Bands",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Lateral Raise - With Bands",
+      "el": null
+    },
+    "instructions": {
+      "en": [
+        "To begin, stand on an exercise band so that tension begins at arm's length. Grasp the handles using a pronated (palms facing your thighs) grip that is slightly less than shoulder width. The handles should be resting on the sides of your thighs. Your arms should be extended with a slight bend at the elbows and your back should be straight. This will be your starting position.",
+        "Use your side shoulders to lift the handles to the sides as you exhale. Continue to lift the handles until they are slightly above parallel. Tip: As you lift the handles, slightly tilt the hand as if you were pouring water and keep your arms extended. Also, keep your torso stationary and pause for a second at the top of the movement.",
+        "Lower the handles back down slowly to the starting position. Inhale as you perform this portion of the movement.",
+        "Repeat for the recommended amount of repetitions."
+      ],
+      "el": null
+    },
+    "equipment": ["resistance-band"],
+    "locations": ["gym", "home", "court", "beach"],
+    "movementPattern": "overhead",
+    "highLoadAreas": ["shoulder"],
+    "slots": ["accessories-core"],
+    "rirSuitable": true,
+    "easierId": null,
+    "harderId": "side-lateral-raise",
+    "image": null
+  },
+  {
+    "id": "side-lateral-raise",
+    "source": "free-exercise-db",
+    "sourceId": "Side_Lateral_Raise",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Side Lateral Raise",
+      "el": null
+    },
+    "instructions": {
+      "en": [
+        "Pick a couple of dumbbells and stand with a straight torso and the dumbbells by your side at arms length with the palms of the hand facing you. This will be your starting position.",
+        "While maintaining the torso in a stationary position (no swinging), lift the dumbbells to your side with a slight bend on the elbow and the hands slightly tilted forward as if pouring water in a glass. Continue to go up until you arms are parallel to the floor. Exhale as you execute this movement and pause for a second at the top.",
+        "Lower the dumbbells back down slowly to the starting position as you inhale.",
+        "Repeat for the recommended amount of repetitions."
+      ],
+      "el": null
+    },
+    "equipment": ["dumbbell"],
+    "locations": ["gym", "home"],
+    "movementPattern": "overhead",
+    "highLoadAreas": ["shoulder"],
+    "slots": ["accessories-core"],
+    "rirSuitable": true,
+    "easierId": "lateral-raise-with-bands",
+    "harderId": null,
+    "image": {
+      "url": "https://wger.de/media/exercise-images/148/lateral-dumbbell-raises-large-2.png",
+      "author": "Everkinetic",
+      "authorUrl": null,
+      "licence": "CC-BY-SA 3.0",
+      "licenceUrl": "https://creativecommons.org/licenses/by-sa/3.0/deed.en",
+      "sourceUrl": "https://wger.de/en/exercise/348/view/",
+      "wgerExerciseId": 348
+    }
+  },
+  {
+    "id": "front-dumbbell-raise",
+    "source": "free-exercise-db",
+    "sourceId": "Front_Dumbbell_Raise",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Front Dumbbell Raise",
+      "el": null
+    },
+    "instructions": {
+      "en": [
+        "Pick a couple of dumbbells and stand with a straight torso and the dumbbells on front of your thighs at arms length with the palms of the hand facing your thighs. This will be your starting position.",
+        "While maintaining the torso stationary (no swinging), lift the left dumbbell to the front with a slight bend on the elbow and the palms of the hands always facing down. Continue to go up until you arm is slightly above parallel to the floor. Exhale as you execute this portion of the movement and pause for a second at the top. Inhale after the second pause.",
+        "Now lower the dumbbell back down slowly to the starting position as you simultaneously lift the right dumbbell.",
+        "Continue alternating in this fashion until all of the recommended amount of repetitions have been performed for each arm."
+      ],
+      "el": null
+    },
+    "equipment": ["dumbbell"],
+    "locations": ["gym", "home"],
+    "movementPattern": "overhead",
+    "highLoadAreas": ["shoulder"],
+    "slots": ["accessories-core"],
+    "rirSuitable": true,
+    "easierId": null,
+    "harderId": null,
+    "image": null
+  },
+  {
+    "id": "reverse-flyes",
+    "source": "free-exercise-db",
+    "sourceId": "Reverse_Flyes",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Reverse Flyes",
+      "el": null
+    },
+    "instructions": {
+      "en": [
+        "To begin, lie down on an incline bench with the chest and stomach pressing against the incline. Have the dumbbells in each hand with the palms facing each other (neutral grip).",
+        "Extend the arms in front of you so that they are perpendicular to the angle of the bench. The legs should be stationary while applying pressure with the ball of your toes. This is the starting position.",
+        "Maintaining the slight bend of the elbows, move the weights out and away from each other (to the side) in an arc motion while exhaling. Tip: Try to squeeze your shoulder blades together to get the best results from this exercise.",
+        "The arms should be elevated until they are parallel to the floor.",
+        "Feel the contraction and slowly lower the weights back down to the starting position while inhaling.",
+        "Repeat for the recommended amount of repetitions."
+      ],
+      "el": null
+    },
+    "equipment": ["dumbbell", "bench"],
+    "locations": ["gym", "home"],
+    "movementPattern": "pull",
+    "highLoadAreas": ["shoulder", "upper-back"],
+    "slots": ["accessories-core"],
+    "rirSuitable": true,
+    "easierId": null,
+    "harderId": null,
+    "image": null
+  },
+  {
+    "id": "one-arm-dumbbell-row",
+    "source": "free-exercise-db",
+    "sourceId": "One-Arm_Dumbbell_Row",
+    "licence": "Unlicense",
+    "name": {
+      "en": "One-Arm Dumbbell Row",
+      "el": null
+    },
+    "instructions": {
+      "en": [
+        "Choose a flat bench and place a dumbbell on each side of it.",
+        "Place the right leg on top of the end of the bench, bend your torso forward from the waist until your upper body is parallel to the floor, and place your right hand on the other end of the bench for support.",
+        "Use the left hand to pick up the dumbbell on the floor and hold the weight while keeping your lower back straight. The palm of the hand should be facing your torso. This will be your starting position.",
+        "Pull the resistance straight up to the side of your chest, keeping your upper arm close to your side and keeping the torso stationary. Breathe out as you perform this step. Tip: Concentrate on squeezing the back muscles once you reach the full contracted position. Also, make sure that the force is performed with the back muscles and not the arms. Finally, the upper torso should remain stationary and only the arms should move. The forearms should do no other work except for holding the dumbbell; therefore do not try to pull the dumbbell up using the forearms.",
+        "Lower the resistance straight down to the starting position. Breathe in as you perform this step.",
+        "Repeat the movement for the specified amount of repetitions.",
+        "Switch sides and repeat again with the other arm."
+      ],
+      "el": null
+    },
+    "equipment": ["dumbbell", "bench"],
+    "locations": ["gym", "home"],
+    "movementPattern": "pull",
+    "highLoadAreas": ["shoulder", "upper-back", "elbow", "wrist", "lower-back", "hip"],
+    "slots": ["main-strength"],
+    "rirSuitable": true,
+    "easierId": null,
+    "harderId": "bent-over-two-dumbbell-row",
+    "image": {
+      "url": "https://wger.de/media/exercise-images/81/a751a438-ae2d-4751-8d61-cef0e9292174.png",
+      "author": "Franpol",
+      "authorUrl": null,
+      "licence": "CC-BY-SA 4.0",
+      "licenceUrl": "https://creativecommons.org/licenses/by-sa/4.0/deed.en",
+      "sourceUrl": "https://wger.de/en/exercise/81/view/",
+      "wgerExerciseId": 81
+    }
+  },
+  {
+    "id": "bent-over-two-dumbbell-row",
+    "source": "free-exercise-db",
+    "sourceId": "Bent_Over_Two-Dumbbell_Row",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Bent Over Two-Dumbbell Row",
+      "el": null
+    },
+    "instructions": {
+      "en": [
+        "With a dumbbell in each hand (palms facing your torso), bend your knees slightly and bring your torso forward by bending at the waist; as you bend make sure to keep your back straight until it is almost parallel to the floor. Tip: Make sure that you keep the head up. The weights should hang directly in front of you as your arms hang perpendicular to the floor and your torso. This is your starting position.",
+        "While keeping the torso stationary, lift the dumbbells to your side (as you breathe out), keeping the elbows close to the body (do not exert any force with the forearm other than holding the weights). On the top contracted position, squeeze the back muscles and hold for a second.",
+        "Slowly lower the weight again to the starting position as you inhale.",
+        "Repeat for the recommended amount of repetitions."
+      ],
+      "el": null
+    },
+    "equipment": ["dumbbell"],
+    "locations": ["gym", "home"],
+    "movementPattern": "pull",
+    "highLoadAreas": ["shoulder", "upper-back", "elbow", "wrist", "lower-back", "hip"],
+    "slots": ["main-strength"],
+    "rirSuitable": true,
+    "easierId": "one-arm-dumbbell-row",
+    "harderId": "bent-over-barbell-row",
+    "image": null
+  },
+  {
+    "id": "bent-over-barbell-row",
+    "source": "free-exercise-db",
+    "sourceId": "Bent_Over_Barbell_Row",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Bent Over Barbell Row",
+      "el": null
+    },
+    "instructions": {
+      "en": [
+        "Holding a barbell with a pronated grip (palms facing down), bend your knees slightly and bring your torso forward, by bending at the waist, while keeping the back straight until it is almost parallel to the floor. Tip: Make sure that you keep the head up. The barbell should hang directly in front of you as your arms hang perpendicular to the floor and your torso. This is your starting position.",
+        "Now, while keeping the torso stationary, breathe out and lift the barbell to you. Keep the elbows close to the body and only use the forearms to hold the weight. At the top contracted position, squeeze the back muscles and hold for a brief pause.",
+        "Then inhale and slowly lower the barbell back to the starting position.",
+        "Repeat for the recommended amount of repetitions."
+      ],
+      "el": null
+    },
+    "equipment": ["barbell"],
+    "locations": ["gym"],
+    "movementPattern": "pull",
+    "highLoadAreas": ["shoulder", "upper-back", "elbow", "wrist", "lower-back", "hip"],
+    "slots": ["main-strength"],
+    "rirSuitable": true,
+    "easierId": "bent-over-two-dumbbell-row",
+    "harderId": null,
+    "image": null
+  },
+  {
+    "id": "one-arm-kettlebell-row",
+    "source": "free-exercise-db",
+    "sourceId": "One-Arm_Kettlebell_Row",
+    "licence": "Unlicense",
+    "name": {
+      "en": "One-Arm Kettlebell Row",
+      "el": null
+    },
+    "instructions": {
+      "en": [
+        "Place a kettlebell in front of your feet. Bend your knees slightly and then push your butt out as much as possible as you bend over to get in the starting position. Grab the kettlebell and pull it to your stomach, retracting your shoulder blade and flexing the elbow. Keep your back straight. Lower and repeat."
+      ],
+      "el": null
+    },
+    "equipment": ["kettlebell"],
+    "locations": ["gym", "home"],
+    "movementPattern": "pull",
+    "highLoadAreas": ["shoulder", "upper-back", "elbow", "wrist", "lower-back", "hip"],
+    "slots": ["main-strength"],
+    "rirSuitable": true,
+    "easierId": null,
+    "harderId": null,
+    "image": null
+  },
+  {
+    "id": "hammer-curls",
+    "source": "free-exercise-db",
+    "sourceId": "Hammer_Curls",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Hammer Curls",
+      "el": null
+    },
+    "instructions": {
+      "en": [
+        "Stand up with your torso upright and a dumbbell on each hand being held at arms length. The elbows should be close to the torso.",
+        "The palms of the hands should be facing your torso. This will be your starting position.",
+        "Now, while holding your upper arm stationary, exhale and curl the weight forward while contracting the biceps. Continue to raise the weight until the biceps are fully contracted and the dumbbell is at shoulder level. Hold the contracted position for a brief moment as you squeeze the biceps. Tip: Focus on keeping the elbow stationary and only moving your forearm.",
+        "After the brief pause, inhale and slowly begin the lower the dumbbells back down to the starting position.",
+        "Repeat for the recommended amount of repetitions."
+      ],
+      "el": null
+    },
+    "equipment": ["dumbbell"],
+    "locations": ["gym", "home"],
+    "movementPattern": "pull",
+    "highLoadAreas": ["elbow", "wrist"],
+    "slots": ["accessories-core"],
+    "rirSuitable": true,
+    "easierId": null,
+    "harderId": null,
+    "image": {
+      "url": "https://wger.de/media/exercise-images/86/Bicep-hammer-curl-1.png",
+      "author": "Everkinetic",
+      "authorUrl": null,
+      "licence": "CC-BY-SA 3.0",
+      "licenceUrl": "https://creativecommons.org/licenses/by-sa/3.0/deed.en",
+      "sourceUrl": "https://wger.de/en/exercise/272/view/",
+      "wgerExerciseId": 272
+    }
+  },
+  {
+    "id": "dumbbell-bicep-curl",
+    "source": "free-exercise-db",
+    "sourceId": "Dumbbell_Bicep_Curl",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Dumbbell Bicep Curl",
+      "el": null
+    },
+    "instructions": {
+      "en": [
+        "Stand up straight with a dumbbell in each hand at arm's length. Keep your elbows close to your torso and rotate the palms of your hands until they are facing forward. This will be your starting position.",
+        "Now, keeping the upper arms stationary, exhale and curl the weights while contracting your biceps. Continue to raise the weights until your biceps are fully contracted and the dumbbells are at shoulder level. Hold the contracted position for a brief pause as you squeeze your biceps.",
+        "Then, inhale and slowly begin to lower the dumbbells back to the starting position.",
+        "Repeat for the recommended amount of repetitions."
+      ],
+      "el": null
+    },
+    "equipment": ["dumbbell"],
+    "locations": ["gym", "home"],
+    "movementPattern": "pull",
+    "highLoadAreas": ["elbow", "wrist"],
+    "slots": ["accessories-core"],
+    "rirSuitable": true,
+    "easierId": null,
+    "harderId": null,
+    "image": {
+      "url": "https://wger.de/media/exercise-images/81/Biceps-curl-1.png",
+      "author": "Everkinetic",
+      "authorUrl": null,
+      "licence": "CC-BY-SA 3.0",
+      "licenceUrl": "https://creativecommons.org/licenses/by-sa/3.0/deed.en",
+      "sourceUrl": "https://wger.de/en/exercise/92/view/",
+      "wgerExerciseId": 92
+    }
+  },
+  {
+    "id": "tricep-dumbbell-kickback",
+    "source": "free-exercise-db",
+    "sourceId": "Tricep_Dumbbell_Kickback",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Tricep Dumbbell Kickback",
+      "el": null
+    },
+    "instructions": {
+      "en": [
+        "Start with a dumbbell in each hand and your palms facing your torso. Keep your back straight with a slight bend in the knees and bend forward at the waist. Your torso should be almost parallel to the floor. Make sure to keep your head up. Your upper arms should be close to your torso and parallel to the floor. Your forearms should be pointed towards the floor as you hold the weights. There should be a 90-degree angle formed between your forearm and upper arm. This is your starting position.",
+        "Now, while keeping your upper arms stationary, exhale and use your triceps to lift the weights until the arm is fully extended. Focus on moving the forearm.",
+        "After a brief pause at the top contraction, inhale and slowly lower the dumbbells back down to the starting position.",
+        "Repeat the movement for the prescribed amount of repetitions."
+      ],
+      "el": null
+    },
+    "equipment": ["dumbbell"],
+    "locations": ["gym", "home"],
+    "movementPattern": "push",
+    "highLoadAreas": ["shoulder", "elbow", "wrist", "lower-back", "hip"],
+    "slots": ["accessories-core"],
+    "rirSuitable": true,
+    "easierId": null,
+    "harderId": null,
+    "image": null
+  },
+  {
+    "id": "standing-dumbbell-triceps-extension",
+    "source": "free-exercise-db",
+    "sourceId": "Standing_Dumbbell_Triceps_Extension",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Standing Dumbbell Triceps Extension",
+      "el": null
+    },
+    "instructions": {
+      "en": [
+        "To begin, stand up with a dumbbell held by both hands. Your feet should be about shoulder width apart from each other. Slowly use both hands to grab the dumbbell and lift it over your head until both arms are fully extended.",
+        "The resistance should be resting in the palms of your hands with your thumbs around it. The palm of the hands should be facing up towards the ceiling. This will be your starting position.",
+        "Keeping your upper arms close to your head with elbows in and perpendicular to the floor, lower the resistance in a semicircular motion behind your head until your forearms touch your biceps. Tip: The upper arms should remain stationary and only the forearms should move. Breathe in as you perform this step.",
+        "Go back to the starting position by using the triceps to raise the dumbbell. Breathe out as you perform this step.",
+        "Repeat for the recommended amount of repetitions."
+      ],
+      "el": null
+    },
+    "equipment": ["dumbbell"],
+    "locations": ["gym", "home"],
+    "movementPattern": "overhead",
+    "highLoadAreas": ["shoulder", "elbow", "wrist", "lower-back"],
+    "slots": ["accessories-core"],
+    "rirSuitable": true,
+    "easierId": null,
+    "harderId": null,
+    "image": null
+  },
+  {
+    "id": "triceps-pushdown",
+    "source": "free-exercise-db",
+    "sourceId": "Triceps_Pushdown",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Triceps Pushdown",
+      "el": null
+    },
+    "instructions": {
+      "en": [
+        "Attach a straight or angled bar to a high pulley and grab with an overhand grip (palms facing down) at shoulder width.",
+        "Standing upright with the torso straight and a very small inclination forward, bring the upper arms close to your body and perpendicular to the floor. The forearms should be pointing up towards the pulley as they hold the bar. This is your starting position.",
+        "Using the triceps, bring the bar down until it touches the front of your thighs and the arms are fully extended perpendicular to the floor. The upper arms should always remain stationary next to your torso and only the forearms should move. Exhale as you perform this movement.",
+        "After a second hold at the contracted position, bring the bar slowly up to the starting point. Breathe in as you perform this step.",
+        "Repeat for the recommended amount of repetitions."
+      ],
+      "el": null
+    },
+    "equipment": ["machine"],
+    "locations": ["gym"],
+    "movementPattern": "push",
+    "highLoadAreas": ["elbow", "wrist", "shoulder"],
+    "slots": ["accessories-core"],
+    "rirSuitable": true,
+    "easierId": null,
+    "harderId": null,
+    "image": null
+  },
+  {
+    "id": "band-pull-apart",
+    "source": "free-exercise-db",
+    "sourceId": "Band_Pull_Apart",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Band Pull Apart",
+      "el": null
+    },
+    "instructions": {
+      "en": [
+        "Begin with your arms extended straight out in front of you, holding the band with both hands.",
+        "Initiate the movement by performing a reverse fly motion, moving your hands out laterally to your sides.",
+        "Keep your elbows extended as you perform the movement, bringing the band to your chest. Ensure that you keep your shoulders back during the exercise.",
+        "Pause as you complete the movement, returning to the starting position under control."
+      ],
+      "el": null
+    },
+    "equipment": ["resistance-band"],
+    "locations": ["gym", "home", "court", "beach"],
+    "movementPattern": "pull",
+    "highLoadAreas": ["shoulder", "upper-back"],
+    "slots": ["warm-up", "accessories-core"],
+    "rirSuitable": true,
+    "easierId": null,
+    "harderId": null,
+    "image": null
+  },
+  {
+    "id": "external-rotation-with-band",
+    "source": "free-exercise-db",
+    "sourceId": "External_Rotation_with_Band",
+    "licence": "Unlicense",
+    "name": {
+      "en": "External Rotation with Band",
+      "el": null
+    },
+    "instructions": {
+      "en": [
+        "Choke the band around a post. The band should be at the same height as your elbow. Stand with your left side to the band a couple of feet away.",
+        "Grasp the end of the band with your right hand, and keep your elbow pressed firmly to your side. We recommend you hold a pad or foam roll in place with your elbow to keep it firmly in position.",
+        "With your upper arm in position, your elbow should be flexed to 90 degrees with your hand reaching across the front of your torso. This will be your starting position.",
+        "Execute the movement by rotating your arm in a backhand motion, keeping your elbow in place.",
+        "Continue as far as you are able, pause, and then return to the starting position."
+      ],
+      "el": null
+    },
+    "equipment": ["resistance-band"],
+    "locations": ["gym", "home"],
+    "movementPattern": "pull",
+    "highLoadAreas": ["shoulder", "elbow"],
+    "slots": ["accessories-core"],
+    "rirSuitable": true,
+    "easierId": null,
+    "harderId": null,
+    "image": null
+  },
+  {
+    "id": "face-pull",
+    "source": "free-exercise-db",
+    "sourceId": "Face_Pull",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Face Pull",
+      "el": null
+    },
+    "instructions": {
+      "en": [
+        "Facing a high pulley with a rope or dual handles attached, pull the weight directly towards your face, separating your hands as you do so. Keep your upper arms parallel to the ground."
+      ],
+      "el": null
+    },
+    "equipment": ["machine"],
+    "locations": ["gym"],
+    "movementPattern": "pull",
+    "highLoadAreas": ["shoulder", "elbow", "upper-back"],
+    "slots": ["accessories-core"],
+    "rirSuitable": true,
+    "easierId": null,
+    "harderId": null,
+    "image": null
+  },
+  {
+    "id": "scapular-pull-up",
+    "source": "free-exercise-db",
+    "sourceId": "Scapular_Pull-Up",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Scapular Pull-Up",
+      "el": null
+    },
+    "instructions": {
+      "en": [
+        "Take a pronated grip on a pull-up bar.",
+        "From a hanging position, raise yourself a few inches without using your arms. Do this by depressing your shoulder girdle in a reverse shrugging motion.",
+        "Pause at the completion of the movement, and then slowly return to the starting position before performing more repetitions."
+      ],
+      "el": null
+    },
+    "equipment": ["pull-up-bar"],
+    "locations": ["gym", "home"],
+    "movementPattern": "pull",
+    "highLoadAreas": ["shoulder", "wrist", "upper-back", "elbow"],
+    "slots": ["accessories-core"],
+    "rirSuitable": true,
+    "easierId": null,
+    "harderId": "band-assisted-pull-up",
+    "image": null
+  },
+  {
+    "id": "band-assisted-pull-up",
+    "source": "free-exercise-db",
+    "sourceId": "Band_Assisted_Pull-Up",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Band Assisted Pull-Up",
+      "el": null
+    },
+    "instructions": {
+      "en": [
+        "Choke the band around the center of the pullup bar. You can use different bands to provide varying levels of assistance.",
+        "Pull the end of the band down, and place one bent knee into the loop, ensuring it won't slip out. Take a medium to wide grip on the bar. This will be your starting position.",
+        "Pull yourself upward by contracting the lats as you flex the elbow. The elbow should be driven to your side. Pull to the front, attempting to get your chin over the bar. Avoid swinging or jerking movements.",
+        "After a brief pause, return to the starting position."
+      ],
+      "el": null
+    },
+    "equipment": ["pull-up-bar", "resistance-band"],
+    "locations": ["gym", "home"],
+    "movementPattern": "pull",
+    "highLoadAreas": ["shoulder", "elbow", "wrist", "upper-back"],
+    "slots": ["main-strength"],
+    "rirSuitable": true,
+    "easierId": "scapular-pull-up",
+    "harderId": "chin-up",
+    "image": null
+  },
+  {
+    "id": "chin-up",
+    "source": "free-exercise-db",
+    "sourceId": "Chin-Up",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Chin-Up",
+      "el": null
+    },
+    "instructions": {
+      "en": [
+        "Grab the pull-up bar with the palms facing your torso and a grip closer than the shoulder width.",
+        "As you have both arms extended in front of you holding the bar at the chosen grip width, keep your torso as straight as possible while creating a curvature on your lower back and sticking your chest out. This is your starting position. Tip: Keeping the torso as straight as possible maximizes biceps stimulation while minimizing back involvement.",
+        "As you breathe out, pull your torso up until your head is around the level of the pull-up bar. Concentrate on using the biceps muscles in order to perform the movement. Keep the elbows close to your body. Tip: The upper torso should remain stationary as it moves through space and only the arms should move. The forearms should do no other work other than hold the bar.",
+        "After a second of squeezing the biceps in the contracted position, slowly lower your torso back to the starting position; when your arms are fully extended. Breathe in as you perform this portion of the movement.",
+        "Repeat this motion for the prescribed amount of repetitions."
+      ],
+      "el": null
+    },
+    "equipment": ["pull-up-bar"],
+    "locations": ["gym", "home"],
+    "movementPattern": "pull",
+    "highLoadAreas": ["shoulder", "elbow", "wrist", "upper-back"],
+    "slots": ["main-strength"],
+    "rirSuitable": true,
+    "easierId": "band-assisted-pull-up",
+    "harderId": "pullups",
+    "image": {
+      "url": "https://wger.de/media/exercise-images/152/6c1a7459-266d-491a-bd50-7cbaea2bc771.png",
+      "author": "Everkinetic",
+      "authorUrl": null,
+      "licence": "CC-BY-SA 3.0",
+      "licenceUrl": "https://creativecommons.org/licenses/by-sa/3.0/deed.en",
+      "sourceUrl": "https://wger.de/en/exercise/152/view/",
+      "wgerExerciseId": 152
+    }
+  },
+  {
+    "id": "pullups",
+    "source": "free-exercise-db",
+    "sourceId": "Pullups",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Pullups",
+      "el": null
+    },
+    "instructions": {
+      "en": [
+        "Grab the pull-up bar with the palms facing forward using the prescribed grip. Note on grips: For a wide grip, your hands need to be spaced out at a distance wider than your shoulder width. For a medium grip, your hands need to be spaced out at a distance equal to your shoulder width and for a close grip at a distance smaller than your shoulder width.",
+        "As you have both arms extended in front of you holding the bar at the chosen grip width, bring your torso back around 30 degrees or so while creating a curvature on your lower back and sticking your chest out. This is your starting position.",
+        "Pull your torso up until the bar touches your upper chest by drawing the shoulders and the upper arms down and back. Exhale as you perform this portion of the movement. Tip: Concentrate on squeezing the back muscles once you reach the full contracted position. The upper torso should remain stationary as it moves through space and only the arms should move. The forearms should do no other work other than hold the bar.",
+        "After a second on the contracted position, start to inhale and slowly lower your torso back to the starting position when your arms are fully extended and the lats are fully stretched.",
+        "Repeat this motion for the prescribed amount of repetitions."
+      ],
+      "el": null
+    },
+    "equipment": ["pull-up-bar"],
+    "locations": ["gym", "home"],
+    "movementPattern": "pull",
+    "highLoadAreas": ["shoulder", "elbow", "wrist", "upper-back"],
+    "slots": ["main-strength"],
+    "rirSuitable": true,
+    "easierId": "chin-up",
+    "harderId": null,
+    "image": {
+      "url": "https://wger.de/media/exercise-images/475/b0554016-16fd-4dbe-be47-a2a17d16ae0e.jpg",
+      "author": "Imobard",
+      "authorUrl": null,
+      "licence": "CC-BY-SA 4.0",
+      "licenceUrl": "https://creativecommons.org/licenses/by-sa/4.0/deed.en",
+      "sourceUrl": "https://wger.de/en/exercise/475/view/",
+      "wgerExerciseId": 475
+    }
+  },
+  {
+    "id": "inverted-row",
+    "source": "free-exercise-db",
+    "sourceId": "Inverted_Row",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Inverted Row",
+      "el": null
+    },
+    "instructions": {
+      "en": [
+        "Position a bar in a rack to about waist height. You can also use a smith machine.",
+        "Take a wider than shoulder width grip on the bar and position yourself hanging underneath the bar. Your body should be straight with your heels on the ground with your arms fully extended. This will be your starting position.",
+        "Begin by flexing the elbow, pulling your chest towards the bar. Retract your shoulder blades as you perform the movement.",
+        "Pause at the top of the motion, and return yourself to the start position.",
+        "Repeat for the desired number of repetitions."
+      ],
+      "el": null
+    },
+    "equipment": ["barbell"],
+    "locations": ["gym"],
+    "movementPattern": "pull",
+    "highLoadAreas": ["shoulder", "upper-back", "elbow", "wrist", "lower-back"],
+    "slots": ["main-strength"],
+    "rirSuitable": true,
+    "easierId": null,
+    "harderId": null,
+    "image": null
+  },
+  {
+    "id": "seated-cable-rows",
+    "source": "free-exercise-db",
+    "sourceId": "Seated_Cable_Rows",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Seated Cable Rows",
+      "el": null
+    },
+    "instructions": {
+      "en": [
+        "For this exercise you will need access to a low pulley row machine with a V-bar. Note: The V-bar will enable you to have a neutral grip where the palms of your hands face each other. To get into the starting position, first sit down on the machine and place your feet on the front platform or crossbar provided making sure that your knees are slightly bent and not locked.",
+        "Lean over as you keep the natural alignment of your back and grab the V-bar handles.",
+        "With your arms extended pull back until your torso is at a 90-degree angle from your legs. Your back should be slightly arched and your chest should be sticking out. You should be feeling a nice stretch on your lats as you hold the bar in front of you. This is the starting position of the exercise.",
+        "Keeping the torso stationary, pull the handles back towards your torso while keeping the arms close to it until you touch the abdominals. Breathe out as you perform that movement. At that point you should be squeezing your back muscles hard. Hold that contraction for a second and slowly go back to the original position while breathing in.",
+        "Repeat for the recommended amount of repetitions."
+      ],
+      "el": null
+    },
+    "equipment": ["machine"],
+    "locations": ["gym"],
+    "movementPattern": "pull",
+    "highLoadAreas": ["shoulder", "upper-back", "elbow", "wrist", "lower-back", "hip"],
+    "slots": ["main-strength"],
+    "rirSuitable": true,
+    "easierId": null,
+    "harderId": null,
+    "image": null
+  },
+  {
+    "id": "wide-grip-lat-pulldown",
+    "source": "free-exercise-db",
+    "sourceId": "Wide-Grip_Lat_Pulldown",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Wide-Grip Lat Pulldown",
+      "el": null
+    },
+    "instructions": {
+      "en": [
+        "Sit down on a pull-down machine with a wide bar attached to the top pulley. Make sure that you adjust the knee pad of the machine to fit your height. These pads will prevent your body from being raised by the resistance attached to the bar.",
+        "Grab the bar with the palms facing forward using the prescribed grip. Note on grips: For a wide grip, your hands need to be spaced out at a distance wider than shoulder width. For a medium grip, your hands need to be spaced out at a distance equal to your shoulder width and for a close grip at a distance smaller than your shoulder width.",
+        "As you have both arms extended in front of you holding the bar at the chosen grip width, bring your torso back around 30 degrees or so while creating a curvature on your lower back and sticking your chest out. This is your starting position.",
+        "As you breathe out, bring the bar down until it touches your upper chest by drawing the shoulders and the upper arms down and back. Tip: Concentrate on squeezing the back muscles once you reach the full contracted position. The upper torso should remain stationary and only the arms should move. The forearms should do no other work except for holding the bar; therefore do not try to pull down the bar using the forearms.",
+        "After a second at the contracted position squeezing your shoulder blades together, slowly raise the bar back to the starting position when your arms are fully extended and the lats are fully stretched. Inhale during this portion of the movement.",
+        "Repeat this motion for the prescribed amount of repetitions."
+      ],
+      "el": null
+    },
+    "equipment": ["machine"],
+    "locations": ["gym"],
+    "movementPattern": "pull",
+    "highLoadAreas": ["shoulder", "elbow", "wrist", "upper-back"],
+    "slots": ["main-strength"],
+    "rirSuitable": true,
+    "easierId": null,
+    "harderId": null,
+    "image": null
+  }
+]

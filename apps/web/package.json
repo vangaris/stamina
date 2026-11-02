@@ -34,6 +34,7 @@
     "@stamina/ui-checkbox": "workspace:^",
     "@stamina/ui-chip": "workspace:^",
     "@stamina/ui-chip-group": "workspace:^",
+    "@stamina/ui-exercise-image": "workspace:^",
     "@stamina/ui-progress-bar": "workspace:^",
     "@stamina/ui-select": "workspace:^",
     "@stamina/ui-sheet": "workspace:^",

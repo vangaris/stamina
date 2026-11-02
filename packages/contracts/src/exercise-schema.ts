@@ -12,21 +12,21 @@ import {
 import { z } from 'zod';
 
 const SLUG = /^[a-z0-9]+(-[a-z0-9]+)*$/;
+/** Attribution links are shown to people and followed, so never `javascript:` or plain http. */
+const httpsUrl = () => z.url({ protocol: /^https$/ });
 
 /** An exercise image from wger, unmodified, with everything its licence asks to be shown. */
 export const exerciseImageSchema = z.object({
   /** Always on wger's own media origin: images are never copied or edited. */
-  url: z
-    .url()
-    .refine((url) => url.startsWith(EXERCISE_IMAGE_ORIGIN), {
-      message: 'must be a wger media URL',
-    }),
+  url: z.url().refine((url) => url.startsWith(EXERCISE_IMAGE_ORIGIN), {
+    message: 'must be a wger media URL',
+  }),
   author: z.string().trim().min(1),
-  authorUrl: z.url().nullable(),
+  authorUrl: httpsUrl().nullable(),
   licence: z.enum(ImageLicence),
-  licenceUrl: z.url(),
+  licenceUrl: httpsUrl(),
   /** The wger page the image comes from. */
-  sourceUrl: z.url(),
+  sourceUrl: httpsUrl(),
   wgerExerciseId: z.number().int().positive(),
 });
 
@@ -64,8 +64,9 @@ export const exerciseListResponseSchema = z.object({ exercises: z.array(exercise
 
 /**
  * `GET /exercises?equipment=dumbbell,barbell&locations=home&slots=main-strength&excludeAreas=knee`.
- * Each parameter is a comma-separated list. An absent parameter does not narrow the result; an
- * empty `equipment=` means bodyweight only.
+ * Each parameter is a comma-separated list and may be given once. An absent parameter does not
+ * narrow the result; an empty `equipment=` means bodyweight only. An unknown key is rejected: a
+ * misspelt `excludedAreas` must never silently return everything.
  */
 const list = <T extends z.ZodType>(item: T) =>
   z.preprocess(
@@ -73,7 +74,7 @@ const list = <T extends z.ZodType>(item: T) =>
     z.array(item),
   );
 
-export const exerciseQuerySchema = z.object({
+export const exerciseQuerySchema = z.strictObject({
   equipment: list(z.enum(Equipment)).optional(),
   locations: list(z.enum(ExerciseLocation)).optional(),
   slots: list(z.enum(SessionSlot)).optional(),

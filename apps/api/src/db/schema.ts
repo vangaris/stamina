@@ -1,10 +1,17 @@
-import { SportKind } from '@stamina/contracts';
+import { SportKind, type ExerciseImage } from '@stamina/contracts';
 import {
+  BodyArea,
   ConsentPurpose,
+  Equipment,
+  EXERCISE_IMAGE_ORIGIN,
+  ExerciseLicence,
+  ExerciseLocation,
+  ExerciseSource,
+  MovementPattern,
   ReferralKind,
   ScreeningStatus,
+  SessionSlot,
   StartingLevel,
-  type BodyArea,
   type Goal,
   type Intensity,
   type LaunchSport,
@@ -19,6 +26,7 @@ import {
   check,
   index,
   integer,
+  jsonb,
   pgPolicy,
   pgTable,
   text,
@@ -251,5 +259,62 @@ export const screening = pgTable(
       using: sql`user_id = app_user_id()::uuid and doctor_ok_at is null`,
       withCheck: sql`user_id = app_user_id()::uuid and doctor_ok_at is not null`,
     }),
+  ],
+).enableRLS();
+
+/** `column <@ ARRAY['a', 'b']`: every element of a text[] column is a value of a code enum. */
+const hasOnly = (column: AnyPgColumn, values: readonly string[]) =>
+  sql`${column} <@ ARRAY[${sql.raw(values.map((value) => `'${value}'`).join(', '))}]::text[]`;
+
+/**
+ * The curated exercise library: reference data, the same for everyone. Written only by the
+ * migration and sync owner (`sync-exercise-library`, run by `migrate()`); `stamina_app` can read
+ * and nothing else (SELECT grant plus a read-only policy; RLS is enabled but not forced, so the
+ * owner can write). Enum-like columns are text with check constraints built from the domain enums.
+ * `easier_id` and `harder_id` are links inside the library (no action on delete: the sync nulls or
+ * rewrites links before it removes a row).
+ */
+export const exercise = pgTable(
+  'exercise',
+  {
+    id: text('id').primaryKey(),
+    source: text('source').$type<ExerciseSource>().notNull(),
+    sourceId: text('source_id').notNull(),
+    licence: text('licence').$type<ExerciseLicence>().notNull(),
+    nameEn: text('name_en').notNull(),
+    nameEl: text('name_el'),
+    instructionsEn: text('instructions_en').array().notNull(),
+    instructionsEl: text('instructions_el').array(),
+    equipment: text('equipment').array().$type<Equipment[]>().notNull(),
+    locations: text('locations').array().$type<ExerciseLocation[]>().notNull(),
+    movementPattern: text('movement_pattern').$type<MovementPattern>().notNull(),
+    highLoadAreas: text('high_load_areas').array().$type<BodyArea[]>().notNull(),
+    slots: text('slots').array().$type<SessionSlot[]>().notNull(),
+    rirSuitable: boolean('rir_suitable').notNull(),
+    easierId: text('easier_id').references((): AnyPgColumn => exercise.id),
+    harderId: text('harder_id').references((): AnyPgColumn => exercise.id),
+    image: jsonb('image').$type<ExerciseImage>(),
+  },
+  (table) => [
+    check('exercise_source_valid', isOneOf(table.source, Object.values(ExerciseSource))),
+    check('exercise_licence_valid', isOneOf(table.licence, Object.values(ExerciseLicence))),
+    check(
+      'exercise_movement_pattern_valid',
+      isOneOf(table.movementPattern, Object.values(MovementPattern)),
+    ),
+    check('exercise_equipment_valid', hasOnly(table.equipment, Object.values(Equipment))),
+    check('exercise_locations_valid', hasOnly(table.locations, Object.values(ExerciseLocation))),
+    check('exercise_high_load_areas_valid', hasOnly(table.highLoadAreas, Object.values(BodyArea))),
+    check('exercise_slots_valid', hasOnly(table.slots, Object.values(SessionSlot))),
+    check('exercise_slots_count', sql`cardinality(${table.slots}) between 1 and 2`),
+    check('exercise_locations_not_empty', sql`cardinality(${table.locations}) > 0`),
+    check('exercise_instructions_not_empty', sql`cardinality(${table.instructionsEn}) > 0`),
+    check('exercise_easier_not_self', sql`${table.easierId} is distinct from ${table.id}`),
+    check('exercise_harder_not_self', sql`${table.harderId} is distinct from ${table.id}`),
+    check(
+      'exercise_image_on_wger',
+      sql`${table.image} is null or coalesce(starts_with(${table.image}->>'url', ${literal(EXERCISE_IMAGE_ORIGIN)}), false)`,
+    ),
+    pgPolicy('exercise_read', { for: 'select', to: APP_ROLE, using: sql`true` }),
   ],
 ).enableRLS();

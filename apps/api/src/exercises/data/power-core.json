@@ -1,0 +1,1121 @@
+[
+  {
+    "id": "plank",
+    "source": "free-exercise-db",
+    "sourceId": "Plank",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Plank",
+      "el": null
+    },
+    "instructions": {
+      "en": [
+        "Get into a prone position on the floor, supporting your weight on your toes and your forearms. Your arms are bent and directly below the shoulder.",
+        "Keep your body straight at all times, and hold this position as long as possible. To increase difficulty, an arm or leg can be raised."
+      ],
+      "el": null
+    },
+    "equipment": [],
+    "locations": ["gym", "home", "court", "beach"],
+    "movementPattern": "core",
+    "highLoadAreas": ["shoulder", "elbow", "lower-back"],
+    "slots": ["accessories-core"],
+    "rirSuitable": true,
+    "easierId": null,
+    "harderId": "spider-crawl",
+    "image": {
+      "url": "https://wger.de/media/exercise-images/458/b7bd9c28-9f1d-4647-bd17-ab6a3adf5770.png",
+      "author": "utkb",
+      "authorUrl": null,
+      "licence": "CC-BY-SA 4.0",
+      "licenceUrl": "https://creativecommons.org/licenses/by-sa/4.0/deed.en",
+      "sourceUrl": "https://wger.de/en/exercise/458/view/",
+      "wgerExerciseId": 458
+    }
+  },
+  {
+    "id": "spider-crawl",
+    "source": "free-exercise-db",
+    "sourceId": "Spider_Crawl",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Spider Crawl",
+      "el": null
+    },
+    "instructions": {
+      "en": [
+        "Begin in a prone position on the floor. Support your weight on your hands and toes, with your feet together and your body straight. Your arms should be bent to 90 degrees. This will be your starting position.",
+        "Initiate the movement by raising one foot off of the ground. Externally rotate the leg and bring the knee toward your elbow, as far forward as possible.",
+        "Return this leg to the starting position and repeat on the opposite side."
+      ],
+      "el": null
+    },
+    "equipment": [],
+    "locations": ["gym", "home", "court", "beach"],
+    "movementPattern": "core",
+    "highLoadAreas": ["shoulder", "elbow", "wrist", "hip", "lower-back"],
+    "slots": ["accessories-core"],
+    "rirSuitable": true,
+    "easierId": "plank",
+    "harderId": null,
+    "image": null
+  },
+  {
+    "id": "push-up-to-side-plank",
+    "source": "free-exercise-db",
+    "sourceId": "Push_Up_to_Side_Plank",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Push Up to Side Plank",
+      "el": null
+    },
+    "instructions": {
+      "en": [
+        "Get into pushup position on the toes with your hands just outside of shoulder width.",
+        "Perform a pushup by allowing the elbows to flex. As you descend, keep your body straight.",
+        "Do one pushup and as you come up, shift your weight on the left side of the body, twist to the side while bringing the right arm up towards the ceiling in a side plank.",
+        "Lower the arm back to the floor for another pushup and then twist to the other side.",
+        "Repeat the series, alternating each side, for 10 or more reps."
+      ],
+      "el": null
+    },
+    "equipment": [],
+    "locations": ["gym", "home", "court", "beach"],
+    "movementPattern": "core",
+    "highLoadAreas": ["shoulder", "elbow", "wrist", "lower-back"],
+    "slots": ["accessories-core"],
+    "rirSuitable": true,
+    "easierId": null,
+    "harderId": null,
+    "image": null
+  },
+  {
+    "id": "dead-bug",
+    "source": "free-exercise-db",
+    "sourceId": "Dead_Bug",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Dead Bug",
+      "el": null
+    },
+    "instructions": {
+      "en": [
+        "Begin lying on your back with your hands extended above you toward the ceiling.",
+        "Bring your feet, knees, and hips up to 90 degrees.",
+        "Exhale hard to bring your ribcage down and flatten your back onto the floor, rotating your pelvis up and squeezing your glutes. Hold this position throughout the movement. This will be your starting position.",
+        "Initiate the exercise by extending one leg, straightening the knee and hip to bring the leg just above the ground.",
+        "Maintain the position of your lumbar and pelvis as you perform the movement, as your back is going to want to arch.",
+        "Stay tight and return the working leg to the starting position.",
+        "Repeat on the opposite side, alternating until the set is complete."
+      ],
+      "el": null
+    },
+    "equipment": [],
+    "locations": ["gym", "home", "court", "beach"],
+    "movementPattern": "core",
+    "highLoadAreas": ["lower-back", "hip"],
+    "slots": ["accessories-core"],
+    "rirSuitable": true,
+    "easierId": null,
+    "harderId": null,
+    "image": null
+  },
+  {
+    "id": "bent-knee-hip-raise",
+    "source": "free-exercise-db",
+    "sourceId": "Bent-Knee_Hip_Raise",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Bent-Knee Hip Raise",
+      "el": null
+    },
+    "instructions": {
+      "en": [
+        "Lay flat on the floor with your arms next to your sides.",
+        "Now bend your knees at around a 75 degree angle and lift your feet off the floor by around 2 inches.",
+        "Using your lower abs, bring your knees in towards you as you maintain the 75 degree angle bend in your legs. Continue this movement until you raise your hips off of the floor by rolling your pelvis backward. Breathe out as you perform this portion of the movement. Tip: At the end of the movement your knees will be over your chest.",
+        "Squeeze your abs at the top of the movement for a second and then return to the starting position slowly as you breathe in. Tip: Maintain a controlled motion at all times.",
+        "Repeat for the recommended amount of repetitions."
+      ],
+      "el": null
+    },
+    "equipment": [],
+    "locations": ["gym", "home", "court", "beach"],
+    "movementPattern": "core",
+    "highLoadAreas": ["lower-back", "hip"],
+    "slots": ["accessories-core"],
+    "rirSuitable": true,
+    "easierId": null,
+    "harderId": "reverse-crunch",
+    "image": null
+  },
+  {
+    "id": "reverse-crunch",
+    "source": "free-exercise-db",
+    "sourceId": "Reverse_Crunch",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Reverse Crunch",
+      "el": null
+    },
+    "instructions": {
+      "en": [
+        "Lie down on the floor with your legs fully extended and arms to the side of your torso with the palms on the floor. Your arms should be stationary for the entire exercise.",
+        "Move your legs up so that your thighs are perpendicular to the floor and feet are together and parallel to the floor. This is the starting position.",
+        "While inhaling, move your legs towards the torso as you roll your pelvis backwards and you raise your hips off the floor. At the end of this movement your knees will be touching your chest.",
+        "Hold the contraction for a second and move your legs back to the starting position while exhaling.",
+        "Repeat for the recommended amount of repetitions."
+      ],
+      "el": null
+    },
+    "equipment": [],
+    "locations": ["gym", "home", "court", "beach"],
+    "movementPattern": "core",
+    "highLoadAreas": ["lower-back", "hip"],
+    "slots": ["accessories-core"],
+    "rirSuitable": true,
+    "easierId": "bent-knee-hip-raise",
+    "harderId": null,
+    "image": null
+  },
+  {
+    "id": "hanging-leg-raise",
+    "source": "free-exercise-db",
+    "sourceId": "Hanging_Leg_Raise",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Hanging Leg Raise",
+      "el": null
+    },
+    "instructions": {
+      "en": [
+        "Hang from a chin-up bar with both arms extended at arms length in top of you using either a wide grip or a medium grip. The legs should be straight down with the pelvis rolled slightly backwards. This will be your starting position.",
+        "Raise your legs until the torso makes a 90-degree angle with the legs. Exhale as you perform this movement and hold the contraction for a second or so.",
+        "Go back slowly to the starting position as you breathe in.",
+        "Repeat for the recommended amount of repetitions."
+      ],
+      "el": null
+    },
+    "equipment": ["pull-up-bar"],
+    "locations": ["gym", "home"],
+    "movementPattern": "core",
+    "highLoadAreas": ["shoulder", "elbow", "wrist", "upper-back", "lower-back", "hip"],
+    "slots": ["accessories-core"],
+    "rirSuitable": true,
+    "easierId": null,
+    "harderId": null,
+    "image": null
+  },
+  {
+    "id": "cross-body-crunch",
+    "source": "free-exercise-db",
+    "sourceId": "Cross-Body_Crunch",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Cross-Body Crunch",
+      "el": null
+    },
+    "instructions": {
+      "en": [
+        "Lie flat on your back and bend your knees about 60 degrees.",
+        "Keep your feet flat on the floor and place your hands loosely behind your head. This will be your starting position.",
+        "Now curl up and bring your right elbow and shoulder across your body while bring your left knee in toward your left shoulder at the same time. Reach with your elbow and try to touch your knee. Exhale as you perform this movement. Tip: Try to bring your shoulder up towards your knee rather than just your elbow and remember that the key is to contract the abs as you perform the movement; not just to move the elbow.",
+        "Now go back down to the starting position as you inhale and repeat with the left elbow and the right knee.",
+        "Continue alternating in this manner until all prescribed repetitions are done."
+      ],
+      "el": null
+    },
+    "equipment": [],
+    "locations": ["gym", "home", "court", "beach"],
+    "movementPattern": "core",
+    "highLoadAreas": ["neck", "lower-back"],
+    "slots": ["accessories-core"],
+    "rirSuitable": true,
+    "easierId": null,
+    "harderId": null,
+    "image": null
+  },
+  {
+    "id": "overhead-slam",
+    "source": "free-exercise-db",
+    "sourceId": "Overhead_Slam",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Overhead Slam",
+      "el": null
+    },
+    "instructions": {
+      "en": [
+        "Hold a medine ball with both hands and stand with your feet at shoulder width. This will be your starting position.",
+        "Initiate the countermovement by raising the ball above your head and fully extending your body.",
+        "Reverse the motion, slamming the ball into the ground directly in front of you as hard as you can.",
+        "Receive the ball with both hands on the bounce and repeat the movement."
+      ],
+      "el": null
+    },
+    "equipment": ["medicine-ball"],
+    "locations": ["gym", "court"],
+    "movementPattern": "core",
+    "highLoadAreas": ["shoulder", "elbow", "wrist", "lower-back", "hip"],
+    "slots": ["sport-support"],
+    "rirSuitable": false,
+    "easierId": null,
+    "harderId": "one-arm-medicine-ball-slam",
+    "image": null
+  },
+  {
+    "id": "one-arm-medicine-ball-slam",
+    "source": "free-exercise-db",
+    "sourceId": "One-Arm_Medicine_Ball_Slam",
+    "licence": "Unlicense",
+    "name": {
+      "en": "One-Arm Medicine Ball Slam",
+      "el": null
+    },
+    "instructions": {
+      "en": [
+        "Start in a standing position with a staggered, athletic stance. Hold a medicine ball in one hand, on the same side as your back leg. This will be your starting position.",
+        "Begin by winding the arm, raising the medicine ball above your head. As you do so, extend through the hips, knees, and ankles to load up for the slam.",
+        "At peak extension, flex the shoulders, spine, and hips to throw the ball hard into the ground directly in front of you.",
+        "Catch the ball on the bounce and continue for the desired number of repetitions."
+      ],
+      "el": null
+    },
+    "equipment": ["medicine-ball"],
+    "locations": ["gym", "court"],
+    "movementPattern": "core",
+    "highLoadAreas": ["shoulder", "elbow", "wrist", "lower-back", "hip", "knee", "ankle"],
+    "slots": ["sport-support"],
+    "rirSuitable": false,
+    "easierId": "overhead-slam",
+    "harderId": null,
+    "image": null
+  },
+  {
+    "id": "supine-two-arm-overhead-throw",
+    "source": "free-exercise-db",
+    "sourceId": "Supine_Two-Arm_Overhead_Throw",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Supine Two-Arm Overhead Throw",
+      "el": null
+    },
+    "instructions": {
+      "en": [
+        "Lay on the ground on your back with your knees bent.",
+        "Hold the ball with both hands, extending the arms fully behind your head. This will be your starting position.",
+        "Initiate the movement at the shoulder, throwing the ball directly forward of you as you sit up, attempting to go for maximum distance.",
+        "The ball can be thrown to a partner or bounced off of a wall."
+      ],
+      "el": null
+    },
+    "equipment": ["medicine-ball"],
+    "locations": ["gym", "court"],
+    "movementPattern": "core",
+    "highLoadAreas": ["neck", "shoulder", "lower-back", "hip"],
+    "slots": ["sport-support"],
+    "rirSuitable": false,
+    "easierId": null,
+    "harderId": null,
+    "image": null
+  },
+  {
+    "id": "russian-twist",
+    "source": "free-exercise-db",
+    "sourceId": "Russian_Twist",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Russian Twist",
+      "el": null
+    },
+    "instructions": {
+      "en": [
+        "Lie down on the floor placing your feet either under something that will not move or by having a partner hold them. Your legs should be bent at the knees.",
+        "Elevate your upper body so that it creates an imaginary V-shape with your thighs. Your arms should be fully extended in front of you perpendicular to your torso and with the hands clasped. This is the starting position.",
+        "Twist your torso to the right side until your arms are parallel with the floor while breathing out.",
+        "Hold the contraction for a second and move back to the starting position while breathing out. Now move to the opposite side performing the same techniques you applied to the right side.",
+        "Repeat for the recommended amount of repetitions."
+      ],
+      "el": null
+    },
+    "equipment": [],
+    "locations": ["gym", "home", "court", "beach"],
+    "movementPattern": "rotation",
+    "highLoadAreas": ["lower-back", "hip"],
+    "slots": ["accessories-core"],
+    "rirSuitable": true,
+    "easierId": null,
+    "harderId": null,
+    "image": null
+  },
+  {
+    "id": "pallof-press",
+    "source": "free-exercise-db",
+    "sourceId": "Pallof_Press",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Pallof Press",
+      "el": null
+    },
+    "instructions": {
+      "en": [
+        "Connect a standard handle to a tower, and—if possible—position the cable to shoulder height. If not, a low pulley will suffice.",
+        "With your side to the cable, grab the handle with both hands and step away from the tower. You should be approximately arm's length away from the pulley, with the tension of the weight on the cable.",
+        "With your feet positioned hip-width apart and knees slightly bent, hold the cable to the middle of your chest. This will be your starting position.",
+        "Press the cable away from your chest, fully extending both arms. You core should be tight and engaged.",
+        "Hold the repetition for several seconds before returning to the starting position.",
+        "At the conclusion of the set, repeat facing the other direction."
+      ],
+      "el": null
+    },
+    "equipment": ["machine"],
+    "locations": ["gym"],
+    "movementPattern": "rotation",
+    "highLoadAreas": ["shoulder", "lower-back"],
+    "slots": ["accessories-core"],
+    "rirSuitable": true,
+    "easierId": null,
+    "harderId": "pallof-press-with-rotation",
+    "image": {
+      "url": "https://wger.de/media/exercise-images/1194/074e1766-4208-4a67-a211-9721772d99b0.png",
+      "author": "prevail90",
+      "authorUrl": null,
+      "licence": "CC-BY-SA 4.0",
+      "licenceUrl": "https://creativecommons.org/licenses/by-sa/4.0/deed.en",
+      "sourceUrl": "https://wger.de/en/exercise/1194/view/",
+      "wgerExerciseId": 1194
+    }
+  },
+  {
+    "id": "pallof-press-with-rotation",
+    "source": "free-exercise-db",
+    "sourceId": "Pallof_Press_With_Rotation",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Pallof Press With Rotation",
+      "el": null
+    },
+    "instructions": {
+      "en": [
+        "Connect a standard handle to a tower, and position the cable to shoulder height.",
+        "With your side to the cable, grab the handle with one hand and step away from the tower. You should be approximately arm's length away from the pulley, with the tension of the weight on the cable. Align outstretched arm with cable.",
+        "With your feet positioned hip-width apart, pull the cable into your chest and grab the handle with your other hand. Both hands should be on the handle at this time.",
+        "Facing forward, press the cable away from your chest. You core should be tight and engaged.",
+        "Keeping your hips straight, twist your torso away from the pulley until you get a full quarter rotation.",
+        "Maintain your rigid stance and straight arms. Return to the neutral position in a slow and controlled manner. Your arms should be extended in front of you.",
+        "With the side tension still engaging your core, bring your hands to your chest and immediately press outward to a fully extended position. This constitutes one rep.",
+        "Repeat to failure.",
+        "Then, reposition and repeat the same series of movements on the opposite side."
+      ],
+      "el": null
+    },
+    "equipment": ["machine"],
+    "locations": ["gym"],
+    "movementPattern": "rotation",
+    "highLoadAreas": ["shoulder", "lower-back"],
+    "slots": ["accessories-core", "sport-support"],
+    "rirSuitable": true,
+    "easierId": "pallof-press",
+    "harderId": null,
+    "image": null
+  },
+  {
+    "id": "standing-cable-wood-chop",
+    "source": "free-exercise-db",
+    "sourceId": "Standing_Cable_Wood_Chop",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Standing Cable Wood Chop",
+      "el": null
+    },
+    "instructions": {
+      "en": [
+        "Connect a standard handle to a tower, and move the cable to the highest pulley position.",
+        "With your side to the cable, grab the handle with one hand and step away from the tower. You should be approximately arm's length away from the pulley, with the tension of the weight on the cable. Your outstretched arm should be aligned with the cable.",
+        "With your feet positioned shoulder width apart, reach upward with your other hand and grab the handle with both hands. Your arms should still be fully extended.",
+        "In one motion, pull the handle down and across your body to your front knee while rotating your torso.",
+        "Keep your back and arms straight and core tight while you pivot your back foot and bend your knees to get a full range of motion.",
+        "Maintain your stance and straight arms. Return to the neutral position in a slow and controlled manner.",
+        "Repeat to failure.",
+        "Then, reposition and repeat the same series of movements on the opposite side."
+      ],
+      "el": null
+    },
+    "equipment": ["machine"],
+    "locations": ["gym"],
+    "movementPattern": "rotation",
+    "highLoadAreas": ["shoulder", "lower-back", "hip", "knee"],
+    "slots": ["sport-support", "accessories-core"],
+    "rirSuitable": true,
+    "easierId": null,
+    "harderId": null,
+    "image": null
+  },
+  {
+    "id": "landmine-180s",
+    "source": "free-exercise-db",
+    "sourceId": "Landmine_180s",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Landmine 180's",
+      "el": null
+    },
+    "instructions": {
+      "en": [
+        "Position a bar into a landmine or securely anchor it in a corner. Load the bar to an appropriate weight.",
+        "Raise the bar from the floor, taking it to shoulder height with both hands with your arms extended in front of you. Adopt a wide stance. This will be your starting position.",
+        "Perform the movement by rotating the trunk and hips as you swing the weight all the way down to one side. Keep your arms extended throughout the exercise.",
+        "Reverse the motion to swing the weight all the way to the opposite side.",
+        "Continue alternating the movement until the set is complete."
+      ],
+      "el": null
+    },
+    "equipment": ["barbell"],
+    "locations": ["gym"],
+    "movementPattern": "rotation",
+    "highLoadAreas": ["shoulder", "lower-back", "hip", "knee"],
+    "slots": ["sport-support"],
+    "rirSuitable": false,
+    "easierId": null,
+    "harderId": null,
+    "image": null
+  },
+  {
+    "id": "kettlebell-windmill",
+    "source": "free-exercise-db",
+    "sourceId": "Kettlebell_Windmill",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Kettlebell Windmill",
+      "el": null
+    },
+    "instructions": {
+      "en": [
+        "Place a kettlebell in front of your lead foot and clean and press it overhead with your opposite arm. Clean the kettlebell to your shoulder by extending through the legs and hips as you pull the kettlebell towards your shoulders. Rotate your wrist as you do so, so that the palm faces forward. Press it overhead by extending the elbow.",
+        "Keeping the kettlebell locked out at all times, push your butt out in the direction of the locked out kettlebell. Turn your feet out at a forty-five degree angle from the arm with the locked out kettlebell. Bending at the hip to one side, sticking your butt out, slowly lean until you can touch the floor with your free hand. Keep your eyes on the kettlebell that you hold over your head at all times.",
+        "Pause for a second after reaching the ground and reverse the motion back to the starting position."
+      ],
+      "el": null
+    },
+    "equipment": ["kettlebell"],
+    "locations": ["gym", "home"],
+    "movementPattern": "rotation",
+    "highLoadAreas": ["shoulder", "elbow", "wrist", "upper-back", "lower-back", "hip"],
+    "slots": ["accessories-core"],
+    "rirSuitable": true,
+    "easierId": null,
+    "harderId": null,
+    "image": null
+  },
+  {
+    "id": "medicine-ball-full-twist",
+    "source": "free-exercise-db",
+    "sourceId": "Medicine_Ball_Full_Twist",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Medicine Ball Full Twist",
+      "el": null
+    },
+    "instructions": {
+      "en": [
+        "For this exercise you will need a medicine ball and a partner. Stand back to back with your partner, spaced 2-3 feet apart. This will be your starting position.",
+        "Hold the ball in front of the trunk. Open the hips and turn the shoulders at the same time as your partner.",
+        "For full rotation, you and your partner should twist in the same direction, i.e. counter-clockwise.",
+        "Pass the ball to your partner, and both of you can now twist in the opposite direction to repeat the procedure."
+      ],
+      "el": null
+    },
+    "equipment": ["medicine-ball"],
+    "locations": ["gym", "home", "court", "beach"],
+    "movementPattern": "rotation",
+    "highLoadAreas": ["shoulder", "lower-back", "hip"],
+    "slots": ["sport-support"],
+    "rirSuitable": false,
+    "easierId": null,
+    "harderId": null,
+    "image": null
+  },
+  {
+    "id": "farmers-walk",
+    "source": "free-exercise-db",
+    "sourceId": "Farmers_Walk",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Farmer's Walk",
+      "el": null
+    },
+    "instructions": {
+      "en": [
+        "There are various implements that can be used for the farmers walk. These can also be performed with heavy dumbbells or short bars if these implements aren't available. Begin by standing between the implements.",
+        "After gripping the handles, lift them up by driving through your heels, keeping your back straight and your head up.",
+        "Walk taking short, quick steps, and don't forget to breathe. Move for a given distance, typically 50-100 feet, as fast as possible."
+      ],
+      "el": null
+    },
+    "equipment": ["dumbbell"],
+    "locations": ["gym", "home"],
+    "movementPattern": "carry",
+    "highLoadAreas": ["elbow", "wrist", "shoulder", "upper-back", "lower-back", "hip", "knee"],
+    "slots": ["accessories-core", "sport-support"],
+    "rirSuitable": false,
+    "easierId": null,
+    "harderId": null,
+    "image": null
+  },
+  {
+    "id": "freehand-jump-squat",
+    "source": "free-exercise-db",
+    "sourceId": "Freehand_Jump_Squat",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Freehand Jump Squat",
+      "el": null
+    },
+    "instructions": {
+      "en": [
+        "Cross your arms over your chest.",
+        "With your head up and your back straight, position your feet at shoulder width.",
+        "Keeping your back straight and chest up, squat down as you inhale until your upper thighs are parallel, or lower, to the floor.",
+        "Now pressing mainly with the ball of your feet, jump straight up in the air as high as possible, using the thighs like springs. Exhale during this portion of the movement.",
+        "When you touch the floor again, immediately squat down and jump again.",
+        "Repeat for the recommended amount of repetitions."
+      ],
+      "el": null
+    },
+    "equipment": [],
+    "locations": ["gym", "home", "court", "beach"],
+    "movementPattern": "jump-land",
+    "highLoadAreas": ["knee", "hip", "ankle", "lower-back"],
+    "slots": ["sport-support"],
+    "rirSuitable": false,
+    "easierId": null,
+    "harderId": null,
+    "image": null
+  },
+  {
+    "id": "front-box-jump",
+    "source": "free-exercise-db",
+    "sourceId": "Front_Box_Jump",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Front Box Jump",
+      "el": null
+    },
+    "instructions": {
+      "en": [
+        "Begin with a box of an appropriate height 1-2 feet in front of you. Stand with your feet should width apart. This will be your starting position.",
+        "Perform a short squat in preparation for jumping, swinging your arms behind you.",
+        "Rebound out of this position, extending through the hips, knees, and ankles to jump as high as possible. Swing your arms forward and up.",
+        "Land on the box with the knees bent, absorbing the impact through the legs. You can jump from the box back to the ground, or preferably step down one leg at a time."
+      ],
+      "el": null
+    },
+    "equipment": ["box"],
+    "locations": ["gym", "home"],
+    "movementPattern": "jump-land",
+    "highLoadAreas": ["knee", "hip", "ankle", "lower-back"],
+    "slots": ["sport-support"],
+    "rirSuitable": false,
+    "easierId": null,
+    "harderId": null,
+    "image": null
+  },
+  {
+    "id": "star-jump",
+    "source": "free-exercise-db",
+    "sourceId": "Star_Jump",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Star Jump",
+      "el": null
+    },
+    "instructions": {
+      "en": [
+        "Begin in a relaxed stance with your feet shoulder width apart and hold your arms close to the body.",
+        "To initiate the move, squat down halfway and explode back up as high as possible. Fully extend your entire body, spreading your legs and arms away from the body.",
+        "As you land, bring your limbs back in and absorb your impact through the legs."
+      ],
+      "el": null
+    },
+    "equipment": [],
+    "locations": ["gym", "home", "court", "beach"],
+    "movementPattern": "jump-land",
+    "highLoadAreas": ["knee", "hip", "ankle"],
+    "slots": ["warm-up", "sport-support"],
+    "rirSuitable": false,
+    "easierId": null,
+    "harderId": "knee-tuck-jump",
+    "image": null
+  },
+  {
+    "id": "knee-tuck-jump",
+    "source": "free-exercise-db",
+    "sourceId": "Knee_Tuck_Jump",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Knee Tuck Jump",
+      "el": null
+    },
+    "instructions": {
+      "en": [
+        "Begin in a comfortable standing position with your knees slightly bent. Hold your hands in front of you, palms down with your fingertips together at chest height. This will be your starting position.",
+        "Rapidly dip down into a quarter squat and immediately explode upward. Drive the knees towards the chest, attempting to touch them to the palms of the hands.",
+        "Jump as high as you can, raising your knees up, and then ensure a good land be re-extending your legs, absorbing impact through be allowing the knees to rebend."
+      ],
+      "el": null
+    },
+    "equipment": [],
+    "locations": ["gym", "home", "court", "beach"],
+    "movementPattern": "jump-land",
+    "highLoadAreas": ["knee", "hip", "ankle", "lower-back"],
+    "slots": ["sport-support"],
+    "rirSuitable": false,
+    "easierId": "star-jump",
+    "harderId": null,
+    "image": null
+  },
+  {
+    "id": "split-jump",
+    "source": "free-exercise-db",
+    "sourceId": "Split_Jump",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Split Jump",
+      "el": null
+    },
+    "instructions": {
+      "en": [
+        "Assume a lunge stance position with one foot forward with the knee bent, and the rear knee nearly touching the ground.",
+        "Ensure that the front knee is over the midline of the foot.",
+        "Extending through both legs, jump as high as possible, swinging your arms to gain lift.",
+        "As you jump, bring your feet together, and move them back to their initial positions as you land.",
+        "Absorb the impact by reverting back to the starting position."
+      ],
+      "el": null
+    },
+    "equipment": [],
+    "locations": ["gym", "home", "court", "beach"],
+    "movementPattern": "jump-land",
+    "highLoadAreas": ["knee", "hip", "ankle"],
+    "slots": ["sport-support"],
+    "rirSuitable": false,
+    "easierId": null,
+    "harderId": "scissors-jump",
+    "image": null
+  },
+  {
+    "id": "scissors-jump",
+    "source": "free-exercise-db",
+    "sourceId": "Scissors_Jump",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Scissors Jump",
+      "el": null
+    },
+    "instructions": {
+      "en": [
+        "Assume a lunge stance position with one foot forward with the knee bent, and the rear knee nearly touching the ground.",
+        "Ensure that the front knee is over the midline of the foot. Extending through both legs, jump as high as possible, swinging your arms to gain lift.",
+        "As you jump as high as you can, switch the position of your legs, moving your front leg to the back and the rear leg to the front.",
+        "As you land, absorb the impact through the legs by adopting the lunge position, and repeat."
+      ],
+      "el": null
+    },
+    "equipment": [],
+    "locations": ["gym", "home", "court", "beach"],
+    "movementPattern": "jump-land",
+    "highLoadAreas": ["knee", "hip", "ankle"],
+    "slots": ["sport-support"],
+    "rirSuitable": false,
+    "easierId": "split-jump",
+    "harderId": null,
+    "image": null
+  },
+  {
+    "id": "standing-long-jump",
+    "source": "free-exercise-db",
+    "sourceId": "Standing_Long_Jump",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Standing Long Jump",
+      "el": null
+    },
+    "instructions": {
+      "en": [
+        "This drill is best done in sand or other soft landing surface. Ensure that you are able to measure distance. Stand in a partial squat stance with feet shoulder width apart.",
+        "Utilizing a big arm swing and a countermovement of the legs, jump forward as far as you can.",
+        "Attempt to land with your feet out in front you, reaching as far as possible with your legs.",
+        "Measure the distance from your landing point to the starting point and track results."
+      ],
+      "el": null
+    },
+    "equipment": [],
+    "locations": ["gym", "home", "court", "beach"],
+    "movementPattern": "jump-land",
+    "highLoadAreas": ["knee", "hip", "ankle", "lower-back"],
+    "slots": ["sport-support"],
+    "rirSuitable": false,
+    "easierId": null,
+    "harderId": null,
+    "image": null
+  },
+  {
+    "id": "side-standing-long-jump",
+    "source": "free-exercise-db",
+    "sourceId": "Side_Standing_Long_Jump",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Side Standing Long Jump",
+      "el": null
+    },
+    "instructions": {
+      "en": [
+        "Begin standing with your feet hip width apart in an athletic stance. Your head and chest should be up, knees and hips slightly bent. This will be your starting position.",
+        "Leaning to your right, extend through your hips, knees, and ankles to jump into the air. Block with the arms to lead the movement, jumping as far to your right as you can.",
+        "Land facing the same direction with your feet hip width apart, absorbing the impact through your lower body."
+      ],
+      "el": null
+    },
+    "equipment": [],
+    "locations": ["gym", "home", "court", "beach"],
+    "movementPattern": "jump-land",
+    "highLoadAreas": ["knee", "hip", "ankle"],
+    "slots": ["sport-support"],
+    "rirSuitable": false,
+    "easierId": null,
+    "harderId": null,
+    "image": null
+  },
+  {
+    "id": "frog-hops",
+    "source": "free-exercise-db",
+    "sourceId": "Frog_Hops",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Frog Hops",
+      "el": null
+    },
+    "instructions": {
+      "en": [
+        "Stand with your hands behind your head, and squat down keeping your torso upright and your head up. This will be your starting position.",
+        "Jump forward several feet, avoiding jumping unnecessarily high. As your feet contact the ground, absorb the impact through your legs, and jump again. Repeat this action 5-10 times."
+      ],
+      "el": null
+    },
+    "equipment": [],
+    "locations": ["gym", "home", "court", "beach"],
+    "movementPattern": "jump-land",
+    "highLoadAreas": ["knee", "hip", "ankle", "lower-back"],
+    "slots": ["sport-support"],
+    "rirSuitable": false,
+    "easierId": null,
+    "harderId": null,
+    "image": null
+  },
+  {
+    "id": "double-leg-butt-kick",
+    "source": "free-exercise-db",
+    "sourceId": "Double_Leg_Butt_Kick",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Double Leg Butt Kick",
+      "el": null
+    },
+    "instructions": {
+      "en": [
+        "Begin standing with your knees slightly bent.",
+        "Quickly squat a short distance, flexing the hips and knees, and immediately extend to jump for maximum vertical height.",
+        "As you go up, tuck your heels by flexing the knees, attempting to touch the buttocks.",
+        "Finish the motion by landing with the knees only partially bent, using your legs to absorb the impact."
+      ],
+      "el": null
+    },
+    "equipment": [],
+    "locations": ["gym", "home", "court", "beach"],
+    "movementPattern": "jump-land",
+    "highLoadAreas": ["knee", "hip", "ankle"],
+    "slots": ["sport-support"],
+    "rirSuitable": false,
+    "easierId": null,
+    "harderId": "single-leg-butt-kick",
+    "image": null
+  },
+  {
+    "id": "single-leg-butt-kick",
+    "source": "free-exercise-db",
+    "sourceId": "Single_Leg_Butt_Kick",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Single Leg Butt Kick",
+      "el": null
+    },
+    "instructions": {
+      "en": [
+        "Begin by standing on one leg, with the bent knee raised. This will be your start position.",
+        "Using a countermovement jump, take off upward by extending the hip, knee, and ankle of the grounded leg.",
+        "Immediately flex the knee and attempt to touch your butt with the heel of your jumping leg.",
+        "Return the leg to a partially bent position underneath the hips and land. Your opposite leg should stay in relatively the same position throughout the drill."
+      ],
+      "el": null
+    },
+    "equipment": [],
+    "locations": ["gym", "home", "court", "beach"],
+    "movementPattern": "jump-land",
+    "highLoadAreas": ["knee", "hip", "ankle"],
+    "slots": ["sport-support"],
+    "rirSuitable": false,
+    "easierId": "double-leg-butt-kick",
+    "harderId": null,
+    "image": null
+  },
+  {
+    "id": "carioca-quick-step",
+    "source": "free-exercise-db",
+    "sourceId": "Carioca_Quick_Step",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Carioca Quick Step",
+      "el": null
+    },
+    "instructions": {
+      "en": [
+        "Begin with your feet a few inches apart and your left arm up in a relaxed, athletic position.",
+        "With your right foot, quick step behind and pull the knee up.",
+        "Fire your arms back up when you pull the right knee, being sure that your knee goes straight up and down. Avoid turning your feet as you move and continue to look forward as you move to the side."
+      ],
+      "el": null
+    },
+    "equipment": [],
+    "locations": ["gym", "home", "court", "beach"],
+    "movementPattern": "change-of-direction",
+    "highLoadAreas": ["knee", "hip", "ankle"],
+    "slots": ["warm-up", "sport-support"],
+    "rirSuitable": false,
+    "easierId": null,
+    "harderId": null,
+    "image": null
+  },
+  {
+    "id": "lateral-bound",
+    "source": "free-exercise-db",
+    "sourceId": "Lateral_Bound",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Lateral Bound",
+      "el": null
+    },
+    "instructions": {
+      "en": [
+        "Assume a half squat position facing 90 degrees from your direction of travel. This will be your starting position.",
+        "Allow your lead leg to do a countermovement inward as you shift your weight to the outside leg.",
+        "Immediately push off and extend, attempting to bound to the side as far as possible.",
+        "Upon landing, immediately push off in the opposite direction, returning to your original start position.",
+        "Continue back and forth for several repetitions."
+      ],
+      "el": null
+    },
+    "equipment": [],
+    "locations": ["gym", "home", "court", "beach"],
+    "movementPattern": "change-of-direction",
+    "highLoadAreas": ["knee", "hip", "ankle"],
+    "slots": ["sport-support"],
+    "rirSuitable": false,
+    "easierId": null,
+    "harderId": null,
+    "image": null
+  },
+  {
+    "id": "alternate-leg-diagonal-bound",
+    "source": "free-exercise-db",
+    "sourceId": "Alternate_Leg_Diagonal_Bound",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Alternate Leg Diagonal Bound",
+      "el": null
+    },
+    "instructions": {
+      "en": [
+        "Assume a comfortable stance with one foot slightly in front of the other.",
+        "Begin by pushing off with the front leg, driving the opposite knee forward and as high as possible before landing. Attempt to cover as much distance to each side with each bound.",
+        "It may help to use a line on the ground to guage distance from side to side.",
+        "Repeat the sequence with the other leg."
+      ],
+      "el": null
+    },
+    "equipment": [],
+    "locations": ["gym", "home", "court", "beach"],
+    "movementPattern": "change-of-direction",
+    "highLoadAreas": ["knee", "hip", "ankle"],
+    "slots": ["sport-support"],
+    "rirSuitable": false,
+    "easierId": null,
+    "harderId": null,
+    "image": null
+  },
+  {
+    "id": "side-to-side-box-shuffle",
+    "source": "free-exercise-db",
+    "sourceId": "Side_to_Side_Box_Shuffle",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Side to Side Box Shuffle",
+      "el": null
+    },
+    "instructions": {
+      "en": [
+        "Stand to one side of the box with your left foot resting on the middle of it.",
+        "To begin, jump up and over to the other side of the box, landing with your right foot on top of the box and your left foot on the floor. Swing your arms to aid your movement.",
+        "Continue shuffling back and forth across the box."
+      ],
+      "el": null
+    },
+    "equipment": ["box"],
+    "locations": ["gym", "home"],
+    "movementPattern": "change-of-direction",
+    "highLoadAreas": ["knee", "hip", "ankle"],
+    "slots": ["sport-support"],
+    "rirSuitable": false,
+    "easierId": null,
+    "harderId": "lateral-box-jump",
+    "image": null
+  },
+  {
+    "id": "lateral-box-jump",
+    "source": "free-exercise-db",
+    "sourceId": "Lateral_Box_Jump",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Lateral Box Jump",
+      "el": null
+    },
+    "instructions": {
+      "en": [
+        "Assume a comfortable standing position, with a short box positioned next to you. This will be your starting position.",
+        "Quickly dip into a quarter squat to initiate the stretch reflex, and immediately reverse direction to jump up and to the side.",
+        "Bring your knees high enough to ensure your feet have good clearance over the box.",
+        "Land on the center of the box, using your legs to absorb the impact.",
+        "Carefully jump down to the other side of the box, and continue going back and forth for several repetitions."
+      ],
+      "el": null
+    },
+    "equipment": ["box"],
+    "locations": ["gym", "home"],
+    "movementPattern": "change-of-direction",
+    "highLoadAreas": ["knee", "hip", "ankle"],
+    "slots": ["sport-support"],
+    "rirSuitable": false,
+    "easierId": "side-to-side-box-shuffle",
+    "harderId": null,
+    "image": null
+  },
+  {
+    "id": "stride-jump-crossover",
+    "source": "free-exercise-db",
+    "sourceId": "Stride_Jump_Crossover",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Stride Jump Crossover",
+      "el": null
+    },
+    "instructions": {
+      "en": [
+        "Stand to the side of a box with your inside foot on top of it, close to the edge.",
+        "Begin by swinging the arms upward as you push through the top leg, jumping upward as high as possible. Attempt to drive the opposite knee upward.",
+        "Land in the opposite position that you started, on the opposite side of the box. The foot that was initially on the box will now be on the ground, with the opposite foot now on the box.",
+        "Repeat the movement, crossing back over to the other side."
+      ],
+      "el": null
+    },
+    "equipment": ["box"],
+    "locations": ["gym", "home"],
+    "movementPattern": "change-of-direction",
+    "highLoadAreas": ["knee", "hip", "ankle"],
+    "slots": ["sport-support"],
+    "rirSuitable": false,
+    "easierId": null,
+    "harderId": null,
+    "image": null
+  },
+  {
+    "id": "fast-skipping",
+    "source": "free-exercise-db",
+    "sourceId": "Fast_Skipping",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Fast Skipping",
+      "el": null
+    },
+    "instructions": {
+      "en": [
+        "Start in a relaxed position with one leg slightly forward. This will be your starting position.",
+        "Skip by executing a step-hop pattern of right-right-step to left-left-step, and so on, alternating back and forth.",
+        "Perform fast skips by maintaining close contact with the ground and reduce air time, moving as quickly as possible."
+      ],
+      "el": null
+    },
+    "equipment": [],
+    "locations": ["gym", "home", "court", "beach"],
+    "movementPattern": "change-of-direction",
+    "highLoadAreas": ["knee", "ankle", "hip"],
+    "slots": ["warm-up", "sport-support"],
+    "rirSuitable": false,
+    "easierId": null,
+    "harderId": null,
+    "image": null
+  },
+  {
+    "id": "linear-acceleration-wall-drill",
+    "source": "free-exercise-db",
+    "sourceId": "Linear_Acceleration_Wall_Drill",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Linear Acceleration Wall Drill",
+      "el": null
+    },
+    "instructions": {
+      "en": [
+        "Lean at around 45 degrees against a wall. Your feet should be together, glutes contracted.",
+        "Begin by lifting your right knee quickly, pausing, and then driving it straight down into the ground.",
+        "Switch legs, raising the opposite knee, and then attacking the ground straight down.",
+        "Repeat once more with your right leg, and as soon as the right foot strikes the ground hammer them out rapidly, alternating left and right as fast as you can."
+      ],
+      "el": null
+    },
+    "equipment": [],
+    "locations": ["gym", "home", "court"],
+    "movementPattern": "change-of-direction",
+    "highLoadAreas": ["hip", "knee", "ankle"],
+    "slots": ["warm-up", "sport-support"],
+    "rirSuitable": false,
+    "easierId": null,
+    "harderId": null,
+    "image": null
+  },
+  {
+    "id": "moving-claw-series",
+    "source": "free-exercise-db",
+    "sourceId": "Moving_Claw_Series",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Moving Claw Series",
+      "el": null
+    },
+    "instructions": {
+      "en": [
+        "This move helps prepare your running form to help you excel at sprinting. As you run, be sure to flex the knee, aiming to kick your glutes as the hip extends.",
+        "Reload the quad as the leg moves back forward, attacking the ground on the next step.",
+        "Ensure that as you run, you block with the arms, punching through in a rapid 1-2 motion."
+      ],
+      "el": null
+    },
+    "equipment": [],
+    "locations": ["gym", "home", "court", "beach"],
+    "movementPattern": "change-of-direction",
+    "highLoadAreas": ["hip", "knee", "ankle"],
+    "slots": ["warm-up", "sport-support"],
+    "rirSuitable": false,
+    "easierId": null,
+    "harderId": null,
+    "image": null
+  }
+]
