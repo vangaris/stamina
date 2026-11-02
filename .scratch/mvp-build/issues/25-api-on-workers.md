@@ -13,7 +13,7 @@
 - [x] The Hono app runs on Cloudflare Workers: a Workers entry beside the existing Node and Deno entries, a `wrangler` config, only the Neon WebSocket driver in the bundle (no `pg`), `nodejs_compat` only if needed; `/health` and `GET /me` answer from a deployed Worker
 - [x] Runtime values are Worker secrets and vars (`DATABASE_URL`, `CORS_ORIGINS`, `NEON_AUTH_BASE_URL`, `SENTRY_DSN`); no secret in the repository or in logs
 - [x] Each pull request deploys its own Worker (`stamina-api-pr-N`) against its own Neon branch and the preview web app points at it; closing the PR deletes the Worker
-- [ ] `release.yml` deploys the production Worker and smoke-checks `/health`; the production API answers again
+- [x] `release.yml` deploys the production Worker and smoke-checks `/health`; the production API answers again
 - [ ] Playwright covers real email-code sign-in on the live preview (moved from ticket 04) and the existing preview smoke test passes
 - [x] Free-plan limits checked on the deployed Worker (CPU time of `/me` with JWT verification and the RLS transaction, request count); result and the exit path to Cloud Run recorded in `docs/infra.md`
 - [x] Docs updated (`docs/releasing.md`, `docs/infra.md`, `docs/auth.md`, `docs/development.md`); Deno scripts kept only as the documented launch option or removed
@@ -36,3 +36,4 @@
 - Production: the Worker `stamina-api` does not exist yet (`/health` answers Cloudflare error 1042). It is created by merging release PR 10.
 - Signed in by hand with a real email code on the preview of PR 10 (2026-11-02) and reloaded the page; the Worker answered. The Playwright part of the fifth box cannot run against a live preview without a mailbox (the sign-in spec skips there), so that box stays open until a decision on a test mailbox or on reading it as the manual run. The preview smoke test passes.
 - Preview teardown verified on PR 14: Worker and Neon branch gone, cleanup job green.
+- Production deployed 2026-11-02 by merging release PR 10 (release 1.1.0): migrations applied, `stamina-api` created, `https://stamina-api.vnghenry.workers.dev/health` answers `{"status":"ok","database":"up"}`, `/me` answers 401 without a token, `https://stamina-web.pages.dev` answers 200, smoke check green.
