@@ -1,5 +1,8 @@
 import type { BodyArea } from './enums/body-area.ts';
+import type { Equipment } from './enums/equipment.ts';
+import type { ExerciseLocation } from './enums/exercise-location.ts';
 import type { ReferralKind } from './enums/referral-kind.ts';
+import type { SessionSlot } from './enums/session-slot.ts';
 import type { ScreeningQuestion } from './enums/screening-question.ts';
 import type { ScreeningStatus } from './enums/screening-status.ts';
 import type { Weekday } from './enums/weekday.ts';
@@ -43,4 +46,26 @@ export interface TrainingModeInput {
   referral: ReferralKind | null;
   /** Whether the person stated "a doctor has said I can train" after this Screening. */
   doctorOk: boolean;
+}
+
+/** What the exercise filter reads from an exercise. */
+export interface ExerciseTags {
+  /** Equipment needed beyond the body; empty means bodyweight. */
+  equipment: readonly Equipment[];
+  locations: readonly ExerciseLocation[];
+  slots: readonly SessionSlot[];
+  /** Every body area the exercise loads heavily. */
+  highLoadAreas: readonly BodyArea[];
+}
+
+/** Every part is optional: an absent part does not narrow the result. */
+export interface ExerciseFilter {
+  /** What the person has: an exercise is kept only if all the equipment it needs is listed. Absent means no limit. */
+  equipment?: readonly Equipment[];
+  /** Where they train: an exercise is kept if it works in any of these. */
+  locations?: readonly ExerciseLocation[];
+  /** An exercise is kept if it fits any of these slots. */
+  slots?: readonly SessionSlot[];
+  /** Body areas to keep out: an exercise that loads any of them is never kept. */
+  excludedAreas?: readonly BodyArea[];
 }

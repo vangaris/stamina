@@ -1,6 +1,8 @@
 export {
   ADULT_AGE,
   CONSENT_TEXT_VERSIONS,
+  DEFAULT_EQUIPMENT,
+  EXERCISE_IMAGE_ORIGIN,
   COUNTRY_CODES,
   EEA_COUNTRY_CODES,
   HOT_DEFAULT_SPORTS,
@@ -21,6 +23,13 @@ export {
 } from './config.ts';
 export { BodyArea } from './enums/body-area.ts';
 export { ConsentPurpose } from './enums/consent-purpose.ts';
+export { Equipment } from './enums/equipment.ts';
+export { ExerciseLicence } from './enums/exercise-licence.ts';
+export { ExerciseLocation } from './enums/exercise-location.ts';
+export { ExerciseSource } from './enums/exercise-source.ts';
+export { ImageLicence } from './enums/image-licence.ts';
+export { MovementPattern } from './enums/movement-pattern.ts';
+export { SessionSlot } from './enums/session-slot.ts';
 export { Eligibility } from './enums/eligibility.ts';
 export { Goal } from './enums/goal.ts';
 export { Intensity } from './enums/intensity.ts';
@@ -36,6 +45,8 @@ export { Units } from './enums/units.ts';
 export { Weekday } from './enums/weekday.ts';
 export type {
   EligibilityInput,
+  ExerciseFilter,
+  ExerciseTags,
   ScreeningInput,
   ScreeningOutcome,
   TrainingModeInput,
@@ -46,5 +57,6 @@ export { evaluateScreening } from './utils/evaluate-screening.ts';
 export { isGoalAvailable } from './utils/is-goal-available.ts';
 export { isHotDefaultSport } from './utils/is-hot-default-sport.ts';
 export { normalizeInviteCode } from './utils/normalize-invite-code.ts';
+export { selectExercises } from './utils/select-exercises.ts';
 export { resolveTrainingMode } from './utils/resolve-training-mode.ts';
 export { validateTrainingWeek } from './utils/validate-training-week.ts';

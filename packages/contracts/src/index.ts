@@ -14,6 +14,12 @@ export { RecordStatus } from './enums/record-status.ts';
 export { SaveProfileStatus } from './enums/save-profile-status.ts';
 export { ScreeningRejection } from './enums/screening-rejection.ts';
 export { SportKind } from './enums/sport-kind.ts';
+export {
+  exerciseImageSchema,
+  exerciseListResponseSchema,
+  exerciseQuerySchema,
+  exerciseSchema,
+} from './exercise-schema.ts';
 export { getProfileResponseSchema } from './get-profile-response-schema.ts';
 export { healthResponseSchema } from './health-response-schema.ts';
 export { inviteCheckRequestSchema, inviteCheckResponseSchema } from './invite-check-schema.ts';
@@ -33,6 +39,10 @@ export type {
   ApiClientOptions,
   ConsentGrant,
   ConsentState,
+  Exercise,
+  ExerciseImage,
+  ExerciseListResponse,
+  ExerciseQuery,
   GetProfileResponse,
   HealthResponse,
   InviteCheckResponse,
