@@ -22,7 +22,17 @@ Phase A (owner only, no payment method): the Hono API runs on **Cloudflare Worke
 
 Launch options (ticket 23, EU-guaranteed host): **Deno Deploy EU** or **Cloud Run europe-west1**. The app is portable Hono; each host needs only an entry file. The Deno Deploy scripts (`scripts/deno-deploy.mjs`, `scripts/ops/deno-setup.sh`) and the Deno parts of the setup wizards were removed when the API moved to Workers; they are in git history before the commit that added `scripts/workers-deploy.mjs`. Deno Deploy suspended the free organisation (`402 BILLING_SUSPENDED`) and asks for a card.
 
-Free-plan limits (100k requests/day, about 10 ms CPU per request; from the hosting research, **not yet measured on the deployed Worker**) and the CPU time of `GET /me` (JWT verification and the RLS transaction) are recorded here once the first Worker is deployed.
+**Free-plan limits, measured 2026-11-02** on the preview Workers `stamina-api-pr-13` and `stamina-api-pr-10` (Cloudflare GraphQL `workersInvocationsAdaptive`, which reports CPU time per request). Plan limits: 100k requests/day and 10 ms CPU per request (from the hosting research).
+
+| Requests | CPU p50 | CPU p99 |
+| -------- | ------- | ------- |
+| Warm `/health` and `/me` without a token (108) | 2.3 ms | 12.1 ms |
+| Signed-in page reloads, `/me` with a real Neon Auth JWT, JWT verification and the RLS transaction (17) | 5.3 to 6.7 ms | 5.7 to 10.3 ms |
+| First requests of a fresh Worker (cold start, first Neon WebSocket) | 7.3 to 16 ms | 27 to 47 ms, one request at 43 ms |
+
+No request ended with an error status: the cold-start requests above 10 ms still returned `success` (`errors` stayed 0), so the free plan did not cut them off at 10 ms in this sample. The sample is small (a few dozen requests, one account), so treat the warm p99 of about 10 ms as at the limit with no headroom. Re-measure after the first week of real use; the owner-only phase (one user) is far below 100k requests/day.
+
+**Exit path if the CPU limit starts to bite:** the Hono app is host-neutral (`src/app.ts`, entries `src/worker.ts` and `src/main.node.ts`). Moving to Cloud Run europe-west1 (also the EU-guaranteed launch option) means building a container around `main.node.ts`, setting the same four runtime values (`DATABASE_URL`, `CORS_ORIGINS`, `NEON_AUTH_BASE_URL`, `SENTRY_DSN`), and pointing `PROD_API_URL` and the web build at the new URL. Cloud Run needs a billing account, so it is a Phase B step. [INFERENCE] Not tried: no container build or Cloud Run deploy exists in the repository yet.
 
 ## Layout
 
