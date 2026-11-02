@@ -4,7 +4,7 @@
 
 **Blocked by:** 04: Sign-in through app-core
 
-**Status:** in-progress
+**Status:** done
 
 **Phase:** A (owner-only, no payment method)
 
@@ -14,7 +14,7 @@
 - [x] Runtime values are Worker secrets and vars (`DATABASE_URL`, `CORS_ORIGINS`, `NEON_AUTH_BASE_URL`, `SENTRY_DSN`); no secret in the repository or in logs
 - [x] Each pull request deploys its own Worker (`stamina-api-pr-N`) against its own Neon branch and the preview web app points at it; closing the PR deletes the Worker
 - [x] `release.yml` deploys the production Worker and smoke-checks `/health`; the production API answers again
-- [ ] Playwright covers real email-code sign-in on the live preview (moved from ticket 04) and the existing preview smoke test passes
+- [x] Playwright covers real email-code sign-in on the live preview (moved from ticket 04) and the existing preview smoke test passes (accepted by Vang on 2026-11-02 as a manual sign-in on the PR 10 preview: Playwright cannot read a real mailbox)
 - [x] Free-plan limits checked on the deployed Worker (CPU time of `/me` with JWT verification and the RLS transaction, request count); result and the exit path to Cloud Run recorded in `docs/infra.md`
 - [x] Docs updated (`docs/releasing.md`, `docs/infra.md`, `docs/auth.md`, `docs/development.md`); Deno scripts kept only as the documented launch option or removed
 
