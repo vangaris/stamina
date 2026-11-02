@@ -44,6 +44,18 @@ _Avoid_: Entry, history, tracking
 The yes/no health questions a user answers before getting a Program, whose outcome is cleared, an excluded body area, or referred to a professional.
 _Avoid_: PAR-Q (unless licensed), assessment, medical check, clearance
 
+**Consent**:
+A separate, explicit, unticked-by-default agreement the user gives, recorded with its purpose, text version and language; the wellness disclaimer and the processing of health data are two consents, and neither is implied by the other.
+_Avoid_: Terms acceptance, opt-in, agreement
+
+**Referred**:
+The Screening outcome that asks the user to talk to a professional before any Program; it names no condition, and for pregnancy the wording mentions a doctor or midwife.
+_Avoid_: Rejected, failed, not cleared, high risk
+
+**Limited mode**:
+How training starts after a Referred user states "A doctor has said I can train": effort capped at RPE 7, no power or plyometric slot, no RIR 1; Stamina records the statement and never issues clearance. Pregnancy has no Limited mode.
+_Avoid_: Safe mode, medical clearance, light mode
+
 **Stop flag**:
 A symptom the user reports during a Check-in or Session that pauses training and points them to medical help.
 _Avoid_: Red flag alert, warning, symptom check

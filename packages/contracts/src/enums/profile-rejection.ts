@@ -4,4 +4,6 @@ export enum ProfileRejection {
   OutsideEea = 'outside-eea',
   /** Unknown, malformed or already used: one answer, so codes cannot be probed. */
   InviteInvalid = 'invite-invalid',
+  /** The body-composition Goal while Screening has turned Nutrition off. */
+  GoalUnavailable = 'goal-unavailable',
 }
