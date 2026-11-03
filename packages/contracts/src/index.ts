@@ -20,6 +20,14 @@ export {
   exerciseQuerySchema,
   exerciseSchema,
 } from './exercise-schema.ts';
+export {
+  launchSportDataSchema,
+  sportDraftSchema,
+  sportProfileSchema,
+  sportSourceSchema,
+  sportSourcesSchema,
+} from './sport-profile-schema.ts';
+export { catalogSportSchema, sportListResponseSchema } from './catalog-sport-schema.ts';
 export { getProfileResponseSchema } from './get-profile-response-schema.ts';
 export { healthResponseSchema } from './health-response-schema.ts';
 export { inviteCheckRequestSchema, inviteCheckResponseSchema } from './invite-check-schema.ts';
@@ -37,12 +45,14 @@ export { userExportSchema } from './user-export-schema.ts';
 export type {
   ApiClient,
   ApiClientOptions,
+  CatalogSport,
   ConsentGrant,
   ConsentState,
   Exercise,
   ExerciseImage,
   ExerciseListResponse,
   ExerciseQuery,
+  LaunchSportData,
   GetProfileResponse,
   HealthResponse,
   InviteCheckResponse,
@@ -56,5 +66,9 @@ export type {
   SavedProfile,
   SavedScreening,
   ScreeningSubmission,
+  SportDraft,
+  SportListResponse,
+  SportProfile,
+  SportSource,
   UserExport,
 } from './types.ts';

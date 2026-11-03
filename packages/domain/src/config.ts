@@ -361,3 +361,15 @@ export const CONSENT_TEXT_VERSIONS: Readonly<Record<ConsentPurpose, string>> = {
 export const DEFAULT_EQUIPMENT: readonly Equipment[] = [Equipment.Dumbbell];
 /** An exercise image must be served by wger itself, unmodified. */
 export const EXERCISE_IMAGE_ORIGIN = 'https://wger.de/media/';
+
+/** A Sport Profile's energy mix is three shares of effort that add up to this. */
+export const ENERGY_MIX_TOTAL = 100;
+/** Plausible bounds for the METs of one effort level (resting is 1). */
+export const MIN_METS = 1.5;
+export const MAX_METS = 18;
+/** Longest recovery window a Sport Profile may ask for, in hours. */
+export const MAX_RECOVERY_HOURS = 96;
+export const MAX_KEY_MOVEMENTS = 6;
+export const MAX_SPORT_HIGH_LOAD_AREAS = 5;
+/** A Sport Profile must cite at least this many sources. */
+export const MIN_SPORT_SOURCES = 2;
