@@ -5,6 +5,7 @@ import {
   RecordStatus,
   createApiClient,
   saveScreeningResultSchema,
+  SportKind,
   userExportSchema,
   type ScreeningSubmission,
 } from '@stamina/contracts';
@@ -13,6 +14,7 @@ import {
   ConsentPurpose,
   Goal,
   ScreeningQuestion,
+  SportStatus,
   StartingLevel,
   TrainingMode,
 } from '@stamina/domain';
@@ -20,7 +22,7 @@ import { Locale } from '@stamina/i18n';
 import { eq } from 'drizzle-orm';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { createFieldCipher, FieldCipherError } from '../src/crypto/index.ts';
-import { appUser, consent, profile, screening } from '../src/db/schema.ts';
+import { appUser, consent, profile, screening, sport } from '../src/db/schema.ts';
 import { ApiErrorCode } from '../src/enums/api-error-code.ts';
 import type { ErrorReporter } from '../src/error-reporter.ts';
 import { issueInvite, validSubmission } from './support/profile-fixtures.ts';
@@ -144,7 +146,12 @@ describe('Screening data: encryption, export, deletion, logs', () => {
         await (await user.call(HttpMethod.Get, ApiPath.MeExport)).json(),
       );
 
-      expect(exported).toMatchObject({ profile: null, consents: [], screenings: [] });
+      expect(exported).toMatchObject({
+        profile: null,
+        consents: [],
+        sportRequests: [],
+        screenings: [],
+      });
     });
 
     it('holds the profile, every consent row and every Screening with its decrypted answers', async () => {
@@ -188,6 +195,40 @@ describe('Screening data: encryption, export, deletion, logs', () => {
         nutritionOff: true,
         trainingMode: TrainingMode.Full,
       });
+    });
+
+    it('holds the sports the user asked for, even one that was rejected, and nobody else’s', async () => {
+      const [asker, other] = [await newUser(api), await newUser(api)];
+      for (const [user, name] of [
+        [asker, 'Export Roundnet'],
+        [other, 'Export Roundnet'],
+        [other, 'Export Other Only'],
+      ] as const) {
+        await user.call(
+          HttpMethod.Post,
+          ApiPath.Profile,
+          validSubmission({
+            sport: { kind: SportKind.Other, name },
+            inviteCode: await issueInvite(api.db),
+          }),
+        );
+      }
+      await api.db
+        .update(sport)
+        .set({ status: SportStatus.Rejected })
+        .where(eq(sport.normalizedName, 'export roundnet'));
+
+      const exported = userExportSchema.parse(
+        await (await asker.call(HttpMethod.Get, ApiPath.MeExport)).json(),
+      );
+
+      expect(exported.sportRequests).toEqual([
+        {
+          sportId: expect.any(String),
+          name: 'Export Roundnet',
+          requestedAt: expect.any(String),
+        },
+      ]);
     });
 
     it('holds only the caller’s data', async () => {

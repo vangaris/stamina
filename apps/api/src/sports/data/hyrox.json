@@ -1,0 +1,31 @@
+{
+  "id": "hyrox",
+  "name": "HYROX",
+  "profile": {
+    "energyMix": { "aerobic": 75, "repeatedSprint": 20, "explosive": 5 },
+    "keyMovements": ["push", "pull", "carry", "grip", "jump-land", "overhead"],
+    "highLoadAreas": ["knee", "hip", "lower-back", "ankle", "shoulder"],
+    "typicalActivity": { "durationMinutes": 80, "intensity": "hard" },
+    "recoveryWindowHours": { "lower": 48, "upper": 36 },
+    "season": { "kind": "league", "months": [10, 11, 12, 1, 2, 3, 4, 5, 6] },
+    "metsPerIntensity": { "easy": 6.5, "moderate": 9, "hard": 10.5 }
+  },
+  "sources": [
+    {
+      "title": "HYROX: the fitness race format, stations and weights",
+      "url": "https://hyrox.com/the-fitness-race/"
+    },
+    {
+      "title": "Acute physiological responses and performance determinants in Hyrox (Brandt et al., Frontiers in Physiology, 2025)",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11994925/"
+    },
+    {
+      "title": "Compendium of Physical Activities (2024): Running",
+      "url": "https://pacompendium.com/running/"
+    },
+    {
+      "title": "HYROX 2026/27 Season Calendar: Every Race Date From October 2026 to the 2027 World Championships (Race.Fitness)",
+      "url": "https://www.race.fitness/blog/hyrox-2026-27-season-calendar"
+    }
+  ]
+}

@@ -27,6 +27,7 @@ import { meRoutes } from './routes/me-routes.ts';
 import { profileRoutes } from './routes/profile-routes.ts';
 import { safetyRoutes } from './routes/safety-routes.ts';
 import { screeningRoutes } from './routes/screening-routes.ts';
+import { sportRoutes } from './routes/sport-routes.ts';
 
 export interface AppDeps {
   db: Db;
@@ -88,6 +89,7 @@ export function createApp({
   app.route(ApiPath.DoctorOk, doctorOkRoutes({ db, auth }));
   app.route(ApiPath.InviteCheck, inviteRoutes({ db }));
   app.route(ApiPath.Exercises, exerciseRoutes({ db, auth }));
+  app.route(ApiPath.Sports, sportRoutes({ db, auth }));
 
   return app;
 }

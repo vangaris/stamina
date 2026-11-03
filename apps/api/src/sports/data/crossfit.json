@@ -1,0 +1,31 @@
+{
+  "id": "crossfit",
+  "name": "CrossFit",
+  "profile": {
+    "energyMix": { "aerobic": 50, "repeatedSprint": 30, "explosive": 20 },
+    "keyMovements": ["hinge", "overhead", "push", "pull", "grip"],
+    "highLoadAreas": ["shoulder", "lower-back", "hip", "knee", "wrist"],
+    "typicalActivity": { "durationMinutes": 60, "intensity": "hard" },
+    "recoveryWindowHours": { "lower": 48, "upper": 48 },
+    "season": { "kind": "year-round", "months": [] },
+    "metsPerIntensity": { "easy": 5, "moderate": 6.5, "hard": 7.8 }
+  },
+  "sources": [
+    {
+      "title": "The physical demands and physiological responses to CrossFit: a scoping review with evidence gap map and meta-correlation",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11414238/"
+    },
+    {
+      "title": "Assessment of Cardiorespiratory and Metabolic Contributions in an Extreme Intensity CrossFit Benchmark Workout",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/38257605/"
+    },
+    {
+      "title": "CrossFit Open 25.3 workout description and scorecard (CrossFit Games)",
+      "url": "https://games-assets.crossfit.com/s3fs-public/2025-03/CFG25%20Open%2025.3%20Scorecard_V12_tgfredcvbn.pdf"
+    },
+    {
+      "title": "Compendium of Physical Activities: Conditioning Exercise (codes 02057, 02061, 02062)",
+      "url": "https://pacompendium.com/conditioning-exercise/"
+    }
+  ]
+}

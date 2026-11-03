@@ -6,4 +6,6 @@ export enum ProfileRejection {
   InviteInvalid = 'invite-invalid',
   /** The body-composition Goal while Screening has turned Nutrition off. */
   GoalUnavailable = 'goal-unavailable',
+  /** An "Other" sport name, while the person already has the maximum of unapproved sport requests. */
+  TooManySportRequests = 'too-many-sport-requests',
 }

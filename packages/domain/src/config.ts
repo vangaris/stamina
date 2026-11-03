@@ -18,6 +18,14 @@ export const MIN_PLAY_MINUTES = 15;
 export const MAX_PLAY_MINUTES = 300;
 
 export const OTHER_SPORT_NAME_MAX_LENGTH = 60;
+/** What `normalizeSportName` may produce at most (compatibility decomposition can lengthen a name). */
+export const SPORT_NORMALIZED_NAME_MAX_LENGTH = 120;
+/**
+ * How many sports one person may have requested that are not approved yet. Asking again for a
+ * sport already asked for is free. The `request_sport` SQL function (migration 0005) enforces
+ * the same number; a test keeps the two equal.
+ */
+export const MAX_SPORT_REQUESTS_PER_USER = 5;
 
 /** Sports where "hot conditions" is on by default in summer. */
 export const HOT_DEFAULT_SPORTS: readonly LaunchSport[] = [

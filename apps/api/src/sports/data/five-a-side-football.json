@@ -1,0 +1,27 @@
+{
+  "id": "five-a-side-football",
+  "name": "Five-a-side football",
+  "profile": {
+    "energyMix": { "aerobic": 60, "repeatedSprint": 30, "explosive": 10 },
+    "keyMovements": ["change-of-direction", "jump-land"],
+    "highLoadAreas": ["knee", "ankle", "hip"],
+    "typicalActivity": { "durationMinutes": 40, "intensity": "hard" },
+    "recoveryWindowHours": { "lower": 48, "upper": 24 },
+    "season": { "kind": "year-round", "months": [] },
+    "metsPerIntensity": { "easy": 7, "moderate": 7.8, "hard": 9.5 }
+  },
+  "sources": [
+    {
+      "title": "Physical and Physiological Match-Play Demands and Player Characteristics in Futsal: A Systematic Review",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7677190/"
+    },
+    {
+      "title": "Physical and physiological demands of futsal",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/29541136/"
+    },
+    {
+      "title": "Compendium of Physical Activities: Sports (codes 15195 Futsal, 15605, 15610)",
+      "url": "https://pacompendium.com/sports/"
+    }
+  ]
+}

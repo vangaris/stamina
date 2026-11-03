@@ -130,6 +130,12 @@ export function useOnboarding(options: UseOnboardingOptions) {
         step.value = OnboardingStep.Goal;
         return;
       }
+      if (result.reason === ProfileRejection.TooManySportRequests) {
+        // Too many sports asked for already: pick one of the sports in the list instead.
+        errors.value = { otherSportName: OnboardingMessageKey.TooManySportRequests };
+        step.value = OnboardingStep.Sport;
+        return;
+      }
       // The server applies the same rule: show the same stop, from the first screen.
       stop.value = result.reason;
       step.value = OnboardingStep.About;

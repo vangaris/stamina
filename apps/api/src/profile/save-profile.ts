@@ -1,17 +1,24 @@
 import {
   ProfileRejection,
+  SportKind,
   SaveProfileStatus,
   profileRejectionFor,
   type ProfileSubmission,
   type SaveProfileResult,
 } from '@stamina/contracts';
-import { checkEligibility, isGoalAvailable, normalizeInviteCode } from '@stamina/domain';
+import {
+  checkEligibility,
+  isGoalAvailable,
+  normalizeInviteCode,
+  normalizeSportName,
+} from '@stamina/domain';
 import { eq, sql } from 'drizzle-orm';
 import { lockUser } from '../db/lock-user.ts';
 import type { Db } from '../db/types.ts';
 import { profile } from '../db/schema.ts';
 import { withUser } from '../db/with-user.ts';
 import { redeemInvite } from '../invites/redeem-invite.ts';
+import { releaseSportRequest, requestSport, TooManySportRequestsError } from '../sports/index.ts';
 import { readLatestScreening } from '../safety/read-latest-screening.ts';
 import { toProfileValues } from './to-profile-values.ts';
 import { toSavedProfile } from './to-saved-profile.ts';
@@ -27,7 +34,9 @@ const rejected = (reason: ProfileRejection): SaveProfileResult => ({
  * already has a profile, update it without needing or using the invite -> otherwise redeem the
  * invite and insert, in one transaction. An invalid, used or unknown code stores nothing. A Goal
  * that the latest Screening has made unavailable (body composition while Nutrition is off) is
- * turned away before anything is stored or redeemed.
+ * turned away before anything is stored or redeemed. When the sport is "Other", the same
+ * transaction asks for it (`requestSport`: one draft sport per normalized name, shared by everyone
+ * who asked).
  */
 export async function saveProfile(
   db: Db,
@@ -56,7 +65,7 @@ export async function saveProfile(
     }
 
     const [existing] = await tx
-      .select({ userId: profile.userId })
+      .select({ userId: profile.userId, otherSportName: profile.otherSportName })
       .from(profile)
       .where(eq(profile.userId, userId));
     if (!existing) {
@@ -71,7 +80,23 @@ export async function saveProfile(
       .values({ userId, ...values })
       .onConflictDoUpdate({ target: profile.userId, set: { ...values, updatedAt: sql`now()` } })
       .returning();
+
+    // Same transaction as the profile, so a save that is rejected or fails asks for nothing. A
+    // changed sport gives the earlier request up (when nobody else asked for it and nothing was
+    // drafted), before the new name is asked for, so a rename never counts against the limit.
+    const nextName = answers.sport.kind === SportKind.Other ? answers.sport.name : undefined;
+    const earlierName = existing?.otherSportName;
+    if (
+      earlierName &&
+      (nextName === undefined || normalizeSportName(nextName) !== normalizeSportName(earlierName))
+    ) {
+      await releaseSportRequest(tx, earlierName);
+    }
+    if (nextName !== undefined) await requestSport(tx, nextName);
     return row!;
+  }).catch((error: unknown) => {
+    if (error instanceof TooManySportRequestsError) return ProfileRejection.TooManySportRequests;
+    throw error;
   });
 
   if (typeof saved === 'string') return rejected(saved);

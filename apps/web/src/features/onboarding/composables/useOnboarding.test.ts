@@ -324,6 +324,27 @@ describe('useOnboarding: saving', () => {
     expect(onExit).not.toHaveBeenCalled();
   });
 
+  it('sends the person back to the sport when they asked for too many sports', async () => {
+    const { flow, onExit } = await setup({
+      api: () => ({
+        saveProfile: async () => ({
+          status: SaveProfileStatus.Rejected,
+          reason: ProfileRejection.TooManySportRequests,
+        }),
+      }),
+    });
+    await reachLastScreen(flow);
+
+    await flow.next();
+
+    expect(flow.step.value).toBe(OnboardingStep.Sport);
+    expect(flow.errors.value).toEqual({
+      otherSportName: OnboardingMessageKey.TooManySportRequests,
+    });
+    expect(flow.stop.value).toBeUndefined();
+    expect(onExit).not.toHaveBeenCalled();
+  });
+
   it('asks for another Goal when the server says body composition is unavailable', async () => {
     const { flow, onExit } = await setup({
       api: () => ({

@@ -23,6 +23,7 @@ import {
   Goal,
   isGoalAvailable,
   isHotDefaultSport,
+  normalizeSportName,
   normalizeInviteCode,
   ReferralKind,
   ScreeningStatus,
@@ -54,6 +55,8 @@ export function createFakeApiClient(getToken: () => Promise<string | undefined>)
   const redeemed = new Set<string>();
   const consents = new Map<string, StoredConsent[]>();
   const screenings = new Map<string, StoredScreening[]>();
+  /** Per user: the "Other" sport asked for (the fake has no approvals). */
+  const sportRequests = new Map<string, UserExport['sportRequests'][number]>();
 
   const grantedPurposes = (userId: string) =>
     (consents.get(userId) ?? [])
@@ -127,6 +130,21 @@ export function createFakeApiClient(getToken: () => Promise<string | undefined>)
           answers.sport.kind === SportKind.Launch && isHotDefaultSport(answers.sport.sport),
       };
       profiles.set(userId, profile);
+      // The fake keeps the one sport the person asked for: a rename gives the earlier request up,
+      // as the server does when nobody else asked for it.
+      if (answers.sport.kind === SportKind.Other) {
+        const sportId = normalizeSportName(answers.sport.name);
+        const earlier = sportRequests.get(userId);
+        if (earlier?.sportId !== sportId) {
+          sportRequests.set(userId, {
+            sportId,
+            name: answers.sport.name,
+            requestedAt: new Date().toISOString(),
+          });
+        }
+      } else {
+        sportRequests.delete(userId);
+      }
       return { status: SaveProfileStatus.Saved, profile };
     },
     getSafety: async () => {
@@ -193,6 +211,7 @@ export function createFakeApiClient(getToken: () => Promise<string | undefined>)
         exportedAt: new Date().toISOString(),
         profile: profiles.get(userId) ?? null,
         consents: [...(consents.get(userId) ?? [])],
+        sportRequests: sportRequests.has(userId) ? [sportRequests.get(userId)!] : [],
         screenings: (screenings.get(userId) ?? []).map((stored) => ({
           ...toSaved(stored),
           answers: { ...stored.submission.answers },
@@ -204,6 +223,7 @@ export function createFakeApiClient(getToken: () => Promise<string | undefined>)
       profiles.delete(userId);
       consents.delete(userId);
       screenings.delete(userId);
+      sportRequests.delete(userId);
     },
   };
 }

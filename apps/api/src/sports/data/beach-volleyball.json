@@ -1,0 +1,44 @@
+{
+  "id": "beach-volleyball",
+  "name": "Beach volleyball",
+  "profile": {
+    "energyMix": {
+      "aerobic": 35,
+      "repeatedSprint": 35,
+      "explosive": 30
+    },
+    "keyMovements": ["jump-land", "change-of-direction", "overhead"],
+    "highLoadAreas": ["shoulder", "lower-back", "knee", "ankle"],
+    "typicalActivity": {
+      "durationMinutes": 60,
+      "intensity": "moderate"
+    },
+    "recoveryWindowHours": {
+      "lower": 48,
+      "upper": 36
+    },
+    "season": {
+      "kind": "weather",
+      "months": [5, 6, 7, 8, 9]
+    },
+    "metsPerIntensity": {
+      "easy": 4.0,
+      "moderate": 6.0,
+      "hard": 8.0
+    }
+  },
+  "sources": [
+    {
+      "title": "Quantifying the Activity Profile of Female Beach Volleyball Tournament Match-Play",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7919359/"
+    },
+    {
+      "title": "Physical performance and game demands in beach volleyball: A systematic review",
+      "url": "https://www.jhse.es/index.php/jhse/article/download/physical-performance-game-demands-beach-volleyball-systematic-re/67"
+    },
+    {
+      "title": "2024 Adult Compendium of Physical Activities",
+      "url": "https://pacompendium.com/wp-content/uploads/2025/02/1_2024-adult-compendium_1_2024.pdf"
+    }
+  ]
+}

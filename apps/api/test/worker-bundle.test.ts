@@ -20,6 +20,17 @@ const LIBRARY_LOADER_PATHS = [
   '/src/db/migrate',
 ];
 
+/** Likewise the launch sports: seeded by `migrate()`, drafted by the founder's script, never by the Worker. */
+const SPORT_NODE_PATHS = [
+  '/src/sports/data/',
+  '/src/sports/load-launch-sports',
+  '/src/sports/config',
+  '/src/sports/sync-launch-sports',
+  '/src/sports/draft-sport-profile',
+  '/src/sports/build-sport-draft-prompt',
+  '/src/sports/node',
+];
+
 describe('Worker bundle', () => {
   let sources: string[];
   let outdir: string;
@@ -44,6 +55,13 @@ describe('Worker bundle', () => {
   it('serves exercises from the database without the library data, loader or sync', () => {
     expect(sources.some((path) => path.includes('/src/routes/exercise-routes'))).toBe(true);
     for (const forbidden of LIBRARY_LOADER_PATHS) {
+      expect(sources.filter((path) => path.includes(forbidden))).toEqual([]);
+    }
+  });
+
+  it('serves sports from the database without the data, loader, sync or drafting', () => {
+    expect(sources.some((path) => path.includes('/src/routes/sport-routes'))).toBe(true);
+    for (const forbidden of SPORT_NODE_PATHS) {
       expect(sources.filter((path) => path.includes(forbidden))).toEqual([]);
     }
   });

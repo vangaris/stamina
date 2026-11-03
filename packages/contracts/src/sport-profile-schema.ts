@@ -20,6 +20,8 @@ const share = z.number().int().min(0).max(ENERGY_MIX_TOTAL);
 const mets = z.number().min(MIN_METS).max(MAX_METS);
 const hours = z.number().int().min(0).max(MAX_RECOVERY_HOURS);
 
+const isUnique = (list: readonly unknown[]) => new Set(list).size === list.length;
+
 /**
  * What the engine plans around for one sport. Structured values only: there is no free text to
  * carry a medical or injury-prevention claim. Wording about a profile never leaves this shape.
@@ -49,6 +51,15 @@ export const sportProfileSchema = z
     ({ energyMix: { aerobic, repeatedSprint, explosive } }) =>
       aerobic + repeatedSprint + explosive === ENERGY_MIX_TOTAL,
     { path: ['energyMix'], message: 'the energy mix must add up to 100' },
+  )
+  .refine(({ season }) => (season.kind === SeasonKind.YearRound) === (season.months.length === 0), {
+    path: ['season', 'months'],
+    message: 'a year-round sport has no months; any other has some',
+  })
+  .refine(
+    ({ keyMovements, highLoadAreas, season }) =>
+      isUnique(keyMovements) && isUnique(highLoadAreas) && isUnique(season.months),
+    { message: 'key movements, high-load areas and months must each be unique' },
   )
   .refine(({ metsPerIntensity: m }) => m.easy <= m.moderate && m.moderate <= m.hard, {
     path: ['metsPerIntensity'],

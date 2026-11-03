@@ -1,0 +1,960 @@
+{
+  "id": "e060ec8c-f00c-4cc9-a645-d22152b72fa2",
+  "prevId": "eab0823a-32d6-493f-964e-176b84c9eb90",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "public.app_user": {
+      "name": "app_user",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {
+        "app_user_owner": {
+          "name": "app_user_owner",
+          "as": "PERMISSIVE",
+          "for": "ALL",
+          "to": ["stamina_app"],
+          "using": "id = app_user_id()::uuid",
+          "withCheck": "id = app_user_id()::uuid"
+        }
+      },
+      "checkConstraints": {},
+      "isRLSEnabled": true
+    },
+    "public.consent": {
+      "name": "consent",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "purpose": {
+          "name": "purpose",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "text_version": {
+          "name": "text_version",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "locale": {
+          "name": "locale",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "granted_at": {
+          "name": "granted_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "withdrawn_at": {
+          "name": "withdrawn_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {
+        "consent_active_grant": {
+          "name": "consent_active_grant",
+          "columns": [
+            {
+              "expression": "user_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "purpose",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "text_version",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "where": "\"consent\".\"withdrawn_at\" is null",
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "consent_user_id_app_user_id_fk": {
+          "name": "consent_user_id_app_user_id_fk",
+          "tableFrom": "consent",
+          "tableTo": "app_user",
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {
+        "consent_owner_select": {
+          "name": "consent_owner_select",
+          "as": "PERMISSIVE",
+          "for": "SELECT",
+          "to": ["stamina_app"],
+          "using": "user_id = app_user_id()::uuid"
+        },
+        "consent_owner_insert": {
+          "name": "consent_owner_insert",
+          "as": "PERMISSIVE",
+          "for": "INSERT",
+          "to": ["stamina_app"],
+          "withCheck": "user_id = app_user_id()::uuid"
+        },
+        "consent_owner_withdraw": {
+          "name": "consent_owner_withdraw",
+          "as": "PERMISSIVE",
+          "for": "UPDATE",
+          "to": ["stamina_app"],
+          "using": "user_id = app_user_id()::uuid and withdrawn_at is null",
+          "withCheck": "user_id = app_user_id()::uuid and withdrawn_at is not null"
+        }
+      },
+      "checkConstraints": {
+        "consent_purpose_valid": {
+          "name": "consent_purpose_valid",
+          "value": "\"consent\".\"purpose\" in ('disclaimer', 'health-data')"
+        },
+        "consent_locale_valid": {
+          "name": "consent_locale_valid",
+          "value": "\"consent\".\"locale\" in ('en', 'el')"
+        }
+      },
+      "isRLSEnabled": true
+    },
+    "public.exercise": {
+      "name": "exercise",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "source": {
+          "name": "source",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "source_id": {
+          "name": "source_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "licence": {
+          "name": "licence",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "name_en": {
+          "name": "name_en",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "name_el": {
+          "name": "name_el",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "instructions_en": {
+          "name": "instructions_en",
+          "type": "text[]",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "instructions_el": {
+          "name": "instructions_el",
+          "type": "text[]",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "equipment": {
+          "name": "equipment",
+          "type": "text[]",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "locations": {
+          "name": "locations",
+          "type": "text[]",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "movement_pattern": {
+          "name": "movement_pattern",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "high_load_areas": {
+          "name": "high_load_areas",
+          "type": "text[]",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "slots": {
+          "name": "slots",
+          "type": "text[]",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "rir_suitable": {
+          "name": "rir_suitable",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "easier_id": {
+          "name": "easier_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "harder_id": {
+          "name": "harder_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "image": {
+          "name": "image",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "exercise_easier_id_exercise_id_fk": {
+          "name": "exercise_easier_id_exercise_id_fk",
+          "tableFrom": "exercise",
+          "tableTo": "exercise",
+          "columnsFrom": ["easier_id"],
+          "columnsTo": ["id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "exercise_harder_id_exercise_id_fk": {
+          "name": "exercise_harder_id_exercise_id_fk",
+          "tableFrom": "exercise",
+          "tableTo": "exercise",
+          "columnsFrom": ["harder_id"],
+          "columnsTo": ["id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {
+        "exercise_read": {
+          "name": "exercise_read",
+          "as": "PERMISSIVE",
+          "for": "SELECT",
+          "to": ["stamina_app"],
+          "using": "true"
+        }
+      },
+      "checkConstraints": {
+        "exercise_source_valid": {
+          "name": "exercise_source_valid",
+          "value": "\"exercise\".\"source\" in ('free-exercise-db')"
+        },
+        "exercise_licence_valid": {
+          "name": "exercise_licence_valid",
+          "value": "\"exercise\".\"licence\" in ('Unlicense')"
+        },
+        "exercise_movement_pattern_valid": {
+          "name": "exercise_movement_pattern_valid",
+          "value": "\"exercise\".\"movement_pattern\" in ('squat', 'hinge', 'lunge', 'push', 'pull', 'overhead', 'carry', 'rotation', 'jump-land', 'change-of-direction', 'core', 'mobility')"
+        },
+        "exercise_equipment_valid": {
+          "name": "exercise_equipment_valid",
+          "value": "\"exercise\".\"equipment\" <@ ARRAY['dumbbell', 'barbell', 'kettlebell', 'resistance-band', 'machine', 'pull-up-bar', 'bench', 'box', 'medicine-ball', 'foam-roller']::text[]"
+        },
+        "exercise_locations_valid": {
+          "name": "exercise_locations_valid",
+          "value": "\"exercise\".\"locations\" <@ ARRAY['gym', 'home', 'court', 'beach']::text[]"
+        },
+        "exercise_high_load_areas_valid": {
+          "name": "exercise_high_load_areas_valid",
+          "value": "\"exercise\".\"high_load_areas\" <@ ARRAY['neck', 'shoulder', 'elbow', 'wrist', 'upper-back', 'lower-back', 'hip', 'knee', 'ankle']::text[]"
+        },
+        "exercise_slots_valid": {
+          "name": "exercise_slots_valid",
+          "value": "\"exercise\".\"slots\" <@ ARRAY['warm-up', 'main-strength', 'sport-support', 'accessories-core', 'cool-down']::text[]"
+        },
+        "exercise_slots_count": {
+          "name": "exercise_slots_count",
+          "value": "cardinality(\"exercise\".\"slots\") between 1 and 2"
+        },
+        "exercise_locations_not_empty": {
+          "name": "exercise_locations_not_empty",
+          "value": "cardinality(\"exercise\".\"locations\") > 0"
+        },
+        "exercise_instructions_not_empty": {
+          "name": "exercise_instructions_not_empty",
+          "value": "cardinality(\"exercise\".\"instructions_en\") > 0"
+        },
+        "exercise_easier_not_self": {
+          "name": "exercise_easier_not_self",
+          "value": "\"exercise\".\"easier_id\" is distinct from \"exercise\".\"id\""
+        },
+        "exercise_harder_not_self": {
+          "name": "exercise_harder_not_self",
+          "value": "\"exercise\".\"harder_id\" is distinct from \"exercise\".\"id\""
+        },
+        "exercise_image_on_wger": {
+          "name": "exercise_image_on_wger",
+          "value": "\"exercise\".\"image\" is null or coalesce(starts_with(\"exercise\".\"image\"->>'url', 'https://wger.de/media/'), false)"
+        }
+      },
+      "isRLSEnabled": true
+    },
+    "public.invite": {
+      "name": "invite",
+      "schema": "",
+      "columns": {
+        "code": {
+          "name": "code",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "issuer": {
+          "name": "issuer",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "redeemed_by": {
+          "name": "redeemed_by",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "redeemed_at": {
+          "name": "redeemed_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "invite_issuer_app_user_id_fk": {
+          "name": "invite_issuer_app_user_id_fk",
+          "tableFrom": "invite",
+          "tableTo": "app_user",
+          "columnsFrom": ["issuer"],
+          "columnsTo": ["id"],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        },
+        "invite_redeemed_by_app_user_id_fk": {
+          "name": "invite_redeemed_by_app_user_id_fk",
+          "tableFrom": "invite",
+          "tableTo": "app_user",
+          "columnsFrom": ["redeemed_by"],
+          "columnsTo": ["id"],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {
+        "invite_app_select": {
+          "name": "invite_app_select",
+          "as": "PERMISSIVE",
+          "for": "SELECT",
+          "to": ["stamina_app"],
+          "using": "redeemed_at is null or redeemed_by = app_user_id()::uuid"
+        },
+        "invite_app_redeem": {
+          "name": "invite_app_redeem",
+          "as": "PERMISSIVE",
+          "for": "UPDATE",
+          "to": ["stamina_app"],
+          "using": "redeemed_at is null",
+          "withCheck": "redeemed_by = app_user_id()::uuid"
+        }
+      },
+      "checkConstraints": {},
+      "isRLSEnabled": true
+    },
+    "public.profile": {
+      "name": "profile",
+      "schema": "",
+      "columns": {
+        "user_id": {
+          "name": "user_id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "needs": {
+          "name": "needs",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "birth_year": {
+          "name": "birth_year",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "country": {
+          "name": "country",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "sport_kind": {
+          "name": "sport_kind",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "launch_sport": {
+          "name": "launch_sport",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "other_sport_name": {
+          "name": "other_sport_name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "play_days": {
+          "name": "play_days",
+          "type": "text[]",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "play_varies": {
+          "name": "play_varies",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "play_minutes": {
+          "name": "play_minutes",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "play_intensity": {
+          "name": "play_intensity",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "goal": {
+          "name": "goal",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "sessions_per_week": {
+          "name": "sessions_per_week",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "session_minutes": {
+          "name": "session_minutes",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "available_days": {
+          "name": "available_days",
+          "type": "text[]",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "locale": {
+          "name": "locale",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "units": {
+          "name": "units",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "hot_conditions_default": {
+          "name": "hot_conditions_default",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "profile_user_id_app_user_id_fk": {
+          "name": "profile_user_id_app_user_id_fk",
+          "tableFrom": "profile",
+          "tableTo": "app_user",
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {
+        "profile_owner": {
+          "name": "profile_owner",
+          "as": "PERMISSIVE",
+          "for": "ALL",
+          "to": ["stamina_app"],
+          "using": "user_id = app_user_id()::uuid",
+          "withCheck": "user_id = app_user_id()::uuid"
+        }
+      },
+      "checkConstraints": {
+        "profile_sport_matches_kind": {
+          "name": "profile_sport_matches_kind",
+          "value": "(\"profile\".\"sport_kind\" = 'launch' and \"profile\".\"launch_sport\" is not null and \"profile\".\"other_sport_name\" is null)\n        or (\"profile\".\"sport_kind\" = 'other' and \"profile\".\"launch_sport\" is null and \"profile\".\"other_sport_name\" is not null)"
+        },
+        "profile_training_week_all_or_none": {
+          "name": "profile_training_week_all_or_none",
+          "value": "(\"profile\".\"sessions_per_week\" is null) = (\"profile\".\"session_minutes\" is null)\n        and (\"profile\".\"sessions_per_week\" is null) = (\"profile\".\"available_days\" is null)"
+        }
+      },
+      "isRLSEnabled": true
+    },
+    "public.screening": {
+      "name": "screening",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "instrument": {
+          "name": "instrument",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "instrument_version": {
+          "name": "instrument_version",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "answers_encrypted": {
+          "name": "answers_encrypted",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "referral": {
+          "name": "referral",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "nutrition_off": {
+          "name": "nutrition_off",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "excluded_areas": {
+          "name": "excluded_areas",
+          "type": "text[]",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "starting_level": {
+          "name": "starting_level",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "taken_at": {
+          "name": "taken_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "doctor_ok_at": {
+          "name": "doctor_ok_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {
+        "screening_user_taken_at": {
+          "name": "screening_user_taken_at",
+          "columns": [
+            {
+              "expression": "user_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "taken_at",
+              "isExpression": false,
+              "asc": false,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "screening_user_id_app_user_id_fk": {
+          "name": "screening_user_id_app_user_id_fk",
+          "tableFrom": "screening",
+          "tableTo": "app_user",
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {
+        "screening_owner_select": {
+          "name": "screening_owner_select",
+          "as": "PERMISSIVE",
+          "for": "SELECT",
+          "to": ["stamina_app"],
+          "using": "user_id = app_user_id()::uuid"
+        },
+        "screening_owner_insert": {
+          "name": "screening_owner_insert",
+          "as": "PERMISSIVE",
+          "for": "INSERT",
+          "to": ["stamina_app"],
+          "withCheck": "user_id = app_user_id()::uuid"
+        },
+        "screening_owner_doctor_ok": {
+          "name": "screening_owner_doctor_ok",
+          "as": "PERMISSIVE",
+          "for": "UPDATE",
+          "to": ["stamina_app"],
+          "using": "user_id = app_user_id()::uuid and doctor_ok_at is null",
+          "withCheck": "user_id = app_user_id()::uuid and doctor_ok_at is not null"
+        }
+      },
+      "checkConstraints": {
+        "screening_status_valid": {
+          "name": "screening_status_valid",
+          "value": "\"screening\".\"status\" in ('cleared', 'referred')"
+        },
+        "screening_referral_valid": {
+          "name": "screening_referral_valid",
+          "value": "\"screening\".\"referral\" is null or \"screening\".\"referral\" in ('general', 'pregnancy')"
+        },
+        "screening_starting_level_valid": {
+          "name": "screening_starting_level_valid",
+          "value": "\"screening\".\"starting_level\" in ('beginner', 'regular')"
+        },
+        "screening_referral_iff_referred": {
+          "name": "screening_referral_iff_referred",
+          "value": "(\"screening\".\"referral\" is not null) = (\"screening\".\"status\" = 'referred')"
+        },
+        "screening_doctor_ok_only_general": {
+          "name": "screening_doctor_ok_only_general",
+          "value": "\"screening\".\"doctor_ok_at\" is null or \"screening\".\"referral\" is not distinct from 'general'"
+        }
+      },
+      "isRLSEnabled": true
+    },
+    "public.sport": {
+      "name": "sport",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "normalized_name": {
+          "name": "normalized_name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "profile": {
+          "name": "profile",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "sources": {
+          "name": "sources",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "version": {
+          "name": "version",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 1
+        },
+        "approved_by": {
+          "name": "approved_by",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "approved_at": {
+          "name": "approved_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "sport_normalized_name_unique": {
+          "name": "sport_normalized_name_unique",
+          "nullsNotDistinct": false,
+          "columns": ["normalized_name"]
+        }
+      },
+      "policies": {
+        "sport_visible": {
+          "name": "sport_visible",
+          "as": "PERMISSIVE",
+          "for": "SELECT",
+          "to": ["stamina_app"],
+          "using": "status = 'approved'\n        or (status = 'draft' and exists (\n          select 1 from sport_request r where r.sport_id = sport.id and r.user_id = app_user_id()::uuid))"
+        }
+      },
+      "checkConstraints": {
+        "sport_status_valid": {
+          "name": "sport_status_valid",
+          "value": "\"sport\".\"status\" in ('draft', 'approved', 'rejected')"
+        },
+        "sport_name_length": {
+          "name": "sport_name_length",
+          "value": "char_length(\"sport\".\"name\") between 1 and 60"
+        },
+        "sport_normalized_name_valid": {
+          "name": "sport_normalized_name_valid",
+          "value": "\"sport\".\"normalized_name\" <> '' and char_length(\"sport\".\"normalized_name\") <= 120"
+        },
+        "sport_approved_is_complete": {
+          "name": "sport_approved_is_complete",
+          "value": "\"sport\".\"status\" <> 'approved'\n        or (\"sport\".\"profile\" is not null and \"sport\".\"sources\" is not null\n          and \"sport\".\"approved_by\" is not null and \"sport\".\"approved_at\" is not null)"
+        }
+      },
+      "isRLSEnabled": true
+    },
+    "public.sport_request": {
+      "name": "sport_request",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "sport_id": {
+          "name": "sport_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "sport_request_sport_id_sport_id_fk": {
+          "name": "sport_request_sport_id_sport_id_fk",
+          "tableFrom": "sport_request",
+          "tableTo": "sport",
+          "columnsFrom": ["sport_id"],
+          "columnsTo": ["id"],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "sport_request_user_id_app_user_id_fk": {
+          "name": "sport_request_user_id_app_user_id_fk",
+          "tableFrom": "sport_request",
+          "tableTo": "app_user",
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "sport_request_sport_user": {
+          "name": "sport_request_sport_user",
+          "nullsNotDistinct": false,
+          "columns": ["sport_id", "user_id"]
+        }
+      },
+      "policies": {
+        "sport_request_owner_select": {
+          "name": "sport_request_owner_select",
+          "as": "PERMISSIVE",
+          "for": "SELECT",
+          "to": ["stamina_app"],
+          "using": "user_id = app_user_id()::uuid"
+        }
+      },
+      "checkConstraints": {},
+      "isRLSEnabled": true
+    }
+  },
+  "enums": {},
+  "schemas": {},
+  "sequences": {},
+  "roles": {},
+  "policies": {},
+  "views": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}

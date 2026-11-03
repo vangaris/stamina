@@ -4,12 +4,19 @@
 
 **Blocked by:** 05: Onboarding: who you are and how you play
 
-**Status:** ready-for-agent
+**Status:** in-progress
 
 **Roadmap week:** 3
 
-- [ ] Sport Profile structure: energy mix, key movements, high-load body areas, typical Activity, recovery window, season, METs per intensity, sources, status, version
+- [x] Sport Profile structure: energy mix, key movements, high-load body areas, typical Activity, recovery window, season, METs per intensity, sources, status, version
 - [ ] Admin script (run locally by Vang) drafts profiles with cited sources; 11 launch profiles approved via the database table editor
-- [ ] 'Other…' request creates a draft profile; the requester's Program uses it labelled beta; other users only see approved profiles
+- [x] 'Other…' request creates a draft profile; the requester's Program uses it labelled beta; other users only see approved profiles
 - [ ] Copy rule enforced in review: no injury-prevention or medical claims in profiles
-- [ ] API tests cover draft visibility (requester only) and approval making it visible to all
+- [x] API tests cover draft visibility (requester only) and approval making it visible to all
+
+## Notes
+
+- Stacked on ticket 07 (migration 0005 follows 0004). 11 launch profiles are research-drafted from open sources with per-sport notes in `docs/sport-profiles/`; they seed as `draft` rows and become visible only when Vang approves each in the table editor (`docs/sport-profile-review.md` has the checklist and the SQL).
+- Open: "Admin script drafts profiles ... 11 launch profiles approved via the database table editor" needs (a) Vang approving the 11 profiles and (b) a real AI provider (ticket 10, Phase B, needs a card) before `sports:draft` can draft anything; until then it exits with a clear message and requested sports stay `profile: null`.
+- Open: "Copy rule enforced in review" is a review step: unticked until Vang has reviewed the 11 profiles against the checklist.
+- A sport request is capped at 5 per user (`SP001` -> 422 `too-many-sport-requests`); typing a launch sport under "Other" while it is still a draft creates nothing and exposes nothing.

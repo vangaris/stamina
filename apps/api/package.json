@@ -14,6 +14,7 @@
     "db:migrate": "tsx --env-file-if-exists=.env src/db/migrate-cli.ts",
     "db:dev": "tsx scripts/dev-db.ts",
     "invites:create": "tsx --env-file-if-exists=.env scripts/create-invites.ts",
+    "sports:draft": "tsx --env-file-if-exists=.env scripts/draft-sport.ts",
     "exercises:review": "tsx scripts/exercise-review.ts ../../docs/exercise-library-review.md"
   },
   "nx": {

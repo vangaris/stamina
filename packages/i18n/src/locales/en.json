@@ -207,7 +207,8 @@
       "availableDays": "Choose at least {count} days, one for each Session.",
       "offline": "You are offline. Connect to the internet and try again.",
       "unknown": "Something went wrong. Please try again.",
-      "goalUnavailable": "That Goal isn't available while Nutrition is off for you. Choose another Goal."
+      "goalUnavailable": "That Goal isn't available while Nutrition is off for you. Choose another Goal.",
+      "tooManySportRequests": "You have already asked for the most sports we can take for now. Choose a sport from the list, or one you asked for before."
     }
   },
   "consent": {

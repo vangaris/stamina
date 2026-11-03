@@ -5,6 +5,7 @@ import { join } from 'node:path';
 import EmbeddedPostgres from 'embedded-postgres';
 import type { TestProject } from 'vitest/node';
 import { runMigrations } from '../../src/db/migrate.ts';
+import { FIXTURE_SPORT_DIR } from './sport-data-dir.ts';
 
 declare module 'vitest' {
   export interface ProvidedContext {
@@ -26,11 +27,12 @@ function freePort(): Promise<number> {
 /**
  * Seam 1 runs against real Postgres. CI points `TEST_DATABASE_URL` at a service container;
  * locally an embedded Postgres is started in a temp dir, so no Docker or install is needed.
+ * The launch sports are seeded from small fixtures; the real sport data has its own quality test.
  */
 export default async function setup(project: TestProject) {
   const external = process.env.TEST_DATABASE_URL;
   if (external) {
-    await runMigrations(external);
+    await runMigrations(external, { sportDataDir: FIXTURE_SPORT_DIR });
     project.provide('databaseUrl', external);
     return;
   }
@@ -51,7 +53,7 @@ export default async function setup(project: TestProject) {
   await pg.createDatabase('stamina_test');
 
   const url = `postgres://stamina:stamina@127.0.0.1:${port}/stamina_test`;
-  await runMigrations(url);
+  await runMigrations(url, { sportDataDir: FIXTURE_SPORT_DIR });
   project.provide('databaseUrl', url);
 
   return async () => {
