@@ -1,0 +1,48 @@
+{
+  "id": "padel",
+  "name": "Padel",
+  "profile": {
+    "energyMix": {
+      "aerobic": 50,
+      "repeatedSprint": 35,
+      "explosive": 15
+    },
+    "keyMovements": ["change-of-direction", "rotation", "overhead", "grip"],
+    "highLoadAreas": ["shoulder", "lower-back", "knee", "ankle"],
+    "typicalActivity": {
+      "durationMinutes": 60,
+      "intensity": "moderate"
+    },
+    "recoveryWindowHours": {
+      "lower": 36,
+      "upper": 36
+    },
+    "season": {
+      "kind": "year-round",
+      "months": []
+    },
+    "metsPerIntensity": {
+      "easy": 4.5,
+      "moderate": 6.0,
+      "hard": 6.8
+    }
+  },
+  "sources": [
+    {
+      "title": "Padel vs. tennis doubles: a comparison of performance demands and game attributes",
+      "url": "https://www.frontiersin.org/journals/sports-and-active-living/articles/10.3389/fspor.2025.1540424/full"
+    },
+    {
+      "title": "Performance Analysis in Padel: A Systematic Review",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10694705/"
+    },
+    {
+      "title": "Padel Match Analysis: Notational and Time-Motion Analysis during Official Italian Sub-Elite Competitions",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9324445/"
+    },
+    {
+      "title": "2024 Adult Compendium of Physical Activities",
+      "url": "https://pacompendium.com/wp-content/uploads/2025/02/1_2024-adult-compendium_1_2024.pdf"
+    }
+  ]
+}

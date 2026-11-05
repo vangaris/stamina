@@ -8,6 +8,8 @@ export enum ApiPath {
   InviteCheck = '/invites/check',
   /** The curated exercise library, filtered by the query string. */
   Exercises = '/exercises',
+  /** The sports the signed-in user may see: approved ones, plus their own requests. */
+  Sports = '/sports',
   /** What the signed-in user has consented to and their latest Screening. */
   Safety = '/safety',
   Consent = '/consent',

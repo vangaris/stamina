@@ -7,22 +7,38 @@ import {
   MIN_BIRTH_YEAR,
   MIN_PLAY_MINUTES,
   Need,
+  normalizeSportName,
   OTHER_SPORT_NAME_MAX_LENGTH,
+  SPORT_NORMALIZED_NAME_MAX_LENGTH,
   Units,
   validateTrainingWeek,
   Weekday,
 } from '@stamina/domain';
 import { Locale } from '@stamina/i18n';
 import { z } from 'zod';
+import { INVISIBLE_CHARACTER } from './config.ts';
 import { SportKind } from './enums/sport-kind.ts';
 
 const weekdaySchema = z.enum(Weekday);
+
+/** A sport the person typed: visible text only, with its inner spaces collapsed to one. */
+const otherSportNameSchema = z
+  .string()
+  .trim()
+  .min(1)
+  .max(OTHER_SPORT_NAME_MAX_LENGTH)
+  .refine((name) => !INVISIBLE_CHARACTER.test(name), 'no control or invisible characters')
+  .refine((name) => {
+    const key = normalizeSportName(name);
+    return key !== '' && key.length <= SPORT_NORMALIZED_NAME_MAX_LENGTH;
+  }, 'the name must contain letters or digits')
+  .transform((name) => name.replace(/\s+/g, ' '));
 
 export const sportSchema = z.discriminatedUnion('kind', [
   z.object({ kind: z.literal(SportKind.Launch), sport: z.enum(LaunchSport) }),
   z.object({
     kind: z.literal(SportKind.Other),
-    name: z.string().trim().min(1).max(OTHER_SPORT_NAME_MAX_LENGTH),
+    name: otherSportNameSchema,
   }),
 ]);
 

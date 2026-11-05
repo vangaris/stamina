@@ -20,6 +20,14 @@ export const userExportSchema = z.object({
       withdrawnAt: z.iso.datetime().nullable(),
     }),
   ),
+  /** The sports the person asked for under "Other", with the name of each. */
+  sportRequests: z.array(
+    z.object({
+      sportId: z.string(),
+      name: z.string(),
+      requestedAt: z.iso.datetime(),
+    }),
+  ),
   screenings: z.array(
     savedScreeningSchema.extend({
       answers: z.record(z.enum(ScreeningQuestion), z.boolean()),

@@ -1,0 +1,40 @@
+{
+  "id": "running",
+  "name": "Running",
+  "profile": {
+    "energyMix": {
+      "aerobic": 95,
+      "repeatedSprint": 3,
+      "explosive": 2
+    },
+    "keyMovements": ["jump-land", "hinge"],
+    "highLoadAreas": ["knee", "ankle", "hip"],
+    "typicalActivity": {
+      "durationMinutes": 40,
+      "intensity": "moderate"
+    },
+    "recoveryWindowHours": {
+      "lower": 48,
+      "upper": 24
+    },
+    "season": {
+      "kind": "weather",
+      "months": [3, 4, 5, 6, 9, 10, 11]
+    },
+    "metsPerIntensity": {
+      "easy": 6.5,
+      "moderate": 9.3,
+      "hard": 11.8
+    }
+  },
+  "sources": [
+    {
+      "title": "Compendium of Physical Activities: Running (codes 12028, 12050, 12080)",
+      "url": "https://pacompendium.com/running/"
+    },
+    {
+      "title": "Energy system interaction and relative contribution during maximal exercise",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/11547894/"
+    }
+  ]
+}

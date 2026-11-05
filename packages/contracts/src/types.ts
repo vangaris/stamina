@@ -1,5 +1,12 @@
 import type { z } from 'zod';
 import type {
+  launchSportDataSchema,
+  sportDraftSchema,
+  sportProfileSchema,
+  sportSourceSchema,
+} from './sport-profile-schema.ts';
+import type { catalogSportSchema, sportListResponseSchema } from './catalog-sport-schema.ts';
+import type {
   exerciseImageSchema,
   exerciseListResponseSchema,
   exerciseQuerySchema,
@@ -33,6 +40,12 @@ export type ExerciseImage = z.infer<typeof exerciseImageSchema>;
 export type Exercise = z.infer<typeof exerciseSchema>;
 export type ExerciseListResponse = z.infer<typeof exerciseListResponseSchema>;
 export type ExerciseQuery = z.infer<typeof exerciseQuerySchema>;
+export type SportProfile = z.infer<typeof sportProfileSchema>;
+export type SportSource = z.infer<typeof sportSourceSchema>;
+export type SportDraft = z.infer<typeof sportDraftSchema>;
+export type LaunchSportData = z.infer<typeof launchSportDataSchema>;
+export type CatalogSport = z.infer<typeof catalogSportSchema>;
+export type SportListResponse = z.infer<typeof sportListResponseSchema>;
 export type ConsentGrant = z.infer<typeof consentGrantSchema>;
 export type ConsentState = z.infer<typeof consentStateSchema>;
 export type ScreeningSubmission = z.infer<typeof screeningSubmissionSchema>;

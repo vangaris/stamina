@@ -12,6 +12,7 @@ export enum OnboardingMessageKey {
   SessionMinutes = 'onboarding.errors.sessionMinutes',
   AvailableDays = 'onboarding.errors.availableDays',
   GoalUnavailable = 'onboarding.errors.goalUnavailable',
+  TooManySportRequests = 'onboarding.errors.tooManySportRequests',
   Offline = 'onboarding.errors.offline',
   Unknown = 'onboarding.errors.unknown',
   UnderAgeTitle = 'onboarding.stop.underAge.title',

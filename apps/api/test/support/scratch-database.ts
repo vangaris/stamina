@@ -2,6 +2,7 @@ import { randomBytes } from 'node:crypto';
 import pg from 'pg';
 import { inject } from 'vitest';
 import { runMigrations } from '../../src/db/migrate.ts';
+import { FIXTURE_SPORT_DIR } from './sport-data-dir.ts';
 
 /** A throwaway database on the test server. */
 export interface ScratchDatabase {
@@ -39,12 +40,16 @@ export async function createEmptyDatabase(): Promise<ScratchDatabase> {
 }
 
 /**
- * A database of its own on the test server, migrated and synced from `exerciseDataDir`, so a test
- * can rewrite the exercise library without touching what other test files read. Needs a role that
+ * A database of its own on the test server, migrated and synced from `exerciseDataDir` and
+ * `sportDataDir`, so a test can rewrite the exercise library or the launch sports without touching
+ * what other test files read. Needs a role that
  * may create databases (the embedded server's user and a CI service container's superuser both do).
  */
-export async function createScratchDatabase(exerciseDataDir: string): Promise<ScratchDatabase> {
+export async function createScratchDatabase(
+  exerciseDataDir: string,
+  sportDataDir: string = FIXTURE_SPORT_DIR,
+): Promise<ScratchDatabase> {
   const database = await createEmptyDatabase();
-  await runMigrations(database.url, { exerciseDataDir });
+  await runMigrations(database.url, { exerciseDataDir, sportDataDir });
   return database;
 }

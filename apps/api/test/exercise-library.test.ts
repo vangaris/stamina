@@ -18,6 +18,7 @@ import {
   FIXTURE_LIBRARY_DIR,
   type FixtureLibraryCopy,
 } from './support/exercise-library-dir.ts';
+import { FIXTURE_SPORT_DIR } from './support/sport-data-dir.ts';
 import {
   createEmptyDatabase,
   createScratchDatabase,
@@ -353,14 +354,20 @@ describe('migrate with an existing database', () => {
         { ...plank, id: 'side-plank', name: { en: 'Side Plank', el: null } },
       ]);
 
-      await runMigrations(scratch.url, { exerciseDataDir: copy.dir });
+      await runMigrations(scratch.url, {
+        exerciseDataDir: copy.dir,
+        sportDataDir: FIXTURE_SPORT_DIR,
+      });
       const after = await ids();
       expect(after).toContain('side-plank');
       expect(after).not.toContain('plank');
       expect(after).not.toContain('worlds-greatest-stretch');
 
       // Back to the full library: the migrations are already applied, only the sync runs.
-      await runMigrations(scratch.url, { exerciseDataDir: FIXTURE_LIBRARY_DIR });
+      await runMigrations(scratch.url, {
+        exerciseDataDir: FIXTURE_LIBRARY_DIR,
+        sportDataDir: FIXTURE_SPORT_DIR,
+      });
       expect(await ids()).toEqual(library.map((e) => e.id).sort());
     } finally {
       await copy.remove();
@@ -374,9 +381,9 @@ describe('migrate with an existing database', () => {
     const copy = await copyFixtureLibrary();
     try {
       await copy.write('broken.json', '[{');
-      await expect(runMigrations(empty.url, { exerciseDataDir: copy.dir })).rejects.toBeInstanceOf(
-        ExerciseLibraryError,
-      );
+      await expect(
+        runMigrations(empty.url, { exerciseDataDir: copy.dir, sportDataDir: FIXTURE_SPORT_DIR }),
+      ).rejects.toBeInstanceOf(ExerciseLibraryError);
 
       const client = new pg.Client({ connectionString: empty.url });
       await client.connect();

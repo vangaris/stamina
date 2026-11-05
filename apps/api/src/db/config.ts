@@ -6,3 +6,6 @@ export const APP_ROLE = 'stamina_app';
 
 /** Transaction-local setting that carries the signed-in user's ID to the RLS policies. */
 export const USER_ID_SETTING = 'app.user_id';
+
+/** SQLSTATE the `request_sport` function raises (migration 0005) at the limit of requests. */
+export const SQLSTATE_TOO_MANY_SPORT_REQUESTS = 'SP001';

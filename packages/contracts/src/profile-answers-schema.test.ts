@@ -76,4 +76,26 @@ describe('profileAnswersSchema', () => {
     expect(named.sport).toEqual({ kind: SportKind.Other, name: 'Archery' });
     expect(accepts({ sport: { kind: SportKind.Other, name: '   ' } })).toBe(false);
   });
+
+  it.each([
+    ['a combining mark only', '\u0301'],
+    ['combining marks only', '\u0301\u0302'],
+    ['a zero-width space', '\u200b'],
+    ['a zero-width space inside', 'Pad\u200bel'],
+    ['a bidi override', 'Padel\u202e'],
+    ['a newline', 'Beach\nTennis'],
+    ['a tab', 'Beach\tTennis'],
+    ['a hangul filler', '\u3164'],
+    ['a name whose normalized form is too long', '\ufdfa'.repeat(8)],
+  ])('rejects a typed sport that is %s', (_label, name) => {
+    expect(accepts({ sport: { kind: SportKind.Other, name } })).toBe(false);
+  });
+
+  it('collapses the inner spaces of a typed sport and keeps accents and other scripts', () => {
+    const parse = (name: string) =>
+      profileAnswersSchema.parse({ ...valid, sport: { kind: SportKind.Other, name } }).sport;
+    expect(parse(' Beach   Tennis ')).toEqual({ kind: SportKind.Other, name: 'Beach Tennis' });
+    expect(parse('Ποδόσφαιρο')).toEqual({ kind: SportKind.Other, name: 'Ποδόσφαιρο' });
+    expect(parse('Café\u00a0polo')).toEqual({ kind: SportKind.Other, name: 'Café polo' });
+  });
 });

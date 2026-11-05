@@ -1,0 +1,40 @@
+{
+  "id": "crossfit",
+  "name": "Crossfit",
+  "profile": {
+    "energyMix": {
+      "aerobic": 48,
+      "repeatedSprint": 40,
+      "explosive": 12
+    },
+    "keyMovements": ["change-of-direction", "jump-land"],
+    "highLoadAreas": ["knee", "ankle"],
+    "typicalActivity": {
+      "durationMinutes": 68,
+      "intensity": "moderate"
+    },
+    "recoveryWindowHours": {
+      "lower": 24,
+      "upper": 24
+    },
+    "season": {
+      "kind": "year-round",
+      "months": []
+    },
+    "metsPerIntensity": {
+      "easy": 4,
+      "moderate": 6,
+      "hard": 8
+    }
+  },
+  "sources": [
+    {
+      "title": "Fixture source one for Crossfit",
+      "url": "https://example.org/fixture/crossfit/1"
+    },
+    {
+      "title": "Fixture source two for Crossfit",
+      "url": "https://example.org/fixture/crossfit/2"
+    }
+  ]
+}

@@ -1,4 +1,9 @@
-import { SportKind, type ExerciseImage } from '@stamina/contracts';
+import {
+  SportKind,
+  type ExerciseImage,
+  type SportProfile,
+  type SportSource,
+} from '@stamina/contracts';
 import {
   BodyArea,
   ConsentPurpose,
@@ -8,9 +13,12 @@ import {
   ExerciseLocation,
   ExerciseSource,
   MovementPattern,
+  OTHER_SPORT_NAME_MAX_LENGTH,
+  SPORT_NORMALIZED_NAME_MAX_LENGTH,
   ReferralKind,
   ScreeningStatus,
   SessionSlot,
+  SportStatus,
   StartingLevel,
   type Goal,
   type Intensity,
@@ -31,6 +39,7 @@ import {
   pgTable,
   text,
   timestamp,
+  unique,
   uniqueIndex,
   uuid,
   type AnyPgColumn,
@@ -316,5 +325,84 @@ export const exercise = pgTable(
       sql`${table.image} is null or coalesce(starts_with(${table.image}->>'url', ${literal(EXERCISE_IMAGE_ORIGIN)}), false)`,
     ),
     pgPolicy('exercise_read', { for: 'select', to: APP_ROLE, using: sql`true` }),
+  ],
+).enableRLS();
+
+/**
+ * The sport catalogue: reference data in one table. The launch sports are seeded as drafts from
+ * `sports/data` (insert-if-missing, so the founder's edits survive) and approved by hand in the
+ * database table editor; a user's "Other..." sport is a draft too, one per `normalized_name`
+ * (`request_sport`, migration 0005). `stamina_app` can only read, and only what the policy lets
+ * through: approved sports for everyone, drafts for the people who requested them, rejected sports
+ * for nobody. RLS is enabled, not forced, so the owner and the table editor can write. A sport
+ * with no `profile` yet is an undrafted request. `id` is the `LaunchSport` value for a launch
+ * sport and a UUID string for any other.
+ */
+export const sport = pgTable(
+  'sport',
+  {
+    id: text('id').primaryKey(),
+    name: text('name').notNull(),
+    /** `normalizeSportName(name)`: two spellings of one sport are one row. */
+    normalizedName: text('normalized_name').notNull().unique(),
+    status: text('status').$type<SportStatus>().notNull(),
+    profile: jsonb('profile').$type<SportProfile>(),
+    sources: jsonb('sources').$type<SportSource[]>(),
+    version: integer('version').notNull().default(1),
+    approvedBy: text('approved_by'),
+    approvedAt: timestamp('approved_at', { withTimezone: true }),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => [
+    check('sport_status_valid', isOneOf(table.status, Object.values(SportStatus))),
+    check(
+      'sport_name_length',
+      sql`char_length(${table.name}) between 1 and ${sql.raw(String(OTHER_SPORT_NAME_MAX_LENGTH))}`,
+    ),
+    check(
+      'sport_normalized_name_valid',
+      sql`${table.normalizedName} <> '' and char_length(${table.normalizedName}) <= ${sql.raw(String(SPORT_NORMALIZED_NAME_MAX_LENGTH))}`,
+    ),
+    check(
+      'sport_approved_is_complete',
+      sql`${table.status} <> ${literal(SportStatus.Approved)}
+        or (${table.profile} is not null and ${table.sources} is not null
+          and ${table.approvedBy} is not null and ${table.approvedAt} is not null)`,
+    ),
+    pgPolicy('sport_visible', {
+      for: 'select',
+      to: APP_ROLE,
+      using: sql`status = ${literal(SportStatus.Approved)}
+        or (status = ${literal(SportStatus.Draft)} and exists (
+          select 1 from sport_request r where r.sport_id = sport.id and r.user_id = app_user_id()::uuid))`,
+    }),
+  ],
+).enableRLS();
+
+/**
+ * Who asked for a sport. The app role can only read its own rows (SELECT grant and policy): it
+ * cannot insert, so it cannot join a sport it does not know the draft of. Rows are created and
+ * released by `request_sport` and `release_sport_request`, which run as the owner and always use
+ * the caller's `app_user_id()`.
+ */
+export const sportRequest = pgTable(
+  'sport_request',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    sportId: text('sport_id')
+      .notNull()
+      .references(() => sport.id, { onDelete: 'cascade' }),
+    userId: uuid('user_id')
+      .notNull()
+      .references(() => appUser.id, { onDelete: 'cascade' }),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => [
+    unique('sport_request_sport_user').on(table.sportId, table.userId),
+    pgPolicy('sport_request_owner_select', {
+      for: 'select',
+      to: APP_ROLE,
+      using: sql`user_id = app_user_id()::uuid`,
+    }),
   ],
 ).enableRLS();

@@ -1,0 +1,31 @@
+{
+  "id": "basketball",
+  "name": "Basketball",
+  "profile": {
+    "energyMix": { "aerobic": 50, "repeatedSprint": 35, "explosive": 15 },
+    "keyMovements": ["change-of-direction", "jump-land"],
+    "highLoadAreas": ["knee", "ankle", "hip"],
+    "typicalActivity": { "durationMinutes": 60, "intensity": "moderate" },
+    "recoveryWindowHours": { "lower": 48, "upper": 24 },
+    "season": { "kind": "league", "months": [9, 10, 11, 12, 1, 2, 3, 4] },
+    "metsPerIntensity": { "easy": 5, "moderate": 6, "hard": 8 }
+  },
+  "sources": [
+    {
+      "title": "2024 Compendium of Physical Activities: sports (METs)",
+      "url": "https://pacompendium.com/sports/"
+    },
+    {
+      "title": "Time-motion analysis and physiological data of elite under-19 basketball players during competition (2007)",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC2658931"
+    },
+    {
+      "title": "Influence of ball possession and playing position on the physical demands of professional basketball games (2020)",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7433335"
+    },
+    {
+      "title": "EuroLeague 2026-27 regular season calendar",
+      "url": "https://ftpserver.euroleague.net/media/2026-27_EL_RS_CALENDAR_PRINTABLE.pdf"
+    }
+  ]
+}

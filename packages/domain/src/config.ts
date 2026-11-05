@@ -18,6 +18,14 @@ export const MIN_PLAY_MINUTES = 15;
 export const MAX_PLAY_MINUTES = 300;
 
 export const OTHER_SPORT_NAME_MAX_LENGTH = 60;
+/** What `normalizeSportName` may produce at most (compatibility decomposition can lengthen a name). */
+export const SPORT_NORMALIZED_NAME_MAX_LENGTH = 120;
+/**
+ * How many sports one person may have requested that are not approved yet. Asking again for a
+ * sport already asked for is free. The `request_sport` SQL function (migration 0005) enforces
+ * the same number; a test keeps the two equal.
+ */
+export const MAX_SPORT_REQUESTS_PER_USER = 5;
 
 /** Sports where "hot conditions" is on by default in summer. */
 export const HOT_DEFAULT_SPORTS: readonly LaunchSport[] = [
@@ -361,3 +369,17 @@ export const CONSENT_TEXT_VERSIONS: Readonly<Record<ConsentPurpose, string>> = {
 export const DEFAULT_EQUIPMENT: readonly Equipment[] = [Equipment.Dumbbell];
 /** An exercise image must be served by wger itself, unmodified. */
 export const EXERCISE_IMAGE_ORIGIN = 'https://wger.de/media/';
+
+/** A Sport Profile's energy mix is three shares of effort that add up to this. */
+export const ENERGY_MIX_TOTAL = 100;
+/** Plausible bounds for the METs of one effort level (resting is 1). */
+export const MIN_METS = 1.5;
+export const MAX_METS = 18;
+/** Longest recovery window a Sport Profile may ask for, in hours. */
+export const MAX_RECOVERY_HOURS = 96;
+export const MAX_KEY_MOVEMENTS = 6;
+export const MAX_SPORT_HIGH_LOAD_AREAS = 5;
+/** A Sport Profile must cite at least this many sources. */
+export const MIN_SPORT_SOURCES = 2;
+/** A Sport Profile's season names months 1 to this number. */
+export const MONTHS_IN_YEAR = 12;

@@ -1,0 +1,48 @@
+{
+  "id": "windsurfing",
+  "name": "Windsurfing",
+  "profile": {
+    "energyMix": {
+      "aerobic": 75,
+      "repeatedSprint": 15,
+      "explosive": 10
+    },
+    "keyMovements": ["board-stance", "pull", "grip", "hinge"],
+    "highLoadAreas": ["upper-back", "elbow", "wrist", "hip"],
+    "typicalActivity": {
+      "durationMinutes": 60,
+      "intensity": "moderate"
+    },
+    "recoveryWindowHours": {
+      "lower": 48,
+      "upper": 48
+    },
+    "season": {
+      "kind": "weather",
+      "months": [5, 6, 7, 8, 9]
+    },
+    "metsPerIntensity": {
+      "easy": 3,
+      "moderate": 5,
+      "hard": 11
+    }
+  },
+  "sources": [
+    {
+      "title": "2024 Compendium of Physical Activities: water activities (METs)",
+      "url": "https://pacompendium.com/water-activities/"
+    },
+    {
+      "title": "Physiological assessment of Olympic windsurfers (review, 2015)",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/24886256"
+    },
+    {
+      "title": "Electromyographic activity during windsurfing on water (J Sports Sci, 1996)",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/8737320"
+    },
+    {
+      "title": "Etesian (Wikipedia): the Aegean meltemi winds, mid-May to mid-September",
+      "url": "https://en.wikipedia.org/wiki/Etesian"
+    }
+  ]
+}

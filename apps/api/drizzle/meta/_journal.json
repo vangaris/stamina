@@ -36,6 +36,13 @@
       "when": 1793655709698,
       "tag": "0004_exercise_library",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1793687929939,
+      "tag": "0005_sport_profiles",
+      "breakpoints": true
     }
   ]
 }

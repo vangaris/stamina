@@ -15,3 +15,4 @@
 - [ ] Session stores model and prompt_version; stored picks are never regenerated
 - [ ] 'Suggested by AI' label on AI-picked exercises
 - [ ] Evaluation set skeleton (EN + EL cases) runs in CI when prompts change and reports the validator pass rate
+- [ ] `pnpm --filter @stamina/api sports:draft <sport-id>` drafts a Sport Profile with cited sources for a requested sport through the AI provider and stores it on the draft row (moved from ticket 08; Vang approves it before anyone else sees it)

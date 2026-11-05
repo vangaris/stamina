@@ -14,10 +14,11 @@ import {
   SportKind,
   type ProfileAnswers,
 } from '@stamina/contracts';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import {
   AppErrorCode,
   checkInvite,
+  exportData,
   createServices,
   FAKE_INVITE,
   getProfile,
@@ -238,6 +239,40 @@ describe('saveProfile through the mediator', () => {
     });
     expect(await mediator.send(getProfile())).toEqual({ status: ProfileStatus.NotStarted });
     expect(services.inviteStorage.get()).toBe(FAKE_INVITE.validCode);
+  });
+
+  it('passes TooManySportRequests on, storing nothing and keeping the invite for another try', async () => {
+    const { mediator, services } = setupMediator();
+    vi.spyOn(services.api, 'saveProfile').mockResolvedValue({
+      status: SaveProfileStatus.Rejected,
+      reason: ProfileRejection.TooManySportRequests,
+    });
+    await mediator.send(checkInvite(FAKE_INVITE.validCode));
+    await mediator.send(verifyEmailCode(EMAIL, FAKE_AUTH.validCode));
+
+    const result = await mediator.send(
+      saveProfile(answers({ sport: { kind: SportKind.Other, name: 'Roundnet' } })),
+    );
+
+    expect(result).toEqual({
+      status: SaveProfileStatus.Rejected,
+      reason: ProfileRejection.TooManySportRequests,
+    });
+    expect(services.inviteStorage.get()).toBe(FAKE_INVITE.validCode);
+  });
+
+  it('exports the sport asked for, and gives it up on a rename', async () => {
+    const { mediator, services } = await signedInWithInvite();
+    await mediator.send(
+      saveProfile(answers({ sport: { kind: SportKind.Other, name: 'Roundnet' } })),
+    );
+    // The first save used the invite up; the handler sends the remembered one with every save.
+    services.inviteStorage.save(FAKE_INVITE.validCode);
+    await mediator.send(
+      saveProfile(answers({ sport: { kind: SportKind.Other, name: 'Kabaddi' } })),
+    );
+
+    expect((await mediator.send(exportData())).sportRequests).toMatchObject([{ name: 'Kabaddi' }]);
   });
 
   it('rejects with InviteInvalid, without calling the API, when no invite is remembered', async () => {

@@ -1,0 +1,40 @@
+{
+  "id": "windsurfing",
+  "name": "Windsurfing",
+  "profile": {
+    "energyMix": {
+      "aerobic": 44,
+      "repeatedSprint": 40,
+      "explosive": 16
+    },
+    "keyMovements": ["change-of-direction", "jump-land"],
+    "highLoadAreas": ["knee", "ankle"],
+    "typicalActivity": {
+      "durationMinutes": 64,
+      "intensity": "moderate"
+    },
+    "recoveryWindowHours": {
+      "lower": 24,
+      "upper": 24
+    },
+    "season": {
+      "kind": "year-round",
+      "months": []
+    },
+    "metsPerIntensity": {
+      "easy": 4,
+      "moderate": 6,
+      "hard": 8
+    }
+  },
+  "sources": [
+    {
+      "title": "Fixture source one for Windsurfing",
+      "url": "https://example.org/fixture/windsurfing/1"
+    },
+    {
+      "title": "Fixture source two for Windsurfing",
+      "url": "https://example.org/fixture/windsurfing/2"
+    }
+  ]
+}

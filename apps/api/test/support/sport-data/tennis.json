@@ -1,0 +1,40 @@
+{
+  "id": "tennis",
+  "name": "Tennis",
+  "profile": {
+    "energyMix": {
+      "aerobic": 41,
+      "repeatedSprint": 40,
+      "explosive": 19
+    },
+    "keyMovements": ["change-of-direction", "jump-land"],
+    "highLoadAreas": ["knee", "ankle"],
+    "typicalActivity": {
+      "durationMinutes": 61,
+      "intensity": "moderate"
+    },
+    "recoveryWindowHours": {
+      "lower": 24,
+      "upper": 24
+    },
+    "season": {
+      "kind": "year-round",
+      "months": []
+    },
+    "metsPerIntensity": {
+      "easy": 4,
+      "moderate": 6,
+      "hard": 8
+    }
+  },
+  "sources": [
+    {
+      "title": "Fixture source one for Tennis",
+      "url": "https://example.org/fixture/tennis/1"
+    },
+    {
+      "title": "Fixture source two for Tennis",
+      "url": "https://example.org/fixture/tennis/2"
+    }
+  ]
+}

@@ -1,0 +1,52 @@
+{
+  "id": "kitesurfing",
+  "name": "Kitesurfing",
+  "profile": {
+    "energyMix": {
+      "aerobic": 60,
+      "repeatedSprint": 25,
+      "explosive": 15
+    },
+    "keyMovements": ["board-stance", "pull", "grip", "jump-land", "rotation", "hinge"],
+    "highLoadAreas": ["lower-back", "hip", "knee"],
+    "typicalActivity": {
+      "durationMinutes": 45,
+      "intensity": "hard"
+    },
+    "recoveryWindowHours": {
+      "lower": 48,
+      "upper": 36
+    },
+    "season": {
+      "kind": "weather",
+      "months": [5, 6, 7, 8, 9]
+    },
+    "metsPerIntensity": {
+      "easy": 3,
+      "moderate": 5,
+      "hard": 11
+    }
+  },
+  "sources": [
+    {
+      "title": "2024 Compendium of Physical Activities: water activities (METs)",
+      "url": "https://pacompendium.com/water-activities/"
+    },
+    {
+      "title": "Assessment of physiological demand in kitesurfing",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/18841379"
+    },
+    {
+      "title": "Variation in heart rate and blood lactate concentration in freestyle kytesurfing",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/21681168"
+    },
+    {
+      "title": "Physiological and perceptual internal load during kitesurfing under real-world sea conditions (2026)",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/41893608"
+    },
+    {
+      "title": "Etesian (Wikipedia): the Aegean meltemi winds, mid-May to mid-September",
+      "url": "https://en.wikipedia.org/wiki/Etesian"
+    }
+  ]
+}

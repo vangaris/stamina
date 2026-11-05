@@ -1,0 +1,40 @@
+{
+  "id": "five-a-side-football",
+  "name": "Five A Side Football",
+  "profile": {
+    "energyMix": {
+      "aerobic": 46,
+      "repeatedSprint": 40,
+      "explosive": 14
+    },
+    "keyMovements": ["change-of-direction", "jump-land"],
+    "highLoadAreas": ["knee", "ankle"],
+    "typicalActivity": {
+      "durationMinutes": 66,
+      "intensity": "moderate"
+    },
+    "recoveryWindowHours": {
+      "lower": 24,
+      "upper": 24
+    },
+    "season": {
+      "kind": "year-round",
+      "months": []
+    },
+    "metsPerIntensity": {
+      "easy": 4,
+      "moderate": 6,
+      "hard": 8
+    }
+  },
+  "sources": [
+    {
+      "title": "Fixture source one for Five A Side Football",
+      "url": "https://example.org/fixture/five-a-side-football/1"
+    },
+    {
+      "title": "Fixture source two for Five A Side Football",
+      "url": "https://example.org/fixture/five-a-side-football/2"
+    }
+  ]
+}

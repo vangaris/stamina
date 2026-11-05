@@ -1,7 +1,7 @@
 import { userExportSchema, type UserExport } from '@stamina/contracts';
 import { asc, eq } from 'drizzle-orm';
 import type { FieldCipher } from '../crypto/index.ts';
-import { consent, profile, screening } from '../db/schema.ts';
+import { consent, profile, screening, sport, sportRequest } from '../db/schema.ts';
 import type { Db } from '../db/types.ts';
 import { withUser } from '../db/with-user.ts';
 import { toSavedProfile } from '../profile/to-saved-profile.ts';
@@ -9,7 +9,7 @@ import { storedAnswersSchema } from './stored-answers-schema.ts';
 import { toSavedScreening } from './to-saved-screening.ts';
 
 /**
- * Everything held about the user: profile, every consent row and every Screening with its
+ * Everything held about the user: profile, every consent row, every sport they asked for and every Screening with its
  * answers decrypted, oldest first. The one place answers leave the server.
  */
 export async function exportUserData(
@@ -31,6 +31,19 @@ export async function exportUserData(
       .orderBy(asc(screening.takenAt)),
   }));
 
+  // As the table owner, filtered by the user: a rejected sport is hidden from its requesters by
+  // the `sport_visible` policy, but the request is still the user's data and is exported.
+  const sportRequestRows = await db
+    .select({
+      sportId: sportRequest.sportId,
+      name: sport.name,
+      requestedAt: sportRequest.createdAt,
+    })
+    .from(sportRequest)
+    .innerJoin(sport, eq(sport.id, sportRequest.sportId))
+    .where(eq(sportRequest.userId, userId))
+    .orderBy(asc(sportRequest.createdAt));
+
   const screenings = await Promise.all(
     screeningRows.map(async (row) => {
       const { answers } = storedAnswersSchema.parse(
@@ -49,6 +62,11 @@ export async function exportUserData(
       locale: row.locale,
       grantedAt: row.grantedAt.toISOString(),
       withdrawnAt: row.withdrawnAt?.toISOString() ?? null,
+    })),
+    sportRequests: sportRequestRows.map((row) => ({
+      sportId: row.sportId,
+      name: row.name,
+      requestedAt: row.requestedAt.toISOString(),
     })),
     screenings,
   });
