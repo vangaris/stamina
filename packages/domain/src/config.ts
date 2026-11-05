@@ -1,4 +1,5 @@
 import { ConsentPurpose } from './enums/consent-purpose.ts';
+import { Equipment } from './enums/equipment.ts';
 import { LaunchSport } from './enums/launch-sport.ts';
 import { ScreeningQuestion } from './enums/screening-question.ts';
 
@@ -355,3 +356,8 @@ export const CONSENT_TEXT_VERSIONS: Readonly<Record<ConsentPurpose, string>> = {
   [ConsentPurpose.Disclaimer]: 'disclaimer-v1',
   [ConsentPurpose.HealthData]: 'health-data-v1',
 };
+
+/** What a person is assumed to have until they say otherwise: bodyweight and dumbbells. */
+export const DEFAULT_EQUIPMENT: readonly Equipment[] = [Equipment.Dumbbell];
+/** An exercise image must be served by wger itself, unmodified. */
+export const EXERCISE_IMAGE_ORIGIN = 'https://wger.de/media/';

@@ -29,6 +29,13 @@
       "when": 1793652923468,
       "tag": "0003_consent_and_screening",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1793655709698,
+      "tag": "0004_exercise_library",
+      "breakpoints": true
     }
   ]
 }

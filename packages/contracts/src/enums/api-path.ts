@@ -6,6 +6,8 @@ export enum ApiPath {
   MeExport = '/me/export',
   Profile = '/profile',
   InviteCheck = '/invites/check',
+  /** The curated exercise library, filtered by the query string. */
+  Exercises = '/exercises',
   /** What the signed-in user has consented to and their latest Screening. */
   Safety = '/safety',
   Consent = '/consent',

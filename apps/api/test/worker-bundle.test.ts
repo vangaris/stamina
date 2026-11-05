@@ -11,6 +11,15 @@ const NEON_DRIVER = '/node_modules/@neondatabase/serverless/';
 /** Any of these paths in the bundle means the Worker pulled in the TCP driver. */
 const PG_DRIVER_PATHS = ['/node_modules/pg/', '/node_modules/pg-pool/', '/node-postgres/'];
 
+/** The exercise library is synced by `migrate()`, never loaded by the Worker, so neither its files nor its Node-only code may be in the bundle. */
+const LIBRARY_LOADER_PATHS = [
+  '/src/exercises/data/',
+  '/src/exercises/load-exercise-library',
+  '/src/exercises/sync-exercise-library',
+  '/src/exercises/node',
+  '/src/db/migrate',
+];
+
 describe('Worker bundle', () => {
   let sources: string[];
   let outdir: string;
@@ -28,6 +37,13 @@ describe('Worker bundle', () => {
   it('contains the Neon WebSocket driver and no pg driver', () => {
     expect(sources.some((path) => path.includes(NEON_DRIVER))).toBe(true);
     for (const forbidden of PG_DRIVER_PATHS) {
+      expect(sources.filter((path) => path.includes(forbidden))).toEqual([]);
+    }
+  });
+
+  it('serves exercises from the database without the library data, loader or sync', () => {
+    expect(sources.some((path) => path.includes('/src/routes/exercise-routes'))).toBe(true);
+    for (const forbidden of LIBRARY_LOADER_PATHS) {
       expect(sources.filter((path) => path.includes(forbidden))).toEqual([]);
     }
   });

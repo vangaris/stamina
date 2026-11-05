@@ -1,0 +1,493 @@
+[
+  {
+    "id": "push-up",
+    "source": "free-exercise-db",
+    "sourceId": "Fixture_push-up",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Push Up",
+      "el": null
+    },
+    "instructions": {
+      "en": ["Do the Push Up.", "Keep it controlled."],
+      "el": null
+    },
+    "equipment": [],
+    "locations": ["gym", "home", "court", "beach"],
+    "movementPattern": "push",
+    "highLoadAreas": ["shoulder", "elbow", "wrist"],
+    "slots": ["main-strength", "accessories-core"],
+    "rirSuitable": true,
+    "easierId": "incline-push-up",
+    "harderId": null,
+    "image": {
+      "url": "https://wger.de/media/exercise-images/1/fixture.png",
+      "author": "Fixture Author",
+      "authorUrl": "https://example.org/fixture-author",
+      "licence": "CC-BY-SA 4.0",
+      "licenceUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+      "sourceUrl": "https://wger.de/en/exercise/1/view/",
+      "wgerExerciseId": 1
+    }
+  },
+  {
+    "id": "incline-push-up",
+    "source": "free-exercise-db",
+    "sourceId": "Fixture_incline-push-up",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Incline Push Up",
+      "el": null
+    },
+    "instructions": {
+      "en": ["Do the Incline Push Up.", "Keep it controlled."],
+      "el": null
+    },
+    "equipment": ["bench"],
+    "locations": ["gym", "home"],
+    "movementPattern": "push",
+    "highLoadAreas": ["shoulder", "elbow", "wrist"],
+    "slots": ["main-strength"],
+    "rirSuitable": true,
+    "easierId": null,
+    "harderId": "push-up",
+    "image": null
+  },
+  {
+    "id": "goblet-squat",
+    "source": "free-exercise-db",
+    "sourceId": "Fixture_goblet-squat",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Goblet Squat",
+      "el": null
+    },
+    "instructions": {
+      "en": ["Do the Goblet Squat.", "Keep it controlled."],
+      "el": null
+    },
+    "equipment": ["dumbbell"],
+    "locations": ["gym", "home"],
+    "movementPattern": "squat",
+    "highLoadAreas": ["knee", "hip", "lower-back"],
+    "slots": ["main-strength"],
+    "rirSuitable": true,
+    "easierId": null,
+    "harderId": "barbell-back-squat",
+    "image": null
+  },
+  {
+    "id": "barbell-back-squat",
+    "source": "free-exercise-db",
+    "sourceId": "Fixture_barbell-back-squat",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Barbell Back Squat",
+      "el": null
+    },
+    "instructions": {
+      "en": ["Do the Barbell Back Squat.", "Keep it controlled."],
+      "el": null
+    },
+    "equipment": ["barbell"],
+    "locations": ["gym"],
+    "movementPattern": "squat",
+    "highLoadAreas": ["knee", "hip", "lower-back", "upper-back", "shoulder"],
+    "slots": ["main-strength"],
+    "rirSuitable": true,
+    "easierId": "goblet-squat",
+    "harderId": null,
+    "image": null
+  },
+  {
+    "id": "bodyweight-squat",
+    "source": "free-exercise-db",
+    "sourceId": "Fixture_bodyweight-squat",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Bodyweight Squat",
+      "el": null
+    },
+    "instructions": {
+      "en": ["Do the Bodyweight Squat.", "Keep it controlled."],
+      "el": null
+    },
+    "equipment": [],
+    "locations": ["gym", "home", "court", "beach"],
+    "movementPattern": "squat",
+    "highLoadAreas": ["knee", "hip"],
+    "slots": ["warm-up", "main-strength"],
+    "rirSuitable": true,
+    "easierId": null,
+    "harderId": null,
+    "image": null
+  },
+  {
+    "id": "dumbbell-bench-press",
+    "source": "free-exercise-db",
+    "sourceId": "Fixture_dumbbell-bench-press",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Dumbbell Bench Press",
+      "el": null
+    },
+    "instructions": {
+      "en": ["Do the Dumbbell Bench Press.", "Keep it controlled."],
+      "el": null
+    },
+    "equipment": ["dumbbell", "bench"],
+    "locations": ["gym", "home"],
+    "movementPattern": "push",
+    "highLoadAreas": ["shoulder", "elbow", "wrist"],
+    "slots": ["main-strength"],
+    "rirSuitable": true,
+    "easierId": null,
+    "harderId": null,
+    "image": null
+  },
+  {
+    "id": "band-pull-apart",
+    "source": "free-exercise-db",
+    "sourceId": "Fixture_band-pull-apart",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Band Pull Apart",
+      "el": null
+    },
+    "instructions": {
+      "en": ["Do the Band Pull Apart.", "Keep it controlled."],
+      "el": null
+    },
+    "equipment": ["resistance-band"],
+    "locations": ["gym", "home", "court", "beach"],
+    "movementPattern": "pull",
+    "highLoadAreas": ["upper-back", "shoulder"],
+    "slots": ["warm-up", "accessories-core"],
+    "rirSuitable": true,
+    "easierId": null,
+    "harderId": null,
+    "image": null
+  },
+  {
+    "id": "pull-up",
+    "source": "free-exercise-db",
+    "sourceId": "Fixture_pull-up",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Pull Up",
+      "el": null
+    },
+    "instructions": {
+      "en": ["Do the Pull Up.", "Keep it controlled."],
+      "el": null
+    },
+    "equipment": ["pull-up-bar"],
+    "locations": ["gym", "home"],
+    "movementPattern": "pull",
+    "highLoadAreas": ["shoulder", "elbow", "wrist"],
+    "slots": ["main-strength"],
+    "rirSuitable": true,
+    "easierId": null,
+    "harderId": null,
+    "image": null
+  },
+  {
+    "id": "lat-pulldown",
+    "source": "free-exercise-db",
+    "sourceId": "Fixture_lat-pulldown",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Lat Pulldown",
+      "el": null
+    },
+    "instructions": {
+      "en": ["Do the Lat Pulldown.", "Keep it controlled."],
+      "el": null
+    },
+    "equipment": ["machine"],
+    "locations": ["gym"],
+    "movementPattern": "pull",
+    "highLoadAreas": ["shoulder", "elbow"],
+    "slots": ["main-strength"],
+    "rirSuitable": true,
+    "easierId": null,
+    "harderId": null,
+    "image": null
+  },
+  {
+    "id": "dumbbell-curl",
+    "source": "free-exercise-db",
+    "sourceId": "Fixture_dumbbell-curl",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Dumbbell Curl",
+      "el": null
+    },
+    "instructions": {
+      "en": ["Do the Dumbbell Curl.", "Keep it controlled."],
+      "el": null
+    },
+    "equipment": ["dumbbell"],
+    "locations": ["gym", "home"],
+    "movementPattern": "pull",
+    "highLoadAreas": ["elbow"],
+    "slots": ["accessories-core"],
+    "rirSuitable": true,
+    "easierId": null,
+    "harderId": null,
+    "image": null
+  },
+  {
+    "id": "dumbbell-overhead-press",
+    "source": "free-exercise-db",
+    "sourceId": "Fixture_dumbbell-overhead-press",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Dumbbell Overhead Press",
+      "el": null
+    },
+    "instructions": {
+      "en": ["Do the Dumbbell Overhead Press.", "Keep it controlled."],
+      "el": null
+    },
+    "equipment": ["dumbbell"],
+    "locations": ["gym", "home"],
+    "movementPattern": "overhead",
+    "highLoadAreas": ["shoulder", "elbow", "upper-back", "lower-back"],
+    "slots": ["main-strength"],
+    "rirSuitable": true,
+    "easierId": null,
+    "harderId": null,
+    "image": null
+  },
+  {
+    "id": "romanian-deadlift",
+    "source": "free-exercise-db",
+    "sourceId": "Fixture_romanian-deadlift",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Romanian Deadlift",
+      "el": null
+    },
+    "instructions": {
+      "en": ["Do the Romanian Deadlift.", "Keep it controlled."],
+      "el": null
+    },
+    "equipment": ["barbell"],
+    "locations": ["gym"],
+    "movementPattern": "hinge",
+    "highLoadAreas": ["lower-back", "hip"],
+    "slots": ["main-strength"],
+    "rirSuitable": true,
+    "easierId": null,
+    "harderId": null,
+    "image": null
+  },
+  {
+    "id": "kettlebell-swing",
+    "source": "free-exercise-db",
+    "sourceId": "Fixture_kettlebell-swing",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Kettlebell Swing",
+      "el": null
+    },
+    "instructions": {
+      "en": ["Do the Kettlebell Swing.", "Keep it controlled."],
+      "el": null
+    },
+    "equipment": ["kettlebell"],
+    "locations": ["gym", "home"],
+    "movementPattern": "hinge",
+    "highLoadAreas": ["lower-back", "hip", "shoulder"],
+    "slots": ["sport-support"],
+    "rirSuitable": false,
+    "easierId": null,
+    "harderId": null,
+    "image": null
+  },
+  {
+    "id": "farmers-carry",
+    "source": "free-exercise-db",
+    "sourceId": "Fixture_farmers-carry",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Farmers Carry",
+      "el": null
+    },
+    "instructions": {
+      "en": ["Do the Farmers Carry.", "Keep it controlled."],
+      "el": null
+    },
+    "equipment": ["dumbbell"],
+    "locations": ["gym", "home", "court"],
+    "movementPattern": "carry",
+    "highLoadAreas": ["wrist", "upper-back", "lower-back"],
+    "slots": ["accessories-core"],
+    "rirSuitable": false,
+    "easierId": null,
+    "harderId": null,
+    "image": null
+  },
+  {
+    "id": "calf-raise",
+    "source": "free-exercise-db",
+    "sourceId": "Fixture_calf-raise",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Calf Raise",
+      "el": null
+    },
+    "instructions": {
+      "en": ["Do the Calf Raise.", "Keep it controlled."],
+      "el": null
+    },
+    "equipment": [],
+    "locations": ["gym", "home", "court", "beach"],
+    "movementPattern": "squat",
+    "highLoadAreas": ["ankle"],
+    "slots": ["accessories-core"],
+    "rirSuitable": true,
+    "easierId": null,
+    "harderId": null,
+    "image": null
+  },
+  {
+    "id": "dead-bug",
+    "source": "free-exercise-db",
+    "sourceId": "Fixture_dead-bug",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Dead Bug",
+      "el": null
+    },
+    "instructions": {
+      "en": ["Do the Dead Bug.", "Keep it controlled."],
+      "el": null
+    },
+    "equipment": [],
+    "locations": ["gym", "home", "court", "beach"],
+    "movementPattern": "core",
+    "highLoadAreas": [],
+    "slots": ["accessories-core", "warm-up"],
+    "rirSuitable": true,
+    "easierId": null,
+    "harderId": null,
+    "image": null
+  },
+  {
+    "id": "plank",
+    "source": "free-exercise-db",
+    "sourceId": "Fixture_plank",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Plank",
+      "el": null
+    },
+    "instructions": {
+      "en": ["Do the Plank.", "Keep it controlled."],
+      "el": null
+    },
+    "equipment": [],
+    "locations": ["gym", "home", "court", "beach"],
+    "movementPattern": "core",
+    "highLoadAreas": ["wrist", "shoulder"],
+    "slots": ["accessories-core"],
+    "rirSuitable": false,
+    "easierId": null,
+    "harderId": null,
+    "image": null
+  },
+  {
+    "id": "medicine-ball-rotational-throw",
+    "source": "free-exercise-db",
+    "sourceId": "Fixture_medicine-ball-rotational-throw",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Medicine Ball Rotational Throw",
+      "el": null
+    },
+    "instructions": {
+      "en": ["Do the Medicine Ball Rotational Throw.", "Keep it controlled."],
+      "el": null
+    },
+    "equipment": ["medicine-ball"],
+    "locations": ["gym", "court", "beach"],
+    "movementPattern": "rotation",
+    "highLoadAreas": ["lower-back", "shoulder"],
+    "slots": ["sport-support"],
+    "rirSuitable": false,
+    "easierId": null,
+    "harderId": null,
+    "image": null
+  },
+  {
+    "id": "box-jump",
+    "source": "free-exercise-db",
+    "sourceId": "Fixture_box-jump",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Box Jump",
+      "el": null
+    },
+    "instructions": {
+      "en": ["Do the Box Jump.", "Keep it controlled."],
+      "el": null
+    },
+    "equipment": ["box"],
+    "locations": ["gym", "court", "home"],
+    "movementPattern": "jump-land",
+    "highLoadAreas": ["knee", "ankle", "hip"],
+    "slots": ["sport-support"],
+    "rirSuitable": false,
+    "easierId": null,
+    "harderId": null,
+    "image": null
+  },
+  {
+    "id": "ankle-hop",
+    "source": "free-exercise-db",
+    "sourceId": "Fixture_ankle-hop",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Ankle Hop",
+      "el": null
+    },
+    "instructions": {
+      "en": ["Do the Ankle Hop.", "Keep it controlled."],
+      "el": null
+    },
+    "equipment": [],
+    "locations": ["gym", "court", "beach"],
+    "movementPattern": "jump-land",
+    "highLoadAreas": ["ankle", "knee"],
+    "slots": ["sport-support", "warm-up"],
+    "rirSuitable": false,
+    "easierId": null,
+    "harderId": null,
+    "image": null
+  },
+  {
+    "id": "lateral-shuffle",
+    "source": "free-exercise-db",
+    "sourceId": "Fixture_lateral-shuffle",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Lateral Shuffle",
+      "el": null
+    },
+    "instructions": {
+      "en": ["Do the Lateral Shuffle.", "Keep it controlled."],
+      "el": null
+    },
+    "equipment": [],
+    "locations": ["gym", "court", "beach"],
+    "movementPattern": "change-of-direction",
+    "highLoadAreas": ["ankle", "knee", "hip"],
+    "slots": ["warm-up", "sport-support"],
+    "rirSuitable": false,
+    "easierId": null,
+    "harderId": null,
+    "image": null
+  }
+]

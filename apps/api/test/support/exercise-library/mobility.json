@@ -1,0 +1,117 @@
+[
+  {
+    "id": "worlds-greatest-stretch",
+    "source": "free-exercise-db",
+    "sourceId": "Fixture_worlds-greatest-stretch",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Worlds Greatest Stretch",
+      "el": null
+    },
+    "instructions": {
+      "en": ["Do the Worlds Greatest Stretch.", "Keep it controlled."],
+      "el": null
+    },
+    "equipment": [],
+    "locations": ["gym", "home", "court", "beach"],
+    "movementPattern": "mobility",
+    "highLoadAreas": ["hip", "upper-back", "wrist"],
+    "slots": ["warm-up"],
+    "rirSuitable": false,
+    "easierId": null,
+    "harderId": null,
+    "image": null
+  },
+  {
+    "id": "neck-rotation-mobility",
+    "source": "free-exercise-db",
+    "sourceId": "Fixture_neck-rotation-mobility",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Neck Rotation Mobility",
+      "el": null
+    },
+    "instructions": {
+      "en": ["Do the Neck Rotation Mobility.", "Keep it controlled."],
+      "el": null
+    },
+    "equipment": [],
+    "locations": ["gym", "home", "court", "beach"],
+    "movementPattern": "mobility",
+    "highLoadAreas": ["neck"],
+    "slots": ["cool-down"],
+    "rirSuitable": false,
+    "easierId": null,
+    "harderId": null,
+    "image": null
+  },
+  {
+    "id": "foam-roller-thoracic-extension",
+    "source": "free-exercise-db",
+    "sourceId": "Fixture_foam-roller-thoracic-extension",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Foam Roller Thoracic Extension",
+      "el": null
+    },
+    "instructions": {
+      "en": ["Do the Foam Roller Thoracic Extension.", "Keep it controlled."],
+      "el": null
+    },
+    "equipment": ["foam-roller"],
+    "locations": ["gym", "home"],
+    "movementPattern": "mobility",
+    "highLoadAreas": ["upper-back"],
+    "slots": ["cool-down"],
+    "rirSuitable": false,
+    "easierId": null,
+    "harderId": null,
+    "image": null
+  },
+  {
+    "id": "hip-flexor-stretch",
+    "source": "free-exercise-db",
+    "sourceId": "Fixture_hip-flexor-stretch",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Hip Flexor Stretch",
+      "el": null
+    },
+    "instructions": {
+      "en": ["Do the Hip Flexor Stretch.", "Keep it controlled."],
+      "el": null
+    },
+    "equipment": [],
+    "locations": ["gym", "home", "beach"],
+    "movementPattern": "mobility",
+    "highLoadAreas": ["hip", "knee"],
+    "slots": ["cool-down"],
+    "rirSuitable": false,
+    "easierId": null,
+    "harderId": null,
+    "image": null
+  },
+  {
+    "id": "wrist-extensor-stretch",
+    "source": "free-exercise-db",
+    "sourceId": "Fixture_wrist-extensor-stretch",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Wrist Extensor Stretch",
+      "el": null
+    },
+    "instructions": {
+      "en": ["Do the Wrist Extensor Stretch.", "Keep it controlled."],
+      "el": null
+    },
+    "equipment": [],
+    "locations": ["gym", "home"],
+    "movementPattern": "mobility",
+    "highLoadAreas": ["wrist"],
+    "slots": ["cool-down"],
+    "rirSuitable": false,
+    "easierId": null,
+    "harderId": null,
+    "image": null
+  }
+]

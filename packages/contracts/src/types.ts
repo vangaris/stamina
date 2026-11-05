@@ -1,4 +1,10 @@
 import type { z } from 'zod';
+import type {
+  exerciseImageSchema,
+  exerciseListResponseSchema,
+  exerciseQuerySchema,
+  exerciseSchema,
+} from './exercise-schema.ts';
 import type { consentGrantSchema, consentStateSchema } from './consent-schema.ts';
 import type { getProfileResponseSchema } from './get-profile-response-schema.ts';
 import type { healthResponseSchema } from './health-response-schema.ts';
@@ -23,6 +29,10 @@ export type SavedProfile = z.infer<typeof savedProfileSchema>;
 export type SaveProfileResult = z.infer<typeof saveProfileResultSchema>;
 export type GetProfileResponse = z.infer<typeof getProfileResponseSchema>;
 export type InviteCheckResponse = z.infer<typeof inviteCheckResponseSchema>;
+export type ExerciseImage = z.infer<typeof exerciseImageSchema>;
+export type Exercise = z.infer<typeof exerciseSchema>;
+export type ExerciseListResponse = z.infer<typeof exerciseListResponseSchema>;
+export type ExerciseQuery = z.infer<typeof exerciseQuerySchema>;
 export type ConsentGrant = z.infer<typeof consentGrantSchema>;
 export type ConsentState = z.infer<typeof consentStateSchema>;
 export type ScreeningSubmission = z.infer<typeof screeningSubmissionSchema>;

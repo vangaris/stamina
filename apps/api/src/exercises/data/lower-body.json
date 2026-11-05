@@ -1,0 +1,1323 @@
+[
+  {
+    "id": "sit-squats",
+    "source": "free-exercise-db",
+    "sourceId": "Sit_Squats",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Sit Squats",
+      "el": null
+    },
+    "instructions": {
+      "en": [
+        "Stand with your feet shoulder width apart. This will be your starting position.",
+        "Begin the movement by flexing your knees and hips, sitting back with your hips.",
+        "Continue until you have squatted a portion of the way down, but are above parallel, and quickly reverse the motion until you return to the starting position. Repeat for 5-10 repetitions."
+      ],
+      "el": null
+    },
+    "equipment": [],
+    "locations": ["gym", "home", "court", "beach"],
+    "movementPattern": "squat",
+    "highLoadAreas": ["knee", "hip", "ankle"],
+    "slots": ["warm-up", "accessories-core"],
+    "rirSuitable": false,
+    "easierId": null,
+    "harderId": "bodyweight-squat",
+    "image": null
+  },
+  {
+    "id": "bodyweight-squat",
+    "source": "free-exercise-db",
+    "sourceId": "Bodyweight_Squat",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Bodyweight Squat",
+      "el": null
+    },
+    "instructions": {
+      "en": [
+        "Stand with your feet shoulder width apart. You can place your hands behind your head. This will be your starting position.",
+        "Begin the movement by flexing your knees and hips, sitting back with your hips.",
+        "Continue down to full depth if you are able,and quickly reverse the motion until you return to the starting position. As you squat, keep your head and chest up and push your knees out."
+      ],
+      "el": null
+    },
+    "equipment": [],
+    "locations": ["gym", "home", "court", "beach"],
+    "movementPattern": "squat",
+    "highLoadAreas": ["knee", "hip", "lower-back", "ankle"],
+    "slots": ["main-strength", "warm-up"],
+    "rirSuitable": true,
+    "easierId": "sit-squats",
+    "harderId": "goblet-squat",
+    "image": null
+  },
+  {
+    "id": "goblet-squat",
+    "source": "free-exercise-db",
+    "sourceId": "Goblet_Squat",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Goblet Squat",
+      "el": null
+    },
+    "instructions": {
+      "en": [
+        "Stand holding a light kettlebell by the horns close to your chest. This will be your starting position.",
+        "Squat down between your legs until your hamstrings are on your calves. Keep your chest and head up and your back straight.",
+        "At the bottom position, pause and use your elbows to push your knees out. Return to the starting position, and repeat for 10-20 repetitions."
+      ],
+      "el": null
+    },
+    "equipment": ["kettlebell"],
+    "locations": ["gym", "home"],
+    "movementPattern": "squat",
+    "highLoadAreas": ["knee", "hip", "lower-back", "ankle", "shoulder", "wrist"],
+    "slots": ["main-strength", "warm-up"],
+    "rirSuitable": true,
+    "easierId": "bodyweight-squat",
+    "harderId": "front-squats-with-two-kettlebells",
+    "image": null
+  },
+  {
+    "id": "dumbbell-squat",
+    "source": "free-exercise-db",
+    "sourceId": "Dumbbell_Squat",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Dumbbell Squat",
+      "el": null
+    },
+    "instructions": {
+      "en": [
+        "Stand up straight while holding a dumbbell on each hand (palms facing the side of your legs).",
+        "Position your legs using a shoulder width medium stance with the toes slightly pointed out. Keep your head up at all times as looking down will get you off balance and also maintain a straight back. This will be your starting position. Note: For the purposes of this discussion we will use the medium stance described above which targets overall development; however you can choose any of the three stances discussed in the foot stances section.",
+        "Begin to slowly lower your torso by bending the knees as you maintain a straight posture with the head up. Continue down until your thighs are parallel to the floor. Tip: If you performed the exercise correctly, the front of the knees should make an imaginary straight line with the toes that is perpendicular to the front. If your knees are past that imaginary line (if they are past your toes) then you are placing undue stress on the knee and the exercise has been performed incorrectly.",
+        "Begin to raise your torso as you exhale by pushing the floor with the heel of your foot mainly as you straighten the legs again and go back to the starting position.",
+        "Repeat for the recommended amount of repetitions."
+      ],
+      "el": null
+    },
+    "equipment": ["dumbbell"],
+    "locations": ["gym", "home"],
+    "movementPattern": "squat",
+    "highLoadAreas": ["knee", "hip", "lower-back", "ankle"],
+    "slots": ["main-strength", "accessories-core"],
+    "rirSuitable": true,
+    "easierId": "goblet-squat",
+    "harderId": "barbell-squat",
+    "image": null
+  },
+  {
+    "id": "dumbbell-squat-to-a-bench",
+    "source": "free-exercise-db",
+    "sourceId": "Dumbbell_Squat_To_A_Bench",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Dumbbell Squat to a Bench",
+      "el": null
+    },
+    "instructions": {
+      "en": [
+        "Stand up straight with a flat bench behind you while holding a dumbbell on each hand (palms facing the side of your legs).",
+        "Position your legs using a shoulder width medium stance with the toes slightly pointed out. Keep your head up at all times as looking down will get you off balance and also maintain a straight back. This will be your starting position. Note: For the purposes of this discussion we will use the medium stance described above which targets overall development; however you can choose any of the three stances discussed in the foot stances section.",
+        "Begin to slowly lower your torso by bending the knees as you maintain a straight posture with the head up. Continue down until you slightly touch the bench behind you. Inhale as you perform this portion of the movement. Tip: If you performed the exercise correctly, the front of the knees should make an imaginary straight line with the toes that is perpendicular to the front. If your knees are past that imaginary line (if they are past your toes) then you are placing undue stress on the knee and the exercise has been performed incorrectly.",
+        "Begin to raise the bar as you exhale by pushing the floor with the heel of your foot mainly as you straighten the legs again and go back to the starting position.",
+        "Repeat for the recommended amount of repetitions."
+      ],
+      "el": null
+    },
+    "equipment": ["dumbbell", "bench"],
+    "locations": ["gym", "home"],
+    "movementPattern": "squat",
+    "highLoadAreas": ["knee", "hip", "lower-back", "ankle"],
+    "slots": ["main-strength", "accessories-core"],
+    "rirSuitable": true,
+    "easierId": "bodyweight-squat",
+    "harderId": null,
+    "image": null
+  },
+  {
+    "id": "plie-dumbbell-squat",
+    "source": "free-exercise-db",
+    "sourceId": "Plie_Dumbbell_Squat",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Plie Dumbbell Squat",
+      "el": null
+    },
+    "instructions": {
+      "en": [
+        "Hold a dumbbell at the base with both hands and stand straight up. Move your legs so that they are wider than shoulder width apart from each other with your knees slightly bent.",
+        "Your toes should be facing out. Note: Your arms should be stationary while performing the exercise. This is the starting position.",
+        "Slowly bend the knees and lower your legs until your thighs are parallel to the floor. Make sure to inhale as this is the eccentric part of the exercise.",
+        "Press mainly with the heel of the foot to bring the body back to the starting position while exhaling.",
+        "Repeat for the recommended amount of repetitions."
+      ],
+      "el": null
+    },
+    "equipment": ["dumbbell"],
+    "locations": ["gym", "home"],
+    "movementPattern": "squat",
+    "highLoadAreas": ["knee", "hip", "lower-back", "ankle"],
+    "slots": ["main-strength", "accessories-core"],
+    "rirSuitable": true,
+    "easierId": "bodyweight-squat",
+    "harderId": null,
+    "image": null
+  },
+  {
+    "id": "squats-with-bands",
+    "source": "free-exercise-db",
+    "sourceId": "Squats_-_With_Bands",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Squats with Bands",
+      "el": null
+    },
+    "instructions": {
+      "en": [
+        "To start out, make sure that the exercise band is at an even split between both the left and right side of the body. To do this, use your hands to grab both sides of the band and place both feet in the middle of the band. Your feet should be shoulder width apart from each other.",
+        "When holding the bands, they should be the same height on each side. You should be using a pronated grip (palms facing forward) and have the handles of the bands next to your face for this exercise. This is the starting position.",
+        "Slowly start to bend the knees and lower the legs so that your thighs are parallel to the floor while exhaling.",
+        "Use the heel of your feet to push your body up to the starting position as you exhale.",
+        "Repeat for the recommended amount of repetitions."
+      ],
+      "el": null
+    },
+    "equipment": ["resistance-band"],
+    "locations": ["gym", "home", "court", "beach"],
+    "movementPattern": "squat",
+    "highLoadAreas": ["knee", "hip", "lower-back", "ankle", "shoulder"],
+    "slots": ["main-strength", "warm-up"],
+    "rirSuitable": true,
+    "easierId": "bodyweight-squat",
+    "harderId": "goblet-squat",
+    "image": null
+  },
+  {
+    "id": "barbell-squat",
+    "source": "free-exercise-db",
+    "sourceId": "Barbell_Squat",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Barbell Squat",
+      "el": null
+    },
+    "instructions": {
+      "en": [
+        "This exercise is best performed inside a squat rack for safety purposes. To begin, first set the bar on a rack to just below shoulder level. Once the correct height is chosen and the bar is loaded, step under the bar and place the back of your shoulders (slightly below the neck) across it.",
+        "Hold on to the bar using both arms at each side and lift it off the rack by first pushing with your legs and at the same time straightening your torso.",
+        "Step away from the rack and position your legs using a shoulder width medium stance with the toes slightly pointed out. Keep your head up at all times and also maintain a straight back. This will be your starting position. (Note: For the purposes of this discussion we will use the medium stance described above which targets overall development; however you can choose any of the three stances discussed in the foot stances section).",
+        "Begin to slowly lower the bar by bending the knees and hips as you maintain a straight posture with the head up. Continue down until the angle between the upper leg and the calves becomes slightly less than 90-degrees. Inhale as you perform this portion of the movement. Tip: If you performed the exercise correctly, the front of the knees should make an imaginary straight line with the toes that is perpendicular to the front. If your knees are past that imaginary line (if they are past your toes) then you are placing undue stress on the knee and the exercise has been performed incorrectly.",
+        "Begin to raise the bar as you exhale by pushing the floor with the heel of your foot as you straighten the legs again and go back to the starting position.",
+        "Repeat for the recommended amount of repetitions."
+      ],
+      "el": null
+    },
+    "equipment": ["barbell"],
+    "locations": ["gym"],
+    "movementPattern": "squat",
+    "highLoadAreas": ["knee", "hip", "lower-back", "upper-back", "shoulder", "ankle", "neck"],
+    "slots": ["main-strength"],
+    "rirSuitable": true,
+    "easierId": "dumbbell-squat",
+    "harderId": "front-barbell-squat",
+    "image": null
+  },
+  {
+    "id": "front-barbell-squat",
+    "source": "free-exercise-db",
+    "sourceId": "Front_Barbell_Squat",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Front Barbell Squat",
+      "el": null
+    },
+    "instructions": {
+      "en": [
+        "This exercise is best performed inside a squat rack for safety purposes. To begin, first set the bar on a rack that best matches your height. Once the correct height is chosen and the bar is loaded, bring your arms up under the bar while keeping the elbows high and the upper arm slightly above parallel to the floor. Rest the bar on top of the deltoids and cross your arms while grasping the bar for total control.",
+        "Lift the bar off the rack by first pushing with your legs and at the same time straightening your torso.",
+        "Step away from the rack and position your legs using a shoulder width medium stance with the toes slightly pointed out. Keep your head up at all times as looking down will get you off balance and also maintain a straight back. This will be your starting position. (Note: For the purposes of this discussion we will use the medium stance described above which targets overall development; however you can choose any of the three stances described in the foot positioning section).",
+        "Begin to slowly lower the bar by bending the knees as you maintain a straight posture with the head up. Continue down until the angle between the upper leg and the calves becomes slightly less than 90-degrees (which is the point in which the upper legs are below parallel to the floor). Inhale as you perform this portion of the movement. Tip: If you performed the exercise correctly, the front of the knees should make an imaginary straight line with the toes that is perpendicular to the front. If your knees are past that imaginary line (if they are past your toes) then you are placing undue stress on the knee and the exercise has been performed incorrectly.",
+        "Begin to raise the bar as you exhale by pushing the floor mainly with the middle of your foot as you straighten the legs again and go back to the starting position.",
+        "Repeat for the recommended amount of repetitions."
+      ],
+      "el": null
+    },
+    "equipment": ["barbell"],
+    "locations": ["gym"],
+    "movementPattern": "squat",
+    "highLoadAreas": ["knee", "hip", "lower-back", "upper-back", "shoulder", "wrist", "ankle"],
+    "slots": ["main-strength"],
+    "rirSuitable": true,
+    "easierId": "barbell-squat",
+    "harderId": null,
+    "image": {
+      "url": "https://wger.de/media/exercise-images/191/Front-squat-1-857x1024.png",
+      "author": "Everkinetic",
+      "authorUrl": null,
+      "licence": "CC-BY-SA 3.0",
+      "licenceUrl": "https://creativecommons.org/licenses/by-sa/3.0/deed.en",
+      "sourceUrl": "https://wger.de/en/exercise/257/view/",
+      "wgerExerciseId": 257
+    }
+  },
+  {
+    "id": "front-squats-with-two-kettlebells",
+    "source": "free-exercise-db",
+    "sourceId": "Front_Squats_With_Two_Kettlebells",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Front Squats with Two Kettlebells",
+      "el": null
+    },
+    "instructions": {
+      "en": [
+        "Clean two kettlebells to your shoulders. Clean the kettlebells to your shoulders by extending through the legs and hips as you pull the kettlebells towards your shoulders. Rotate your wrists as you do so.",
+        "Looking straight ahead at all times, squat as low as you can and pause at the bottom. As you squat down, push your knees out. You should squat between your legs, keeping an upright torso, with your head and chest up.",
+        "Rise back up by driving through your heels and repeat."
+      ],
+      "el": null
+    },
+    "equipment": ["kettlebell"],
+    "locations": ["gym", "home"],
+    "movementPattern": "squat",
+    "highLoadAreas": ["knee", "hip", "lower-back", "upper-back", "shoulder", "wrist", "ankle"],
+    "slots": ["main-strength"],
+    "rirSuitable": true,
+    "easierId": "goblet-squat",
+    "harderId": null,
+    "image": null
+  },
+  {
+    "id": "smith-machine-squat",
+    "source": "free-exercise-db",
+    "sourceId": "Smith_Machine_Squat",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Smith Machine Squat",
+      "el": null
+    },
+    "instructions": {
+      "en": [
+        "To begin, first set the bar on the height that best matches your height. Once the correct height is chosen and the bar is loaded, step under the bar and place the back of your shoulders (slightly below the neck) across it.",
+        "Hold on to the bar using both arms at each side (palms facing forward), unlock it and lift it off the rack by first pushing with your legs and at the same time straightening your torso.",
+        "Position your legs using a shoulder width medium stance with the toes slightly pointed out. Keep your head up at all times and also maintain a straight back. This will be your starting position. (Note: For the purposes of this discussion we will use the medium stance which targets overall development; however you can choose any of the three stances discussed in the foot stances section).",
+        "Begin to slowly lower the bar by bending the knees as you maintain a straight posture with the head up. Continue down until the angle between the upper leg and the calves becomes slightly less than 90-degrees (which is the point in which the upper legs are below parallel to the floor). Inhale as you perform this portion of the movement. Tip: If you performed the exercise correctly, the front of the knees should make an imaginary straight line with the toes that is perpendicular to the front. If your knees are past that imaginary line (if they are past your toes) then you are placing undue stress on the knee and the exercise has been performed incorrectly.",
+        "Begin to raise the bar as you exhale by pushing the floor with the heel of your foot as you straighten the legs again and go back to the starting position.",
+        "Repeat for the recommended amount of repetitions."
+      ],
+      "el": null
+    },
+    "equipment": ["machine"],
+    "locations": ["gym"],
+    "movementPattern": "squat",
+    "highLoadAreas": ["knee", "hip", "lower-back", "upper-back", "shoulder", "ankle", "neck"],
+    "slots": ["main-strength"],
+    "rirSuitable": true,
+    "easierId": null,
+    "harderId": "barbell-squat",
+    "image": null
+  },
+  {
+    "id": "leg-press",
+    "source": "free-exercise-db",
+    "sourceId": "Leg_Press",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Leg Press",
+      "el": null
+    },
+    "instructions": {
+      "en": [
+        "Using a leg press machine, sit down on the machine and place your legs on the platform directly in front of you at a medium (shoulder width) foot stance. (Note: For the purposes of this discussion we will use the medium stance described above which targets overall development; however you can choose any of the three stances described in the foot positioning section).",
+        "Lower the safety bars holding the weighted platform in place and press the platform all the way up until your legs are fully extended in front of you. Tip: Make sure that you do not lock your knees. Your torso and the legs should make a perfect 90-degree angle. This will be your starting position.",
+        "As you inhale, slowly lower the platform until your upper and lower legs make a 90-degree angle.",
+        "Pushing mainly with the heels of your feet and using the quadriceps go back to the starting position as you exhale.",
+        "Repeat for the recommended amount of repetitions and ensure to lock the safety pins properly once you are done. You do not want that platform falling on you fully loaded."
+      ],
+      "el": null
+    },
+    "equipment": ["machine"],
+    "locations": ["gym"],
+    "movementPattern": "squat",
+    "highLoadAreas": ["knee", "hip", "lower-back", "ankle"],
+    "slots": ["main-strength", "accessories-core"],
+    "rirSuitable": true,
+    "easierId": null,
+    "harderId": null,
+    "image": null
+  },
+  {
+    "id": "hack-squat",
+    "source": "free-exercise-db",
+    "sourceId": "Hack_Squat",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Hack Squat",
+      "el": null
+    },
+    "instructions": {
+      "en": [
+        "Place the back of your torso against the back pad of the machine and hook your shoulders under the shoulder pads provided.",
+        "Position your legs in the platform using a shoulder width medium stance with the toes slightly pointed out. Tip: Keep your head up at all times and also maintain the back on the pad at all times.",
+        "Place your arms on the side handles of the machine and disengage the safety bars (which on most designs is done by moving the side handles from a facing front position to a diagonal position).",
+        "Now straighten your legs without locking the knees. This will be your starting position. (Note: For the purposes of this discussion we will use the medium stance described above which targets overall development; however you can choose any of the three stances described in the foot positioning section).",
+        "Begin to slowly lower the unit by bending the knees as you maintain a straight posture with the head up (back on the pad at all times). Continue down until the angle between the upper leg and the calves becomes slightly less than 90-degrees (which is the point in which the upper legs are below parallel to the floor). Inhale as you perform this portion of the movement. Tip: If you performed the exercise correctly, the front of the knees should make an imaginary straight line with the toes that is perpendicular to the front. If your knees are past that imaginary line (if they are past your toes) then you are placing undue stress on the knee and the exercise has been performed incorrectly.",
+        "Begin to raise the unit as you exhale by pushing the floor with mainly with the heel of your foot as you straighten the legs again and go back to the starting position.",
+        "Repeat for the recommended amount of repetitions."
+      ],
+      "el": null
+    },
+    "equipment": ["machine"],
+    "locations": ["gym"],
+    "movementPattern": "squat",
+    "highLoadAreas": ["knee", "hip", "lower-back", "ankle"],
+    "slots": ["main-strength", "accessories-core"],
+    "rirSuitable": true,
+    "easierId": null,
+    "harderId": null,
+    "image": null
+  },
+  {
+    "id": "leg-extensions",
+    "source": "free-exercise-db",
+    "sourceId": "Leg_Extensions",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Leg Extensions",
+      "el": null
+    },
+    "instructions": {
+      "en": [
+        "For this exercise you will need to use a leg extension machine. First choose your weight and sit on the machine with your legs under the pad (feet pointed forward) and the hands holding the side bars. This will be your starting position. Tip: You will need to adjust the pad so that it falls on top of your lower leg (just above your feet). Also, make sure that your legs form a 90-degree angle between the lower and upper leg. If the angle is less than 90-degrees then that means the knee is over the toes which in turn creates undue stress at the knee joint. If the machine is designed that way, either look for another machine or just make sure that when you start executing the exercise you stop going down once you hit the 90-degree angle.",
+        "Using your quadriceps, extend your legs to the maximum as you exhale. Ensure that the rest of the body remains stationary on the seat. Pause a second on the contracted position.",
+        "Slowly lower the weight back to the original position as you inhale, ensuring that you do not go past the 90-degree angle limit.",
+        "Repeat for the recommended amount of times."
+      ],
+      "el": null
+    },
+    "equipment": ["machine"],
+    "locations": ["gym"],
+    "movementPattern": "squat",
+    "highLoadAreas": ["knee"],
+    "slots": ["accessories-core"],
+    "rirSuitable": true,
+    "easierId": null,
+    "harderId": null,
+    "image": {
+      "url": "https://wger.de/media/exercise-images/369/78c915d1-e46d-4d30-8124-65d68664c3ef.png",
+      "author": "Franpol",
+      "authorUrl": null,
+      "licence": "CC-BY-SA 4.0",
+      "licenceUrl": "https://creativecommons.org/licenses/by-sa/4.0/deed.en",
+      "sourceUrl": "https://wger.de/en/exercise/369/view/",
+      "wgerExerciseId": 369
+    }
+  },
+  {
+    "id": "calf-raises-with-bands",
+    "source": "free-exercise-db",
+    "sourceId": "Calf_Raises_-_With_Bands",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Calf Raises with Bands",
+      "el": null
+    },
+    "instructions": {
+      "en": [
+        "Grab an exercise band and stand on it with your toes making sure that the length of the band between the foot and the arms is the same for both sides.",
+        "While holding the handles of the band, raise the arms to the side of your head as if you were getting ready to perform a shoulder press. The palms should be facing forward with the elbows bent and to the sides. This movement will create tension on the band. This will be your starting position.",
+        "Keeping the hands by your shoulder, stand up on your toes as you exhale and contract the calves hard at the top of the movement.",
+        "After a one second contraction, slowly go back down to the starting position.",
+        "Repeat for the recommended amount of repetitions."
+      ],
+      "el": null
+    },
+    "equipment": ["resistance-band"],
+    "locations": ["gym", "home", "court", "beach"],
+    "movementPattern": "squat",
+    "highLoadAreas": ["ankle", "shoulder"],
+    "slots": ["accessories-core"],
+    "rirSuitable": true,
+    "easierId": null,
+    "harderId": "standing-dumbbell-calf-raise",
+    "image": null
+  },
+  {
+    "id": "standing-dumbbell-calf-raise",
+    "source": "free-exercise-db",
+    "sourceId": "Standing_Dumbbell_Calf_Raise",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Standing Dumbbell Calf Raise",
+      "el": null
+    },
+    "instructions": {
+      "en": [
+        "Stand with your torso upright holding two dumbbells in your hands by your sides. Place the ball of the foot on a sturdy and stable wooden board (that is around 2-3 inches tall) while your heels extend off and touch the floor. This will be your starting position.",
+        "With the toes pointing either straight (to hit all parts equally), inwards (for emphasis on the outer head) or outwards (for emphasis on the inner head), raise the heels off the floor as you exhale by contracting the calves. Hold the top contraction for a second.",
+        "As you inhale, go back to the starting position by slowly lowering the heels.",
+        "Repeat for the recommended amount of times."
+      ],
+      "el": null
+    },
+    "equipment": ["dumbbell", "box"],
+    "locations": ["gym", "home"],
+    "movementPattern": "squat",
+    "highLoadAreas": ["ankle"],
+    "slots": ["accessories-core"],
+    "rirSuitable": true,
+    "easierId": "calf-raises-with-bands",
+    "harderId": null,
+    "image": null
+  },
+  {
+    "id": "calf-raise-on-a-dumbbell",
+    "source": "free-exercise-db",
+    "sourceId": "Calf_Raise_On_A_Dumbbell",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Calf Raise on a Dumbbell",
+      "el": null
+    },
+    "instructions": {
+      "en": [
+        "Hang on to a sturdy object for balance and stand on a dumbbell handle, preferably one with round plates so that it rolls as in this manner you have to work harder to stabilize yourself; thus increasing the effectiveness of the exercise.",
+        "Now roll your foot slightly forward so that you can get a nice stretch of the calf. This will be your starting position.",
+        "Lift the calf as you roll your foot over the top of the handle so that you get a full extension. Exhale during the execution of this movement. Contract the calf hard at the top and hold for a second. Tip: As you come up, roll the dumbbell slightly backward.",
+        "Now inhale as you roll the dumbbell slightly forward as you come down to get a better stretch.",
+        "Repeat for the recommended amount of repetitions."
+      ],
+      "el": null
+    },
+    "equipment": ["dumbbell"],
+    "locations": ["gym", "home"],
+    "movementPattern": "squat",
+    "highLoadAreas": ["ankle"],
+    "slots": ["accessories-core"],
+    "rirSuitable": true,
+    "easierId": "standing-dumbbell-calf-raise",
+    "harderId": null,
+    "image": null
+  },
+  {
+    "id": "butt-lift-bridge",
+    "source": "free-exercise-db",
+    "sourceId": "Butt_Lift_Bridge",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Glute Bridge",
+      "el": null
+    },
+    "instructions": {
+      "en": [
+        "Lie flat on the floor on your back with the hands by your side and your knees bent. Your feet should be placed around shoulder width. This will be your starting position.",
+        "Pushing mainly with your heels, lift your hips off the floor while keeping your back straight. Breathe out as you perform this part of the motion and hold at the top for a second.",
+        "Slowly go back to the starting position as you breathe in."
+      ],
+      "el": null
+    },
+    "equipment": [],
+    "locations": ["gym", "home", "court", "beach"],
+    "movementPattern": "hinge",
+    "highLoadAreas": ["hip", "lower-back", "knee"],
+    "slots": ["warm-up", "accessories-core"],
+    "rirSuitable": true,
+    "easierId": null,
+    "harderId": "single-leg-glute-bridge",
+    "image": null
+  },
+  {
+    "id": "single-leg-glute-bridge",
+    "source": "free-exercise-db",
+    "sourceId": "Single_Leg_Glute_Bridge",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Single Leg Glute Bridge",
+      "el": null
+    },
+    "instructions": {
+      "en": [
+        "Lay on the floor with your feet flat and knees bent.",
+        "Raise one leg off of the ground, pulling the knee to your chest. This will be your starting position.",
+        "Execute the movement by driving through the heel, extending your hip upward and raising your glutes off of the ground.",
+        "Extend as far as possible, pause and then return to the starting position."
+      ],
+      "el": null
+    },
+    "equipment": [],
+    "locations": ["gym", "home", "court", "beach"],
+    "movementPattern": "hinge",
+    "highLoadAreas": ["hip", "lower-back", "knee"],
+    "slots": ["main-strength", "accessories-core"],
+    "rirSuitable": true,
+    "easierId": "butt-lift-bridge",
+    "harderId": null,
+    "image": null
+  },
+  {
+    "id": "hip-lift-with-band",
+    "source": "free-exercise-db",
+    "sourceId": "Hip_Lift_with_Band",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Hip Lift with Band",
+      "el": null
+    },
+    "instructions": {
+      "en": [
+        "After choosing a suitable band, lay down in the middle of the rack, after securing the band on either side of you. If your rack doesn't have pegs, the band can be secured using heavy dumbbells or similar objects, just ensure they won't move.",
+        "Adjust your position so that the band is directly over your hips. Bend your knees and place your feet flat on the floor. Your hands can be on the floor or holding the band in position.",
+        "Keeping your shoulders on the ground, drive through your heels to raise your hips, pushing into the band as high as you can.",
+        "Pause at the top of the motion, and return to the starting position."
+      ],
+      "el": null
+    },
+    "equipment": ["resistance-band"],
+    "locations": ["gym"],
+    "movementPattern": "hinge",
+    "highLoadAreas": ["hip", "lower-back", "knee"],
+    "slots": ["main-strength", "accessories-core"],
+    "rirSuitable": true,
+    "easierId": "butt-lift-bridge",
+    "harderId": "barbell-hip-thrust",
+    "image": null
+  },
+  {
+    "id": "barbell-hip-thrust",
+    "source": "free-exercise-db",
+    "sourceId": "Barbell_Hip_Thrust",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Barbell Hip Thrust",
+      "el": null
+    },
+    "instructions": {
+      "en": [
+        "Begin seated on the ground with a bench directly behind you. Have a loaded barbell over your legs. Using a fat bar or having a pad on the bar can greatly reduce the discomfort caused by this exercise.",
+        "Roll the bar so that it is directly above your hips, and lean back against the bench so that your shoulder blades are near the top of it.",
+        "Begin the movement by driving through your feet, extending your hips vertically through the bar. Your weight should be supported by your shoulder blades and your feet. Extend as far as possible, then reverse the motion to return to the starting position."
+      ],
+      "el": null
+    },
+    "equipment": ["barbell", "bench"],
+    "locations": ["gym"],
+    "movementPattern": "hinge",
+    "highLoadAreas": ["hip", "lower-back", "upper-back", "knee"],
+    "slots": ["main-strength"],
+    "rirSuitable": true,
+    "easierId": "hip-lift-with-band",
+    "harderId": null,
+    "image": null
+  },
+  {
+    "id": "glute-kickback",
+    "source": "free-exercise-db",
+    "sourceId": "Glute_Kickback",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Glute Kickback",
+      "el": null
+    },
+    "instructions": {
+      "en": [
+        "Kneel on the floor or an exercise mat and bend at the waist with your arms extended in front of you (perpendicular to the torso) in order to get into a kneeling push-up position but with the arms spaced at shoulder width. Your head should be looking forward and the bend of the knees should create a 90-degree angle between the hamstrings and the calves. This will be your starting position.",
+        "As you exhale, lift up your right leg until the hamstrings are in line with the back while maintaining the 90-degree angle bend. Contract the glutes throughout this movement and hold the contraction at the top for a second. Tip: At the end of the movement the upper leg should be parallel to the floor while the calf should be perpendicular to it.",
+        "Go back to the initial position as you inhale and now repeat with the left leg.",
+        "Continue to alternate legs until all of the recommended repetitions have been performed."
+      ],
+      "el": null
+    },
+    "equipment": [],
+    "locations": ["gym", "home", "court", "beach"],
+    "movementPattern": "hinge",
+    "highLoadAreas": ["hip", "knee", "lower-back", "shoulder", "wrist"],
+    "slots": ["accessories-core", "warm-up"],
+    "rirSuitable": true,
+    "easierId": null,
+    "harderId": null,
+    "image": null
+  },
+  {
+    "id": "hip-extension-with-bands",
+    "source": "free-exercise-db",
+    "sourceId": "Hip_Extension_with_Bands",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Hip Extension with Bands",
+      "el": null
+    },
+    "instructions": {
+      "en": [
+        "Secure one end of the band to the lower portion of a post and attach the other to one ankle.",
+        "Facing the attachment point of the band, hold on to the column to stabilize yourself.",
+        "Keeping your head and your chest up, move the resisted leg back as far as you can while keeping the knee straight.",
+        "Return the leg to the starting position."
+      ],
+      "el": null
+    },
+    "equipment": ["resistance-band"],
+    "locations": ["gym", "home"],
+    "movementPattern": "hinge",
+    "highLoadAreas": ["hip", "lower-back", "knee"],
+    "slots": ["accessories-core"],
+    "rirSuitable": true,
+    "easierId": null,
+    "harderId": null,
+    "image": null
+  },
+  {
+    "id": "floor-glute-ham-raise",
+    "source": "free-exercise-db",
+    "sourceId": "Floor_Glute-Ham_Raise",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Floor Glute-Ham Raise",
+      "el": null
+    },
+    "instructions": {
+      "en": [
+        "You can use a partner for this exercise or brace your feet under something stable.",
+        "Begin on your knees with your upper legs and torso upright. If using a partner, they will firmly hold your feet to keep you in position. This will be your starting position.",
+        "Lower yourself by extending at the knee, taking care to NOT flex the hips as you go forward.",
+        "Place your hands in front of you as you reach the floor. This movement is very difficult and you may be unable to do it unaided. Use your arms to lightly push off the floor to aid your return to the starting position."
+      ],
+      "el": null
+    },
+    "equipment": [],
+    "locations": ["gym", "home"],
+    "movementPattern": "hinge",
+    "highLoadAreas": ["knee", "hip", "lower-back", "shoulder", "wrist"],
+    "slots": ["main-strength", "accessories-core"],
+    "rirSuitable": true,
+    "easierId": null,
+    "harderId": null,
+    "image": null
+  },
+  {
+    "id": "stiff-legged-dumbbell-deadlift",
+    "source": "free-exercise-db",
+    "sourceId": "Stiff-Legged_Dumbbell_Deadlift",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Stiff-Legged Dumbbell Deadlift",
+      "el": null
+    },
+    "instructions": {
+      "en": [
+        "Grasp a couple of dumbbells holding them by your side at arm's length.",
+        "Stand with your torso straight and your legs spaced using a shoulder width or narrower stance. The knees should be slightly bent. This is your starting position.",
+        "Keeping the knees stationary, lower the dumbbells to over the top of your feet by bending at the waist while keeping your back straight. Keep moving forward as if you were going to pick something from the floor until you feel a stretch on the hamstrings. Exhale as you perform this movement",
+        "Start bringing your torso up straight again by extending your hips and waist until you are back at the starting position. Inhale as you perform this movement.",
+        "Repeat for the recommended amount of repetitions."
+      ],
+      "el": null
+    },
+    "equipment": ["dumbbell"],
+    "locations": ["gym", "home"],
+    "movementPattern": "hinge",
+    "highLoadAreas": ["hip", "lower-back", "knee"],
+    "slots": ["main-strength", "accessories-core"],
+    "rirSuitable": true,
+    "easierId": null,
+    "harderId": "romanian-deadlift",
+    "image": null
+  },
+  {
+    "id": "kettlebell-one-legged-deadlift",
+    "source": "free-exercise-db",
+    "sourceId": "Kettlebell_One-Legged_Deadlift",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Kettlebell One-Legged Deadlift",
+      "el": null
+    },
+    "instructions": {
+      "en": [
+        "Hold a kettlebell by the handle in one hand. Stand on one leg, on the same side that you hold the kettlebell.",
+        "Keeping that knee slightly bent, perform a stiff legged deadlift by bending at the hip, extending your free leg behind you for balance.",
+        "Continue lowering the kettlebell until you are parallel to the ground, and then return to the upright position."
+      ],
+      "el": null
+    },
+    "equipment": ["kettlebell"],
+    "locations": ["gym", "home"],
+    "movementPattern": "hinge",
+    "highLoadAreas": ["hip", "lower-back", "knee", "ankle"],
+    "slots": ["main-strength", "accessories-core"],
+    "rirSuitable": true,
+    "easierId": "stiff-legged-dumbbell-deadlift",
+    "harderId": null,
+    "image": {
+      "url": "https://wger.de/media/exercise-images/1641/68d9488d-2596-420f-be0f-52aa70732c83.webp",
+      "author": "AlucardEvil40",
+      "authorUrl": null,
+      "licence": "CC-BY-SA 4.0",
+      "licenceUrl": "https://creativecommons.org/licenses/by-sa/4.0/deed.en",
+      "sourceUrl": "https://wger.de/en/exercise/1641/view/",
+      "wgerExerciseId": 1641
+    }
+  },
+  {
+    "id": "romanian-deadlift",
+    "source": "free-exercise-db",
+    "sourceId": "Romanian_Deadlift",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Romanian Deadlift",
+      "el": null
+    },
+    "instructions": {
+      "en": [
+        "Put a barbell in front of you on the ground and grab it using a pronated (palms facing down) grip that a little wider than shoulder width. Tip: Depending on the weight used, you may need wrist wraps to perform the exercise and also a raised platform in order to allow for better range of motion.",
+        "Bend the knees slightly and keep the shins vertical, hips back and back straight. This will be your starting position.",
+        "Keeping your back and arms completely straight at all times, use your hips to lift the bar as you exhale. Tip: The movement should not be fast but steady and under control.",
+        "Once you are standing completely straight up, lower the bar by pushing the hips back, only slightly bending the knees, unlike when squatting. Tip: Take a deep breath at the start of the movement and keep your chest up. Hold your breath as you lower and exhale as you complete the movement.",
+        "Repeat for the recommended amount of repetitions."
+      ],
+      "el": null
+    },
+    "equipment": ["barbell"],
+    "locations": ["gym"],
+    "movementPattern": "hinge",
+    "highLoadAreas": ["hip", "lower-back", "upper-back", "knee", "wrist", "shoulder"],
+    "slots": ["main-strength"],
+    "rirSuitable": true,
+    "easierId": "stiff-legged-dumbbell-deadlift",
+    "harderId": null,
+    "image": null
+  },
+  {
+    "id": "barbell-deadlift",
+    "source": "free-exercise-db",
+    "sourceId": "Barbell_Deadlift",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Barbell Deadlift",
+      "el": null
+    },
+    "instructions": {
+      "en": [
+        "Stand in front of a loaded barbell.",
+        "While keeping the back as straight as possible, bend your knees, bend forward and grasp the bar using a medium (shoulder width) overhand grip. This will be the starting position of the exercise. Tip: If it is difficult to hold on to the bar with this grip, alternate your grip or use wrist straps.",
+        "While holding the bar, start the lift by pushing with your legs while simultaneously getting your torso to the upright position as you breathe out. In the upright position, stick your chest out and contract the back by bringing the shoulder blades back. Think of how the soldiers in the military look when they are in standing in attention.",
+        "Go back to the starting position by bending at the knees while simultaneously leaning the torso forward at the waist while keeping the back straight. When the weights on the bar touch the floor you are back at the starting position and ready to perform another repetition.",
+        "Perform the amount of repetitions prescribed in the program."
+      ],
+      "el": null
+    },
+    "equipment": ["barbell"],
+    "locations": ["gym"],
+    "movementPattern": "hinge",
+    "highLoadAreas": ["hip", "knee", "lower-back", "upper-back", "wrist", "shoulder"],
+    "slots": ["main-strength"],
+    "rirSuitable": true,
+    "easierId": null,
+    "harderId": null,
+    "image": null
+  },
+  {
+    "id": "sumo-deadlift",
+    "source": "free-exercise-db",
+    "sourceId": "Sumo_Deadlift",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Sumo Deadlift",
+      "el": null
+    },
+    "instructions": {
+      "en": [
+        "Begin with a bar loaded on the ground. Approach the bar so that the bar intersects the middle of the feet. The feet should be set very wide, near the collars. Bend at the hips to grip the bar. The arms should be directly below the shoulders, inside the legs, and you can use a pronated grip, a mixed grip, or hook grip. Relax the shoulders, which in effect lengthens your arms.",
+        "Take a breath, and then lower your hips, looking forward with your head with your chest up. Drive through the floor, spreading your feet apart, with your weight on the back half of your feet. Extend through the hips and knees.",
+        "As the bar passes through the knees, lean back and drive the hips into the bar, pulling your shoulder blades together.",
+        "Return the weight to the ground by bending at the hips and controlling the weight on the way down."
+      ],
+      "el": null
+    },
+    "equipment": ["barbell"],
+    "locations": ["gym"],
+    "movementPattern": "hinge",
+    "highLoadAreas": ["hip", "knee", "lower-back", "upper-back", "wrist", "shoulder"],
+    "slots": ["main-strength"],
+    "rirSuitable": true,
+    "easierId": null,
+    "harderId": null,
+    "image": null
+  },
+  {
+    "id": "band-good-morning",
+    "source": "free-exercise-db",
+    "sourceId": "Band_Good_Morning",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Band Good Morning",
+      "el": null
+    },
+    "instructions": {
+      "en": [
+        "Using a 41 inch band, stand on one end, spreading your feet a small amount. Bend at the hips to loop the end of the band behind your neck. This will be your starting position.",
+        "Keeping your legs straight, extend through the hips to come to a near vertical position.",
+        "Ensure that you do not round your back as you go down back to the starting position."
+      ],
+      "el": null
+    },
+    "equipment": ["resistance-band"],
+    "locations": ["gym", "home", "court", "beach"],
+    "movementPattern": "hinge",
+    "highLoadAreas": ["hip", "lower-back", "neck", "upper-back", "shoulder"],
+    "slots": ["accessories-core", "warm-up"],
+    "rirSuitable": true,
+    "easierId": null,
+    "harderId": null,
+    "image": null
+  },
+  {
+    "id": "pull-through",
+    "source": "free-exercise-db",
+    "sourceId": "Pull_Through",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Pull Through",
+      "el": null
+    },
+    "instructions": {
+      "en": [
+        "Begin standing a few feet in front of a low pulley with a rope or handle attached. Face away from the machine, straddling the cable, with your feet set wide apart.",
+        "Begin the movement by reaching through your legs as far as possible, bending at the hips. Keep your knees slightly bent. Keeping your arms straight, extend through the hip to stand straight up. Avoid pulling upward through the shoulders; all of the motion should originate through the hips."
+      ],
+      "el": null
+    },
+    "equipment": ["machine"],
+    "locations": ["gym"],
+    "movementPattern": "hinge",
+    "highLoadAreas": ["hip", "lower-back"],
+    "slots": ["accessories-core"],
+    "rirSuitable": true,
+    "easierId": null,
+    "harderId": null,
+    "image": null
+  },
+  {
+    "id": "vertical-swing",
+    "source": "free-exercise-db",
+    "sourceId": "Vertical_Swing",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Vertical Swing",
+      "el": null
+    },
+    "instructions": {
+      "en": [
+        "Allow the dumbbell to hang at arms length between your legs, holding it with both hands. Keep your back straight and your head up.",
+        "Swing the dumbbell between your legs, flexing at the hips and bending the knees slightly.",
+        "Powerfully reverse the motion by extending at the hips, knees, and ankles to propel yourself upward, swinging the dumbell over your head.",
+        "As you land, absorb the impact through your legs and draw the dumbbell to your torso before the next repetition."
+      ],
+      "el": null
+    },
+    "equipment": ["dumbbell"],
+    "locations": ["gym", "home"],
+    "movementPattern": "hinge",
+    "highLoadAreas": ["hip", "knee", "ankle", "lower-back", "shoulder"],
+    "slots": ["sport-support"],
+    "rirSuitable": false,
+    "easierId": null,
+    "harderId": null,
+    "image": null
+  },
+  {
+    "id": "seated-leg-curl",
+    "source": "free-exercise-db",
+    "sourceId": "Seated_Leg_Curl",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Seated Leg Curl",
+      "el": null
+    },
+    "instructions": {
+      "en": [
+        "Adjust the machine lever to fit your height and sit on the machine with your back against the back support pad.",
+        "Place the back of lower leg on top of padded lever (just a few inches under the calves) and secure the lap pad against your thighs, just above the knees. Then grasp the side handles on the machine as you point your toes straight (or you can also use any of the other two stances) and ensure that the legs are fully straight right in front of you. This will be your starting position.",
+        "As you exhale, pull the machine lever as far as possible to the back of your thighs by flexing at the knees. Keep your torso stationary at all times. Hold the contracted position for a second.",
+        "Slowly return to the starting position as you breathe in.",
+        "Repeat for the recommended amount of repetitions."
+      ],
+      "el": null
+    },
+    "equipment": ["machine"],
+    "locations": ["gym"],
+    "movementPattern": "hinge",
+    "highLoadAreas": ["knee"],
+    "slots": ["accessories-core"],
+    "rirSuitable": true,
+    "easierId": null,
+    "harderId": null,
+    "image": {
+      "url": "https://wger.de/media/exercise-images/117/seated-leg-curl-large-1.png",
+      "author": "Everkinetic",
+      "authorUrl": null,
+      "licence": "CC-BY-SA 3.0",
+      "licenceUrl": "https://creativecommons.org/licenses/by-sa/3.0/deed.en",
+      "sourceUrl": "https://wger.de/en/exercise/366/view/",
+      "wgerExerciseId": 366
+    }
+  },
+  {
+    "id": "crossover-reverse-lunge",
+    "source": "free-exercise-db",
+    "sourceId": "Crossover_Reverse_Lunge",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Crossover Reverse Lunge",
+      "el": null
+    },
+    "instructions": {
+      "en": [
+        "Stand with your feet shoulder width apart. This will be your starting position.",
+        "Perform a rear lunge by stepping back with one foot and flexing the hips and front knee. As you do so, rotate your torso across the front leg.",
+        "After a brief pause, return to the starting position and repeat on the other side, continuing in an alternating fashion."
+      ],
+      "el": null
+    },
+    "equipment": [],
+    "locations": ["gym", "home", "court", "beach"],
+    "movementPattern": "lunge",
+    "highLoadAreas": ["knee", "hip", "lower-back", "ankle"],
+    "slots": ["accessories-core", "warm-up"],
+    "rirSuitable": true,
+    "easierId": null,
+    "harderId": "dumbbell-rear-lunge",
+    "image": null
+  },
+  {
+    "id": "bodyweight-walking-lunge",
+    "source": "free-exercise-db",
+    "sourceId": "Bodyweight_Walking_Lunge",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Bodyweight Walking Lunge",
+      "el": null
+    },
+    "instructions": {
+      "en": [
+        "Begin standing with your feet shoulder width apart and your hands on your hips.",
+        "Step forward with one leg, flexing the knees to drop your hips. Descend until your rear knee nearly touches the ground. Your posture should remain upright, and your front knee should stay above the front foot.",
+        "Drive through the heel of your lead foot and extend both knees to raise yourself back up.",
+        "Step forward with your rear foot, repeating the lunge on the opposite leg."
+      ],
+      "el": null
+    },
+    "equipment": [],
+    "locations": ["gym", "home", "court", "beach"],
+    "movementPattern": "lunge",
+    "highLoadAreas": ["knee", "hip", "lower-back", "ankle"],
+    "slots": ["warm-up", "main-strength"],
+    "rirSuitable": true,
+    "easierId": null,
+    "harderId": "dumbbell-lunges",
+    "image": null
+  },
+  {
+    "id": "step-up-with-knee-raise",
+    "source": "free-exercise-db",
+    "sourceId": "Step-up_with_Knee_Raise",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Step-up with Knee Raise",
+      "el": null
+    },
+    "instructions": {
+      "en": [
+        "Stand facing a box or bench of an appropriate height with your feet together. This will be your starting position.",
+        "Begin the movement by stepping up, putting your left foot on the top of the bench. Extend through the hip and knee of your front leg to stand up on the box. As you stand on the box with your left leg, flex your right knee and hip, bringing your knee as high as you can.",
+        "Reverse this motion to step down off the box, and then repeat the sequence on the opposite leg."
+      ],
+      "el": null
+    },
+    "equipment": ["box"],
+    "locations": ["gym", "home"],
+    "movementPattern": "lunge",
+    "highLoadAreas": ["knee", "hip", "ankle"],
+    "slots": ["accessories-core", "warm-up"],
+    "rirSuitable": true,
+    "easierId": null,
+    "harderId": "dumbbell-step-ups",
+    "image": null
+  },
+  {
+    "id": "dumbbell-lunges",
+    "source": "free-exercise-db",
+    "sourceId": "Dumbbell_Lunges",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Dumbbell Lunges",
+      "el": null
+    },
+    "instructions": {
+      "en": [
+        "Stand with your torso upright holding two dumbbells in your hands by your sides. This will be your starting position.",
+        "Step forward with your right leg around 2 feet or so from the foot being left stationary behind and lower your upper body down, while keeping the torso upright and maintaining balance. Inhale as you go down. Note: As in the other exercises, do not allow your knee to go forward beyond your toes as you come down, as this will put undue stress on the knee joint. Make sure that you keep your front shin perpendicular to the ground.",
+        "Using mainly the heel of your foot, push up and go back to the starting position as you exhale.",
+        "Repeat the movement for the recommended amount of repetitions and then perform with the left leg."
+      ],
+      "el": null
+    },
+    "equipment": ["dumbbell"],
+    "locations": ["gym", "home"],
+    "movementPattern": "lunge",
+    "highLoadAreas": ["knee", "hip", "lower-back", "ankle"],
+    "slots": ["main-strength", "accessories-core"],
+    "rirSuitable": true,
+    "easierId": "bodyweight-walking-lunge",
+    "harderId": "barbell-lunge",
+    "image": null
+  },
+  {
+    "id": "dumbbell-rear-lunge",
+    "source": "free-exercise-db",
+    "sourceId": "Dumbbell_Rear_Lunge",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Dumbbell Rear Lunge",
+      "el": null
+    },
+    "instructions": {
+      "en": [
+        "Stand with your torso upright holding two dumbbells in your hands by your sides. This will be your starting position.",
+        "Step backward with your right leg around two feet or so from the left foot and lower your upper body down, while keeping the torso upright and maintaining balance. Inhale as you go down. Tip: As in the other exercises, do not allow your knee to go forward beyond your toes as you come down, as this will put undue stress on the knee joint. Make sure that you keep your front shin perpendicular to the ground. Keep the torso upright during the lunge; flexible hip flexors are important. A long lunge emphasizes the Gluteus Maximus; a short lunge emphasizes Quadriceps.",
+        "Push up and go back to the starting position as you exhale. Tip: Use the ball of your feet to push in order to accentuate the quadriceps. To focus on the glutes, press with your heels.",
+        "Now repeat with the opposite leg."
+      ],
+      "el": null
+    },
+    "equipment": ["dumbbell"],
+    "locations": ["gym", "home"],
+    "movementPattern": "lunge",
+    "highLoadAreas": ["knee", "hip", "lower-back", "ankle"],
+    "slots": ["main-strength", "accessories-core"],
+    "rirSuitable": true,
+    "easierId": "crossover-reverse-lunge",
+    "harderId": null,
+    "image": {
+      "url": "https://wger.de/media/exercise-images/1651/04ab2679-a04d-4d05-9c85-0d36e898328c.webp",
+      "author": "AlucardEvil40",
+      "authorUrl": null,
+      "licence": "CC-BY-SA 4.0",
+      "licenceUrl": "https://creativecommons.org/licenses/by-sa/4.0/deed.en",
+      "sourceUrl": "https://wger.de/en/exercise/1651/view/",
+      "wgerExerciseId": 1651
+    }
+  },
+  {
+    "id": "split-squat-with-dumbbells",
+    "source": "free-exercise-db",
+    "sourceId": "Split_Squat_with_Dumbbells",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Split Squat with Dumbbells",
+      "el": null
+    },
+    "instructions": {
+      "en": [
+        "Position yourself into a staggered stance with the rear foot elevated and front foot forward.",
+        "Hold a dumbbell in each hand, letting them hang at the sides. This will be your starting position.",
+        "Begin by descending, flexing your knee and hip to lower your body down. Maintain good posture througout the movement. Keep the front knee in line with the foot as you perform the exercise.",
+        "At the bottom of the movement, drive through the heel to extend the knee and hip to return to the starting position."
+      ],
+      "el": null
+    },
+    "equipment": ["dumbbell", "bench"],
+    "locations": ["gym", "home"],
+    "movementPattern": "lunge",
+    "highLoadAreas": ["knee", "hip", "lower-back", "ankle"],
+    "slots": ["main-strength", "accessories-core"],
+    "rirSuitable": true,
+    "easierId": "dumbbell-rear-lunge",
+    "harderId": null,
+    "image": {
+      "url": "https://wger.de/media/exercise-images/1706/0c5243cc-2539-4005-aee0-d3a8c5d3a32c.jfif",
+      "author": "AlucardEvil40",
+      "authorUrl": null,
+      "licence": "CC-BY-SA 4.0",
+      "licenceUrl": "https://creativecommons.org/licenses/by-sa/4.0/deed.en",
+      "sourceUrl": "https://wger.de/en/exercise/1706/view/",
+      "wgerExerciseId": 1706
+    }
+  },
+  {
+    "id": "dumbbell-step-ups",
+    "source": "free-exercise-db",
+    "sourceId": "Dumbbell_Step_Ups",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Dumbbell Step-Ups",
+      "el": null
+    },
+    "instructions": {
+      "en": [
+        "Stand up straight while holding a dumbbell on each hand (palms facing the side of your legs).",
+        "Place the right foot on the elevated platform. Step on the platform by extending the hip and the knee of your right leg. Use the heel mainly to lift the rest of your body up and place the foot of the left leg on the platform as well. Breathe out as you execute the force required to come up.",
+        "Step down with the left leg by flexing the hip and knee of the right leg as you inhale. Return to the original standing position by placing the right foot of to next to the left foot on the initial position.",
+        "Repeat with the right leg for the recommended amount of repetitions and then perform with the left leg."
+      ],
+      "el": null
+    },
+    "equipment": ["dumbbell", "box"],
+    "locations": ["gym", "home"],
+    "movementPattern": "lunge",
+    "highLoadAreas": ["knee", "hip", "lower-back", "ankle"],
+    "slots": ["main-strength", "accessories-core"],
+    "rirSuitable": true,
+    "easierId": "step-up-with-knee-raise",
+    "harderId": "barbell-step-ups",
+    "image": null
+  },
+  {
+    "id": "lunge-pass-through",
+    "source": "free-exercise-db",
+    "sourceId": "Lunge_Pass_Through",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Lunge Pass Through",
+      "el": null
+    },
+    "instructions": {
+      "en": [
+        "Stand with your torso upright holding a kettlebell in your right hand. This will be your starting position.",
+        "Step forward with your left foot and lower your upper body down by flexing the hip and the knee, keeping the torso upright. Lower your back knee until it nearly touches the ground.",
+        "As you lunge, pass the kettlebell under your front leg to your opposite hand.",
+        "Pressing through the heel of your foot, return to the starting position.",
+        "Repeat the movement for the recommended amount of repetitions, alternating legs."
+      ],
+      "el": null
+    },
+    "equipment": ["kettlebell"],
+    "locations": ["gym", "home"],
+    "movementPattern": "lunge",
+    "highLoadAreas": ["knee", "hip", "lower-back", "ankle"],
+    "slots": ["accessories-core"],
+    "rirSuitable": true,
+    "easierId": "dumbbell-lunges",
+    "harderId": null,
+    "image": null
+  },
+  {
+    "id": "barbell-lunge",
+    "source": "free-exercise-db",
+    "sourceId": "Barbell_Lunge",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Barbell Lunge",
+      "el": null
+    },
+    "instructions": {
+      "en": [
+        "This exercise is best performed inside a squat rack for safety purposes. To begin, first set the bar on a rack just below shoulder level. Once the correct height is chosen and the bar is loaded, step under the bar and place the back of your shoulders (slightly below the neck) across it.",
+        "Hold on to the bar using both arms at each side and lift it off the rack by first pushing with your legs and at the same time straightening your torso.",
+        "Step away from the rack and step forward with your right leg and squat down through your hips, while keeping the torso upright and maintaining balance. Inhale as you go down. Note: Do not allow your knee to go forward beyond your toes as you come down, as this will put undue stress on the knee joint. li>",
+        "Using mainly the heel of your foot, push up and go back to the starting position as you exhale.",
+        "Repeat the movement for the recommended amount of repetitions and then perform with the left leg."
+      ],
+      "el": null
+    },
+    "equipment": ["barbell"],
+    "locations": ["gym"],
+    "movementPattern": "lunge",
+    "highLoadAreas": ["knee", "hip", "lower-back", "upper-back", "shoulder", "ankle", "neck"],
+    "slots": ["main-strength"],
+    "rirSuitable": true,
+    "easierId": "dumbbell-lunges",
+    "harderId": "barbell-walking-lunge",
+    "image": null
+  },
+  {
+    "id": "barbell-walking-lunge",
+    "source": "free-exercise-db",
+    "sourceId": "Barbell_Walking_Lunge",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Barbell Walking Lunge",
+      "el": null
+    },
+    "instructions": {
+      "en": [
+        "Begin standing with your feet shoulder width apart and a barbell across your upper back.",
+        "Step forward with one leg, flexing the knees to drop your hips. Descend until your rear knee nearly touches the ground. Your posture should remain upright, and your front knee should stay above the front foot.",
+        "Drive through the heel of your lead foot and extend both knees to raise yourself back up.",
+        "Step forward with your rear foot, repeating the lunge on the opposite leg."
+      ],
+      "el": null
+    },
+    "equipment": ["barbell"],
+    "locations": ["gym"],
+    "movementPattern": "lunge",
+    "highLoadAreas": ["knee", "hip", "lower-back", "upper-back", "shoulder", "ankle", "neck"],
+    "slots": ["main-strength"],
+    "rirSuitable": true,
+    "easierId": "barbell-lunge",
+    "harderId": null,
+    "image": null
+  },
+  {
+    "id": "barbell-step-ups",
+    "source": "free-exercise-db",
+    "sourceId": "Barbell_Step_Ups",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Barbell Step-Ups",
+      "el": null
+    },
+    "instructions": {
+      "en": [
+        "Stand up straight while holding a barbell placed on the back of your shoulders (slightly below the neck) and stand upright behind an elevated platform (such as the one used for spotting behind a flat bench). This is your starting position.",
+        "Place the right foot on the elevated platform. Step on the platform by extending the hip and the knee of your right leg. Use the heel mainly to lift the rest of your body up and place the foot of the left leg on the platform as well. Breathe out as you execute the force required to come up.",
+        "Step down with the left leg by flexing the hip and knee of the right leg as you inhale. Return to the original standing position by placing the right foot of to next to the left foot on the initial position.",
+        "Repeat with the right leg for the recommended amount of repetitions and then perform with the left leg."
+      ],
+      "el": null
+    },
+    "equipment": ["barbell", "box"],
+    "locations": ["gym"],
+    "movementPattern": "lunge",
+    "highLoadAreas": ["knee", "hip", "lower-back", "upper-back", "shoulder", "ankle", "neck"],
+    "slots": ["main-strength"],
+    "rirSuitable": true,
+    "easierId": "dumbbell-step-ups",
+    "harderId": null,
+    "image": null
+  },
+  {
+    "id": "smith-single-leg-split-squat",
+    "source": "free-exercise-db",
+    "sourceId": "Smith_Single-Leg_Split_Squat",
+    "licence": "Unlicense",
+    "name": {
+      "en": "Smith Single-Leg Split Squat",
+      "el": null
+    },
+    "instructions": {
+      "en": [
+        "To begin, place a flat bench 2-3 feet behind the smith machine. Then, set the bar on the height that best matches your height. Once the correct height is chosen and the bar is loaded, step under the bar and place the back of your shoulders (slightly below the neck) across it.",
+        "Hold on to the bar using both arms at each side (palms facing forward), unlock it and lift it off the rack by first pushing with your legs and at the same time straightening your torso.",
+        "Position your legs by placing one foot slightly forward under the bar and extending your other leg back and place the top of your foot on the bench. This will be your starting position",
+        "Begin to slowly lower the bar by bending the knee as you maintain a straight posture with the head up. Continue down until the angle between the upper leg and the calf becomes slightly less than 90-degrees (which is the point in which the upper legs are below parallel to the floor). Inhale as you perform this portion of the movement. Tip: If you performed the exercise correctly, the front of the knee should make an imaginary straight line with the toes that is perpendicular to the front. If your knee is past that imaginary line (if it is past your toes) then you are placing undue stress on the knee and the exercise has been performed incorrectly.",
+        "Begin to raise the bar as you exhale by pushing the floor with the heel of your foot mainly as you straighten your leg again and go back to the starting position.",
+        "Repeat for the recommended amount of repetitions.",
+        "Switch legs and repeat the movement."
+      ],
+      "el": null
+    },
+    "equipment": ["machine", "bench"],
+    "locations": ["gym"],
+    "movementPattern": "lunge",
+    "highLoadAreas": ["knee", "hip", "lower-back", "upper-back", "shoulder", "ankle", "neck"],
+    "slots": ["main-strength"],
+    "rirSuitable": true,
+    "easierId": null,
+    "harderId": null,
+    "image": null
+  }
+]
