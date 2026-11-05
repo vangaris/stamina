@@ -1,5 +1,4 @@
-const MONTH_START = 5;
-const MONTH_END = 7;
+import { MONTH_END, MONTH_START } from '../config.ts';
 
 /** The month, 1 to 12, of a `YYYY-MM-DD` date. */
 export function monthOf(date: string): number {

@@ -1,14 +1,8 @@
 export {
   ADULT_AGE,
-  BLOCK_RIR_BY_WEEK,
   DAYS_IN_WEEK,
-  DEFAULT_RECOVERY_WINDOW_HOURS,
-  DELOAD_WEEK_IN_BLOCK,
-  LIMITED_EXCLUDED_PATTERNS,
   LIMITED_RIR_FLOOR,
   RULES_VERSION,
-  SLOT_COUNTS_BY_MINUTES,
-  SLOT_ORDER,
   WEEKS_IN_BLOCK,
   CONSENT_TEXT_VERSIONS,
   DEFAULT_EQUIPMENT,
@@ -23,6 +17,7 @@ export {
   MAX_KEY_MOVEMENTS,
   MAX_METS,
   MAX_PLAY_MINUTES,
+  MAX_RIR,
   MAX_RECOVERY_HOURS,
   MAX_SESSIONS_PER_WEEK,
   MAX_SPORT_HIGH_LOAD_AREAS,
@@ -73,26 +68,16 @@ export { Units } from './enums/units.ts';
 export { Weekday } from './enums/weekday.ts';
 export type {
   EligibilityInput,
-  EmphasisInput,
   ExerciseFilter,
   ExerciseTags,
   GenerateWeekInput,
-  GeneratedExercise,
-  GeneratedSession,
   GeneratedWeek,
-  PickedExercise,
-  PickExercisesInput,
-  PlacedSession,
-  PlacementInput,
-  PlannableExercise,
-  Prescription,
-  PrescribeInput,
+  PlayPattern,
   ScreeningInput,
   ScreeningOutcome,
   SportDemands,
   TrainingModeInput,
   TrainingWeek,
-  WeekDate,
 } from './types.ts';
 export { addDays } from './utils/add-days.ts';
 export { checkEligibility } from './utils/check-eligibility.ts';
@@ -104,11 +89,6 @@ export { normalizeInviteCode } from './utils/normalize-invite-code.ts';
 export { selectExercises } from './utils/select-exercises.ts';
 export { resolveTrainingMode } from './utils/resolve-training-mode.ts';
 export { validateTrainingWeek } from './utils/validate-training-week.ts';
-export { chooseEmphasis } from './utils/choose-emphasis.ts';
 export { generateWeek } from './utils/generate-week.ts';
-export { monthOf } from './utils/month-of.ts';
-export { pickExercises } from './utils/pick-exercises.ts';
-export { placeSessions } from './utils/place-sessions.ts';
-export { prescribe } from './utils/prescribe.ts';
-export { weekDates } from './utils/week-dates.ts';
+export { hardActivityDates } from './utils/hard-activity-dates.ts';
 export { weekdayOf } from './utils/weekday-of.ts';

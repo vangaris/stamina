@@ -3,11 +3,6 @@ import { ProgramRejection } from '@stamina/contracts';
 import { RoutePath } from '../../enums/route-path.ts';
 import { ProgramMessageKey } from './enums/program-message-key.ts';
 
-/** The week shown is this many days long, starting on the Program's `startsOn`. */
-export const WEEK_LENGTH_DAYS = 7;
-
-export const MS_PER_DAY = 86_400_000;
-
 /** At this Session length the sport-support and accessories slots are shown as one block. */
 export const MERGED_BLOCK_MINUTES = 30;
 

@@ -1,8 +1,8 @@
 import { DEFAULT_RECOVERY_WINDOW_HOURS } from '../config.ts';
-import { Intensity } from '../enums/intensity.ts';
 import { TrainingMode } from '../enums/training-mode.ts';
 import type { GenerateWeekInput, GeneratedSession, GeneratedWeek } from '../types.ts';
 import { chooseEmphasis } from './choose-emphasis.ts';
+import { hardDays } from './hard-days.ts';
 import { monthOf } from './month-of.ts';
 import { pickExercises } from './pick-exercises.ts';
 import { placeSessions } from './place-sessions.ts';
@@ -29,9 +29,6 @@ export function generateWeek(input: GenerateWeekInput): GeneratedWeek | null {
     month: monthOf(startsOn),
   });
 
-  // "It varies" means no known hard days; only a Hard usual intensity makes a play day a hard Activity.
-  const hardDays =
-    input.playIntensity === Intensity.Hard && !input.playVaries ? input.playDays : [];
   const focuses = planFocuses({
     library: input.library,
     equipment: input.equipment,
@@ -47,7 +44,7 @@ export function generateWeek(input: GenerateWeekInput): GeneratedWeek | null {
     focuses,
     availableDays: trainingWeek.availableDays,
     week,
-    hardDays,
+    hardDays: hardDays(input),
     recoveryWindowHours: sport?.recoveryWindowHours ?? DEFAULT_RECOVERY_WINDOW_HOURS,
   });
 

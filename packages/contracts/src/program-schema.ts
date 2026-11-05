@@ -4,8 +4,10 @@ import {
   PrescriptionUnit,
   SESSION_LENGTHS_MINUTES,
   SessionFocus,
+  MAX_RIR,
   SessionSlot,
   SessionStatus,
+  WEEKS_IN_BLOCK,
   Weekday,
 } from '@stamina/domain';
 import { z } from 'zod';
@@ -24,7 +26,7 @@ export const programExerciseSchema = z.object({
   repMax: z.number().int().min(1),
   unit: z.enum(PrescriptionUnit),
   /** Reps in reserve to stop at; null where effort is not rated (warm-up, cool-down). */
-  rir: z.number().int().min(0).max(5).nullable(),
+  rir: z.number().int().min(0).max(MAX_RIR).nullable(),
   loadGuidance: z.enum(LoadGuidance),
 });
 
@@ -54,7 +56,7 @@ export const programBlockSchema = z.object({
   /** The first day of the generated week; the week is this date and the six after it. */
   startsOn: isoDate,
   /** 1 to 3 build weeks, 4 the Deload. */
-  weekInBlock: z.number().int().min(1).max(4),
+  weekInBlock: z.number().int().min(1).max(WEEKS_IN_BLOCK),
   /** Limited mode caps applied: RPE at most 7, no power or plyometric work. */
   limited: z.boolean(),
   /** The sport is a requested one the person's Program uses before it is approved. */
@@ -64,6 +66,12 @@ export const programBlockSchema = z.object({
 export const programWeekSchema = z.object({
   block: programBlockSchema,
   sessions: z.array(programSessionSchema).min(1),
+  /**
+   * Days of this week with a hard Activity planned (the person's play days when they play hard).
+   * Worked out when the week is read, from the profile, so a change of profile shows at once; not
+   * stored. Such a day has no Session and is not a free day.
+   */
+  hardActivityDates: z.array(isoDate),
 });
 
 /** `GET /program` and `POST /program`: the week, or null while there is no Program yet. */

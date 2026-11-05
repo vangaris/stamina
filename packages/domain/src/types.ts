@@ -186,12 +186,16 @@ export interface PickedExercise {
   slot: SessionSlot;
 }
 
-/** Everything `generateWeek` reads. */
-export interface GenerateWeekInput {
-  goal: Goal;
+/** How the person plays their sport, from the profile. */
+export interface PlayPattern {
   playDays: readonly Weekday[];
   playVaries: boolean;
   playIntensity: Intensity;
+}
+
+/** Everything `generateWeek` reads. */
+export interface GenerateWeekInput extends PlayPattern {
+  goal: Goal;
   trainingWeek: TrainingWeek;
   /** `null` while the person's sport has no Sport Profile: generic demands apply. */
   sport: SportDemands | null;

@@ -17,7 +17,8 @@ const prescription = computed(() => {
 });
 const load = computed(() => {
   const view = toLoadView(props.exercise);
-  return view ? t(view.key, view.params) : undefined;
+  if (!view) return undefined;
+  return view.params ? t(view.key, view.params) : t(view.key);
 });
 </script>
 

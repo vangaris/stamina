@@ -62,6 +62,7 @@ export function makeProgram(overrides: Partial<ProgramWeek> = {}): ProgramWeek {
       beta: false,
     },
     sessions: [makeSession()],
+    hardActivityDates: [],
     ...overrides,
   };
 }

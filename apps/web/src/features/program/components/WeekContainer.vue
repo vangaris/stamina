@@ -27,7 +27,12 @@ onMounted(load);
     <h1 class="text-xl font-semibold">{{ t('week.title') }}</h1>
     <template v-if="phase === ProgramPhase.Ready && program">
       <BlockSummary :block="program.block" />
-      <WeekList :days="days" :locale="locale" :show-free-days="true" />
+      <WeekList
+        :days="days"
+        :emphasis="program.block.emphasis"
+        :locale="locale"
+        :show-free-days="true"
+      />
     </template>
     <Card v-else-if="phase === ProgramPhase.Unavailable">
       <p class="text-base text-text" data-testid="week-empty">

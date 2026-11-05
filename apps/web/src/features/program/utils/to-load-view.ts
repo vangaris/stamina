@@ -9,7 +9,7 @@ export function toLoadView({ loadGuidance, rir }: ProgramExercise): LoadView | u
     return { key: LoadMessageKey.RpeGuided, params: { rir } };
   }
   if (loadGuidance === LoadGuidance.Bodyweight) {
-    return { key: LoadMessageKey.Bodyweight, params: { rir: rir ?? 0 } };
+    return { key: LoadMessageKey.Bodyweight };
   }
   return undefined;
 }

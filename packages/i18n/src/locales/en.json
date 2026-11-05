@@ -339,13 +339,13 @@
         "power-speed": "Power and speed Block",
         "strength-endurance": "Strength endurance Block"
       },
-      "week": "Week {week} of 4",
+      "week": "Week {week} of {weeks}",
       "line": {
         "strength": "These weeks build your base strength so you feel steady and capable in your sport and your day.",
         "power-speed": "These weeks add quick, springy work on top of a strong base, to help you feel sharp when you play.",
         "strength-endurance": "These weeks build strength you can keep using for longer, with higher reps and steady effort."
       },
-      "limited": "Limited mode is on. Effort stays moderate, you always stop with at least 3 reps in reserve, and there are no jumping or explosive exercises.",
+      "limited": "Limited mode is on. Effort stays moderate, you always stop with at least {rir} reps in reserve, and there are no jumping or explosive exercises.",
       "beta": "Your sport is new to Stamina. This Program uses general sport demands until we have looked at it (beta).",
       "equipment": "Until you tell us otherwise, Sessions assume bodyweight and dumbbells."
     },
@@ -355,7 +355,9 @@
       "recovery": "Mobility and recovery"
     },
     "session": {
-      "minutes": "{minutes} min"
+      "minutes": "{minutes} min",
+      "recovery": "A lighter Session: warm-up, core and mobility work.",
+      "powerSpeedCue": "Move fast and stop when the speed drops."
     },
     "blocks": {
       "warm-up": "Warm-up",
@@ -389,6 +391,7 @@
     "title": "Your week",
     "link": "See your week",
     "freeDay": "Free day",
+    "playDay": "Play day",
     "empty": "You do not have a Program yet.",
     "backToToday": "Back to Today"
   }

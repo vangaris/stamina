@@ -151,6 +151,36 @@ describe('createProgram through the mediator', () => {
     expect(rirs.every((rir) => rir === null || rir >= 3)).toBe(true);
   });
 
+  it('plans no sport-support slot for a Limited person, and keeps the other four filled', async () => {
+    const { mediator } = await readyToTrain(undefined, [ScreeningQuestion.ChestPain]);
+    await mediator.send(recordDoctorOk());
+
+    const result = await mediator.send(createProgram());
+
+    if (result.status !== RecordStatus.Saved) throw new Error('expected a saved program');
+    for (const { exercises } of result.program.sessions) {
+      const slots = new Set(exercises.map(({ slot }) => slot));
+      expect(slots).toEqual(
+        new Set(Object.values(SessionSlot).filter((slot) => slot !== SessionSlot.SportSupport)),
+      );
+    }
+  });
+
+  it('lists the play days of the week as hard Activity days only when play is Hard', async () => {
+    const hard = await readyToTrain(
+      profileAnswers({ playDays: [Weekday.Tue, Weekday.Fri], playIntensity: Intensity.Hard }),
+    );
+    const moderate = await readyToTrain();
+
+    const hardWeek = await hard.mediator.send(createProgram());
+    const moderateWeek = await moderate.mediator.send(createProgram());
+
+    if (hardWeek.status !== RecordStatus.Saved) throw new Error('expected a saved program');
+    if (moderateWeek.status !== RecordStatus.Saved) throw new Error('expected a saved program');
+    expect(hardWeek.program.hardActivityDates).toHaveLength(2);
+    expect(moderateWeek.program.hardActivityDates).toEqual([]);
+  });
+
   it('returns the stored week unchanged on a repeat, and getProgram reads it', async () => {
     const { mediator } = await readyToTrain();
 

@@ -403,6 +403,8 @@ export const DELOAD_WEEK_IN_BLOCK = 4;
 export const DELOAD_SET_FACTOR = 0.5;
 /** Reps in reserve for week 1, 2, 3 and 4 of a Block (index = week - 1). Week 4 is the Deload. */
 export const BLOCK_RIR_BY_WEEK: readonly number[] = [3, 2, 1, 4];
+/** The highest reps-in-reserve a Session exercise can carry (the Deload week asks for the most, 4). */
+export const MAX_RIR = 5;
 /** Limited mode never goes closer to failure than this (RPE 7). */
 export const LIMITED_RIR_FLOOR = 3;
 /** Power and speed work is never closer to failure than this. */
@@ -492,6 +494,12 @@ export const LIMITED_EXCLUDED_PATTERNS: readonly MovementPattern[] = [
   MovementPattern.JumpLand,
   MovementPattern.ChangeOfDirection,
 ];
+/** Limited mode has no sport-support slot: that slot's exercises are almost all jumps, bounds or ballistic swings. */
+export const LIMITED_SKIPPED_SLOT = SessionSlot.SportSupport;
+/** The slots of a heavy Limited Session; the skipped slot's exercise count goes to accessories-core. */
+export const LIMITED_SLOTS: readonly SessionSlot[] = SLOT_ORDER.filter(
+  (slot) => slot !== LIMITED_SKIPPED_SLOT,
+);
 
 /** The movement patterns a sport's key movements ask for; sport-support work prefers them. */
 export const SPORT_MOVEMENT_PATTERNS: Readonly<Record<SportMovement, readonly MovementPattern[]>> =
@@ -517,6 +525,11 @@ export const DEFAULT_RECOVERY_WINDOW_HOURS = { lower: 48, upper: 24 } as const;
 export const HOURS_PER_DAY = 24;
 /** Days in the generated week. */
 export const DAYS_IN_WEEK = 7;
+/** Milliseconds in a day (UTC calendar days have no daylight-saving shift). */
+export const MS_PER_DAY = 24 * 60 * 60 * 1000;
+/** Where the month sits in a `YYYY-MM-DD` date: characters 5 to 7. */
+export const MONTH_START = 5;
+export const MONTH_END = 7;
 /** Sessions per week to the focus of each, in order; the Sessions of a week alternate lower and upper. */
 export const FOCUS_SEQUENCE: readonly (SessionFocus.Lower | SessionFocus.Upper)[] = [
   SessionFocus.Lower,

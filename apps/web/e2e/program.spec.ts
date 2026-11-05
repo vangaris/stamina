@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 import { expectNoAccessibilityViolations } from './support/onboarding-flow.ts';
-import { signUpToReveal, TRAINING_SESSIONS } from './support/program-flow.ts';
+import { HARD_PLAY_DAYS, signUpToReveal, TRAINING_SESSIONS } from './support/program-flow.ts';
 import { signUpToToday } from './support/screening-flow.ts';
 
 // Needs the local stack: the seed script for invites and the fake auth server for sign-in.
@@ -49,7 +49,11 @@ test('the reveal shows the first week, then Today, and the week view lists it by
   await expect(page).toHaveURL(/\/week$/);
   await expect(page.getByRole('heading', { name: 'Your week' })).toBeVisible();
   await expect(page.getByTestId('session-card')).toHaveCount(TRAINING_SESSIONS);
-  await expect(page.getByTestId('free-day')).toHaveCount(SESSION_DAYS_IN_WEEK - TRAINING_SESSIONS);
+  await expect(page.getByTestId('play-day')).toHaveCount(HARD_PLAY_DAYS);
+  await expect(page.getByTestId('play-day').first()).toContainText('Play day');
+  await expect(page.getByTestId('free-day')).toHaveCount(
+    SESSION_DAYS_IN_WEEK - TRAINING_SESSIONS - HARD_PLAY_DAYS,
+  );
   await expect(page.getByTestId('free-day').first()).toContainText('Free day');
   await expectNoAccessibilityViolations(page);
 });

@@ -34,7 +34,12 @@ onMounted(load);
           <BlockSummary :block="program.block" />
         </div>
       </Card>
-      <WeekList :days="days" :locale="locale" :show-free-days="false" />
+      <WeekList
+        :days="days"
+        :emphasis="program.block.emphasis"
+        :locale="locale"
+        :show-free-days="false"
+      />
       <Button block data-testid="reveal-continue" @click="continueOn">
         {{ t('program.reveal.continue') }}
       </Button>

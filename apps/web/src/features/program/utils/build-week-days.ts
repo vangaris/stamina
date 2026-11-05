@@ -1,12 +1,15 @@
 import type { ProgramWeek } from '@stamina/contracts';
-import { WEEK_LENGTH_DAYS } from '../config.ts';
+import { addDays, DAYS_IN_WEEK } from '@stamina/domain';
 import type { WeekDay } from '../types.ts';
-import { addDays } from './add-days.ts';
 
-/** The week as seven dates from `startsOn`, each with its Session or none. */
-export function buildWeekDays({ block, sessions }: ProgramWeek): WeekDay[] {
-  return Array.from({ length: WEEK_LENGTH_DAYS }, (_, offset) => {
+/** The week as seven dates from `startsOn`, each with its Session (or none) and whether a hard Activity is planned. */
+export function buildWeekDays({ block, sessions, hardActivityDates }: ProgramWeek): WeekDay[] {
+  return Array.from({ length: DAYS_IN_WEEK }, (_, offset) => {
     const date = addDays(block.startsOn, offset);
-    return { date, session: sessions.find((session) => session.date === date) };
+    return {
+      date,
+      session: sessions.find((session) => session.date === date),
+      hardActivity: hardActivityDates.includes(date),
+    };
   });
 }

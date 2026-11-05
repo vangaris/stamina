@@ -1,4 +1,4 @@
-const MS_PER_DAY = 24 * 60 * 60 * 1000;
+import { MS_PER_DAY } from '../config.ts';
 
 /** The calendar day `days` after (or before, when negative) `date`; both are `YYYY-MM-DD` in UTC. */
 export function addDays(date: string, days: number): string {

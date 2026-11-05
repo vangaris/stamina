@@ -82,6 +82,7 @@ export const FAKE_PROGRAM_EXERCISES = {
     ],
     support: { exerciseId: 'fake-split-squat', name: { en: 'Split squat', el: null } },
     accessory: { exerciseId: 'fake-glute-bridge', name: { en: 'Glute bridge', el: null } },
+    limitedAccessory: { exerciseId: 'fake-side-plank', name: { en: 'Side plank', el: null } },
   },
   upper: {
     main: [
@@ -90,5 +91,6 @@ export const FAKE_PROGRAM_EXERCISES = {
     ],
     support: { exerciseId: 'fake-push-up', name: { en: 'Push-up', el: null } },
     accessory: { exerciseId: 'fake-dead-bug', name: { en: 'Dead bug', el: null } },
+    limitedAccessory: { exerciseId: 'fake-bird-dog', name: { en: 'Bird dog', el: null } },
   },
 } as const;

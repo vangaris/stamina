@@ -13,6 +13,9 @@ import { acceptConsents, answerScreening, continueFromOutcome } from './screenin
 /** The training week the journey picks: two 45-minute Sessions, on Monday and Thursday. */
 export const TRAINING_SESSIONS = 2;
 
+/** `answerSport` picks one hard play day (Saturday): it shows as a play day, not a free one. */
+export const HARD_PLAY_DAYS = 1;
+
 /** A new person who wants a training program, signed in and cleared: ends on the Program reveal. */
 export async function signUpToReveal(page: Page, testTitle: string) {
   const [code] = await createInvites();

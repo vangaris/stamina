@@ -14,7 +14,7 @@ import type {
   ScreeningSubmission,
   UserExport,
 } from '@stamina/contracts';
-import type { ConsentPurpose } from '@stamina/domain';
+import type { ConsentPurpose, Weekday } from '@stamina/domain';
 import type { z } from 'zod';
 import type { HealthStateKind } from './enums/health-state-kind.ts';
 import type { OfflinePolicy } from './enums/offline-policy.ts';
@@ -283,4 +283,14 @@ export interface ExportData extends Request<UserExport> {
 
 export interface DeleteAccount extends Request<void> {
   readonly type: RequestType.DeleteAccount;
+}
+
+export interface FakeProgramInput {
+  sessionsPerWeek: number;
+  sessionMinutes: number;
+  availableDays: readonly Weekday[];
+  /** Limited mode: RIR never below `limitedMinRir`, no sport-support slot, flagged on the block. */
+  limited: boolean;
+  /** Generation time; the week starts the next UTC day. */
+  now: Date;
 }

@@ -29,4 +29,17 @@ describe('buildWeekDays', () => {
       false,
     ]);
   });
+
+  it('marks the days with a hard Activity, apart from Session days and free days', () => {
+    const program = makeProgram({
+      sessions: [makeSession({ date: '2026-11-06' })],
+      hardActivityDates: ['2026-11-08'],
+    });
+
+    const days = buildWeekDays(program);
+
+    expect(days.filter(({ hardActivity }) => hardActivity).map(({ date }) => date)).toEqual([
+      '2026-11-08',
+    ]);
+  });
 });

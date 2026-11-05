@@ -78,6 +78,18 @@ const EXPECTED_COUNTS: Record<number, Record<SessionSlot, number>> = {
     [SessionSlot.CoolDown]: 2,
   },
 };
+/** The same for a Limited user: no sport-support slot, its count is added to accessories-core. */
+const LIMITED_COUNTS: Record<number, Record<SessionSlot, number>> = Object.fromEntries(
+  Object.entries(EXPECTED_COUNTS).map(([minutes, counts]) => [
+    minutes,
+    {
+      ...counts,
+      [SessionSlot.SportSupport]: 0,
+      [SessionSlot.AccessoriesCore]:
+        counts[SessionSlot.AccessoriesCore] + counts[SessionSlot.SportSupport],
+    },
+  ]),
+);
 const LOWER_PATTERNS = [MovementPattern.Squat, MovementPattern.Hinge, MovementPattern.Lunge];
 const UPPER_PATTERNS = [MovementPattern.Push, MovementPattern.Pull, MovementPattern.Overhead];
 const POWER_PATTERNS = [MovementPattern.JumpLand, MovementPattern.ChangeOfDirection];
@@ -155,12 +167,15 @@ describe('program generation', () => {
       }
     });
 
-    it('keeps heavy Sessions out of their recovery window before a hard day', () => {
+    it('keeps heavy Sessions out of their recovery window before a hard day, next week’s included', () => {
       // Windows were set to 48 hours (lower) and 24 hours (upper) for padel in `beforeAll`.
-      const hard = PROGRAM_WEEK.filter((day) => [Weekday.Tue, Weekday.Fri].includes(day.weekday));
-      for (const planned of week.sessions) {
-        const next = hard.map((day) => dayIndex(day.date)).find((i) => i > dayIndex(planned.date));
-        if (next === undefined) continue;
+      const hard = PROGRAM_WEEK.filter((day) =>
+        [Weekday.Tue, Weekday.Fri].includes(day.weekday),
+      ).map((day) => dayIndex(day.date));
+      // A hard Activity recurs weekly: the first one of next week is seven days later.
+      const upcoming = [...hard, ...hard.map((index) => index + PROGRAM_WEEK.length)];
+      for (const planned of week.sessions.filter((s) => s.focus !== SessionFocus.Recovery)) {
+        const next = Math.min(...upcoming.filter((index) => index > dayIndex(planned.date)));
         const hours = (next - dayIndex(planned.date)) * HOURS_PER_DAY;
         expect(hours).toBeGreaterThan(planned.focus === SessionFocus.Lower ? 48 : 24);
       }
@@ -175,11 +190,15 @@ describe('program generation', () => {
       expect(ALL_DAYS.some((day) => !busy.has(day))).toBe(true);
     });
 
+    // Padel on Tuesday and Friday every week with a 48-hour lower window leaves Saturday as the only
+    // day for a heavy lower Session (Sunday and Wednesday are 48 hours or less before a match), and
+    // Wednesday and Sunday (24-hour upper window) for an upper one: the Session that fits nowhere
+    // is a Recovery Session.
     it('gives every Session one focus with that half of the body in main strength', () => {
       expect(week.sessions.map((planned) => planned.focus)).toEqual([
         SessionFocus.Lower,
+        SessionFocus.Recovery,
         SessionFocus.Upper,
-        SessionFocus.Lower,
       ]);
       for (const planned of week.sessions) {
         const patterns = planned.exercises
@@ -194,12 +213,18 @@ describe('program generation', () => {
     it('fills every slot of the 45-minute structure, in slot order, with no repeats in a Session', () => {
       for (const planned of week.sessions) {
         expect(planned.minutes).toBe(45);
-        expect(countBySlot(planned)).toEqual(EXPECTED_COUNTS[45]);
+        const expected =
+          planned.focus === SessionFocus.Recovery
+            ? {
+                ...EXPECTED_COUNTS[45]!,
+                [SessionSlot.MainStrength]: 0,
+                [SessionSlot.SportSupport]: 0,
+              }
+            : EXPECTED_COUNTS[45]!;
+        expect(countBySlot(planned)).toEqual(expected);
         const slots = planned.exercises.map((exercise) => exercise.slot);
         expect(slots).toEqual(
-          Object.values(SessionSlot).flatMap((slot) =>
-            Array(EXPECTED_COUNTS[45]![slot]).fill(slot),
-          ),
+          Object.values(SessionSlot).flatMap((slot) => Array(expected[slot]).fill(slot)),
         );
         const ids = planned.exercises.map((exercise) => exercise.exerciseId);
         expect(new Set(ids).size).toBe(ids.length);
@@ -323,6 +348,28 @@ describe('program generation', () => {
         [Weekday.Tue, SessionFocus.Recovery],
       ]);
     });
+
+    it('does not put a heavy Session the day before next week’s hard Activity', async () => {
+      // The week runs Friday to Thursday. Thursday is 24 hours before next Friday's match, so a
+      // heavy Session there would break the 48-hour lower window. Wednesday (48 h before) takes
+      // the upper Session (24-hour window); Saturday is the only day clear for the lower one.
+      const user = await programUser(api, {
+        submission: {
+          ...padelPersona(),
+          trainingWeek: {
+            sessionsPerWeek: 3,
+            sessionMinutes: 45,
+            availableDays: [Weekday.Sat, Weekday.Wed, Weekday.Thu],
+          },
+        },
+      });
+      const week = await generate(user);
+      expect(week.sessions.map((planned) => [planned.weekday, planned.focus])).toEqual([
+        [Weekday.Sat, SessionFocus.Lower],
+        [Weekday.Wed, SessionFocus.Upper],
+        [Weekday.Thu, SessionFocus.Recovery],
+      ]);
+    });
   });
 
   describe('the basketball player (two games, 30-minute Sessions)', () => {
@@ -365,25 +412,57 @@ describe('program generation', () => {
     });
   });
 
-  describe('a Limited user (a doctor has said they can train)', () => {
-    it('never plans power work, a Power and speed Block or work closer than RPE 7', async () => {
-      const user = await programUser(api, {
-        submission: padelPersona(60),
-        yes: [ScreeningQuestion.HeartCondition],
-        doctorOk: true,
-      });
-      const week = await generate(user);
-      const library = await libraryById(user);
-      expect(week.block.limited).toBe(true);
-      expect(week.block.emphasis).toBe(Emphasis.Strength);
-      for (const planned of week.sessions) {
-        expect(countBySlot(planned)).toEqual(EXPECTED_COUNTS[60]);
-        for (const exercise of planned.exercises) {
-          expect(POWER_PATTERNS).not.toContain(library.get(exercise.exerciseId)!.movementPattern);
-          if (exercise.rir !== null) expect(exercise.rir).toBeGreaterThanOrEqual(3);
-        }
-      }
+  describe('the hard Activity dates of the week', () => {
+    it('are the padel player’s Tuesday and Friday of the week', async () => {
+      const week = await generate(await programUser(api, { submission: padelPersona() }));
+      expect(week.hardActivityDates).toEqual(
+        PROGRAM_WEEK.filter((day) => [Weekday.Fri, Weekday.Tue].includes(day.weekday)).map(
+          (day) => day.date,
+        ),
+      );
     });
+
+    it('are none when the days vary', async () => {
+      const week = await generate(await programUser(api, { submission: kitesurferPersona }));
+      expect(week.hardActivityDates).toEqual([]);
+    });
+
+    it('are none when the person plays at an easy intensity', async () => {
+      const week = await generate(
+        await programUser(api, {
+          submission: { ...padelPersona(), playIntensity: Intensity.Easy },
+        }),
+      );
+      expect(week.hardActivityDates).toEqual([]);
+    });
+  });
+
+  describe('a Limited user (a doctor has said they can train)', () => {
+    // Limited has no sport-support slot (nearly all of it is jumps, bounds or ballistic swings);
+    // its exercises go to accessories-core so the Session length is still filled.
+    it.each([30, 45, 60])(
+      'never plans power work, sport support, a Power and speed Block or work closer than RPE 7 (%i minutes)',
+      async (minutes) => {
+        const user = await programUser(api, {
+          submission: { ...padelPersona(minutes), playIntensity: Intensity.Easy },
+          yes: [ScreeningQuestion.HeartCondition],
+          doctorOk: true,
+        });
+        const week = await generate(user);
+        const library = await libraryById(user);
+        expect(week.block.limited).toBe(true);
+        expect(week.block.emphasis).toBe(Emphasis.Strength);
+        for (const planned of week.sessions) {
+          expect(planned.focus).not.toBe(SessionFocus.Recovery);
+          expect(countBySlot(planned)).toEqual(LIMITED_COUNTS[minutes]);
+          for (const exercise of planned.exercises) {
+            expect(exercise.slot).not.toBe(SessionSlot.SportSupport);
+            expect(POWER_PATTERNS).not.toContain(library.get(exercise.exerciseId)!.movementPattern);
+            if (exercise.rir !== null) expect(exercise.rir).toBeGreaterThanOrEqual(3);
+          }
+        }
+      },
+    );
   });
 
   describe('a user with an excluded area', () => {
@@ -400,9 +479,12 @@ describe('program generation', () => {
       planned.exercises.some((e) => e.slot === SessionSlot.CoolDown);
 
     it('never plans an exercise that loads it (neck)', async () => {
-      const everyone = await programUser(api, { submission: padelPersona(60) });
+      // Easy play means no hard days, so all three Sessions are heavy and full.
+      const everyone = await programUser(api, {
+        submission: { ...padelPersona(60), playIntensity: Intensity.Easy },
+      });
       const user = await programUser(api, {
-        submission: padelPersona(60),
+        submission: { ...padelPersona(60), playIntensity: Intensity.Easy },
         excludedAreas: [BodyArea.Neck],
       });
       const library = await libraryById(user);
@@ -484,13 +566,13 @@ describe('program generation', () => {
     it('changes when an input changes', async () => {
       const base = await generate(await programUser(api, { submission: padelPersona() }));
       const longer = await generate(await programUser(api, { submission: padelPersona(60) }));
-      const knee = await generate(
+      const neckExcluded = await generate(
         await programUser(api, {
           submission: padelPersona(),
           excludedAreas: [BodyArea.Neck],
         }),
       );
-      const hashes = [base, longer, knee].map((week) => week.sessions[0]!.inputsHash);
+      const hashes = [base, longer, neckExcluded].map((week) => week.sessions[0]!.inputsHash);
       expect(new Set(hashes).size).toBe(3);
     });
   });

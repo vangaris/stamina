@@ -26,6 +26,7 @@ import {
   SessionStatus,
   SportStatus,
   StartingLevel,
+  MAX_RIR,
   WEEKS_IN_BLOCK,
   Weekday,
   type Goal,
@@ -586,7 +587,10 @@ export const sessionExercise = pgTable(
       'session_exercise_reps_valid',
       sql`${table.repMin} >= 1 and ${table.repMax} >= ${table.repMin}`,
     ),
-    check('session_exercise_rir_valid', sql`${table.rir} is null or ${table.rir} between 0 and 5`),
+    check(
+      'session_exercise_rir_valid',
+      sql`${table.rir} is null or ${table.rir} between 0 and ${sql.raw(String(MAX_RIR))}`,
+    ),
     unique('session_exercise_session_position').on(table.sessionId, table.position),
     pgPolicy('session_exercise_owner_select', {
       for: 'select',

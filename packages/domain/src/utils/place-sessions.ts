@@ -11,7 +11,7 @@ interface Day {
   weekdayRank: number;
   available: boolean;
   hard: boolean;
-  /** Days from here to the next hard Activity this week; infinite when there is none. */
+  /** Days from here to the next hard Activity, this week's or next week's; infinite when there is none. */
   daysToHard: number;
 }
 
@@ -91,7 +91,7 @@ function search(
  * Where the week's Sessions go. Pure and deterministic: the same answers always give the same
  * week. Rules, in order: no heavy Session for a body half inside its recovery window before the
  * next hard Activity (a lower Session needs more than `recoveryWindowHours.lower` hours, counted
- * in whole days, before it; only the next hard Activity of this week counts); no Session on a
+ * in whole days, before it; a hard Activity recurs weekly, so next week's counts too); no Session on a
  * hard-Activity day; at least one day with neither a Session nor a hard Activity; one Session a
  * day, so heavy upper and lower never share one. Among the placements that satisfy them all the
  * smallest gap between Sessions is as large as possible, then the earliest by weekday (Monday first).
@@ -123,9 +123,13 @@ export function placeSessions({
     hard: hardDays.includes(weekday),
     daysToHard: 0,
   }));
+  // A hard Activity recurs weekly, so the first one of next week counts too (position + 7).
+  const hardPositions = days.filter((day) => day.hard).map((day) => day.position);
   for (const day of days) {
-    const next = days.find((other) => other.position > day.position && other.hard);
-    day.daysToHard = next === undefined ? Infinity : next.position - day.position;
+    const upcoming = [...hardPositions, ...hardPositions.map((p) => p + days.length)].filter(
+      (position) => position > day.position,
+    );
+    day.daysToHard = upcoming.length === 0 ? Infinity : Math.min(...upcoming) - day.position;
   }
 
   const recoveryCounts = Array.from(
