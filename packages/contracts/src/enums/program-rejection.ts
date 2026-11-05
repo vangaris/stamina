@@ -6,6 +6,6 @@ export enum ProgramRejection {
   Referred = 'referred',
   /** The person chose food only, so there is no training week to plan. */
   NoTrainingWeek = 'no-training-week',
-  /** The library has too few exercises for their equipment and excluded areas to fill every slot. */
+  /** The library cannot fill even a Recovery Session for their equipment and excluded areas. */
   NoExercises = 'no-exercises',
 }

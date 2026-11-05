@@ -172,7 +172,7 @@ describe('useScreening: answering', () => {
 });
 
 describe('useScreening: outcomes', () => {
-  it('shows the outcome for all no and goes to Today on finish', async () => {
+  it('shows the outcome for all no and goes to the Program reveal on finish', async () => {
     const { flow, onNavigate } = await setup();
     await flow.load();
     fill(flow);
@@ -184,8 +184,8 @@ describe('useScreening: outcomes', () => {
       goalChanged: false,
       screening: { nutritionOff: false, excludedAreas: [] },
     });
-    flow.finish();
-    expect(onNavigate).toHaveBeenCalledWith(RoutePath.Today);
+    await flow.finish();
+    expect(onNavigate).toHaveBeenCalledWith(RoutePath.Reveal);
   });
 
   it('records the starting level from the last question', async () => {

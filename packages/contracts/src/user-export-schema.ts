@@ -1,6 +1,7 @@
 import { ConsentPurpose, ScreeningQuestion } from '@stamina/domain';
 import { Locale } from '@stamina/i18n';
 import { z } from 'zod';
+import { programWeekSchema } from './program-schema.ts';
 import { savedProfileSchema } from './saved-profile-schema.ts';
 import { savedScreeningSchema } from './saved-screening-schema.ts';
 
@@ -28,6 +29,8 @@ export const userExportSchema = z.object({
       requestedAt: z.iso.datetime(),
     }),
   ),
+  /** The generated Program week, or `null` before the person has one. */
+  program: programWeekSchema.nullable(),
   screenings: z.array(
     savedScreeningSchema.extend({
       answers: z.record(z.enum(ScreeningQuestion), z.boolean()),

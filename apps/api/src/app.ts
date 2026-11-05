@@ -24,6 +24,7 @@ import { exerciseRoutes } from './routes/exercise-routes.ts';
 import { exportRoutes } from './routes/export-routes.ts';
 import { inviteRoutes } from './routes/invite-routes.ts';
 import { meRoutes } from './routes/me-routes.ts';
+import { programRoutes } from './routes/program-routes.ts';
 import { profileRoutes } from './routes/profile-routes.ts';
 import { safetyRoutes } from './routes/safety-routes.ts';
 import { screeningRoutes } from './routes/screening-routes.ts';
@@ -41,6 +42,8 @@ export interface AppDeps {
   log?: LogSink;
   /** Receives unexpected (5xx) errors. Omitted when no Sentry DSN is configured. */
   errorReporter?: ErrorReporter;
+  /** The clock; a Program starts the day after it. Defaults to the system clock. */
+  now?: () => Date;
 }
 
 export function createApp({
@@ -50,6 +53,7 @@ export function createApp({
   corsOrigins = [],
   log = (line) => console.log(line),
   errorReporter,
+  now = () => new Date(),
 }: AppDeps) {
   const app = new Hono<AppEnv>();
 
@@ -83,6 +87,7 @@ export function createApp({
   app.route(ApiPath.Me, meRoutes({ db, auth }));
   app.route(ApiPath.MeExport, exportRoutes({ db, auth, cipher }));
   app.route(ApiPath.Profile, profileRoutes({ db, auth }));
+  app.route(ApiPath.Program, programRoutes({ db, auth, now }));
   app.route(ApiPath.Safety, safetyRoutes({ db, auth }));
   app.route(ApiPath.Consent, consentRoutes({ db, auth }));
   app.route(ApiPath.Screening, screeningRoutes({ db, auth, cipher }));

@@ -1,10 +1,20 @@
 import type { BodyArea } from './enums/body-area.ts';
+import type { Emphasis } from './enums/emphasis.ts';
 import type { Equipment } from './enums/equipment.ts';
 import type { ExerciseLocation } from './enums/exercise-location.ts';
+import type { Goal } from './enums/goal.ts';
+import type { Intensity } from './enums/intensity.ts';
+import type { LoadGuidance } from './enums/load-guidance.ts';
+import type { MovementPattern } from './enums/movement-pattern.ts';
+import type { PrescriptionUnit } from './enums/prescription-unit.ts';
 import type { ReferralKind } from './enums/referral-kind.ts';
+import type { SeasonKind } from './enums/season-kind.ts';
+import type { SessionFocus } from './enums/session-focus.ts';
 import type { SessionSlot } from './enums/session-slot.ts';
 import type { ScreeningQuestion } from './enums/screening-question.ts';
 import type { ScreeningStatus } from './enums/screening-status.ts';
+import type { SportMovement } from './enums/sport-movement.ts';
+import type { TrainingMode } from './enums/training-mode.ts';
 import type { Weekday } from './enums/weekday.ts';
 
 export interface EligibilityInput {
@@ -68,4 +78,149 @@ export interface ExerciseFilter {
   slots?: readonly SessionSlot[];
   /** Body areas to keep out: an exercise that loads any of them is never kept. */
   excludedAreas?: readonly BodyArea[];
+}
+
+/** What the generation engine reads from a Sport Profile; a full Sport Profile satisfies it. */
+export interface SportDemands {
+  /** Shares of effort (percent) that add up to 100. */
+  energyMix: { aerobic: number; repeatedSprint: number; explosive: number };
+  keyMovements: readonly SportMovement[];
+  highLoadAreas: readonly BodyArea[];
+  /** Hours after a hard Activity before a heavy Session of each body half. */
+  recoveryWindowHours: { lower: number; upper: number };
+  season: { kind: SeasonKind; months: readonly number[] };
+}
+
+/** What `chooseEmphasis` reads. */
+export interface EmphasisInput {
+  goal: Goal;
+  /** `null` while the person's sport has no Sport Profile. */
+  sport: SportDemands | null;
+  mode: TrainingMode;
+  /** The month the Block starts in, 1 to 12. */
+  month: number;
+}
+
+/** What the engine reads from a library exercise. */
+export interface PlannableExercise extends ExerciseTags {
+  id: string;
+  movementPattern: MovementPattern;
+  /** Safe to prescribe by reps in reserve. */
+  rirSuitable: boolean;
+}
+
+/** One day of the generated week. */
+export interface WeekDate {
+  /** `YYYY-MM-DD`, UTC. */
+  date: string;
+  weekday: Weekday;
+}
+
+/** What `placeSessions` needs. */
+export interface PlacementInput {
+  /**
+   * The focus each of the week's Sessions has when it can be heavy, one entry per Session
+   * (so its length is the Sessions per week). A `Recovery` entry is fixed: that Session is
+   * never made heavy.
+   */
+  focuses: readonly SessionFocus[];
+  availableDays: readonly Weekday[];
+  /** The seven days of the week, in order. */
+  week: readonly WeekDate[];
+  /** Weekdays of known hard Activities; empty when none are known. */
+  hardDays: readonly Weekday[];
+  recoveryWindowHours: { lower: number; upper: number };
+}
+
+/** One Session's place in the week. */
+export interface PlacedSession extends WeekDate {
+  focus: SessionFocus;
+}
+
+/** What `prescribe` needs for one exercise. */
+export interface PrescribeInput {
+  slot: SessionSlot;
+  emphasis: Emphasis;
+  /** 1 to 4; 4 is the Deload. */
+  weekInBlock: number;
+  limited: boolean;
+  /** Whether the exercise can be prescribed by reps in reserve. */
+  rirSuitable: boolean;
+  /** Whether the exercise needs equipment beyond the body. */
+  needsEquipment: boolean;
+}
+
+/** How hard and how much of one exercise. */
+export interface Prescription {
+  sets: number;
+  /** The rep range, or the hold in seconds when `unit` is seconds. */
+  repMin: number;
+  repMax: number;
+  unit: PrescriptionUnit;
+  /** Reps in reserve; `null` where effort is not rated. */
+  rir: number | null;
+  loadGuidance: LoadGuidance;
+}
+
+/** What `pickExercises` needs to fill one Session. */
+export interface PickExercisesInput {
+  library: readonly PlannableExercise[];
+  equipment: readonly Equipment[];
+  excludedAreas: readonly BodyArea[];
+  focus: SessionFocus;
+  minutes: number;
+  limited: boolean;
+  sport: SportDemands | null;
+  /** Exercises already planned in earlier Sessions of this week. */
+  usedInWeek: ReadonlySet<string>;
+}
+
+/** What `planFocuses` needs: the library and the person's limits, and how many Sessions. */
+export interface PlanFocusesInput extends Omit<PickExercisesInput, 'focus' | 'usedInWeek'> {
+  sessionsPerWeek: number;
+}
+
+/** One chosen exercise and the slot it fills. */
+export interface PickedExercise {
+  exerciseId: string;
+  slot: SessionSlot;
+}
+
+/** Everything `generateWeek` reads. */
+export interface GenerateWeekInput {
+  goal: Goal;
+  playDays: readonly Weekday[];
+  playVaries: boolean;
+  playIntensity: Intensity;
+  trainingWeek: TrainingWeek;
+  /** `null` while the person's sport has no Sport Profile: generic demands apply. */
+  sport: SportDemands | null;
+  /** `Full` or `Limited`; a Referred person gets no Program. */
+  mode: TrainingMode.Full | TrainingMode.Limited;
+  excludedAreas: readonly BodyArea[];
+  equipment: readonly Equipment[];
+  library: readonly PlannableExercise[];
+  /** 1 to 4. */
+  weekInBlock: number;
+  /** The first day of the week, `YYYY-MM-DD` UTC. */
+  startsOn: string;
+}
+
+/** One exercise of a generated Session with its prescription, in the order it is done. */
+export interface GeneratedExercise extends Prescription {
+  exerciseId: string;
+  slot: SessionSlot;
+}
+
+export interface GeneratedSession extends PlacedSession {
+  minutes: number;
+  exercises: GeneratedExercise[];
+}
+
+export interface GeneratedWeek {
+  emphasis: Emphasis;
+  startsOn: string;
+  weekInBlock: number;
+  limited: boolean;
+  sessions: GeneratedSession[];
 }

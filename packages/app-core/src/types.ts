@@ -1,9 +1,11 @@
 import type {
   ApiClient,
+  CreateProgramResult,
   ConsentGrant,
   ConsentState,
   InviteCheckResponse,
   ProfileAnswers,
+  ProgramWeek,
   RecordDoctorOkResult,
   SavedProfile,
   SavedScreening,
@@ -247,6 +249,14 @@ export interface GetProfile extends Request<ProfileState> {
 export interface SaveProfile extends Request<SaveProfileResult> {
   readonly type: RequestType.SaveProfile;
   readonly answers: ProfileAnswers;
+}
+
+export interface GetProgram extends Request<ProgramWeek | null> {
+  readonly type: RequestType.GetProgram;
+}
+
+export interface CreateProgram extends Request<CreateProgramResult> {
+  readonly type: RequestType.CreateProgram;
 }
 
 export interface GetSafety extends Request<SafetyState> {

@@ -24,7 +24,7 @@ const {
   confirmDelete,
   stateDoctorOk,
   signOut,
-  continueToToday,
+  continueOn,
 } = useReferred({ onNavigate: (path) => void router.replace(path) });
 
 onMounted(load);
@@ -32,7 +32,7 @@ onMounted(load);
 
 <template>
   <template v-if="phase === SafetyPhase.Ready">
-    <LimitedNotice v-if="view === ReferredView.Limited" @continue="continueToToday" />
+    <LimitedNotice v-if="view === ReferredView.Limited" @continue="continueOn" />
     <DeleteConfirm
       v-else-if="view === ReferredView.ConfirmDelete"
       :busy="busy"

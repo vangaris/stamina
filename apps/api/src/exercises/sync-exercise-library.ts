@@ -12,9 +12,9 @@ const updatable = Object.entries(getTableColumns(exerciseTable)).filter(([key]) 
  * a second pass so a link may point at a later row. Running it twice changes nothing. Run as the
  * table owner (`migrate()` does); the app role can only read the table.
  *
- * Ticket 11's session exercises will reference these rows by id. The delete below then fails on
- * an id that a stored session still uses, so that ticket must decide how a retired exercise is
- * handled (for example a `retired` flag instead of a delete) before it adds the foreign key.
+ * Stored Sessions (`session_exercise`) reference these rows by id, so the delete below fails on an
+ * id that a stored Session still uses. Retiring such an exercise needs a decision first (for
+ * example a `retired` flag instead of a delete).
  */
 export async function syncExerciseLibrary(db: Db, exercises: readonly Exercise[]): Promise<void> {
   await db.transaction(async (tx) => {

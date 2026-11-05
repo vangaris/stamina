@@ -54,13 +54,21 @@ export async function answerScreening(page: Page, { yes = [] }: { yes?: RegExp[]
   }
 }
 
+/** On the Screening outcome screen (not a referral): leaves it with its Continue button. */
+export async function continueFromOutcome(page: Page) {
+  await expect(
+    page.getByRole('heading', { name: "Thanks, that's everything we need" }),
+  ).toBeVisible();
+  await page.getByRole('button', { name: 'Continue', exact: true }).click();
+}
+
 /** A new person, signed in and cleared: profile, both consents, an all-no Screening, then Today. */
 export async function signUpToToday(page: Page, testTitle: string) {
   await signUpToConsent(page, testTitle);
   await acceptConsents(page);
   await answerScreening(page);
   await page.getByRole('button', { name: 'Continue' }).click();
-  await page.getByRole('button', { name: 'Continue to Today' }).click();
+  await continueFromOutcome(page);
   await expect(page).toHaveURL(/\/today$/);
   await expect(page.getByRole('heading', { name: 'Today' })).toBeVisible();
 }

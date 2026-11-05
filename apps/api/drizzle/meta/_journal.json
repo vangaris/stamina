@@ -43,6 +43,13 @@
       "when": 1793687929939,
       "tag": "0005_sport_profiles",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1793904202554,
+      "tag": "0006_program",
+      "breakpoints": true
     }
   ]
 }

@@ -285,7 +285,7 @@
       "nutritionOff": "Nutrition is switched off for you, so Stamina won't give food guidance. Your training carries on.",
       "goalChanged": "The body composition Goal isn't available while Nutrition is off, so your Goal is now General fitness. You can change it later.",
       "excludedAreas": "{count, plural, one {Get professional advice before training this area: {areas}. Stamina will keep exercises away from it.} other {Get professional advice before training these areas: {areas}. Stamina will keep exercises away from them.}}",
-      "continue": "Continue to Today"
+      "continue": "Continue"
     }
   },
   "referred": {
@@ -312,7 +312,7 @@
     "limited": {
       "title": "Limited mode is on",
       "body": "Stamina has recorded what you told us. Your training will stay gentle: moderate effort and no explosive exercises.",
-      "continue": "Continue to Today"
+      "continue": "Continue"
     },
     "errors": {
       "offline": "You are offline. Connect to the internet and try again.",
@@ -325,5 +325,71 @@
       "message": "We could not load your details. Check your connection and try again.",
       "retry": "Try again"
     }
+  },
+  "program": {
+    "loading": "Building your first week…",
+    "retry": "Try again",
+    "reveal": {
+      "title": "Your first week is ready",
+      "continue": "Continue to Today"
+    },
+    "block": {
+      "name": {
+        "strength": "Strength Block",
+        "power-speed": "Power and speed Block",
+        "strength-endurance": "Strength endurance Block"
+      },
+      "week": "Week {week} of 4",
+      "line": {
+        "strength": "These weeks build your base strength so you feel steady and capable in your sport and your day.",
+        "power-speed": "These weeks add quick, springy work on top of a strong base, to help you feel sharp when you play.",
+        "strength-endurance": "These weeks build strength you can keep using for longer, with higher reps and steady effort."
+      },
+      "limited": "Limited mode is on. Effort stays moderate, you always stop with at least 3 reps in reserve, and there are no jumping or explosive exercises.",
+      "beta": "Your sport is new to Stamina. This Program uses general sport demands until we have looked at it (beta).",
+      "equipment": "Until you tell us otherwise, Sessions assume bodyweight and dumbbells."
+    },
+    "focus": {
+      "lower": "Lower body",
+      "upper": "Upper body",
+      "recovery": "Mobility and recovery"
+    },
+    "session": {
+      "minutes": "{minutes} min"
+    },
+    "blocks": {
+      "warm-up": "Warm-up",
+      "main-strength": "Main strength",
+      "sport-support": "Sport support",
+      "accessories-core": "Accessories and core",
+      "support-accessories": "Sport support, accessories and core",
+      "cool-down": "Cool-down"
+    },
+    "prescription": {
+      "repsReserve": "{sets} x {range}, stop with {rir} in reserve",
+      "reps": "{sets} x {range}",
+      "seconds": "{sets} x {range} seconds"
+    },
+    "load": {
+      "rpeGuided": "A weight you could lift {rir, plural, one {# more time} other {# more times}}",
+      "bodyweight": "Just your bodyweight"
+    },
+    "unavailable": {
+      "title": "No week to show yet",
+      "notReady": "Finish the setup steps first and your first week will appear here.",
+      "noTrainingWeek": "You chose food only, so there is no training week to plan. You can change this later.",
+      "noExercises": "We could not fill a full Session with exercises that fit your details yet. We are sorry; please try again later."
+    },
+    "errors": {
+      "offline": "You are offline. Connect to the internet and try again.",
+      "unknown": "Something went wrong. Please try again."
+    }
+  },
+  "week": {
+    "title": "Your week",
+    "link": "See your week",
+    "freeDay": "Free day",
+    "empty": "You do not have a Program yet.",
+    "backToToday": "Back to Today"
   }
 }
