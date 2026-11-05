@@ -1,3 +1,11 @@
+import type { Ref } from 'vue';
+
+export interface ImageFailure {
+  failed: Ref<boolean>;
+  /** Wire to the image's `error` event. */
+  onError(): void;
+}
+
 export interface ExerciseImageProps {
   /** The wger image URL, unmodified (never a copy or a thumbnail made by Stamina). */
   src: string;

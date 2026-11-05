@@ -138,6 +138,8 @@ Module interface small and documented? Any pass-through to delete? Logic out of 
 
 Every package under `packages/` follows this shape. Two exceptions are deliberate: `@stamina/ui-test` (its `config.js` must be plain JS because Vitest loads it through Node) and `@stamina/tokens`'s generated `tokens.css`.
 
+In `apps/api`, a module may add a second entry point, `node.ts`, for code that must stay out of the Cloudflare Worker bundle (reading data files, syncing into the database). The Worker imports only `index.ts`; migrations, scripts and tests import `node.ts`. `apps/api/test/worker-bundle.test.ts` fails if that code ends up in the Worker bundle. `apps/api/src/exercises` and `apps/api/src/sports` are the two modules that do this.
+
 ## Design tokens and UI components
 
 **Tokens** (`packages/tokens`) are DTCG JSON in two tiers: `primitive.tokens.json` (raw values; the only file a brand theme replaces) and `semantic.*.tokens.json` (named roles that alias primitives: `bg`, `surface`, `text`, `accent`, `load`, `suggest`, `danger`, `focus`, … plus type, spacing, radius, tap size). `pnpm --filter @stamina/tokens generate` compiles them to `src/tokens.css` (committed; the tokens test fails when it is stale): CSS variables for light and dark (the phone's setting, or `data-theme="light|dark"` on any element) and the Tailwind `@theme` mapping. The default Tailwind palette and scales are removed, so only semantic roles generate utilities: `bg-surface text-text border-border`, `text-sm` (14 px), `p-4` (16 px), `rounded-md`, `min-h-tap` (44 px). Placeholder values: system font, type 12/14/16/20/24/32/48 (`xs sm base lg xl 2xl 3xl`), spacing 4/8/12/16/24/32 (`1 2 3 4 6 8`, plus `0`), radius 8/16/pill (`md lg pill`).

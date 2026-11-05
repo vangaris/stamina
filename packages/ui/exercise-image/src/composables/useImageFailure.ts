@@ -1,10 +1,5 @@
-import { ref, watch, type Ref } from 'vue';
-
-export interface ImageFailure {
-  failed: Ref<boolean>;
-  /** Wire to the image's `error` event. */
-  onError(): void;
-}
+import { ref, watch } from 'vue';
+import type { ImageFailure } from '../types.ts';
 
 /** Whether the image at `src` failed to load; a new `src` gets a fresh try. */
 export function useImageFailure(src: () => string): ImageFailure {
