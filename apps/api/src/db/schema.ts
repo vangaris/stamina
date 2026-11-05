@@ -7,31 +7,40 @@ import {
 import {
   BodyArea,
   ConsentPurpose,
+  Emphasis,
   Equipment,
   EXERCISE_IMAGE_ORIGIN,
   ExerciseLicence,
   ExerciseLocation,
   ExerciseSource,
+  LoadGuidance,
   MovementPattern,
+  PrescriptionUnit,
   OTHER_SPORT_NAME_MAX_LENGTH,
   SPORT_NORMALIZED_NAME_MAX_LENGTH,
   ReferralKind,
   ScreeningStatus,
+  SESSION_LENGTHS_MINUTES,
+  SessionFocus,
   SessionSlot,
+  SessionStatus,
   SportStatus,
   StartingLevel,
+  MAX_RIR,
+  WEEKS_IN_BLOCK,
+  Weekday,
   type Goal,
   type Intensity,
   type LaunchSport,
   type Need,
   type Units,
-  type Weekday,
 } from '@stamina/domain';
 import { Locale } from '@stamina/i18n';
 import { sql } from 'drizzle-orm';
 import {
   boolean,
   check,
+  date,
   index,
   integer,
   jsonb,
@@ -403,6 +412,195 @@ export const sportRequest = pgTable(
       for: 'select',
       to: APP_ROLE,
       using: sql`user_id = app_user_id()::uuid`,
+    }),
+  ],
+).enableRLS();
+
+/**
+ * A person's Program: one row per user (unique index), created once by `POST /program` under
+ * `lockUser`. Append-only like `consent`: the app role can read and insert its own rows, and a
+ * row goes only when its user does. The Block, Session and exercise tables below follow the same
+ * rules. Everything in them is the person's training plan; it carries no Screening answers.
+ */
+export const program = pgTable(
+  'program',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    userId: uuid('user_id')
+      .notNull()
+      .unique()
+      .references(() => appUser.id, { onDelete: 'cascade' }),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  () => [
+    pgPolicy('program_owner_select', {
+      for: 'select',
+      to: APP_ROLE,
+      using: sql`user_id = app_user_id()::uuid`,
+    }),
+    pgPolicy('program_owner_insert', {
+      for: 'insert',
+      to: APP_ROLE,
+      withCheck: sql`user_id = app_user_id()::uuid`,
+    }),
+  ],
+).enableRLS();
+
+/**
+ * One Block of a Program (four weeks, one Emphasis). `starts_on` is the first day of its week 1;
+ * week N starts `(N - 1) * 7` days later. Block 1 is the reveal Block.
+ */
+export const block = pgTable(
+  'block',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    userId: uuid('user_id')
+      .notNull()
+      .references(() => appUser.id, { onDelete: 'cascade' }),
+    programId: uuid('program_id')
+      .notNull()
+      .references(() => program.id, { onDelete: 'cascade' }),
+    /** 1 for the first Block. */
+    position: integer('position').notNull(),
+    emphasis: text('emphasis').$type<Emphasis>().notNull(),
+    startsOn: date('starts_on', { mode: 'string' }).notNull(),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => [
+    check('block_emphasis_valid', isOneOf(table.emphasis, Object.values(Emphasis))),
+    check('block_position_positive', sql`${table.position} >= 1`),
+    unique('block_program_position').on(table.programId, table.position),
+    pgPolicy('block_owner_select', {
+      for: 'select',
+      to: APP_ROLE,
+      using: sql`user_id = app_user_id()::uuid`,
+    }),
+    pgPolicy('block_owner_insert', {
+      for: 'insert',
+      to: APP_ROLE,
+      withCheck: sql`user_id = app_user_id()::uuid`,
+    }),
+  ],
+).enableRLS();
+
+/**
+ * One planned Session. Reproducibility record: `rules_version` and `inputs_hash` say which rules
+ * and which inputs made it (the same inputs under the same rules give the same Session), `model`
+ * and `prompt_version` are null while no AI picked exercises, `revision` counts rewrites and
+ * `supersedes_id` points at the Session a revision replaced.
+ */
+export const session = pgTable(
+  'session',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    userId: uuid('user_id')
+      .notNull()
+      .references(() => appUser.id, { onDelete: 'cascade' }),
+    blockId: uuid('block_id')
+      .notNull()
+      .references(() => block.id, { onDelete: 'cascade' }),
+    weekInBlock: integer('week_in_block').notNull(),
+    date: date('date', { mode: 'string' }).notNull(),
+    weekday: text('weekday').$type<Weekday>().notNull(),
+    focus: text('focus').$type<SessionFocus>().notNull(),
+    minutes: integer('minutes').notNull(),
+    status: text('status').$type<SessionStatus>().notNull(),
+    /** Limited mode caps were applied to this week. */
+    limited: boolean('limited').notNull(),
+    /** The person's sport is a requested one that is not approved yet. */
+    beta: boolean('beta').notNull(),
+    revision: integer('revision').notNull(),
+    supersedesId: uuid('supersedes_id').references((): AnyPgColumn => session.id),
+    rulesVersion: integer('rules_version').notNull(),
+    model: text('model'),
+    promptVersion: text('prompt_version'),
+    inputsHash: text('inputs_hash').notNull(),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => [
+    check(
+      'session_week_in_block_valid',
+      sql`${table.weekInBlock} between 1 and ${sql.raw(String(WEEKS_IN_BLOCK))}`,
+    ),
+    check('session_weekday_valid', isOneOf(table.weekday, Object.values(Weekday))),
+    check('session_focus_valid', isOneOf(table.focus, Object.values(SessionFocus))),
+    check(
+      'session_minutes_valid',
+      sql`${table.minutes} in (${sql.raw(SESSION_LENGTHS_MINUTES.join(', '))})`,
+    ),
+    check('session_status_valid', isOneOf(table.status, Object.values(SessionStatus))),
+    check('session_revision_positive', sql`${table.revision} >= 1`),
+    check('session_rules_version_positive', sql`${table.rulesVersion} >= 1`),
+    check('session_inputs_hash_valid', sql`${table.inputsHash} ~ '^[0-9a-f]{64}$'`),
+    unique('session_block_date_revision').on(table.blockId, table.date, table.revision),
+    index('session_user_date').on(table.userId, table.date),
+    pgPolicy('session_owner_select', {
+      for: 'select',
+      to: APP_ROLE,
+      using: sql`user_id = app_user_id()::uuid`,
+    }),
+    pgPolicy('session_owner_insert', {
+      for: 'insert',
+      to: APP_ROLE,
+      withCheck: sql`user_id = app_user_id()::uuid`,
+    }),
+  ],
+).enableRLS();
+
+/**
+ * One exercise of a Session with its prescription, in the order it is done (`position`). The
+ * exercise is a foreign key into the library with no cascade: the library sync cannot retire an
+ * exercise a stored Session uses (see `sync-exercise-library`).
+ */
+export const sessionExercise = pgTable(
+  'session_exercise',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    userId: uuid('user_id')
+      .notNull()
+      .references(() => appUser.id, { onDelete: 'cascade' }),
+    sessionId: uuid('session_id')
+      .notNull()
+      .references(() => session.id, { onDelete: 'cascade' }),
+    position: integer('position').notNull(),
+    exerciseId: text('exercise_id')
+      .notNull()
+      .references(() => exercise.id),
+    slot: text('slot').$type<SessionSlot>().notNull(),
+    sets: integer('sets').notNull(),
+    repMin: integer('rep_min').notNull(),
+    repMax: integer('rep_max').notNull(),
+    unit: text('unit').$type<PrescriptionUnit>().notNull(),
+    /** Reps in reserve; null where effort is not rated. */
+    rir: integer('rir'),
+    loadGuidance: text('load_guidance').$type<LoadGuidance>().notNull(),
+  },
+  (table) => [
+    check('session_exercise_slot_valid', isOneOf(table.slot, Object.values(SessionSlot))),
+    check('session_exercise_unit_valid', isOneOf(table.unit, Object.values(PrescriptionUnit))),
+    check(
+      'session_exercise_load_guidance_valid',
+      isOneOf(table.loadGuidance, Object.values(LoadGuidance)),
+    ),
+    check('session_exercise_sets_positive', sql`${table.sets} >= 1`),
+    check(
+      'session_exercise_reps_valid',
+      sql`${table.repMin} >= 1 and ${table.repMax} >= ${table.repMin}`,
+    ),
+    check(
+      'session_exercise_rir_valid',
+      sql`${table.rir} is null or ${table.rir} between 0 and ${sql.raw(String(MAX_RIR))}`,
+    ),
+    unique('session_exercise_session_position').on(table.sessionId, table.position),
+    pgPolicy('session_exercise_owner_select', {
+      for: 'select',
+      to: APP_ROLE,
+      using: sql`user_id = app_user_id()::uuid`,
+    }),
+    pgPolicy('session_exercise_owner_insert', {
+      for: 'insert',
+      to: APP_ROLE,
+      withCheck: sql`user_id = app_user_id()::uuid`,
     }),
   ],
 ).enableRLS();

@@ -1,5 +1,9 @@
 export {
   ADULT_AGE,
+  DAYS_IN_WEEK,
+  LIMITED_RIR_FLOOR,
+  RULES_VERSION,
+  WEEKS_IN_BLOCK,
   CONSENT_TEXT_VERSIONS,
   DEFAULT_EQUIPMENT,
   ENERGY_MIX_TOTAL,
@@ -13,6 +17,7 @@ export {
   MAX_KEY_MOVEMENTS,
   MAX_METS,
   MAX_PLAY_MINUTES,
+  MAX_RIR,
   MAX_RECOVERY_HOURS,
   MAX_SESSIONS_PER_WEEK,
   MAX_SPORT_HIGH_LOAD_AREAS,
@@ -33,18 +38,23 @@ export {
 } from './config.ts';
 export { BodyArea } from './enums/body-area.ts';
 export { ConsentPurpose } from './enums/consent-purpose.ts';
+export { Emphasis } from './enums/emphasis.ts';
 export { Equipment } from './enums/equipment.ts';
 export { ExerciseLicence } from './enums/exercise-licence.ts';
 export { ExerciseLocation } from './enums/exercise-location.ts';
 export { ExerciseSource } from './enums/exercise-source.ts';
 export { ImageLicence } from './enums/image-licence.ts';
 export { MovementPattern } from './enums/movement-pattern.ts';
+export { SessionFocus } from './enums/session-focus.ts';
 export { SessionSlot } from './enums/session-slot.ts';
+export { SessionStatus } from './enums/session-status.ts';
 export { Eligibility } from './enums/eligibility.ts';
 export { Goal } from './enums/goal.ts';
 export { Intensity } from './enums/intensity.ts';
 export { LaunchSport } from './enums/launch-sport.ts';
+export { LoadGuidance } from './enums/load-guidance.ts';
 export { Need } from './enums/need.ts';
+export { PrescriptionUnit } from './enums/prescription-unit.ts';
 export { ReferralKind } from './enums/referral-kind.ts';
 export { SeasonKind } from './enums/season-kind.ts';
 export { ScreeningQuestion } from './enums/screening-question.ts';
@@ -60,11 +70,16 @@ export type {
   EligibilityInput,
   ExerciseFilter,
   ExerciseTags,
+  GenerateWeekInput,
+  GeneratedWeek,
+  PlayPattern,
   ScreeningInput,
   ScreeningOutcome,
+  SportDemands,
   TrainingModeInput,
   TrainingWeek,
 } from './types.ts';
+export { addDays } from './utils/add-days.ts';
 export { checkEligibility } from './utils/check-eligibility.ts';
 export { evaluateScreening } from './utils/evaluate-screening.ts';
 export { isGoalAvailable } from './utils/is-goal-available.ts';
@@ -74,3 +89,6 @@ export { normalizeInviteCode } from './utils/normalize-invite-code.ts';
 export { selectExercises } from './utils/select-exercises.ts';
 export { resolveTrainingMode } from './utils/resolve-training-mode.ts';
 export { validateTrainingWeek } from './utils/validate-training-week.ts';
+export { generateWeek } from './utils/generate-week.ts';
+export { hardActivityDates } from './utils/hard-activity-dates.ts';
+export { weekdayOf } from './utils/weekday-of.ts';

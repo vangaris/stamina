@@ -1,7 +1,13 @@
 import { ConsentPurpose } from './enums/consent-purpose.ts';
+import { Emphasis } from './enums/emphasis.ts';
 import { Equipment } from './enums/equipment.ts';
 import { LaunchSport } from './enums/launch-sport.ts';
+import { MovementPattern } from './enums/movement-pattern.ts';
 import { ScreeningQuestion } from './enums/screening-question.ts';
+import { SessionFocus } from './enums/session-focus.ts';
+import { SessionSlot } from './enums/session-slot.ts';
+import { SportMovement } from './enums/sport-movement.ts';
+import { Weekday } from './enums/weekday.ts';
 
 /** Stamina is for adults. Age is the difference between the current year and the birth year. */
 export const ADULT_AGE = 18;
@@ -383,3 +389,153 @@ export const MAX_SPORT_HIGH_LOAD_AREAS = 5;
 export const MIN_SPORT_SOURCES = 2;
 /** A Sport Profile's season names months 1 to this number. */
 export const MONTHS_IN_YEAR = 12;
+
+/**
+ * Bumped whenever a number or a rule of program generation changes, so a stored Session says
+ * which rules made it. The same inputs under the same version always give the same Session.
+ */
+export const RULES_VERSION = 1;
+
+/** Weeks in a Block; the last one is the Deload. */
+export const WEEKS_IN_BLOCK = 4;
+export const DELOAD_WEEK_IN_BLOCK = 4;
+/** Sets of a Deload week are the build week's sets times this, rounded up, never below one. */
+export const DELOAD_SET_FACTOR = 0.5;
+/** Reps in reserve for week 1, 2, 3 and 4 of a Block (index = week - 1). Week 4 is the Deload. */
+export const BLOCK_RIR_BY_WEEK: readonly number[] = [3, 2, 1, 4];
+/** The highest reps-in-reserve a Session exercise can carry (the Deload week asks for the most, 4). */
+export const MAX_RIR = 5;
+/** Limited mode never goes closer to failure than this (RPE 7). */
+export const LIMITED_RIR_FLOOR = 3;
+/** Power and speed work is never closer to failure than this. */
+export const POWER_SPEED_RIR_FLOOR = 3;
+/** Sport-support work stops at least this far from failure. */
+export const SPORT_SUPPORT_RIR_FLOOR = 3;
+/** Accessories stop at least this far from failure. */
+export const ACCESSORY_RIR_FLOOR = 2;
+
+/** A numeric prescription: how many sets, and the rep range (or seconds for a hold). */
+interface PrescriptionRange {
+  sets: number;
+  repMin: number;
+  repMax: number;
+}
+
+/** Main-strength sets and reps for each Emphasis. */
+export const MAIN_STRENGTH_PRESCRIPTION: Readonly<Record<Emphasis, PrescriptionRange>> = {
+  [Emphasis.Strength]: { sets: 4, repMin: 4, repMax: 6 },
+  [Emphasis.PowerSpeed]: { sets: 4, repMin: 3, repMax: 5 },
+  [Emphasis.StrengthEndurance]: { sets: 3, repMin: 10, repMax: 15 },
+};
+/** Sport-support work: PowerSpeed uses fewer, faster reps. */
+export const SPORT_SUPPORT_PRESCRIPTION: Readonly<Record<Emphasis, PrescriptionRange>> = {
+  [Emphasis.Strength]: { sets: 3, repMin: 5, repMax: 8 },
+  [Emphasis.PowerSpeed]: { sets: 3, repMin: 3, repMax: 5 },
+  [Emphasis.StrengthEndurance]: { sets: 3, repMin: 5, repMax: 8 },
+};
+export const ACCESSORY_PRESCRIPTION: PrescriptionRange = { sets: 3, repMin: 8, repMax: 12 };
+export const WARM_UP_PRESCRIPTION: PrescriptionRange = { sets: 1, repMin: 8, repMax: 10 };
+/** Cool-down holds are counted in seconds. */
+export const COOL_DOWN_PRESCRIPTION: PrescriptionRange = { sets: 1, repMin: 30, repMax: 45 };
+
+/** Exercises per slot in one Session, by the minutes the person chose. */
+export const SLOT_COUNTS_BY_MINUTES: Readonly<
+  Record<number, Readonly<Record<SessionSlot, number>>>
+> = {
+  30: {
+    [SessionSlot.WarmUp]: 2,
+    [SessionSlot.MainStrength]: 2,
+    [SessionSlot.SportSupport]: 1,
+    [SessionSlot.AccessoriesCore]: 1,
+    [SessionSlot.CoolDown]: 1,
+  },
+  45: {
+    [SessionSlot.WarmUp]: 2,
+    [SessionSlot.MainStrength]: 2,
+    [SessionSlot.SportSupport]: 2,
+    [SessionSlot.AccessoriesCore]: 2,
+    [SessionSlot.CoolDown]: 1,
+  },
+  60: {
+    [SessionSlot.WarmUp]: 3,
+    [SessionSlot.MainStrength]: 3,
+    [SessionSlot.SportSupport]: 2,
+    [SessionSlot.AccessoriesCore]: 3,
+    [SessionSlot.CoolDown]: 2,
+  },
+};
+
+/** The slots in the order a Session does them. */
+export const SLOT_ORDER: readonly SessionSlot[] = [
+  SessionSlot.WarmUp,
+  SessionSlot.MainStrength,
+  SessionSlot.SportSupport,
+  SessionSlot.AccessoriesCore,
+  SessionSlot.CoolDown,
+];
+
+/** Heavy main-strength patterns of each focus, in the order a Session fills them. */
+export const MAIN_STRENGTH_PATTERNS: Readonly<
+  Record<SessionFocus.Lower | SessionFocus.Upper, readonly MovementPattern[]>
+> = {
+  [SessionFocus.Lower]: [MovementPattern.Squat, MovementPattern.Hinge, MovementPattern.Lunge],
+  [SessionFocus.Upper]: [MovementPattern.Push, MovementPattern.Pull, MovementPattern.Overhead],
+};
+/**
+ * The patterns a Recovery Session's accessories take first; other accessory exercises that pass
+ * the excluded areas fill in only when these run out (a lower-back exclusion removes them all).
+ */
+export const RECOVERY_ACCESSORY_PATTERNS: readonly MovementPattern[] = [
+  MovementPattern.Core,
+  MovementPattern.Mobility,
+];
+/** Patterns Limited mode never plans: power and plyometric work. */
+export const LIMITED_EXCLUDED_PATTERNS: readonly MovementPattern[] = [
+  MovementPattern.JumpLand,
+  MovementPattern.ChangeOfDirection,
+];
+/** Limited mode has no sport-support slot: that slot's exercises are almost all jumps, bounds or ballistic swings. */
+export const LIMITED_SKIPPED_SLOT = SessionSlot.SportSupport;
+/** The slots of a heavy Limited Session; the skipped slot's exercise count goes to accessories-core. */
+export const LIMITED_SLOTS: readonly SessionSlot[] = SLOT_ORDER.filter(
+  (slot) => slot !== LIMITED_SKIPPED_SLOT,
+);
+
+/** The movement patterns a sport's key movements ask for; sport-support work prefers them. */
+export const SPORT_MOVEMENT_PATTERNS: Readonly<Record<SportMovement, readonly MovementPattern[]>> =
+  {
+    [SportMovement.ChangeOfDirection]: [MovementPattern.ChangeOfDirection],
+    [SportMovement.JumpLand]: [MovementPattern.JumpLand],
+    [SportMovement.Rotation]: [MovementPattern.Rotation],
+    [SportMovement.Overhead]: [MovementPattern.Overhead],
+    [SportMovement.Grip]: [MovementPattern.Pull, MovementPattern.Carry],
+    [SportMovement.Push]: [MovementPattern.Push],
+    [SportMovement.Pull]: [MovementPattern.Pull],
+    [SportMovement.Hinge]: [MovementPattern.Hinge],
+    [SportMovement.Carry]: [MovementPattern.Carry],
+    [SportMovement.BoardStance]: [MovementPattern.Core, MovementPattern.Lunge],
+  };
+
+/** SportPerformance Goal: explosive plus repeated-sprint share (percent) from which power and speed lead. */
+export const POWER_SPEED_MIN_POWER_SHARE = 50;
+export const STRENGTH_ENDURANCE_MIN_AEROBIC_SHARE = 60;
+
+/** Recovery window used when a person's sport has no Sport Profile: hours after a hard Activity. */
+export const DEFAULT_RECOVERY_WINDOW_HOURS = { lower: 48, upper: 24 } as const;
+export const HOURS_PER_DAY = 24;
+/** Days in the generated week. */
+export const DAYS_IN_WEEK = 7;
+/** Milliseconds in a day (UTC calendar days have no daylight-saving shift). */
+export const MS_PER_DAY = 24 * 60 * 60 * 1000;
+/** Where the month sits in a `YYYY-MM-DD` date: characters 5 to 7. */
+export const MONTH_START = 5;
+export const MONTH_END = 7;
+/** Sessions per week to the focus of each, in order; the Sessions of a week alternate lower and upper. */
+export const FOCUS_SEQUENCE: readonly (SessionFocus.Lower | SessionFocus.Upper)[] = [
+  SessionFocus.Lower,
+  SessionFocus.Upper,
+  SessionFocus.Lower,
+  SessionFocus.Upper,
+];
+/** Days of the week in order, Monday first. */
+export const WEEKDAY_ORDER: readonly Weekday[] = Object.values(Weekday);

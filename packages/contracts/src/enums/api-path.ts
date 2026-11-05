@@ -16,4 +16,6 @@ export enum ApiPath {
   Screening = '/screening',
   /** "A doctor has said I can train", after a referral. */
   DoctorOk = '/screening/doctor-ok',
+  /** The signed-in user's Program: `GET` reads the week, `POST` creates it if there is none. */
+  Program = '/program',
 }

@@ -9,7 +9,9 @@ import {
   SaveProfileStatus,
   ScreeningRejection,
   SportKind,
+  ProgramRejection,
   type ApiClient,
+  type ProgramWeek,
   type SavedProfile,
   type SavedScreening,
   type ScreeningSubmission,
@@ -28,8 +30,11 @@ import {
   ReferralKind,
   ScreeningStatus,
   resolveTrainingMode,
+  TrainingMode,
 } from '@stamina/domain';
 import { FAKE_AUTH, FAKE_INVITE, HTTP_UNAUTHORIZED } from '../config.ts';
+import { buildFakeProgram } from '../utils/build-fake-program.ts';
+import { toHardActivityDates } from '../utils/to-hard-activity-dates.ts';
 
 type StoredConsent = UserExport['consents'][number];
 
@@ -57,6 +62,14 @@ export function createFakeApiClient(getToken: () => Promise<string | undefined>)
   const screenings = new Map<string, StoredScreening[]>();
   /** Per user: the "Other" sport asked for (the fake has no approvals). */
   const sportRequests = new Map<string, UserExport['sportRequests'][number]>();
+  const programs = new Map<string, Omit<ProgramWeek, 'hardActivityDates'>>();
+  const readProgram = (userId: string): ProgramWeek | null => {
+    const week = programs.get(userId);
+    const profile = profiles.get(userId);
+    return week && profile
+      ? { ...week, hardActivityDates: toHardActivityDates(week.block.startsOn, profile) }
+      : null;
+  };
 
   const grantedPurposes = (userId: string) =>
     (consents.get(userId) ?? [])
@@ -210,6 +223,7 @@ export function createFakeApiClient(getToken: () => Promise<string | undefined>)
       return {
         exportedAt: new Date().toISOString(),
         profile: profiles.get(userId) ?? null,
+        program: readProgram(userId),
         consents: [...(consents.get(userId) ?? [])],
         sportRequests: sportRequests.has(userId) ? [sportRequests.get(userId)!] : [],
         screenings: (screenings.get(userId) ?? []).map((stored) => ({
@@ -224,6 +238,34 @@ export function createFakeApiClient(getToken: () => Promise<string | undefined>)
       consents.delete(userId);
       screenings.delete(userId);
       sportRequests.delete(userId);
+      programs.delete(userId);
+    },
+    getProgram: async () => readProgram(await requireUserId()),
+    createProgram: async () => {
+      const userId = await requireUserId();
+      const existing = readProgram(userId);
+      if (existing) return { status: RecordStatus.Saved, program: existing };
+      const profile = profiles.get(userId);
+      const latest = latestScreening(userId);
+      const granted = grantedPurposes(userId);
+      const consented = Object.values(ConsentPurpose).every((purpose) => granted.includes(purpose));
+      if (!profile || !latest || !consented) {
+        return { status: RecordStatus.Rejected, reason: ProgramRejection.NotReady };
+      }
+      const { trainingMode } = toSaved(latest);
+      if (trainingMode === TrainingMode.Referred) {
+        return { status: RecordStatus.Rejected, reason: ProgramRejection.Referred };
+      }
+      if (!profile.trainingWeek) {
+        return { status: RecordStatus.Rejected, reason: ProgramRejection.NoTrainingWeek };
+      }
+      const program = buildFakeProgram({
+        ...profile.trainingWeek,
+        limited: trainingMode === TrainingMode.Limited,
+        now: new Date(),
+      });
+      programs.set(userId, program);
+      return { status: RecordStatus.Saved, program: readProgram(userId)! };
     },
   };
 }

@@ -17,9 +17,11 @@ export { AppError } from './errors/app-error.ts';
 export { AuthError } from './errors/auth-error.ts';
 export { checkInvite } from './handlers/check-invite.ts';
 export { deleteAccount } from './handlers/delete-account.ts';
+export { createProgram } from './handlers/create-program.ts';
 export { exportData } from './handlers/export-data.ts';
 export { getHealth } from './handlers/get-health.ts';
 export { getProfile } from './handlers/get-profile.ts';
+export { getProgram } from './handlers/get-program.ts';
 export { getSafety } from './handlers/get-safety.ts';
 export { getSession } from './handlers/get-session.ts';
 export { grantConsent } from './handlers/grant-consent.ts';
@@ -76,4 +78,6 @@ export type {
   StartGoogleSignIn,
   Stores,
   VerifyEmailCode,
+  CreateProgram,
+  GetProgram,
 } from './types.ts';

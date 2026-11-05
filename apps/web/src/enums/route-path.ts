@@ -10,5 +10,7 @@ export enum RoutePath {
   Consent = '/consent',
   Screening = '/screening',
   Referred = '/referred',
+  Reveal = '/reveal',
+  Week = '/week',
   DevUi = '/dev/ui',
 }

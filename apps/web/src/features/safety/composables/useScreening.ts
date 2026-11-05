@@ -1,3 +1,4 @@
+import { routeAfterSafety } from '../utils/route-after-safety.ts';
 import { AppError, AppErrorCode, SafetyStatus, saveScreening } from '@stamina/app-core';
 import { RecordStatus } from '@stamina/contracts';
 import { TrainingMode, type BodyArea, type ScreeningQuestion } from '@stamina/domain';
@@ -98,8 +99,9 @@ export function useScreening(options: UseScreeningOptions) {
     }
   }
 
-  function finish() {
-    options.onNavigate(RoutePath.Today);
+  /** Goes on to the Program reveal (or Today for a food-only person). */
+  async function finish() {
+    options.onNavigate(await routeAfterSafety(route.mediator));
   }
 
   return {

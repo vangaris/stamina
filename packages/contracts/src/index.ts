@@ -10,6 +10,7 @@ export { HttpHeaderName } from './enums/http-header-name.ts';
 export { HttpMethod } from './enums/http-method.ts';
 export { HttpStatus } from './enums/http-status.ts';
 export { ProfileRejection } from './enums/profile-rejection.ts';
+export { ProgramRejection } from './enums/program-rejection.ts';
 export { RecordStatus } from './enums/record-status.ts';
 export { SaveProfileStatus } from './enums/save-profile-status.ts';
 export { ScreeningRejection } from './enums/screening-rejection.ts';
@@ -34,6 +35,14 @@ export { inviteCheckRequestSchema, inviteCheckResponseSchema } from './invite-ch
 export { meResponseSchema } from './me-response-schema.ts';
 export { profileAnswersSchema, sportSchema, trainingWeekSchema } from './profile-answers-schema.ts';
 export { profileSubmissionSchema } from './profile-submission-schema.ts';
+export { createProgramResultSchema } from './create-program-result-schema.ts';
+export {
+  programBlockSchema,
+  programExerciseSchema,
+  programResponseSchema,
+  programSessionSchema,
+  programWeekSchema,
+} from './program-schema.ts';
 export { recordDoctorOkResultSchema } from './record-doctor-ok-result-schema.ts';
 export { safetyStateSchema } from './safety-state-schema.ts';
 export { saveProfileResultSchema } from './save-profile-result-schema.ts';
@@ -47,6 +56,7 @@ export type {
   ApiClientOptions,
   CatalogSport,
   ConsentGrant,
+  CreateProgramResult,
   ConsentState,
   Exercise,
   ExerciseImage,
@@ -59,6 +69,11 @@ export type {
   MeResponse,
   ProfileAnswers,
   ProfileSubmission,
+  ProgramBlock,
+  ProgramExercise,
+  ProgramResponse,
+  ProgramSession,
+  ProgramWeek,
   RecordDoctorOkResult,
   SafetyState,
   SaveProfileResult,

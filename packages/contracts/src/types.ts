@@ -1,4 +1,12 @@
 import type { z } from 'zod';
+import type { createProgramResultSchema } from './create-program-result-schema.ts';
+import type {
+  programBlockSchema,
+  programExerciseSchema,
+  programResponseSchema,
+  programSessionSchema,
+  programWeekSchema,
+} from './program-schema.ts';
 import type {
   launchSportDataSchema,
   sportDraftSchema,
@@ -54,6 +62,12 @@ export type SafetyState = z.infer<typeof safetyStateSchema>;
 export type SaveScreeningResult = z.infer<typeof saveScreeningResultSchema>;
 export type RecordDoctorOkResult = z.infer<typeof recordDoctorOkResultSchema>;
 export type UserExport = z.infer<typeof userExportSchema>;
+export type ProgramExercise = z.infer<typeof programExerciseSchema>;
+export type ProgramSession = z.infer<typeof programSessionSchema>;
+export type ProgramBlock = z.infer<typeof programBlockSchema>;
+export type ProgramWeek = z.infer<typeof programWeekSchema>;
+export type ProgramResponse = z.infer<typeof programResponseSchema>;
+export type CreateProgramResult = z.infer<typeof createProgramResultSchema>;
 
 export interface ApiClientOptions {
   baseUrl: string;
@@ -84,6 +98,10 @@ export interface ApiClient {
   saveScreening(submission: ScreeningSubmission): Promise<SaveScreeningResult>;
   /** `422` (no referral, or pregnancy) is a `Rejected` result, not an error. */
   recordDoctorOk(): Promise<RecordDoctorOkResult>;
+  /** The first week of the signed-in user's Program, or `null` before one is created. */
+  getProgram(): Promise<ProgramWeek | null>;
+  /** Creates the Program if there is none (a repeat returns the stored one); `422` is a `Rejected` result, not an error. */
+  createProgram(): Promise<CreateProgramResult>;
   /** Everything Stamina holds about the signed-in user. */
   exportData(): Promise<UserExport>;
   /** Hard-deletes the signed-in user's rows. Resolves once they are gone. */

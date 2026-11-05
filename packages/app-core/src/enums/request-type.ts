@@ -14,4 +14,6 @@ export enum RequestType {
   RecordDoctorOk = 'RecordDoctorOk',
   ExportData = 'ExportData',
   DeleteAccount = 'DeleteAccount',
+  GetProgram = 'GetProgram',
+  CreateProgram = 'CreateProgram',
 }

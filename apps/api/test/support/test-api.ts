@@ -17,6 +17,8 @@ export interface TestApiOptions {
   corsOrigins?: string[];
   log?: AppDeps['log'];
   errorReporter?: AppDeps['errorReporter'];
+  /** Replaces the system clock (a Program starts the day after it). */
+  now?: AppDeps['now'];
 }
 
 /** Boots the real Hono app on a real port, backed by real Postgres and a fake AI provider. */
@@ -34,6 +36,7 @@ export async function startTestApi(options: TestApiOptions = {}) {
     // Request log lines are noise in test output unless a test captures them.
     log: options.log ?? (() => {}),
     ...(options.errorReporter ? { errorReporter: options.errorReporter } : {}),
+    ...(options.now ? { now: options.now } : {}),
   });
 
   const server = await new Promise<ReturnType<typeof serve>>((resolve) => {

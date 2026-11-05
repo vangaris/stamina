@@ -4,12 +4,13 @@ import type { FieldCipher } from '../crypto/index.ts';
 import { consent, profile, screening, sport, sportRequest } from '../db/schema.ts';
 import type { Db } from '../db/types.ts';
 import { withUser } from '../db/with-user.ts';
+import { readProgram } from '../program/index.ts';
 import { toSavedProfile } from '../profile/to-saved-profile.ts';
 import { storedAnswersSchema } from './stored-answers-schema.ts';
 import { toSavedScreening } from './to-saved-screening.ts';
 
 /**
- * Everything held about the user: profile, every consent row, every sport they asked for and every Screening with its
+ * Everything held about the user: profile, every consent row, the Program week, every sport they asked for and every Screening with its
  * answers decrypted, oldest first. The one place answers leave the server.
  */
 export async function exportUserData(
@@ -17,19 +18,24 @@ export async function exportUserData(
   cipher: FieldCipher,
   userId: string,
 ): Promise<UserExport> {
-  const { profileRow, consentRows, screeningRows } = await withUser(db, userId, async (tx) => ({
-    profileRow: (await tx.select().from(profile).where(eq(profile.userId, userId)))[0],
-    consentRows: await tx
-      .select()
-      .from(consent)
-      .where(eq(consent.userId, userId))
-      .orderBy(asc(consent.grantedAt)),
-    screeningRows: await tx
-      .select()
-      .from(screening)
-      .where(eq(screening.userId, userId))
-      .orderBy(asc(screening.takenAt)),
-  }));
+  const { profileRow, consentRows, screeningRows, programWeek } = await withUser(
+    db,
+    userId,
+    async (tx) => ({
+      profileRow: (await tx.select().from(profile).where(eq(profile.userId, userId)))[0],
+      consentRows: await tx
+        .select()
+        .from(consent)
+        .where(eq(consent.userId, userId))
+        .orderBy(asc(consent.grantedAt)),
+      screeningRows: await tx
+        .select()
+        .from(screening)
+        .where(eq(screening.userId, userId))
+        .orderBy(asc(screening.takenAt)),
+      programWeek: await readProgram(tx, userId),
+    }),
+  );
 
   // As the table owner, filtered by the user: a rejected sport is hidden from its requesters by
   // the `sport_visible` policy, but the request is still the user's data and is exported.
@@ -63,6 +69,7 @@ export async function exportUserData(
       grantedAt: row.grantedAt.toISOString(),
       withdrawnAt: row.withdrawnAt?.toISOString() ?? null,
     })),
+    program: programWeek,
     sportRequests: sportRequestRows.map((row) => ({
       sportId: row.sportId,
       name: row.name,

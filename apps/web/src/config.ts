@@ -14,6 +14,7 @@ export const ROUTES_WITHOUT_TABS: readonly RouteName[] = [
   RouteName.Consent,
   RouteName.Screening,
   RouteName.Referred,
+  RouteName.Reveal,
 ];
 
 /**

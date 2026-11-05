@@ -66,6 +66,16 @@ const routes: RouteRecordRaw[] = [
     name: RouteName.Referred,
     component: () => import('./features/safety/index.ts').then((m) => m.ReferredContainer),
   },
+  {
+    path: RoutePath.Reveal,
+    name: RouteName.Reveal,
+    component: () => import('./features/program/index.ts').then((m) => m.RevealContainer),
+  },
+  {
+    path: RoutePath.Week,
+    name: RouteName.Week,
+    component: () => import('./features/program/index.ts').then((m) => m.WeekContainer),
+  },
 ];
 
 // Developer-only UI kit page. `import.meta.env.DEV` is a build-time constant, so a production

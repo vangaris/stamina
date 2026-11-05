@@ -1,3 +1,4 @@
+import { routeAfterSafety } from '../utils/route-after-safety.ts';
 import {
   AppError,
   AppErrorCode,
@@ -100,8 +101,9 @@ export function useReferred(options: UseReferredOptions) {
       options.onNavigate(RoutePath.Start);
     });
 
-  function continueToToday() {
-    options.onNavigate(RoutePath.Today);
+  /** Goes on to the Program reveal (or Today for a food-only person). */
+  async function continueOn() {
+    options.onNavigate(await routeAfterSafety(route.mediator));
   }
 
   return {
@@ -118,6 +120,6 @@ export function useReferred(options: UseReferredOptions) {
     confirmDelete,
     stateDoctorOk,
     signOut: leave,
-    continueToToday,
+    continueOn,
   };
 }

@@ -2,8 +2,10 @@ import { createMediator } from './create-mediator.ts';
 import { RequestType } from './enums/request-type.ts';
 import { checkInviteDefinition } from './handlers/check-invite.ts';
 import { deleteAccountDefinition } from './handlers/delete-account.ts';
+import { createProgramDefinition } from './handlers/create-program.ts';
 import { exportDataDefinition } from './handlers/export-data.ts';
 import { getHealthDefinition } from './handlers/get-health.ts';
+import { getProgramDefinition } from './handlers/get-program.ts';
 import { getProfileDefinition } from './handlers/get-profile.ts';
 import { getSafetyDefinition } from './handlers/get-safety.ts';
 import { getSessionDefinition } from './handlers/get-session.ts';
@@ -37,6 +39,8 @@ export function createAppMediator({ services, stores }: AppMediatorOptions): Med
       [RequestType.RecordDoctorOk]: recordDoctorOkDefinition,
       [RequestType.ExportData]: exportDataDefinition,
       [RequestType.DeleteAccount]: deleteAccountDefinition,
+      [RequestType.GetProgram]: getProgramDefinition,
+      [RequestType.CreateProgram]: createProgramDefinition,
     } satisfies Record<RequestType, unknown>,
   });
 }

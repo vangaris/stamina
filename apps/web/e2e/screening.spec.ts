@@ -4,6 +4,7 @@ import { expectNoAccessibilityViolations } from './support/onboarding-flow.ts';
 import {
   acceptConsents,
   answerScreening,
+  continueFromOutcome,
   QUESTION,
   signUpToConsent,
 } from './support/screening-flow.ts';
@@ -73,7 +74,7 @@ test('the cleared path: consent, every question answered, then Today', async ({
   ).toBeVisible();
   await expect(page.getByText('Get professional advice before training')).toHaveCount(0);
   await expectNoAccessibilityViolations(page);
-  await page.getByRole('button', { name: 'Continue to Today' }).click();
+  await continueFromOutcome(page);
   await expect(page).toHaveURL(/\/today$/);
   await expect(page.getByRole('heading', { name: 'Today' })).toBeVisible();
 
@@ -101,7 +102,7 @@ test('Nutrition off and an excluded area are explained, and training goes on', a
     page.getByText(/Get professional advice before training this area: knee\./),
   ).toBeVisible();
   await expectNoAccessibilityViolations(page);
-  await page.getByRole('button', { name: 'Continue to Today' }).click();
+  await continueFromOutcome(page);
   await expect(page).toHaveURL(/\/today$/);
 });
 
@@ -141,7 +142,7 @@ test('the referred path: a calm screen, export, then "a doctor has said I can tr
   await page.getByRole('button', { name: 'A doctor has said I can train' }).click();
   await expect(page.getByRole('heading', { name: 'Limited mode is on' })).toBeVisible();
   await expectNoAccessibilityViolations(page);
-  await page.getByRole('button', { name: 'Continue to Today' }).click();
+  await page.getByRole('button', { name: 'Continue', exact: true }).click();
   await expect(page).toHaveURL(/\/today$/);
   await expect(page.getByRole('heading', { name: 'Today' })).toBeVisible();
 

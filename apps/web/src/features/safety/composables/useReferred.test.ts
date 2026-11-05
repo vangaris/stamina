@@ -138,7 +138,7 @@ describe('useReferred: export and delete', () => {
 });
 
 describe('useReferred: "a doctor has said I can train"', () => {
-  it('records the statement, sets Limited mode and then goes on to Today', async () => {
+  it('records the statement, sets Limited mode and then goes on to the reveal', async () => {
     const { flow, onNavigate, services } = await setup();
     await flow.load();
 
@@ -146,8 +146,8 @@ describe('useReferred: "a doctor has said I can train"', () => {
 
     expect(flow.view.value).toBe(ReferredView.Limited);
     expect((await services.api.getSafety()).screening?.trainingMode).toBe(TrainingMode.Limited);
-    flow.continueToToday();
-    expect(onNavigate).toHaveBeenCalledWith(RoutePath.Today);
+    await flow.continueOn();
+    expect(onNavigate).toHaveBeenCalledWith(RoutePath.Reveal);
   });
 
   it('shows where the person belongs when the server turns the statement down', async () => {
