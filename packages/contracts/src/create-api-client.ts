@@ -3,11 +3,13 @@ import { ApiPath } from './enums/api-path.ts';
 import { HttpHeaderName } from './enums/http-header-name.ts';
 import { HttpMethod } from './enums/http-method.ts';
 import { HttpStatus } from './enums/http-status.ts';
+import { createProgramResultSchema } from './create-program-result-schema.ts';
 import { consentStateSchema } from './consent-schema.ts';
 import { getProfileResponseSchema } from './get-profile-response-schema.ts';
 import { healthResponseSchema } from './health-response-schema.ts';
 import { inviteCheckResponseSchema } from './invite-check-schema.ts';
 import { meResponseSchema } from './me-response-schema.ts';
+import { programResponseSchema } from './program-schema.ts';
 import { recordDoctorOkResultSchema } from './record-doctor-ok-result-schema.ts';
 import { safetyStateSchema } from './safety-state-schema.ts';
 import { saveProfileResultSchema } from './save-profile-result-schema.ts';
@@ -84,6 +86,14 @@ export function createApiClient({
     async recordDoctorOk() {
       const response = await postEmpty(ApiPath.DoctorOk, [HttpStatus.UnprocessableEntity]);
       return recordDoctorOkResultSchema.parse(await response.json());
+    },
+    async getProgram() {
+      const response = await send(ApiPath.Program, {});
+      return programResponseSchema.parse(await response.json()).program;
+    },
+    async createProgram() {
+      const response = await postEmpty(ApiPath.Program, [HttpStatus.UnprocessableEntity]);
+      return createProgramResultSchema.parse(await response.json());
     },
     async exportData() {
       const response = await send(ApiPath.MeExport, {});
