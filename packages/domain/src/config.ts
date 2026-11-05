@@ -381,3 +381,5 @@ export const MAX_KEY_MOVEMENTS = 6;
 export const MAX_SPORT_HIGH_LOAD_AREAS = 5;
 /** A Sport Profile must cite at least this many sources. */
 export const MIN_SPORT_SOURCES = 2;
+/** A Sport Profile's season names months 1 to this number. */
+export const MONTHS_IN_YEAR = 12;

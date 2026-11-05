@@ -11,6 +11,7 @@ import {
   MIN_METS,
   MIN_PLAY_MINUTES,
   MIN_SPORT_SOURCES,
+  MONTHS_IN_YEAR,
   SeasonKind,
   SportMovement,
 } from '@stamina/domain';
@@ -41,8 +42,8 @@ export const sportProfileSchema = z
     recoveryWindowHours: z.object({ lower: hours, upper: hours }),
     season: z.object({
       kind: z.enum(SeasonKind),
-      /** Usual months (1 to 12); empty for a year-round sport. */
-      months: z.array(z.number().int().min(1).max(12)).max(12),
+      /** Usual months (1 to `MONTHS_IN_YEAR`); empty for a year-round sport. */
+      months: z.array(z.number().int().min(1).max(MONTHS_IN_YEAR)).max(MONTHS_IN_YEAR),
     }),
     /** METs of the sport at each effort level, for calorie estimates. */
     metsPerIntensity: z.object({ easy: mets, moderate: mets, hard: mets }),

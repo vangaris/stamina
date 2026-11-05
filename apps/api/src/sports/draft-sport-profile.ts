@@ -7,11 +7,7 @@ import { sport } from '../db/schema.ts';
 import type { Db } from '../db/types.ts';
 import { buildSportDraftPrompt } from './build-sport-draft-prompt.ts';
 import { SportDraftError } from './sport-draft-error.ts';
-
-export interface DraftSportProfileOptions {
-  /** Replace a profile the draft already has (a researched file or a hand edit). Off by default. */
-  overwrite?: boolean;
-}
+import type { DraftSportProfileOptions } from './types.ts';
 
 /**
  * Drafts a profile with cited sources for one DRAFT sport and stores it on that row. Never

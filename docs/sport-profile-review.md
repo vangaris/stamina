@@ -21,7 +21,8 @@ shown to people until Vang approves it**. This page is how that review works.
   and/or sources), bump `version`, and keep it approved; update the file too, so the next
   re-seed starts from the corrected data. To re-seed instead, delete the row and let the next
   migrate recreate it as a draft, which you then review and approve again. If a person had asked for
-  that sport's name under "Other", the migrate moves their request to the launch sport.
+  that sport's name under "Other", migrate deletes their request with the stray row instead of
+  moving it, so nobody sees the unreviewed draft: they type the name again once it is approved.
 - **Requested sports.** A person who picks "Other…" and types a name creates (or joins) one draft
   sport per normalized name ("Beach  Tennis" and "beach tennis" are one) and a `sport_request`
   row. Only the people who requested it see it, labelled beta; everyone else sees only approved

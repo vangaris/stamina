@@ -1,5 +1,4 @@
 import { type LaunchSportData } from '@stamina/contracts';
-import { ENERGY_MIX_TOTAL, LaunchSport } from '@stamina/domain';
 import { beforeAll, describe, expect, it } from 'vitest';
 import { loadLaunchSports, SPORT_DATA_DIR } from '../src/sports/node.ts';
 
@@ -17,8 +16,10 @@ const FORBIDDEN_TITLE_WORDS = [
 
 /**
  * The real launch sport files (`apps/api/src/sports/data/*.json`), as the research drafted them.
- * Fails until all 11 exist and meet the bar; see `docs/sport-profile-review.md` for how a finding
- * is fixed. This is not Vang's review: it only catches what a machine can.
+ * `loadLaunchSports` already fails the suite when a file is missing or breaks the schema (energy
+ * mix, METs, https sources, one file per launch sport); these cases cover what the schema cannot.
+ * See `docs/sport-profile-review.md` for how a finding is fixed. This is not Vang's review: it
+ * only catches what a machine can.
  */
 describe('real sport data', () => {
   let sports: LaunchSportData[];
@@ -26,30 +27,8 @@ describe('real sport data', () => {
     sports = await loadLaunchSports(SPORT_DATA_DIR);
   });
 
-  it('has exactly one valid file per launch sport', () => {
-    expect(sports.map((s) => s.id).sort()).toEqual(Object.values(LaunchSport).sort());
-  });
-
-  it('adds every energy mix up to 100 and names at least one high-load area', () => {
-    for (const { id, profile } of sports) {
-      const { aerobic, repeatedSprint, explosive } = profile.energyMix;
-      expect(aerobic + repeatedSprint + explosive, id).toBe(ENERGY_MIX_TOTAL);
-      expect(profile.highLoadAreas.length, id).toBeGreaterThanOrEqual(1);
-    }
-  });
-
-  it('does not let METs fall as effort rises', () => {
-    for (const { id, profile } of sports) {
-      const { easy, moderate, hard } = profile.metsPerIntensity;
-      expect(hard, id).toBeGreaterThanOrEqual(moderate);
-      expect(moderate, id).toBeGreaterThanOrEqual(easy);
-    }
-  });
-
-  it('cites https sources, none repeated within a sport', () => {
+  it('cites no url twice within a sport', () => {
     for (const { id, sources } of sports) {
-      for (const source of sources)
-        expect(source.url.startsWith('https://'), `${id} ${source.url}`).toBe(true);
       expect(new Set(sources.map((s) => s.url)).size, `${id} repeats a url`).toBe(sources.length);
     }
   });

@@ -186,7 +186,7 @@ describe('launch sport sync', () => {
     expect((await row(LaunchSport.Padel)).name).toBe('Padel (edited)');
   });
 
-  it('moves the requests of a stray row with the same name onto the launch sport, instead of failing', async () => {
+  it('seeds a launch sport over a stray row with the same name and does not show the unreviewed draft to the people who asked', async () => {
     const hyrox = sports.find((s) => s.id === LaunchSport.Hyrox)!;
     const [first, second] = [crypto.randomUUID(), crypto.randomUUID()];
     await handle.db.insert(appUser).values([{ id: first }, { id: second }]);
@@ -211,7 +211,13 @@ describe('launch sport sync', () => {
       .select({ userId: sportRequest.userId })
       .from(sportRequest)
       .where(eq(sportRequest.sportId, LaunchSport.Hyrox));
-    expect(requests.map((r) => r.userId).sort()).toEqual([first, second].sort());
+    expect(requests).toEqual([]);
+    for (const user of [first, second]) {
+      const visible = await withUser(handle.db, user, (tx) =>
+        tx.select({ id: sport.id }).from(sport).where(eq(sport.id, LaunchSport.Hyrox)),
+      );
+      expect(visible).toEqual([]);
+    }
   });
 
   it('seeds a launch sport added later whose name somebody already requested', async () => {
@@ -225,13 +231,11 @@ describe('launch sport sync', () => {
 
     expect((await row(LaunchSport.Tennis)).name).toBe(tennis.name);
     expect(
-      (
-        await handle.db
-          .select()
-          .from(sportRequest)
-          .where(eq(sportRequest.sportId, LaunchSport.Tennis))
-      ).map((r) => r.userId),
-    ).toEqual([asker]);
+      await handle.db
+        .select()
+        .from(sportRequest)
+        .where(eq(sportRequest.sportId, LaunchSport.Tennis)),
+    ).toEqual([]);
     // A second sync changes nothing and does not fail.
     expect(await syncLaunchSports(handle.db, sports)).not.toContain(LaunchSport.Tennis);
   });

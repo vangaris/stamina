@@ -1,6 +1,6 @@
 import { AiUnavailableError, unavailableAiProvider } from '../src/ai/provider.ts';
 import { createPgDb } from '../src/db/pg-client.ts';
-import { draftSportProfile, SportDraftError } from '../src/sports/node.ts';
+import { DRAFT_OVERWRITE_FLAG, draftSportProfile, SportDraftError } from '../src/sports/node.ts';
 
 /**
  * Drafts the profile of one draft sport: `DATABASE_URL=... pnpm --filter @stamina/api sports:draft <sport-id> [--overwrite]`.
@@ -17,9 +17,9 @@ function fail(message: string): never {
 const url = process.env.DATABASE_URL;
 if (!url) fail('DATABASE_URL is required');
 const args = process.argv.slice(2);
-const overwrite = args.includes('--overwrite');
-const sportId = args.find((arg) => arg !== '--overwrite');
-if (!sportId) fail('usage: sports:draft <sport-id> [--overwrite]');
+const overwrite = args.includes(DRAFT_OVERWRITE_FLAG);
+const sportId = args.find((arg) => arg !== DRAFT_OVERWRITE_FLAG);
+if (!sportId) fail(`usage: sports:draft <sport-id> [${DRAFT_OVERWRITE_FLAG}]`);
 
 const { db, close } = createPgDb(url);
 try {
