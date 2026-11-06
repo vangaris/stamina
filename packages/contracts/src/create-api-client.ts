@@ -1,4 +1,7 @@
 import { ApiError } from './api-error.ts';
+import { logActivityResultSchema, weekLoadSchema } from './activity-schema.ts';
+import { ActivitySubpath } from './enums/activity-subpath.ts';
+import { activityPath } from './utils/activity-path.ts';
 import { ApiPath } from './enums/api-path.ts';
 import { HttpHeaderName } from './enums/http-header-name.ts';
 import { HttpMethod } from './enums/http-method.ts';
@@ -115,6 +118,14 @@ export function createApiClient({
     async finishSession(sessionId, finish) {
       const response = await postJson(sessionPath(sessionId, SessionSubpath.Finish), finish);
       return finishSessionResultSchema.parse(await response.json());
+    },
+    async logActivity(activity) {
+      const response = await postJson(activityPath(), activity, [HttpStatus.UnprocessableEntity]);
+      return logActivityResultSchema.parse(await response.json());
+    },
+    async getWeekLoad() {
+      const response = await send(activityPath(ActivitySubpath.Week), {});
+      return weekLoadSchema.parse(await response.json());
     },
     async exportData() {
       const response = await send(ApiPath.MeExport, {});

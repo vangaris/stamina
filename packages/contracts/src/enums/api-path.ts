@@ -20,4 +20,6 @@ export enum ApiPath {
   Program = '/program',
   /** One Session: `GET /sessions/{id}`, `POST /sessions/{id}/sets`, `POST /sessions/{id}/finish`. */
   Sessions = '/sessions',
+  /** Activities: `POST /activities` logs one, `GET /activities/week` reads this week's Load. */
+  Activities = '/activities',
 }

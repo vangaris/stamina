@@ -216,6 +216,43 @@ export interface PlayPattern {
   playIntensity: Intensity;
 }
 
+/** What `plannedActivities` reads: how the person plays, and for how long. */
+export interface PlannedActivityInput extends PlayPattern {
+  playMinutes: number;
+}
+
+/** An Activity planned from the person's play days. */
+export interface PlannedActivity {
+  /** `YYYY-MM-DD`, UTC. */
+  date: string;
+  weekday: Weekday;
+  minutes: number;
+  intensity: Intensity;
+}
+
+/** Load on one day, from a Session or an Activity. */
+export interface LoadEntry {
+  /** `YYYY-MM-DD`. */
+  date: string;
+  load: number;
+}
+
+/** The Load of one 7-day week. */
+export interface WeeklyLoad {
+  /** The week's first day, `YYYY-MM-DD`. */
+  startsOn: string;
+  load: number;
+}
+
+/** This week against the person's own recent weeks. */
+export interface LoadSummary {
+  current: WeeklyLoad;
+  /** The weeks before this one that count towards `average`, oldest first. */
+  previous: WeeklyLoad[];
+  /** The mean of `previous`, or null while there is none. */
+  average: number | null;
+}
+
 /** Everything `generateWeek` reads. */
 export interface GenerateWeekInput extends PlayPattern {
   goal: Goal;

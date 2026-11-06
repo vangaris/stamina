@@ -2,6 +2,7 @@ import { BodyHalf } from './enums/body-half.ts';
 import { ConsentPurpose } from './enums/consent-purpose.ts';
 import { Emphasis } from './enums/emphasis.ts';
 import { Equipment } from './enums/equipment.ts';
+import { Intensity } from './enums/intensity.ts';
 import { LaunchSport } from './enums/launch-sport.ts';
 import { MovementPattern } from './enums/movement-pattern.ts';
 import { ScreeningQuestion } from './enums/screening-question.ts';
@@ -560,6 +561,22 @@ export const MAX_LOGGED_REPS = 600;
 export const MAX_WEIGHT_KG = 1000;
 /** Longest Session minutes the person may report when finishing. */
 export const MAX_SESSION_MINUTES = 300;
+
+/**
+ * The session RPE an Activity counts at, by how hard the person played. Activities are logged by
+ * intensity, not RPE, so the server (not the client) holds the numbers.
+ */
+export const ACTIVITY_RPE_BY_INTENSITY: Readonly<Record<Intensity, number>> = {
+  [Intensity.Easy]: 4,
+  [Intensity.Moderate]: 6,
+  [Intensity.Hard]: 8,
+};
+/** An Activity may be logged for today or up to this many days back. */
+export const MAX_ACTIVITY_BACKDATE_DAYS = 7;
+/** Slack for a device clock or time zone ahead of the server's UTC date. */
+export const MAX_ACTIVITY_FUTURE_DAYS = 1;
+/** How many weeks before this one the average Load covers. */
+export const LOAD_AVERAGE_WEEKS = 4;
 
 /** Movement patterns of the lower body; every other pattern counts as upper body for progression. */
 export const LOWER_BODY_PATTERNS: readonly MovementPattern[] = [

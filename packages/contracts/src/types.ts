@@ -34,6 +34,15 @@ import type { saveScreeningResultSchema } from './save-screening-result-schema.t
 import type { savedProfileSchema } from './saved-profile-schema.ts';
 import type { savedScreeningSchema } from './saved-screening-schema.ts';
 import type { screeningSubmissionSchema } from './screening-submission-schema.ts';
+import type {
+  exportedActivitySchema,
+  loggedActivitySchema,
+  logActivityResultSchema,
+  logActivitySchema,
+  plannedActivitySchema,
+  weekLoadSchema,
+  weeklyLoadSchema,
+} from './activity-schema.ts';
 import type { userExportSchema } from './user-export-schema.ts';
 import type {
   exerciseVariantSchema,
@@ -90,6 +99,13 @@ export type SessionDetail = z.infer<typeof sessionDetailSchema>;
 export type SessionResponse = z.infer<typeof sessionResponseSchema>;
 export type LogSetResult = z.infer<typeof logSetResultSchema>;
 export type FinishSessionResult = z.infer<typeof finishSessionResultSchema>;
+export type LogActivity = z.infer<typeof logActivitySchema>;
+export type LoggedActivity = z.infer<typeof loggedActivitySchema>;
+export type ExportedActivity = z.infer<typeof exportedActivitySchema>;
+export type LogActivityResult = z.infer<typeof logActivityResultSchema>;
+export type PlannedActivity = z.infer<typeof plannedActivitySchema>;
+export type WeeklyLoad = z.infer<typeof weeklyLoadSchema>;
+export type WeekLoad = z.infer<typeof weekLoadSchema>;
 
 export interface ApiClientOptions {
   baseUrl: string;
@@ -130,6 +146,10 @@ export interface ApiClient {
   logSet(sessionId: string, set: LogSet): Promise<LogSetResult>;
   /** A second finish is ignored and returns the stored one (`recorded` false). */
   finishSession(sessionId: string, finish: FinishSession): Promise<FinishSessionResult>;
+  /** A repeat of an Activity id the server has is ignored (`recorded` false); `422` is a `Rejected` result, not an error. */
+  logActivity(activity: LogActivity): Promise<LogActivityResult>;
+  /** The week that holds today: its Load, the average of the weeks before, and its Activities. */
+  getWeekLoad(): Promise<WeekLoad>;
   /** Everything Stamina holds about the signed-in user. */
   exportData(): Promise<UserExport>;
   /** Hard-deletes the signed-in user's rows. Resolves once they are gone. */
