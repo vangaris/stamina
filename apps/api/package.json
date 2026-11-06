@@ -15,6 +15,7 @@
     "db:dev": "tsx scripts/dev-db.ts",
     "invites:create": "tsx --env-file-if-exists=.env scripts/create-invites.ts",
     "sports:draft": "tsx --env-file-if-exists=.env scripts/draft-sport.ts",
+    "eval": "tsx --env-file-if-exists=.env eval/run-eval.ts",
     "exercises:review": "tsx scripts/exercise-review.ts ../../docs/exercise-library-review.md"
   },
   "nx": {

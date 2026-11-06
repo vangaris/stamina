@@ -359,6 +359,9 @@
       "recovery": "A lighter Session: warm-up, core and mobility work.",
       "powerSpeedCue": "Move fast and stop when the speed drops."
     },
+    "exercise": {
+      "suggestedByAi": "Suggested by AI"
+    },
     "blocks": {
       "warm-up": "Warm-up",
       "main-strength": "Main strength",

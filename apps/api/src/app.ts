@@ -10,7 +10,7 @@ import { sql } from 'drizzle-orm';
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';
 import { HTTPException } from 'hono/http-exception';
-import type { AiProvider } from './ai/provider.ts';
+import type { AiGateway } from './ai/index.ts';
 import type { TokenVerifier } from './auth/index.ts';
 import { isOriginAllowed } from './cors.ts';
 import type { FieldCipher } from './crypto/index.ts';
@@ -32,7 +32,8 @@ import { sportRoutes } from './routes/sport-routes.ts';
 
 export interface AppDeps {
   db: Db;
-  ai: AiProvider;
+  /** Every model call goes through it (caps, kill switch, call log); fakes or the unavailable provider sit behind it. */
+  ai: AiGateway;
   /** Verifies the Bearer JWT on authenticated routes. */
   auth: TokenVerifier;
   /** Encrypts Screening answers at rest. */
@@ -48,6 +49,7 @@ export interface AppDeps {
 
 export function createApp({
   db,
+  ai,
   auth,
   cipher,
   corsOrigins = [],
@@ -87,7 +89,7 @@ export function createApp({
   app.route(ApiPath.Me, meRoutes({ db, auth }));
   app.route(ApiPath.MeExport, exportRoutes({ db, auth, cipher }));
   app.route(ApiPath.Profile, profileRoutes({ db, auth }));
-  app.route(ApiPath.Program, programRoutes({ db, auth, now }));
+  app.route(ApiPath.Program, programRoutes({ db, ai, auth, now }));
   app.route(ApiPath.Safety, safetyRoutes({ db, auth }));
   app.route(ApiPath.Consent, consentRoutes({ db, auth }));
   app.route(ApiPath.Screening, screeningRoutes({ db, auth, cipher }));

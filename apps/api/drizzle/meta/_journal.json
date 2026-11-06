@@ -50,6 +50,13 @@
       "when": 1793904202554,
       "tag": "0006_program",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1793944778567,
+      "tag": "0007_ai_picks",
+      "breakpoints": true
     }
   ]
 }

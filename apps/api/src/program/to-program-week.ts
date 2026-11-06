@@ -45,6 +45,7 @@ export function toProgramWeek({ block, sessions, exercises, play }: StoredWeek):
             unit: exercise.unit,
             rir: exercise.rir,
             loadGuidance: exercise.loadGuidance,
+            suggestedByAi: row.model !== null,
           })),
       })),
     hardActivityDates: play === null ? [] : hardActivityDates(startsOn, play),

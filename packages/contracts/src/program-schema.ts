@@ -28,6 +28,11 @@ export const programExerciseSchema = z.object({
   /** Reps in reserve to stop at; null where effort is not rated (warm-up, cool-down). */
   rir: z.number().int().min(0).max(MAX_RIR).nullable(),
   loadGuidance: z.enum(LoadGuidance),
+  /**
+   * An AI picked this exercise from the rules' candidates (the Session's `model` is set), so the
+   * screen shows a "Suggested by AI" label. False when the rules picker chose it.
+   */
+  suggestedByAi: z.boolean(),
 });
 
 /**

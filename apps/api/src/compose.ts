@@ -1,5 +1,5 @@
 import { createRemoteJWKSet } from 'jose';
-import { unavailableAiProvider } from './ai/provider.ts';
+import { createAiGateway, createAnthropicProvider, unavailableAiProvider } from './ai/index.ts';
 import { createApp } from './app.ts';
 import { createTokenVerifier } from './auth/index.ts';
 import type { Config } from './config.ts';
@@ -26,7 +26,9 @@ export interface Api {
  * AI provider, the field cipher, the request log and the error reporter are built once; the database handle per
  * request. The Node dev server and the Worker differ only in the `openDb` they pass.
  *
- * Phase A runs the "unavailable" AI provider (rules and templates only).
+ * The AI provider is Anthropic when `ANTHROPIC_API_KEY` is set (the launch switch, Phase B) and
+ * the "unavailable" provider otherwise (Phase A: rules and templates only). Either way every call
+ * goes through a gateway built per request, on that request's database handle.
  */
 export function composeApi(config: Config, openDb: OpenDb): Api {
   const auth = createTokenVerifier({
@@ -34,6 +36,9 @@ export function composeApi(config: Config, openDb: OpenDb): Api {
     issuer: config.neonAuth.issuer,
   });
   const cipher = createFieldCipher(config.screeningEncryptionKey);
+  const aiProvider = config.anthropicApiKey
+    ? createAnthropicProvider({ apiKey: config.anthropicApiKey })
+    : unavailableAiProvider;
   const errorReporter = config.sentry ? createErrorReporter(config.sentry) : undefined;
 
   return {
@@ -41,7 +46,10 @@ export function composeApi(config: Config, openDb: OpenDb): Api {
       const handle = openDb();
       const app = createApp({
         db: handle.db,
-        ai: unavailableAiProvider,
+        ai: createAiGateway(handle.db, {
+          provider: aiProvider,
+          pseudonymSecret: config.screeningEncryptionKey,
+        }),
         auth,
         cipher,
         corsOrigins: config.corsOrigins,

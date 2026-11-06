@@ -31,6 +31,11 @@ const envSchema = z.object({
       'SENTRY_DSN must be an https DSN on *.de.sentry.io',
     )
     .optional(),
+  /**
+   * Secret. The Anthropic API key. Unset or empty keeps the "unavailable" AI provider: Sessions
+   * are picked by the rules. Setting it is the launch switch for AI (Phase B).
+   */
+  ANTHROPIC_API_KEY: z.string().trim().optional(),
   SENTRY_ENVIRONMENT: z.enum(SentryEnvironment).default(SentryEnvironment.Production),
 });
 
@@ -47,6 +52,8 @@ export interface Config {
   /** Base64 of the 32-byte Screening encryption key. Never logged. */
   screeningEncryptionKey: string;
   neonAuth: NeonAuthConfig;
+  /** Present only when `ANTHROPIC_API_KEY` is set. */
+  anthropicApiKey?: string;
   /** Present only when `SENTRY_DSN` is set. */
   sentry?: { dsn: string; environment: SentryEnvironment };
 }
@@ -68,6 +75,7 @@ export function loadConfig(env: Record<string, string | undefined>): Config {
     corsOrigins: parsed.CORS_ORIGINS.split(',')
       .map((o) => o.trim())
       .filter(Boolean),
+    ...(parsed.ANTHROPIC_API_KEY ? { anthropicApiKey: parsed.ANTHROPIC_API_KEY } : {}),
     ...(parsed.SENTRY_DSN
       ? { sentry: { dsn: parsed.SENTRY_DSN, environment: parsed.SENTRY_ENVIRONMENT } }
       : {}),

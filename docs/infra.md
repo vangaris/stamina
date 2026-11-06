@@ -181,7 +181,7 @@ Rule: every account that holds a card gets a **€5 budget alert**, plus a hard 
 | Brevo (free, 300/day)                  | No                                                                                            | Paid plan: set the sending-limit alert and a budget alert at €5                                                                       |
 | GitHub (Free)                          | No                                                                                            | Pro ($4/mo): Settings > Billing > Budgets and alerts, €5, and a $0 Actions spending limit                                             |
 | Cloudflare                             | **Unverified: R2's checkout asks for payment details (R2 itself is free to 10 GB-month).** Treat the account as holding a card once R2 is enabled. | Notifications > Add > Usage Based Billing, threshold €5 (Pay-as-you-go accounts only; it needs the R2 subscription to exist)          |
-| AI provider (chosen in the Generation engine ticket) | Not yet chosen                                                                                | Required before first use: a prepaid credit or a hard monthly cap at the provider, plus a €5 alert                                    |
+| AI provider (Anthropic, Claude Haiku 5.5; see [ai.md](ai.md))   | **Yes** (Phase B; Phase A runs without it)                                                    | Required before first use: a prepaid credit or a hard monthly cap at the provider ($10), plus a €5 alert. Then set the Worker secret `ANTHROPIC_API_KEY`. |
 
 Exact setting names change; confirm them in each console when you add a card, and tick the box in the ticket only then.
 

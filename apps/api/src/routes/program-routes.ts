@@ -6,6 +6,7 @@ import {
 } from '@stamina/contracts';
 import { Hono } from 'hono';
 import { authenticate, requireUserId, type TokenVerifier } from '../auth/index.ts';
+import type { AiGateway } from '../ai/index.ts';
 import type { Db } from '../db/types.ts';
 import { withUser } from '../db/with-user.ts';
 import { createProgram, readProgram } from '../program/index.ts';
@@ -16,7 +17,17 @@ import type { AppEnv } from '../request-log.ts';
  * (creates it once, `200` with the week, or `422` with the reason; a repeat returns the stored
  * week). The body is empty: every input comes from the person's saved profile and Screening.
  */
-export function programRoutes({ db, auth, now }: { db: Db; auth: TokenVerifier; now: () => Date }) {
+export function programRoutes({
+  db,
+  ai,
+  auth,
+  now,
+}: {
+  db: Db;
+  ai: AiGateway;
+  auth: TokenVerifier;
+  now: () => Date;
+}) {
   const routes = new Hono<AppEnv>();
 
   routes.get('/', authenticate(auth), async (c) => {
@@ -26,7 +37,9 @@ export function programRoutes({ db, auth, now }: { db: Db; auth: TokenVerifier; 
   });
 
   routes.post('/', authenticate(auth), async (c) => {
-    const result = createProgramResultSchema.parse(await createProgram(db, requireUserId(c), now));
+    const result = createProgramResultSchema.parse(
+      await createProgram(db, ai, requireUserId(c), now),
+    );
     return c.json(
       result,
       result.status === RecordStatus.Saved ? HttpStatus.Ok : HttpStatus.UnprocessableEntity,

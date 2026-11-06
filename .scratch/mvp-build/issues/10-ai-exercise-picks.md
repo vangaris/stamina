@@ -8,11 +8,11 @@
 
 **Roadmap week:** 4
 
-- [ ] One AI provider interface; Anthropic Claude Haiku adapter written and tested against its API shape (switched on at launch: Phase A production runs the existing "unavailable" provider, so Sessions use the rules picker and no Anthropic key or card is needed); deterministic fake in tests
-- [ ] Prompt contains only slot spec, candidate and recent exercise IDs, sport, Goal, equipment: never user ID, age, sex, weight, Check-ins, Screening or stop flags (API test inspects the outgoing prompt via the fake)
-- [ ] Validators: strict schema, IDs ⊆ candidates, correct count per slot, no duplicates; failure → 1 retry → rules picker
-- [ ] Every call logged with purpose, model, tokens, cost and pseudonymous user; per-user cap 15 calls/day; global kill switch at 80 % of the monthly cap falls back to rules
-- [ ] Session stores model and prompt_version; stored picks are never regenerated
-- [ ] 'Suggested by AI' label on AI-picked exercises
-- [ ] Evaluation set skeleton (EN + EL cases) runs in CI when prompts change and reports the validator pass rate
-- [ ] `pnpm --filter @stamina/api sports:draft <sport-id>` drafts a Sport Profile with cited sources for a requested sport through the AI provider and stores it on the draft row (moved from ticket 08; Vang approves it before anyone else sees it)
+- [x] One AI provider interface; Anthropic Claude Haiku adapter written and tested against its API shape (switched on at launch: Phase A production runs the existing "unavailable" provider, so Sessions use the rules picker and no Anthropic key or card is needed); deterministic fake in tests
+- [x] Prompt contains only slot spec, candidate and recent exercise IDs, sport, Goal, equipment: never user ID, age, sex, weight, Check-ins, Screening or stop flags (API test inspects the outgoing prompt via the fake)
+- [x] Validators: strict schema, IDs ⊆ candidates, correct count per slot, no duplicates; failure → 1 retry → rules picker
+- [x] Every call logged with purpose, model, tokens, cost and pseudonymous user; per-user cap 15 calls/day; global kill switch at 80 % of the monthly cap falls back to rules
+- [x] Session stores model and prompt_version; stored picks are never regenerated
+- [x] 'Suggested by AI' label on AI-picked exercises
+- [x] Evaluation set skeleton (EN + EL cases) runs in CI when prompts change and reports the validator pass rate
+- [x] `pnpm --filter @stamina/api sports:draft <sport-id>` drafts a Sport Profile with cited sources for a requested sport through the AI provider and stores it on the draft row (moved from ticket 08; Vang approves it before anyone else sees it)

@@ -1,3 +1,4 @@
+import type { PickProblem } from './enums/pick-problem.ts';
 import type { BodyArea } from './enums/body-area.ts';
 import type { Emphasis } from './enums/emphasis.ts';
 import type { Equipment } from './enums/equipment.ts';
@@ -186,6 +187,26 @@ export interface PickedExercise {
   slot: SessionSlot;
 }
 
+/** What one slot of a Session needs and which exercises may fill it. */
+export interface SlotSpec {
+  slot: SessionSlot;
+  /** How many exercises fill the slot. */
+  count: number;
+  /** Exercise ids that pass the equipment and excluded-area filter for this slot, in library order. */
+  candidateIds: readonly string[];
+}
+
+/** What a picker needs to fill one Session: the slots with their candidates. */
+export interface PickSpec {
+  slots: readonly SlotSpec[];
+  /** Candidate ids already used earlier in the week; a picker prefers others. */
+  recentIds: readonly string[];
+}
+
+/** The result of `validatePicks`: the picks in the order they are done, or the first problem found. */
+export type PickValidation =
+  { valid: true; picks: PickedExercise[] } | { valid: false; problem: PickProblem };
+
 /** How the person plays their sport, from the profile. */
 export interface PlayPattern {
   playDays: readonly Weekday[];
@@ -208,6 +229,11 @@ export interface GenerateWeekInput extends PlayPattern {
   weekInBlock: number;
   /** The first day of the week, `YYYY-MM-DD` UTC. */
   startsOn: string;
+  /**
+   * Exercises already chosen for the week's Sessions, by Session in date order; `null` or absent
+   * means the rules pick that Session. A choice that does not pass `validatePicks` is ignored.
+   */
+  picks?: readonly (readonly PickedExercise[] | null)[];
 }
 
 /** One exercise of a generated Session with its prescription, in the order it is done. */

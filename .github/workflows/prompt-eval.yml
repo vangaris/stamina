@@ -1,0 +1,40 @@
+name: Prompt evaluation
+
+# Runs the evaluation set when a prompt, its schema or the set itself changes, and reports the
+# validator pass rate in the job summary. Without the `ANTHROPIC_API_KEY` secret (Phase A) the
+# offline harness answers: the job checks the harness only and cannot fail on quality. With the
+# secret it asks the real model and fails below 98 % valid first answers.
+on:
+  pull_request:
+    paths:
+      - apps/api/src/picks/build-picks-prompt.ts
+      - apps/api/src/picks/picks-schema.ts
+      - apps/api/src/picks/config.ts
+      - apps/api/src/sports/build-sport-draft-prompt.ts
+      - apps/api/eval/**
+      - apps/api/src/ai/**
+      - .github/workflows/prompt-eval.yml
+
+concurrency:
+  group: prompt-eval-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  eval:
+    name: session picks evaluation set
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter @stamina/api eval
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}

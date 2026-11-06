@@ -20,6 +20,7 @@ export function makeExercise(overrides: Partial<ProgramExercise> = {}): ProgramE
     unit: PrescriptionUnit.Reps,
     rir: 3,
     loadGuidance: LoadGuidance.RpeGuided,
+    suggestedByAi: false,
     ...overrides,
   };
 }
