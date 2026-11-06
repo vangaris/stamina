@@ -4,7 +4,7 @@
 
 **Blocked by:** 09: Program generation with rules only, plus the reveal
 
-**Status:** ready-for-agent
+**Status:** in-progress
 
 **Roadmap week:** 5
 
