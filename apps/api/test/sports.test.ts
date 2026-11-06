@@ -226,7 +226,7 @@ describe('sports', () => {
       await requestOther(requester, 'Roundnet');
       api.ai.queue({ profile: launch[3]!.profile, sources: launch[3]!.sources });
 
-      await draftSportProfile(api.db, api.ai.provider, (await rowByName('roundnet'))!.id);
+      await draftSportProfile(api.db, api.gateway, (await rowByName('roundnet'))!.id);
 
       expect(await listFor(requester)).toMatchObject([
         { name: 'Roundnet', status: SportStatus.Draft, beta: true, profile: launch[3]!.profile },

@@ -54,6 +54,9 @@ import {
   type AnyPgColumn,
 } from 'drizzle-orm/pg-core';
 import { APP_ROLE } from './config.ts';
+import { AiPurpose } from '../ai/enums/ai-purpose.ts';
+import { LlmOutcome } from '../ai/enums/llm-outcome.ts';
+import { PICK_REASON_MAX_LENGTH } from '../picks/config.ts';
 
 // Every table ships with its RLS policies and is only ever touched through `withUser`
 // (see `with-user.ts`). Policies compare the owner column with `app_user_id()` (baseline migration).
@@ -532,6 +535,10 @@ export const session = pgTable(
     check('session_revision_positive', sql`${table.revision} >= 1`),
     check('session_rules_version_positive', sql`${table.rulesVersion} >= 1`),
     check('session_inputs_hash_valid', sql`${table.inputsHash} ~ '^[0-9a-f]{64}$'`),
+    check(
+      'session_ai_pick_recorded',
+      sql`(${table.model} is null) = (${table.promptVersion} is null)`,
+    ),
     unique('session_block_date_revision').on(table.blockId, table.date, table.revision),
     index('session_user_date').on(table.userId, table.date),
     pgPolicy('session_owner_select', {
@@ -574,6 +581,8 @@ export const sessionExercise = pgTable(
     /** Reps in reserve; null where effort is not rated. */
     rir: integer('rir'),
     loadGuidance: text('load_guidance').$type<LoadGuidance>().notNull(),
+    /** The AI's one-line reason for this pick; null when the rules picked it. Never shown. */
+    pickReason: text('pick_reason'),
   },
   (table) => [
     check('session_exercise_slot_valid', isOneOf(table.slot, Object.values(SessionSlot))),
@@ -591,6 +600,10 @@ export const sessionExercise = pgTable(
       'session_exercise_rir_valid',
       sql`${table.rir} is null or ${table.rir} between 0 and ${sql.raw(String(MAX_RIR))}`,
     ),
+    check(
+      'session_exercise_pick_reason_length',
+      sql`${table.pickReason} is null or char_length(${table.pickReason}) <= ${sql.raw(String(PICK_REASON_MAX_LENGTH))}`,
+    ),
     unique('session_exercise_session_position').on(table.sessionId, table.position),
     pgPolicy('session_exercise_owner_select', {
       for: 'select',
@@ -602,5 +615,40 @@ export const sessionExercise = pgTable(
       to: APP_ROLE,
       withCheck: sql`user_id = app_user_id()::uuid`,
     }),
+  ],
+).enableRLS();
+
+/**
+ * One model call that reached the provider, for cost control and audit (spec "AI layer"). The
+ * user is a pseudonym (`pseudonymizeUser`), never an id, so the table holds no personal data and
+ * has no owner column: it carries no row-level policy and `stamina_app` has no privilege on it.
+ * Only the API's own connection (the table owner) writes and reads it, through the AI gateway.
+ * `cost_micro_usd` is whole millionths of a US dollar. `detail` is a short code (the validator's
+ * or the failure's), never any prompt or answer text.
+ */
+export const llmCall = pgTable(
+  'llm_call',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    at: timestamp('at', { withTimezone: true }).notNull().defaultNow(),
+    /** Null for work that is not about a person (the founder's Sport Profile draft). */
+    userPseudonym: text('user_pseudonym'),
+    purpose: text('purpose').$type<AiPurpose>().notNull(),
+    model: text('model').notNull(),
+    inputTokens: integer('input_tokens').notNull(),
+    outputTokens: integer('output_tokens').notNull(),
+    costMicroUsd: integer('cost_micro_usd').notNull(),
+    outcome: text('outcome').$type<LlmOutcome>().notNull(),
+    detail: text('detail'),
+  },
+  (table) => [
+    check('llm_call_purpose_valid', isOneOf(table.purpose, Object.values(AiPurpose))),
+    check('llm_call_outcome_valid', isOneOf(table.outcome, Object.values(LlmOutcome))),
+    check(
+      'llm_call_usage_valid',
+      sql`${table.inputTokens} >= 0 and ${table.outputTokens} >= 0 and ${table.costMicroUsd} >= 0`,
+    ),
+    index('llm_call_user_at').on(table.userPseudonym, table.at),
+    index('llm_call_at').on(table.at),
   ],
 ).enableRLS();

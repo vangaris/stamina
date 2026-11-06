@@ -5,12 +5,17 @@ import { promisify } from 'node:util';
 import { eq } from 'drizzle-orm';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { AiPurpose } from '../src/ai/enums/ai-purpose.ts';
-import { AiUnavailableError, unavailableAiProvider } from '../src/ai/provider.ts';
+import {
+  AiUnavailableError,
+  createAiGateway,
+  unavailableAiProvider,
+  type AiProvider,
+} from '../src/ai/index.ts';
 import { createPgDb } from '../src/db/pg-client.ts';
 import { sport } from '../src/db/schema.ts';
 import type { DbHandle } from '../src/db/types.ts';
 import { loadLaunchSports, SportDraftError, draftSportProfile } from '../src/sports/node.ts';
-import { createFakeAi } from './support/fake-ai.ts';
+import { createFakeAi, FAKE_AI_MODEL, FAKE_AI_USAGE } from './support/fake-ai.ts';
 import { FIXTURE_LIBRARY_DIR } from './support/exercise-library-dir.ts';
 import { createScratchDatabase, type ScratchDatabase } from './support/scratch-database.ts';
 import { FIXTURE_SPORT_DIR } from './support/sport-data-dir.ts';
@@ -46,6 +51,7 @@ describe('drafting a sport profile', () => {
     await handle.db.insert(appUser).values({ id: asker });
     return (await withUser(handle.db, asker, (tx) => requestSport(tx, name)))!;
   };
+  const gatewayFor = (provider: AiProvider) => createAiGateway(handle.db, { provider });
   const row = async (id: string) =>
     (await handle.db.select().from(sport).where(eq(sport.id, id)))[0]!;
 
@@ -54,7 +60,7 @@ describe('drafting a sport profile', () => {
     const ai = createFakeAi();
     ai.queue(draft());
 
-    await draftSportProfile(handle.db, ai.provider, id);
+    await draftSportProfile(handle.db, gatewayFor(ai.provider), id);
 
     expect(await row(id)).toMatchObject({
       status: SportStatus.Draft,
@@ -71,7 +77,7 @@ describe('drafting a sport profile', () => {
     const ai = createFakeAi();
     ai.queue(draft());
 
-    await draftSportProfile(handle.db, ai.provider, id);
+    await draftSportProfile(handle.db, gatewayFor(ai.provider), id);
 
     expect(ai.calls).toHaveLength(1);
     const [call] = ai.calls;
@@ -87,30 +93,35 @@ describe('drafting a sport profile', () => {
     const ai = createFakeAi();
     ai.queue(draft());
 
-    await expect(draftSportProfile(handle.db, ai.provider, LaunchSport.Running)).rejects.toThrow(
-      SportDraftError,
-    );
+    await expect(
+      draftSportProfile(handle.db, gatewayFor(ai.provider), LaunchSport.Running),
+    ).rejects.toThrow(SportDraftError);
     expect(ai.calls).toEqual([]);
     expect((await row(LaunchSport.Running)).profile).toEqual(before);
 
-    await draftSportProfile(handle.db, ai.provider, LaunchSport.Running, { overwrite: true });
+    await draftSportProfile(handle.db, gatewayFor(ai.provider), LaunchSport.Running, {
+      overwrite: true,
+    });
     expect((await row(LaunchSport.Running)).profile).toEqual(draft().profile);
   });
 
   it('does not overwrite a profile written by hand while the model was answering', async () => {
     const id = await undrafted('Hand Edited Sport');
     const handWritten = launch[3]!;
-    const racing = {
+    const racing: AiProvider = {
+      available: true,
       async generateObject<T>() {
         await handle.db
           .update(sport)
           .set({ profile: handWritten.profile, sources: handWritten.sources })
           .where(eq(sport.id, id));
-        return draft() as T;
+        return { object: draft() as T, model: FAKE_AI_MODEL, usage: FAKE_AI_USAGE };
       },
     };
 
-    await expect(draftSportProfile(handle.db, racing, id)).rejects.toBeInstanceOf(SportDraftError);
+    await expect(draftSportProfile(handle.db, gatewayFor(racing), id)).rejects.toBeInstanceOf(
+      SportDraftError,
+    );
     expect((await row(id)).profile).toEqual(handWritten.profile);
   });
 
@@ -129,7 +140,7 @@ describe('drafting a sport profile', () => {
     const ai = createFakeAi();
     ai.queue(draft());
 
-    await expect(draftSportProfile(handle.db, ai.provider, id)).rejects.toBeInstanceOf(
+    await expect(draftSportProfile(handle.db, gatewayFor(ai.provider), id)).rejects.toBeInstanceOf(
       SportDraftError,
     );
 
@@ -141,12 +152,12 @@ describe('drafting a sport profile', () => {
     const id = await undrafted('Rejected Sport');
     await handle.db.update(sport).set({ status: SportStatus.Rejected }).where(eq(sport.id, id));
     const ai = createFakeAi();
-    await expect(draftSportProfile(handle.db, ai.provider, id)).rejects.toBeInstanceOf(
+    await expect(draftSportProfile(handle.db, gatewayFor(ai.provider), id)).rejects.toBeInstanceOf(
       SportDraftError,
     );
-    await expect(draftSportProfile(handle.db, ai.provider, 'no-such-sport')).rejects.toBeInstanceOf(
-      SportDraftError,
-    );
+    await expect(
+      draftSportProfile(handle.db, gatewayFor(ai.provider), 'no-such-sport'),
+    ).rejects.toBeInstanceOf(SportDraftError);
     expect(ai.calls).toEqual([]);
   });
 
@@ -161,23 +172,24 @@ describe('drafting a sport profile', () => {
       sources: draft().sources,
     });
 
-    await expect(draftSportProfile(handle.db, ai.provider, id)).rejects.toThrow();
+    await expect(draftSportProfile(handle.db, gatewayFor(ai.provider), id)).rejects.toThrow();
 
     expect(await row(id)).toMatchObject({ profile: null, sources: null });
   });
 
   it('surfaces an unavailable provider and stores nothing', async () => {
     const id = await undrafted('Unavailable Sport');
-    await expect(draftSportProfile(handle.db, unavailableAiProvider, id)).rejects.toBeInstanceOf(
-      AiUnavailableError,
-    );
+    await expect(
+      draftSportProfile(handle.db, gatewayFor(unavailableAiProvider), id),
+    ).rejects.toBeInstanceOf(AiUnavailableError);
     expect(await row(id)).toMatchObject({ profile: null, sources: null });
   });
 
   it('does not overwrite a sport that was approved while the model was answering', async () => {
     const id = await undrafted('Race Sport');
     const approvedProfile = launch[2]!;
-    const racing = {
+    const racing: AiProvider = {
+      available: true,
       async generateObject<T>() {
         await handle.db
           .update(sport)
@@ -189,25 +201,27 @@ describe('drafting a sport profile', () => {
             approvedAt: new Date(),
           })
           .where(eq(sport.id, id));
-        return draft() as T;
+        return { object: draft() as T, model: FAKE_AI_MODEL, usage: FAKE_AI_USAGE };
       },
     };
 
-    await expect(draftSportProfile(handle.db, racing, id)).rejects.toBeInstanceOf(SportDraftError);
+    await expect(draftSportProfile(handle.db, gatewayFor(racing), id)).rejects.toBeInstanceOf(
+      SportDraftError,
+    );
     expect((await row(id)).profile).toEqual(approvedProfile.profile);
   });
 
-  it('exits non-zero from the sports:draft script, saying no AI provider is configured yet', async () => {
+  it('exits non-zero from the sports:draft script, saying ANTHROPIC_API_KEY is not set', async () => {
     const error = await run(
       'pnpm',
       ['exec', 'tsx', 'scripts/draft-sport.ts', LaunchSport.Padel, '--overwrite'],
-      { env: { ...process.env, DATABASE_URL: scratch.url } },
+      { env: { ...process.env, DATABASE_URL: scratch.url, ANTHROPIC_API_KEY: '' } },
     ).then(
       () => undefined,
       (e: unknown) => e as { code: number; stderr: string },
     );
     expect(error?.code).toBe(1);
-    expect(error?.stderr).toContain('No AI provider is configured yet');
+    expect(error?.stderr).toContain('ANTHROPIC_API_KEY is not set');
     expect((await row(LaunchSport.Padel)).status).toBe(SportStatus.Draft);
   }, 30_000);
 

@@ -27,5 +27,8 @@ const load = computed(() => {
     <span class="text-base text-text">{{ name }}</span>
     <span class="text-sm text-text-muted">{{ prescription }}</span>
     <span v-if="load" class="text-sm text-text-muted">{{ load }}</span>
+    <span v-if="exercise.suggestedByAi" class="text-xs text-text-muted" data-testid="ai-label">
+      {{ t('program.exercise.suggestedByAi') }}
+    </span>
   </li>
 </template>

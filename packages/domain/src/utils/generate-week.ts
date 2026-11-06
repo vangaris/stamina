@@ -1,6 +1,13 @@
 import { DEFAULT_RECOVERY_WINDOW_HOURS } from '../config.ts';
 import { TrainingMode } from '../enums/training-mode.ts';
-import type { GenerateWeekInput, GeneratedSession, GeneratedWeek } from '../types.ts';
+import type {
+  GenerateWeekInput,
+  GeneratedSession,
+  GeneratedWeek,
+  PickedExercise,
+  PickExercisesInput,
+} from '../types.ts';
+import { buildPickSpec } from './build-pick-spec.ts';
 import { chooseEmphasis } from './choose-emphasis.ts';
 import { hardDays } from './hard-days.ts';
 import { monthOf } from './month-of.ts';
@@ -8,6 +15,7 @@ import { pickExercises } from './pick-exercises.ts';
 import { placeSessions } from './place-sessions.ts';
 import { planFocuses } from './plan-focuses.ts';
 import { prescribe } from './prescribe.ts';
+import { validatePicks } from './validate-picks.ts';
 import { weekDates } from './week-dates.ts';
 
 /**
@@ -53,8 +61,8 @@ export function generateWeek(input: GenerateWeekInput): GeneratedWeek | null {
   const exercisesById = new Map(input.library.map((exercise) => [exercise.id, exercise]));
   const usedInWeek = new Set<string>();
   const sessions: GeneratedSession[] = [];
-  for (const slot of placed) {
-    const picks = pickExercises({
+  for (const [index, slot] of placed.entries()) {
+    const pickInput: PickExercisesInput = {
       library: input.library,
       equipment: input.equipment,
       excludedAreas: input.excludedAreas,
@@ -63,7 +71,8 @@ export function generateWeek(input: GenerateWeekInput): GeneratedWeek | null {
       limited,
       sport,
       usedInWeek,
-    });
+    };
+    const picks = chosenPicks(pickInput, input.picks?.[index]) ?? pickExercises(pickInput);
     if (picks === null) return null;
     sessions.push({
       ...slot,
@@ -87,4 +96,16 @@ export function generateWeek(input: GenerateWeekInput): GeneratedWeek | null {
     });
   }
   return { emphasis, startsOn, weekInBlock, limited, sessions };
+}
+
+/** The caller's choice for one Session when it passes `validatePicks`, else `null`: the rules pick instead. */
+function chosenPicks(
+  input: PickExercisesInput,
+  chosen: readonly PickedExercise[] | null | undefined,
+): PickedExercise[] | null {
+  if (!chosen) return null;
+  const spec = buildPickSpec(input);
+  if (spec === null) return null;
+  const result = validatePicks(spec, chosen);
+  return result.valid ? result.picks : null;
 }

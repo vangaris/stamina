@@ -15,6 +15,8 @@ export interface WorkerEnv {
   SCREENING_ENCRYPTION_KEY?: string;
   /** Secret, optional. */
   SENTRY_DSN?: string;
+  /** Secret, optional: its presence turns AI on (Phase B); without it the rules pick. */
+  ANTHROPIC_API_KEY?: string;
   NEON_AUTH_BASE_URL?: string;
   CORS_ORIGINS?: string;
   SENTRY_ENVIRONMENT?: string;

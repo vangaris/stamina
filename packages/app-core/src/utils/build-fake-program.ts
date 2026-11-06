@@ -33,7 +33,13 @@ export function buildFakeProgram(input: FakeProgramInput): Omit<ProgramWeek, 'ha
       ProgramExercise,
       'sets' | 'repMin' | 'repMax' | 'unit' | 'rir' | 'loadGuidance'
     >,
-  ): ProgramExercise => ({ ...named, name: { ...named.name }, slot, ...prescription });
+  ): ProgramExercise => ({
+    ...named,
+    name: { ...named.name },
+    slot,
+    ...prescription,
+    suggestedByAi: false,
+  });
 
   const reps = (range: { min: number; max: number }) => ({
     repMin: range.min,

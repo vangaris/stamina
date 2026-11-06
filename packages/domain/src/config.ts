@@ -474,6 +474,13 @@ export const SLOT_ORDER: readonly SessionSlot[] = [
   SessionSlot.CoolDown,
 ];
 
+/** The slots a Recovery Session has: no main strength, no sport support. */
+export const RECOVERY_SLOTS: readonly SessionSlot[] = [
+  SessionSlot.WarmUp,
+  SessionSlot.AccessoriesCore,
+  SessionSlot.CoolDown,
+];
+
 /** Heavy main-strength patterns of each focus, in the order a Session fills them. */
 export const MAIN_STRENGTH_PATTERNS: Readonly<
   Record<SessionFocus.Lower | SessionFocus.Upper, readonly MovementPattern[]>

@@ -11,6 +11,14 @@
 # AI prompts and validators
 /apps/api/src/ai/prompts/           @vangaris
 /apps/api/src/ai/validators/        @vangaris
+/apps/api/src/picks/build-picks-prompt.ts  @vangaris
+/apps/api/src/picks/picks-schema.ts        @vangaris
+/apps/api/src/picks/config.ts              @vangaris
+/apps/api/src/sports/build-sport-draft-prompt.ts @vangaris
+/packages/domain/src/utils/validate-picks.ts     @vangaris
+/packages/domain/src/utils/build-pick-spec.ts    @vangaris
+/packages/domain/src/utils/slot-*.ts             @vangaris
+/apps/api/eval/                     @vangaris
 
 # Copy (EN/EL messages, disclaimers, never-advise term lists)
 /packages/i18n/                     @vangaris

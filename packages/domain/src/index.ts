@@ -54,6 +54,7 @@ export { Intensity } from './enums/intensity.ts';
 export { LaunchSport } from './enums/launch-sport.ts';
 export { LoadGuidance } from './enums/load-guidance.ts';
 export { Need } from './enums/need.ts';
+export { PickProblem } from './enums/pick-problem.ts';
 export { PrescriptionUnit } from './enums/prescription-unit.ts';
 export { ReferralKind } from './enums/referral-kind.ts';
 export { SeasonKind } from './enums/season-kind.ts';
@@ -78,6 +79,11 @@ export type {
   SportDemands,
   TrainingModeInput,
   TrainingWeek,
+  PickedExercise,
+  PickExercisesInput,
+  PickSpec,
+  PickValidation,
+  SlotSpec,
 } from './types.ts';
 export { addDays } from './utils/add-days.ts';
 export { checkEligibility } from './utils/check-eligibility.ts';
@@ -92,3 +98,5 @@ export { validateTrainingWeek } from './utils/validate-training-week.ts';
 export { generateWeek } from './utils/generate-week.ts';
 export { hardActivityDates } from './utils/hard-activity-dates.ts';
 export { weekdayOf } from './utils/weekday-of.ts';
+export { buildPickSpec } from './utils/build-pick-spec.ts';
+export { validatePicks } from './utils/validate-picks.ts';

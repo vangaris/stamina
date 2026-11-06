@@ -1,11 +1,7 @@
 import {
-  LIMITED_EXCLUDED_PATTERNS,
   MAIN_STRENGTH_PATTERNS,
   RECOVERY_ACCESSORY_PATTERNS,
   SLOT_COUNTS_BY_MINUTES,
-  LIMITED_SKIPPED_SLOT,
-  LIMITED_SLOTS,
-  SLOT_ORDER,
   SPORT_MOVEMENT_PATTERNS,
 } from '../config.ts';
 import type { MovementPattern } from '../enums/movement-pattern.ts';
@@ -13,14 +9,9 @@ import { SessionFocus } from '../enums/session-focus.ts';
 import { SessionSlot } from '../enums/session-slot.ts';
 import type { PickedExercise, PickExercisesInput, PlannableExercise } from '../types.ts';
 import { compareText } from './compare-text.ts';
-import { selectExercises } from './select-exercises.ts';
-
-/** The slots a Recovery Session has: no main strength, no sport support. */
-const RECOVERY_SLOTS: readonly SessionSlot[] = [
-  SessionSlot.WarmUp,
-  SessionSlot.AccessoriesCore,
-  SessionSlot.CoolDown,
-];
+import { slotCandidates } from './slot-candidates.ts';
+import { slotCount } from './slot-count.ts';
+import { slotsOf } from './slots-of.ts';
 
 /**
  * Fills every slot of one Session from the library, or returns `null` when the library cannot
@@ -40,36 +31,21 @@ const RECOVERY_SLOTS: readonly SessionSlot[] = [
  *   sport-support slot (nearly all of it is jumps, bounds or ballistic swings); the exercises
  *   that slot would have had go to accessories-core so the Session length is still filled.
  */
-export function pickExercises({
-  library,
-  equipment,
-  excludedAreas,
-  focus,
-  minutes,
-  limited,
-  sport,
-  usedInWeek,
-}: PickExercisesInput): PickedExercise[] | null {
-  const counts = SLOT_COUNTS_BY_MINUTES[minutes];
-  if (counts === undefined) return null;
+export function pickExercises(input: PickExercisesInput): PickedExercise[] | null {
+  const { focus, limited, minutes, sport, usedInWeek } = input;
+  if (SLOT_COUNTS_BY_MINUTES[minutes] === undefined) return null;
 
   const supportPatterns = new Set<MovementPattern>(
     (sport?.keyMovements ?? []).flatMap((movement) => SPORT_MOVEMENT_PATTERNS[movement]),
   );
   const sportAreas = sport?.highLoadAreas ?? [];
-  const slots =
-    focus === SessionFocus.Recovery ? RECOVERY_SLOTS : limited ? LIMITED_SLOTS : SLOT_ORDER;
+  const slots = slotsOf({ focus, limited });
 
   const inSession = new Set<string>();
   const picked: PickedExercise[] = [];
 
   for (const slot of slots) {
-    const candidates = selectExercises(library, { equipment, slots: [slot], excludedAreas }).filter(
-      (exercise) =>
-        !inSession.has(exercise.id) &&
-        !(limited && LIMITED_EXCLUDED_PATTERNS.includes(exercise.movementPattern)) &&
-        fitsSlot(exercise, slot, focus),
-    );
+    const candidates = slotCandidates(input, slot, inSession);
     /** Recovery accessories: core and mobility first, anything else that passes only after them. */
     const isFallback = (exercise: PlannableExercise): boolean =>
       slot === SessionSlot.AccessoriesCore &&
@@ -102,10 +78,7 @@ export function pickExercises({
         )
         .map(({ exercise }) => exercise);
 
-    const wanted =
-      limited && slot === SessionSlot.AccessoriesCore && focus !== SessionFocus.Recovery
-        ? counts[slot] + counts[LIMITED_SKIPPED_SLOT]
-        : counts[slot];
+    const wanted = slotCount({ focus, limited, minutes }, slot)!;
 
     if (slot === SessionSlot.MainStrength && focus !== SessionFocus.Recovery) {
       for (const pattern of MAIN_STRENGTH_PATTERNS[focus]) {
@@ -126,12 +99,4 @@ export function pickExercises({
     }
   }
   return picked;
-}
-
-/** Whether an exercise suits a slot of a Session with this focus, beyond carrying the slot's tag. */
-function fitsSlot(exercise: PlannableExercise, slot: SessionSlot, focus: SessionFocus): boolean {
-  if (slot === SessionSlot.MainStrength && focus !== SessionFocus.Recovery) {
-    return MAIN_STRENGTH_PATTERNS[focus].includes(exercise.movementPattern);
-  }
-  return true;
 }

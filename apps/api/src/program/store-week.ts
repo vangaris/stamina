@@ -2,24 +2,19 @@ import { RULES_VERSION, SessionStatus, type GeneratedWeek } from '@stamina/domai
 import { block, program, session, sessionExercise } from '../db/schema.ts';
 import type { UserTx } from '../db/types.ts';
 import { FIRST_BLOCK_POSITION, FIRST_REVISION } from './config.ts';
-
-/** What a stored week records besides the generated Sessions. */
-export interface StoreWeekOptions {
-  inputsHash: string;
-  /** The person's sport is a requested one that is not approved yet. */
-  beta: boolean;
-}
+import type { StoreWeekOptions } from './types.ts';
 
 /**
  * Inserts the user's Program with its first Block, the week's Sessions and their exercises.
- * `model` and `prompt_version` stay null: no AI picked anything. The unique index on the user
+ * A Session the AI picked records its `model` and `prompt_version`, and each of its exercises the
+ * model's reason; one the rules picked leaves all three null. The unique index on the user
  * makes a second Program fail, so the caller holds `lockUser` and reads first.
  */
 export async function storeWeek(
   tx: UserTx,
   userId: string,
   week: GeneratedWeek,
-  { inputsHash, beta }: StoreWeekOptions,
+  { inputsHash, beta, pickInfo }: StoreWeekOptions,
 ): Promise<void> {
   const [programRow] = await tx.insert(program).values({ userId }).returning({ id: program.id });
   const [blockRow] = await tx
@@ -50,8 +45,8 @@ export async function storeWeek(
       revision: FIRST_REVISION,
       supersedesId: null,
       rulesVersion: RULES_VERSION,
-      model: null,
-      promptVersion: null,
+      model: pickInfo[index]?.model ?? null,
+      promptVersion: pickInfo[index]?.promptVersion ?? null,
       inputsHash,
     })),
   );
@@ -69,6 +64,7 @@ export async function storeWeek(
         unit: exercise.unit,
         rir: exercise.rir,
         loadGuidance: exercise.loadGuidance,
+        pickReason: pickInfo[index]?.reasons.get(exercise.exerciseId) ?? null,
       })),
     ),
   );

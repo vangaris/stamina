@@ -30,9 +30,9 @@ shown to people until Vang approves it**. This page is how that review works.
   `DATABASE_URL=<url> pnpm --filter @stamina/api sports:draft <sport-id> [--overwrite]` asks the AI provider for a
   profile and sources, from the sport's name only, and stores them on the **draft** row (it never
   approves, refuses a sport that is not a draft, and refuses one that already has a profile unless
-  you pass `--overwrite`). No AI provider exists in Phase A (ticket 10
-  adds it), so until then the script exits with a message and profiles are written by hand in the
-  table editor.
+  you pass `--overwrite`). The call goes through the AI gateway (logged in `llm_call`, counted in the
+  monthly spend) and needs `ANTHROPIC_API_KEY`. Phase A has none, so the script exits with a message
+  and profiles are written by hand in the table editor.
 - **Limits.** A person can have at most 5 requests on sports that are not approved
   (`MAX_SPORT_REQUESTS_PER_USER`); the sixth is turned away with a message. Renaming their sport
   gives the earlier request up when nobody else asked for it and no profile was drafted for it. A

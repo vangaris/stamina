@@ -1,13 +1,20 @@
-import { AiUnavailableError, unavailableAiProvider } from '../src/ai/provider.ts';
+import {
+  AiUnavailableError,
+  createAiGateway,
+  createAnthropicProvider,
+  unavailableAiProvider,
+} from '../src/ai/index.ts';
 import { createPgDb } from '../src/db/pg-client.ts';
 import { DRAFT_OVERWRITE_FLAG, draftSportProfile, SportDraftError } from '../src/sports/node.ts';
 
 /**
- * Drafts the profile of one draft sport: `DATABASE_URL=... pnpm --filter @stamina/api sports:draft <sport-id> [--overwrite]`.
+ * Drafts the profile of one draft sport: `DATABASE_URL=... ANTHROPIC_API_KEY=... pnpm --filter @stamina/api sports:draft <sport-id> [--overwrite]`.
  * A draft that already has a profile is refused unless `--overwrite` is given.
  * Run locally by the founder; the draft is reviewed and approved by hand afterwards
- * (`docs/sport-profile-review.md`). Problems go to stderr with a non-zero exit.
- * Phase A has no AI provider (ticket 10 adds Anthropic), so this exits with a message until then.
+ * (`docs/sport-profile-review.md`). The call goes through the AI gateway, so it is logged in
+ * `llm_call` and counts toward the monthly spend. Without `ANTHROPIC_API_KEY` (Phase A) the
+ * provider is the "unavailable" one and the script exits with a message. Problems go to stderr
+ * with a non-zero exit.
  */
 function fail(message: string): never {
   console.error(message);
@@ -21,13 +28,16 @@ const overwrite = args.includes(DRAFT_OVERWRITE_FLAG);
 const sportId = args.find((arg) => arg !== DRAFT_OVERWRITE_FLAG);
 if (!sportId) fail(`usage: sports:draft <sport-id> [${DRAFT_OVERWRITE_FLAG}]`);
 
+const apiKey = process.env.ANTHROPIC_API_KEY?.trim();
+const provider = apiKey ? createAnthropicProvider({ apiKey }) : unavailableAiProvider;
+
 const { db, close } = createPgDb(url);
 try {
-  await draftSportProfile(db, unavailableAiProvider, sportId, { overwrite });
+  await draftSportProfile(db, createAiGateway(db, { provider }), sportId, { overwrite });
   console.log(`Drafted "${sportId}". Review it, then approve it (docs/sport-profile-review.md).`);
 } catch (error) {
   if (error instanceof AiUnavailableError) {
-    fail('No AI provider is configured yet (Phase B, ticket 10), so nothing was drafted.');
+    fail('ANTHROPIC_API_KEY is not set (Phase A runs without AI), so nothing was drafted.');
   }
   if (error instanceof SportDraftError) fail(error.message);
   throw error;

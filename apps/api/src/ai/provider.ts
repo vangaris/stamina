@@ -1,17 +1,4 @@
-import type { z } from 'zod';
-import type { AiPurpose } from './enums/ai-purpose.ts';
-
-export interface AiRequest<T> {
-  purpose: AiPurpose;
-  prompt: string;
-  /** Strict schema the provider's structured output must satisfy. */
-  schema: z.ZodType<T>;
-}
-
-/** The one seam to the model vendor: production uses Anthropic, tests use a deterministic fake. */
-export interface AiProvider {
-  generateObject<T>(request: AiRequest<T>): Promise<T>;
-}
+import type { AiProvider } from './types.ts';
 
 export class AiUnavailableError extends Error {
   constructor() {
@@ -20,8 +7,12 @@ export class AiUnavailableError extends Error {
   }
 }
 
-/** Callers treat this like the kill switch: fall back to rules and fixed templates. */
+/**
+ * Phase A production: no key, no card. The gateway skips it (`available` is false), so callers
+ * fall back to rules and fixed templates, exactly as for the kill switch.
+ */
 export const unavailableAiProvider: AiProvider = {
+  available: false,
   async generateObject() {
     throw new AiUnavailableError();
   },
