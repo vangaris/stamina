@@ -5,6 +5,7 @@ export { createServices } from './create-services.ts';
 export { startSync } from './start-sync.ts';
 export { defineRequest } from './define-request.ts';
 export { FAKE_INVITE, QUEUED_RESULT } from './config.ts';
+export { isQueued } from './utils/is-queued.ts';
 export { AppErrorCode } from './enums/app-error-code.ts';
 export { AuthErrorCode } from './enums/auth-error-code.ts';
 export { HealthStateKind } from './enums/health-state-kind.ts';

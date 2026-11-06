@@ -4,6 +4,7 @@ import {
   ProfileStatus,
   getProfile,
   getWeekLoad,
+  isQueued,
   logActivity,
 } from '@stamina/app-core';
 import { RecordStatus, type LogActivity } from '@stamina/contracts';
@@ -14,7 +15,6 @@ import { FALLBACK_DRAFT, MESSAGE_FOR_REJECTION, ROUTE_WHEN_SIGNED_OUT } from '..
 import { PlayedMessageKey } from '../enums/played-message-key.ts';
 import { PlayedStatus } from '../enums/played-status.ts';
 import type { PlayedDraft, UsePlayedOptions } from '../types.ts';
-import { isQueued } from '../utils/is-queued.ts';
 import { ownSportName } from '../utils/own-sport-name.ts';
 import { toLoadPreview } from '../utils/to-load-preview.ts';
 import { toLocalDate } from '../utils/to-local-date.ts';
@@ -74,10 +74,6 @@ export function usePlayed(options: UsePlayedOptions) {
     messageKey.value = undefined;
     attemptId = undefined;
     open.value = true;
-  }
-
-  function closeSheet() {
-    open.value = false;
   }
 
   async function refreshWeek() {
@@ -143,7 +139,6 @@ export function usePlayed(options: UsePlayedOptions) {
     savedLoad,
     load,
     openSheet,
-    closeSheet,
     save,
   };
 }

@@ -11,7 +11,7 @@ import {
   addDays,
   Intensity,
   LaunchSport,
-  MAX_ACTIVITY_BACKDATE_DAYS,
+  MAX_ACTIVITY_FUTURE_DAYS,
   weekdayOf,
 } from '@stamina/domain';
 import { newId } from '@stamina/ids';
@@ -83,9 +83,9 @@ describe('logging an Activity through the mediator', () => {
     expect(await services.offlineQueue.pending()).toEqual([]);
   });
 
-  it('answers Rejected for a date too far back and drops the Activity locally', async () => {
+  it('answers Rejected for a date too far ahead and drops the Activity locally', async () => {
     const { mediator, services } = await setup();
-    const old = addDays(today(), -(MAX_ACTIVITY_BACKDATE_DAYS + 1));
+    const old = addDays(today(), MAX_ACTIVITY_FUTURE_DAYS + 1);
 
     const result = await mediator.send(logActivity(activityOn(old)));
 

@@ -571,9 +571,7 @@ export const ACTIVITY_RPE_BY_INTENSITY: Readonly<Record<Intensity, number>> = {
   [Intensity.Moderate]: 6,
   [Intensity.Hard]: 8,
 };
-/** An Activity may be logged for today or up to this many days back. */
-export const MAX_ACTIVITY_BACKDATE_DAYS = 7;
-/** Slack for a device clock or time zone ahead of the server's UTC date. */
+/** An Activity may be logged for a day this many days ahead of the server's UTC date (a device clock or time zone ahead). */
 export const MAX_ACTIVITY_FUTURE_DAYS = 1;
 /** How many weeks before this one the average Load covers. */
 export const LOAD_AVERAGE_WEEKS = 4;

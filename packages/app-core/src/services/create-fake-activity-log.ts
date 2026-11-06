@@ -12,7 +12,6 @@ import {
   activityRpe,
   ActivitySource,
   daysBetween,
-  MAX_ACTIVITY_BACKDATE_DAYS,
   MAX_ACTIVITY_FUTURE_DAYS,
   plannedActivities,
   summariseWeeklyLoad,
@@ -37,8 +36,8 @@ export interface FakeActivityContext {
 
 /**
  * What the fake API remembers of Activities, with the server's rules: append-only and idempotent
- * by id (a replay returns the stored one with `recorded: false`); a date more than a day ahead or
- * a week back is `DateOutOfRange`; Load is the intensity's RPE times minutes; `planned` when the
+ * by id (a replay returns the stored one with `recorded: false`); a date more than a day ahead
+ * is `DateOutOfRange` (any date back is kept, as the server does); Load is the intensity's RPE times minutes; `planned` when the
  * day is one of the person's play days. The week is Session Loads plus Activity Loads against the
  * average of the weeks before it.
  */
@@ -63,10 +62,7 @@ export function createFakeActivityLog() {
       const { userId, today } = context;
       const existing = read(userId).find(({ id }) => id === activity.id);
       if (existing) return { status: RecordStatus.Saved, recorded: false, activity: existing };
-      if (
-        daysBetween(today, activity.date) > MAX_ACTIVITY_FUTURE_DAYS ||
-        daysBetween(activity.date, today) > MAX_ACTIVITY_BACKDATE_DAYS
-      ) {
+      if (daysBetween(today, activity.date) > MAX_ACTIVITY_FUTURE_DAYS) {
         return { status: RecordStatus.Rejected, reason: ActivityRejection.DateOutOfRange };
       }
       const stored: LoggedActivity = {

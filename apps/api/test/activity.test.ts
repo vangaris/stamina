@@ -133,26 +133,25 @@ describe('Activities and Load', () => {
       ).toHaveLength(1);
     });
 
-    it('rejects a day more than a day ahead or more than a week back, and stores nothing', async () => {
+    it('rejects a day more than a day ahead, and stores nothing', async () => {
       const { user } = await player();
 
-      for (const date of ['2026-11-10', '2026-10-31']) {
-        const { status, result } = await postActivity(user, activityOf(date));
-        expect(status).toBe(422);
-        expect(result).toEqual({
-          status: RecordStatus.Rejected,
-          reason: ActivityRejection.DateOutOfRange,
-        });
-      }
+      const { status, result } = await postActivity(user, activityOf('2026-11-10'));
+
+      expect(status).toBe(422);
+      expect(result).toEqual({
+        status: RecordStatus.Rejected,
+        reason: ActivityRejection.DateOutOfRange,
+      });
       expect(await api.db.select().from(activity).where(eq(activity.userId, user.userId))).toEqual(
         [],
       );
     });
 
-    it('accepts tomorrow and the day a week back', async () => {
+    it('accepts tomorrow, and a day long past, as an Activity logged offline arrives late', async () => {
       const { user } = await player();
 
-      for (const date of ['2026-11-09', '2026-11-01']) {
+      for (const date of ['2026-11-09', '2026-09-01']) {
         expect((await postActivity(user, activityOf(date))).status).toBe(200);
       }
     });

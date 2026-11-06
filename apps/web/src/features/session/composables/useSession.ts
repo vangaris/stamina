@@ -1,4 +1,11 @@
-import { AppError, AppErrorCode, finishSession, getSessionDetail, logSet } from '@stamina/app-core';
+import {
+  AppError,
+  AppErrorCode,
+  finishSession,
+  getSessionDetail,
+  isQueued,
+  logSet,
+} from '@stamina/app-core';
 import { RecordStatus, type LogSet, type SessionDetail } from '@stamina/contracts';
 import { MAX_LOGGED_SETS, sessionLoad } from '@stamina/domain';
 import { newId } from '@stamina/ids';
@@ -34,7 +41,6 @@ import { buildOverviewRows } from '../utils/build-overview-rows.ts';
 import { buildSwapOptions } from '../utils/build-swap-options.ts';
 import { createSwapStore } from '../utils/create-swap-store.ts';
 import { defaultSetDraft } from '../utils/default-set-draft.ts';
-import { isQueued } from '../utils/is-queued.ts';
 import { keepAwake } from '../utils/keep-awake.ts';
 import { nextSetNumber } from '../utils/next-set-number.ts';
 import { nextSetTarget } from '../utils/next-set-target.ts';

@@ -7,7 +7,6 @@ import {
 } from '@stamina/contracts';
 import {
   ActivitySource,
-  MAX_ACTIVITY_BACKDATE_DAYS,
   MAX_ACTIVITY_FUTURE_DAYS,
   activityLoad,
   activityRpe,
@@ -25,8 +24,9 @@ import { toLoggedActivity } from './to-logged-activity.ts';
 
 /**
  * Records one Activity of the user, or rejects it when its day is more than
- * `MAX_ACTIVITY_FUTURE_DAYS` ahead of today or more than `MAX_ACTIVITY_BACKDATE_DAYS` behind it
- * (UTC, from `now`). The server sets the RPE and Load from the intensity and minutes, and marks
+ * `MAX_ACTIVITY_FUTURE_DAYS` ahead of today (UTC, from `now`). There is no limit on how far back:
+ * an Activity logged offline arrives whenever the device is next online, and refusing it would
+ * delete it. The server sets the RPE and Load from the intensity and minutes, and marks
  * the Activity `planned` when its day is one of the profile's play days. Replays are safe: an id
  * the user already has returns the stored Activity with `recorded: false` and changes nothing
  * (checked before the date, so a late retry of a saved Activity still answers `Saved`). An id that
@@ -52,7 +52,7 @@ export async function logActivity(
 
     const today = now.toISOString().slice(0, 10);
     const offset = daysBetween(today, entry.date);
-    if (offset > MAX_ACTIVITY_FUTURE_DAYS || offset < -MAX_ACTIVITY_BACKDATE_DAYS) {
+    if (offset > MAX_ACTIVITY_FUTURE_DAYS) {
       return { status: RecordStatus.Rejected, reason: ActivityRejection.DateOutOfRange };
     }
 
