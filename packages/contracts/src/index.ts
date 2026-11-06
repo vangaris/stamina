@@ -11,6 +11,21 @@ export { HttpMethod } from './enums/http-method.ts';
 export { HttpStatus } from './enums/http-status.ts';
 export { ProfileRejection } from './enums/profile-rejection.ts';
 export { ProgramRejection } from './enums/program-rejection.ts';
+export { SessionRejection } from './enums/session-rejection.ts';
+export { SessionSubpath } from './enums/session-subpath.ts';
+export { sessionPath } from './utils/session-path.ts';
+export {
+  exerciseVariantSchema,
+  finishedSessionSchema,
+  finishSessionResultSchema,
+  finishSessionSchema,
+  loggedSetSchema,
+  logSetResultSchema,
+  logSetSchema,
+  sessionDetailSchema,
+  sessionExerciseSchema,
+  sessionResponseSchema,
+} from './session-schema.ts';
 export { RecordStatus } from './enums/record-status.ts';
 export { SaveProfileStatus } from './enums/save-profile-status.ts';
 export { ScreeningRejection } from './enums/screening-rejection.ts';
@@ -59,6 +74,16 @@ export type {
   CreateProgramResult,
   ConsentState,
   Exercise,
+  ExerciseVariant,
+  FinishedSession,
+  FinishSession,
+  FinishSessionResult,
+  LoggedSet,
+  LogSet,
+  LogSetResult,
+  SessionDetail,
+  SessionExercise,
+  SessionResponse,
   ExerciseImage,
   ExerciseListResponse,
   ExerciseQuery,

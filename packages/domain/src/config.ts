@@ -546,3 +546,16 @@ export const FOCUS_SEQUENCE: readonly (SessionFocus.Lower | SessionFocus.Upper)[
 ];
 /** Days of the week in order, Monday first. */
 export const WEEKDAY_ORDER: readonly Weekday[] = Object.values(Weekday);
+
+/** Logging limits shared by the Session screen, the API and the database checks. */
+export const MIN_SET_RPE = 6;
+export const MAX_SET_RPE = 10;
+export const MIN_SESSION_RPE = 1;
+export const MAX_SESSION_RPE = 10;
+/** Most sets one exercise can have logged (the plan has at most a handful; this allows extra sets). */
+export const MAX_LOGGED_SETS = 20;
+/** Reps, or seconds for a timed hold. */
+export const MAX_LOGGED_REPS = 600;
+export const MAX_WEIGHT_KG = 1000;
+/** Longest Session minutes the person may report when finishing. */
+export const MAX_SESSION_MINUTES = 300;

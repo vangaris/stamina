@@ -35,6 +35,18 @@ import type { savedProfileSchema } from './saved-profile-schema.ts';
 import type { savedScreeningSchema } from './saved-screening-schema.ts';
 import type { screeningSubmissionSchema } from './screening-submission-schema.ts';
 import type { userExportSchema } from './user-export-schema.ts';
+import type {
+  exerciseVariantSchema,
+  finishedSessionSchema,
+  finishSessionResultSchema,
+  finishSessionSchema,
+  loggedSetSchema,
+  logSetResultSchema,
+  logSetSchema,
+  sessionDetailSchema,
+  sessionExerciseSchema,
+  sessionResponseSchema,
+} from './session-schema.ts';
 
 export type HealthResponse = z.infer<typeof healthResponseSchema>;
 export type MeResponse = z.infer<typeof meResponseSchema>;
@@ -68,6 +80,16 @@ export type ProgramBlock = z.infer<typeof programBlockSchema>;
 export type ProgramWeek = z.infer<typeof programWeekSchema>;
 export type ProgramResponse = z.infer<typeof programResponseSchema>;
 export type CreateProgramResult = z.infer<typeof createProgramResultSchema>;
+export type LogSet = z.infer<typeof logSetSchema>;
+export type LoggedSet = z.infer<typeof loggedSetSchema>;
+export type FinishSession = z.infer<typeof finishSessionSchema>;
+export type FinishedSession = z.infer<typeof finishedSessionSchema>;
+export type ExerciseVariant = z.infer<typeof exerciseVariantSchema>;
+export type SessionExercise = z.infer<typeof sessionExerciseSchema>;
+export type SessionDetail = z.infer<typeof sessionDetailSchema>;
+export type SessionResponse = z.infer<typeof sessionResponseSchema>;
+export type LogSetResult = z.infer<typeof logSetResultSchema>;
+export type FinishSessionResult = z.infer<typeof finishSessionResultSchema>;
 
 export interface ApiClientOptions {
   baseUrl: string;
@@ -102,6 +124,12 @@ export interface ApiClient {
   getProgram(): Promise<ProgramWeek | null>;
   /** Creates the Program if there is none (a repeat returns the stored one); `422` is a `Rejected` result, not an error. */
   createProgram(): Promise<CreateProgramResult>;
+  /** One Session with what is logged so far; `ApiError` 404 when it is not the signed-in user's. */
+  getSession(sessionId: string): Promise<SessionDetail>;
+  /** A repeat of a set id the server has is ignored (`recorded` false); `422` is a `Rejected` result, not an error. */
+  logSet(sessionId: string, set: LogSet): Promise<LogSetResult>;
+  /** A second finish is ignored and returns the stored one (`recorded` false). */
+  finishSession(sessionId: string, finish: FinishSession): Promise<FinishSessionResult>;
   /** Everything Stamina holds about the signed-in user. */
   exportData(): Promise<UserExport>;
   /** Hard-deletes the signed-in user's rows. Resolves once they are gone. */

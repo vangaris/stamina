@@ -17,7 +17,15 @@ export {
   MAX_KEY_MOVEMENTS,
   MAX_METS,
   MAX_PLAY_MINUTES,
+  MAX_LOGGED_REPS,
+  MAX_LOGGED_SETS,
   MAX_RIR,
+  MAX_SESSION_MINUTES,
+  MAX_SESSION_RPE,
+  MAX_SET_RPE,
+  MAX_WEIGHT_KG,
+  MIN_SESSION_RPE,
+  MIN_SET_RPE,
   MAX_RECOVERY_HOURS,
   MAX_SESSIONS_PER_WEEK,
   MAX_SPORT_HIGH_LOAD_AREAS,
@@ -55,6 +63,7 @@ export { LaunchSport } from './enums/launch-sport.ts';
 export { LoadGuidance } from './enums/load-guidance.ts';
 export { Need } from './enums/need.ts';
 export { PickProblem } from './enums/pick-problem.ts';
+export { ProgressionOutcome } from './enums/progression-outcome.ts';
 export { PrescriptionUnit } from './enums/prescription-unit.ts';
 export { ReferralKind } from './enums/referral-kind.ts';
 export { SeasonKind } from './enums/season-kind.ts';
