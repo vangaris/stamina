@@ -2,6 +2,7 @@ import type { ProgramExercise } from '@stamina/contracts';
 import { PrescriptionUnit } from '@stamina/domain';
 import { PrescriptionMessageKey } from '../enums/prescription-message-key.ts';
 import type { PrescriptionView } from '../types.ts';
+import { formatRepRange } from './format-rep-range.ts';
 
 /** Which message reads this exercise's prescription, and the numbers it takes. */
 export function toPrescriptionView({
@@ -11,7 +12,7 @@ export function toPrescriptionView({
   unit,
   rir,
 }: ProgramExercise): PrescriptionView {
-  const range = repMin === repMax ? `${repMin}` : `${repMin}-${repMax}`;
+  const range = formatRepRange({ repMin, repMax });
   let key = PrescriptionMessageKey.Reps;
   if (unit === PrescriptionUnit.Seconds) key = PrescriptionMessageKey.Seconds;
   else if (rir !== null) key = PrescriptionMessageKey.RepsWithReserve;

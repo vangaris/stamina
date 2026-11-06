@@ -6,5 +6,7 @@ export enum AppErrorCode {
   TooManyAttempts = 'too_many_attempts',
   Offline = 'offline',
   Unauthorized = 'unauthorized',
+  /** Sign-out refused: Session logs still wait to be sent, and signing out would wipe them. */
+  UnsyncedData = 'unsynced_data',
   Unknown = 'unknown',
 }

@@ -1,4 +1,4 @@
-import type { Mediator } from '@stamina/app-core';
+import type { Mediator, Services, Stores } from '@stamina/app-core';
 import type { RouteName } from './enums/route-name.ts';
 
 export interface SafetyGuardOptions {
@@ -15,4 +15,11 @@ export interface ServicesEnvInput {
   apiUrl?: string | undefined;
   /** The origin the app is served from (`location.origin`). */
   origin: string;
+}
+
+export interface StartAppSyncOptions {
+  services: Services;
+  stores: Stores;
+  /** The browser's `window`; anything that emits `focus` and `online`. */
+  target: EventTarget;
 }

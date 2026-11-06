@@ -3,8 +3,9 @@ import { createPinia } from 'pinia';
 import { createApp, watchEffect } from 'vue';
 import App from './App.vue';
 import { i18n } from './i18n.ts';
-import { useMediator } from './mediator.ts';
+import { useMediator, useServices, useStores } from './mediator.ts';
 import { router } from './router.ts';
+import { startAppSync } from './utils/start-app-sync.ts';
 import './style.css';
 
 const app = createApp(App).use(createPinia()).use(router).use(i18n);
@@ -29,6 +30,9 @@ async function start() {
   void useMediator()
     .send(getSession())
     .catch(() => undefined);
+  // Sets and finishes logged without signal wait in the offline queue; send them now, and again
+  // whenever the app regains focus or the phone comes back online.
+  startAppSync({ services: useServices(), stores: useStores(), target: window });
   app.mount('#app');
 }
 

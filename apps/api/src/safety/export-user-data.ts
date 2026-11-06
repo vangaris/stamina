@@ -1,16 +1,25 @@
 import { userExportSchema, type UserExport } from '@stamina/contracts';
 import { asc, eq } from 'drizzle-orm';
 import type { FieldCipher } from '../crypto/index.ts';
-import { consent, profile, screening, sport, sportRequest } from '../db/schema.ts';
+import {
+  consent,
+  profile,
+  screening,
+  sessionLog,
+  setLog,
+  sport,
+  sportRequest,
+} from '../db/schema.ts';
 import type { Db } from '../db/types.ts';
 import { withUser } from '../db/with-user.ts';
 import { readProgram } from '../program/index.ts';
+import { toFinishedSession } from '../sessions/index.ts';
 import { toSavedProfile } from '../profile/to-saved-profile.ts';
 import { storedAnswersSchema } from './stored-answers-schema.ts';
 import { toSavedScreening } from './to-saved-screening.ts';
 
 /**
- * Everything held about the user: profile, every consent row, the Program week, every sport they asked for and every Screening with its
+ * Everything held about the user: profile, every consent row, the Program week, every logged set and finished Session, every sport they asked for and every Screening with its
  * answers decrypted, oldest first. The one place answers leave the server.
  */
 export async function exportUserData(
@@ -18,10 +27,8 @@ export async function exportUserData(
   cipher: FieldCipher,
   userId: string,
 ): Promise<UserExport> {
-  const { profileRow, consentRows, screeningRows, programWeek } = await withUser(
-    db,
-    userId,
-    async (tx) => ({
+  const { profileRow, consentRows, screeningRows, programWeek, setRows, finishRows } =
+    await withUser(db, userId, async (tx) => ({
       profileRow: (await tx.select().from(profile).where(eq(profile.userId, userId)))[0],
       consentRows: await tx
         .select()
@@ -34,8 +41,17 @@ export async function exportUserData(
         .where(eq(screening.userId, userId))
         .orderBy(asc(screening.takenAt)),
       programWeek: await readProgram(tx, userId),
-    }),
-  );
+      setRows: await tx
+        .select()
+        .from(setLog)
+        .where(eq(setLog.userId, userId))
+        .orderBy(asc(setLog.createdAt), asc(setLog.setNumber)),
+      finishRows: await tx
+        .select()
+        .from(sessionLog)
+        .where(eq(sessionLog.userId, userId))
+        .orderBy(asc(sessionLog.finishedAt)),
+    }));
 
   // As the table owner, filtered by the user: a rejected sport is hidden from its requesters by
   // the `sport_visible` policy, but the request is still the user's data and is exported.
@@ -70,6 +86,20 @@ export async function exportUserData(
       withdrawnAt: row.withdrawnAt?.toISOString() ?? null,
     })),
     program: programWeek,
+    setLogs: setRows.map((row) => ({
+      id: row.id,
+      sessionId: row.sessionId,
+      exerciseId: row.exerciseId,
+      setNumber: row.setNumber,
+      weightKg: row.weightKg,
+      reps: row.reps,
+      rpe: row.rpe,
+      loggedAt: row.createdAt.toISOString(),
+    })),
+    sessionLogs: finishRows.map((row) => ({
+      ...toFinishedSession(row),
+      sessionId: row.sessionId,
+    })),
     sportRequests: sportRequestRows.map((row) => ({
       sportId: row.sportId,
       name: row.name,

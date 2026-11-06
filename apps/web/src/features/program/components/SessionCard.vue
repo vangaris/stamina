@@ -1,12 +1,16 @@
 <script setup lang="ts">
+import { Button } from '@stamina/ui-button';
 import { Card, CardElement } from '@stamina/ui-card';
-import { Emphasis, SessionFocus } from '@stamina/domain';
+import { SessionFocus } from '@stamina/domain';
 import { computed, useId } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { SessionBlockKind } from '../enums/session-block-kind.ts';
+import { RouterLink } from 'vue-router';
+import { RouteName } from '../../../enums/route-name.ts';
+import { SessionProgress } from '../enums/session-progress.ts';
 import type { SessionCardProps } from '../types.ts';
 import { formatDate } from '../utils/format-date.ts';
 import { groupSessionBlocks } from '../utils/group-session-blocks.ts';
+import { showsPowerSpeedCue } from '../utils/shows-power-speed-cue.ts';
 import ExerciseRow from './ExerciseRow.vue';
 
 const props = defineProps<SessionCardProps>();
@@ -41,7 +45,7 @@ const blocks = computed(() => groupSessionBlocks(props.session));
           {{ t(`program.blocks.${block.kind}`) }}
         </h4>
         <p
-          v-if="block.kind === SessionBlockKind.MainStrength && emphasis === Emphasis.PowerSpeed"
+          v-if="showsPowerSpeedCue(block.kind, emphasis)"
           class="text-sm text-text-muted"
           data-testid="power-speed-cue"
         >
@@ -56,6 +60,25 @@ const blocks = computed(() => groupSessionBlocks(props.session));
           />
         </ul>
       </section>
+      <footer v-if="progress">
+        <p
+          v-if="progress === SessionProgress.Done"
+          class="text-base font-semibold text-text"
+          data-testid="session-done"
+        >
+          {{ t('program.session.action.done') }}
+        </p>
+        <RouterLink
+          v-else
+          v-slot="{ navigate }"
+          custom
+          :to="{ name: RouteName.SessionDetail, params: { sessionId: session.id } }"
+        >
+          <Button block :aria-describedby="headingId" data-testid="session-start" @click="navigate">
+            {{ t(`program.session.action.${progress}`) }}
+          </Button>
+        </RouterLink>
+      </footer>
     </div>
   </Card>
 </template>

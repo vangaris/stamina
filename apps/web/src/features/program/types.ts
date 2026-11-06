@@ -14,6 +14,7 @@ import type { ProgramMessageKey } from './enums/program-message-key.ts';
 import type { ProgramOutcomeKind } from './enums/program-outcome-kind.ts';
 import type { ProgramPhase } from './enums/program-phase.ts';
 import type { SessionBlockKind } from './enums/session-block-kind.ts';
+import type { SessionProgress } from './enums/session-progress.ts';
 
 export interface UseProgramOptions {
   /** Called when the person belongs on another screen (or must sign in again). */
@@ -58,6 +59,8 @@ export interface SessionCardProps {
   /** The Block's emphasis: power and speed adds a cue beside the main-strength work. */
   emphasis: Emphasis;
   locale: Locale;
+  /** Where the Session stands; the card offers to start or continue it, or says it is done. Nothing: no action (the reveal). */
+  progress?: SessionProgress | undefined;
 }
 
 export interface ExerciseRowProps {
@@ -71,6 +74,8 @@ export interface WeekListProps {
   locale: Locale;
   /** Days with no Session are listed, as free days or play days. */
   showFreeDays: boolean;
+  /** Where each Session stands, by Session id. Without it the cards offer no action. */
+  progress?: Readonly<Record<string, SessionProgress>> | undefined;
 }
 
 export interface ProgramGateProps {

@@ -1,6 +1,7 @@
 export enum RouteName {
   Today = 'today',
   Session = 'session',
+  SessionDetail = 'session-detail',
   Meals = 'meals',
   Progress = 'progress',
   SignIn = 'sign-in',

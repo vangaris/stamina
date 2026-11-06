@@ -1,3 +1,5 @@
+import type { BodyHalf } from './enums/body-half.ts';
+import type { ProgressionOutcome } from './enums/progression-outcome.ts';
 import type { PickProblem } from './enums/pick-problem.ts';
 import type { BodyArea } from './enums/body-area.ts';
 import type { Emphasis } from './enums/emphasis.ts';
@@ -253,4 +255,34 @@ export interface GeneratedWeek {
   weekInBlock: number;
   limited: boolean;
   sessions: GeneratedSession[];
+}
+
+/** One set as logged: what the person lifted and how hard it felt. */
+export interface LoggedEffort {
+  weightKg: number;
+  /** Reps, or seconds for a timed hold. */
+  reps: number;
+  rpe: number;
+}
+
+/** What `progressLoad` reads: how an exercise was prescribed in its last finished Session, and what was logged. */
+export interface ProgressLoadInput {
+  half: BodyHalf;
+  /** How the exercise is loaded now; only `RpeGuided` exercises carry a weight to progress. */
+  loadGuidance: LoadGuidance;
+  /** Sets prescribed in that Session. */
+  sets: number;
+  /** Top of the prescribed rep range. */
+  repMax: number;
+  /** Reps in reserve prescribed; `null` where effort is not rated. */
+  rir: number | null;
+  /** The sets logged for the exercise in that Session. */
+  logged: readonly LoggedEffort[];
+}
+
+/** How the next Session treats an exercise's weight, and the weight to start with. */
+export interface Progression {
+  outcome: ProgressionOutcome;
+  /** Kilograms, rounded to the nearest half. */
+  suggestedWeightKg: number;
 }

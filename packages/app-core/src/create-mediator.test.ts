@@ -1,3 +1,4 @@
+import { ApiError } from '@stamina/contracts';
 import { describe, expect, it } from 'vitest';
 import { z } from 'zod';
 import { QUEUED_RESULT } from './config.ts';
@@ -15,6 +16,8 @@ enum TestRequestType {
   Echo = 'Echo',
   Missing = 'Missing',
   Boom = 'Boom',
+  Unreachable = 'Unreachable',
+  Refused = 'Refused',
 }
 
 interface Echo extends Request<string> {
@@ -25,25 +28,44 @@ interface Echo extends Request<string> {
 const stores = { name: 'stores' };
 type TestStores = typeof stores;
 
-const echo = (offline: OfflinePolicy) =>
+const echo = (offline: OfflinePolicy, writeLocal?: (text: string) => void) =>
   defineRequest<Echo, Services, TestStores>({
     schema: z.object({ type: z.literal(TestRequestType.Echo), text: z.string().trim().min(1) }),
     offline,
+    ...(writeLocal ? { writeLocal: async (request) => writeLocal(request.text) } : {}),
     handler: async (request, context) => `${request.text}:${context.stores.name}`,
   });
 
-function setup(overrides: Partial<Services> = {}, offline = OfflinePolicy.Never) {
+function setup(
+  overrides: Partial<Services> = {},
+  offline = OfflinePolicy.Never,
+  writeLocal?: (text: string) => void,
+) {
   const services: Services = { ...createServices({ mode: ServicesMode.Test }), ...overrides };
   const mediator = createMediator({
     services,
     stores,
     registry: {
-      [TestRequestType.Echo]: echo(offline),
+      [TestRequestType.Echo]: echo(offline, writeLocal),
+      [TestRequestType.Unreachable]: defineRequest<Request, Services, TestStores>({
+        schema: z.object({ type: z.literal(TestRequestType.Unreachable) }),
+        offline,
+        handler: async () => {
+          throw new TypeError('Failed to fetch');
+        },
+      }),
       [TestRequestType.Boom]: defineRequest<Request, Services, TestStores>({
         schema: z.object({ type: z.literal(TestRequestType.Boom) }),
         offline,
         handler: async () => {
           throw new Error('secret@example.com');
+        },
+      }),
+      [TestRequestType.Refused]: defineRequest<Request, Services, TestStores>({
+        schema: z.object({ type: z.literal(TestRequestType.Refused) }),
+        offline,
+        handler: async () => {
+          throw new ApiError(422);
         },
       }),
     },
@@ -102,7 +124,7 @@ describe('createMediator', () => {
       const request: Echo = { type: TestRequestType.Echo, text: 'hi' };
 
       expect(await mediator.send(request)).toBe(QUEUED_RESULT);
-      expect(await services.offlineQueue.pending()).toEqual([request]);
+      expect(await services.offlineQueue.pending()).toEqual([{ id: 1, request }]);
     });
 
     it('runs Always requests anyway', async () => {
@@ -111,6 +133,56 @@ describe('createMediator', () => {
       expect(await mediator.send<Echo>({ type: TestRequestType.Echo, text: 'hi' })).toBe(
         'hi:stores',
       );
+    });
+
+    it('writes locally before queueing, and also while online', async () => {
+      const written: string[] = [];
+      const { mediator } = setup(offline, OfflinePolicy.Queue, (text) => written.push(text));
+
+      await mediator.send<Echo>({ type: TestRequestType.Echo, text: ' hi ' });
+
+      expect(written).toEqual(['hi']);
+    });
+
+    it('queues a Queue request behind requests already waiting, even while online', async () => {
+      const { mediator, services } = setup({}, OfflinePolicy.Queue);
+      const first: Echo = { type: TestRequestType.Echo, text: 'first' };
+      await services.offlineQueue.enqueue(first);
+
+      expect(await mediator.send<Echo>({ type: TestRequestType.Echo, text: 'second' })).toBe(
+        QUEUED_RESULT,
+      );
+      expect((await services.offlineQueue.pending()).map(({ request }) => request)).toEqual([
+        { type: TestRequestType.Echo, text: 'first' },
+        { type: TestRequestType.Echo, text: 'second' },
+      ]);
+    });
+
+    it('queues a Queue request whose send could not reach the server', async () => {
+      const { mediator, services } = setup({}, OfflinePolicy.Queue);
+
+      expect(await mediator.send({ type: TestRequestType.Unreachable })).toBe(QUEUED_RESULT);
+      expect((await services.offlineQueue.pending()).map(({ request }) => request)).toEqual([
+        { type: TestRequestType.Unreachable },
+      ]);
+    });
+
+    it('queues a Queue request that failed for an unrecognised reason', async () => {
+      const { mediator, services } = setup({}, OfflinePolicy.Queue);
+
+      expect(await mediator.send({ type: TestRequestType.Boom })).toBe(QUEUED_RESULT);
+      expect((await services.offlineQueue.pending()).map(({ request }) => request)).toEqual([
+        { type: TestRequestType.Boom },
+      ]);
+    });
+
+    it('does not queue a Queue request the server refused for good, and rejects it', async () => {
+      const { mediator, services } = setup({}, OfflinePolicy.Queue);
+
+      await expect(mediator.send({ type: TestRequestType.Refused })).rejects.toMatchObject({
+        code: AppErrorCode.Unknown,
+      });
+      expect(await services.offlineQueue.pending()).toEqual([]);
     });
 
     it('does not queue while online', async () => {
@@ -129,7 +201,7 @@ describe('createMediator', () => {
       const ticks = [100, 142];
       const overrides: Partial<Services> = {
         logger: { log: (entry) => lines.push(entry) },
-        clock: { now: () => ticks.shift() ?? 142 },
+        clock: { now: () => ticks.shift() ?? 142, wallTime: () => new Date(0) },
       };
       return { lines, overrides };
     }

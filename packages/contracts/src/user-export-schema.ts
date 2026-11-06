@@ -4,6 +4,7 @@ import { z } from 'zod';
 import { programWeekSchema } from './program-schema.ts';
 import { savedProfileSchema } from './saved-profile-schema.ts';
 import { savedScreeningSchema } from './saved-screening-schema.ts';
+import { exportedFinishSchema, exportedSetSchema } from './session-schema.ts';
 
 /**
  * Everything Stamina holds about the signed-in user, as JSON. Screening answers are decrypted
@@ -31,6 +32,10 @@ export const userExportSchema = z.object({
   ),
   /** The generated Program week, or `null` before the person has one. */
   program: programWeekSchema.nullable(),
+  /** Every set the person logged, oldest first. */
+  setLogs: z.array(exportedSetSchema),
+  /** Every Session the person finished, oldest first. */
+  sessionLogs: z.array(exportedFinishSchema),
   screenings: z.array(
     savedScreeningSchema.extend({
       answers: z.record(z.enum(ScreeningQuestion), z.boolean()),

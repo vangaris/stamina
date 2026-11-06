@@ -15,7 +15,7 @@ import WeekList from './WeekList.vue';
 const { t } = useI18n();
 const { locale } = i18n.global;
 const router = useRouter();
-const { phase, program, messageKey, days, load } = useWeekView({
+const { phase, program, messageKey, days, progress, load } = useWeekView({
   onNavigate: (path) => void router.replace(path),
 });
 
@@ -32,6 +32,7 @@ onMounted(load);
         :emphasis="program.block.emphasis"
         :locale="locale"
         :show-free-days="true"
+        :progress="progress"
       />
     </template>
     <Card v-else-if="phase === ProgramPhase.Unavailable">

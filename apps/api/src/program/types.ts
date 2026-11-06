@@ -19,6 +19,8 @@ export interface StoredWeek {
   block: BlockRow;
   sessions: readonly SessionRow[];
   exercises: readonly SessionExerciseWithName[];
+  /** Ids of the week's Sessions that have a finish record; those read as completed. */
+  finishedSessionIds: ReadonlySet<string>;
   /** The profile's play pattern, which gives the week's hard Activity dates; null without a profile. */
   play: PlayPattern | null;
 }

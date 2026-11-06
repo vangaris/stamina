@@ -3,6 +3,7 @@ import { defineRequest } from '../define-request.ts';
 import { OfflinePolicy } from '../enums/offline-policy.ts';
 import { RequestType } from '../enums/request-type.ts';
 import { SessionStatus } from '../enums/session-status.ts';
+import { claimSignedInState } from '../utils/claim-signed-in-state.ts';
 import type { GetSession, Services, SessionState, Stores } from '../types.ts';
 
 export const getSession = (): GetSession => ({ type: RequestType.GetSession });
@@ -19,8 +20,7 @@ export const getSessionDefinition = defineRequest<GetSession, Services, Stores>(
     }
     // The first call to the API creates the user row. Email sign-in already made it; a Google
     // sign-in returns here without ever having called the API, so the row is made now.
-    const { userId } = await services.api.me();
-    const state: SessionState = { status: SessionStatus.SignedIn, userId };
+    const state = await claimSignedInState(services);
     stores.session.set(state);
     return state;
   },

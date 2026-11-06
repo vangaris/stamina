@@ -10,6 +10,13 @@ import { healthResponseSchema } from './health-response-schema.ts';
 import { inviteCheckResponseSchema } from './invite-check-schema.ts';
 import { meResponseSchema } from './me-response-schema.ts';
 import { programResponseSchema } from './program-schema.ts';
+import {
+  finishSessionResultSchema,
+  logSetResultSchema,
+  sessionResponseSchema,
+} from './session-schema.ts';
+import { sessionPath } from './utils/session-path.ts';
+import { SessionSubpath } from './enums/session-subpath.ts';
 import { recordDoctorOkResultSchema } from './record-doctor-ok-result-schema.ts';
 import { safetyStateSchema } from './safety-state-schema.ts';
 import { saveProfileResultSchema } from './save-profile-result-schema.ts';
@@ -27,7 +34,7 @@ export function createApiClient({
 }: ApiClientOptions): ApiClient {
   const url = (path: string) => new URL(path, baseUrl).toString();
 
-  async function send(path: ApiPath, init: RequestInit, acceptedStatuses: number[] = []) {
+  async function send(path: string, init: RequestInit, acceptedStatuses: number[] = []) {
     const token = await getToken?.();
     const headers = new Headers();
     if (token) headers.set(HttpHeaderName.Authorization, `${BEARER_SCHEME} ${token}`);
@@ -39,10 +46,10 @@ export function createApiClient({
     return response;
   }
 
-  const postJson = (path: ApiPath, body: unknown, acceptedStatuses?: number[]) =>
+  const postJson = (path: string, body: unknown, acceptedStatuses?: number[]) =>
     send(path, { method: HttpMethod.Post, body: JSON.stringify(body) }, acceptedStatuses);
 
-  const postEmpty = (path: ApiPath, acceptedStatuses?: number[]) =>
+  const postEmpty = (path: string, acceptedStatuses?: number[]) =>
     send(path, { method: HttpMethod.Post }, acceptedStatuses);
 
   return {
@@ -94,6 +101,20 @@ export function createApiClient({
     async createProgram() {
       const response = await postEmpty(ApiPath.Program, [HttpStatus.UnprocessableEntity]);
       return createProgramResultSchema.parse(await response.json());
+    },
+    async getSession(sessionId) {
+      const response = await send(sessionPath(sessionId), {});
+      return sessionResponseSchema.parse(await response.json()).session;
+    },
+    async logSet(sessionId, set) {
+      const response = await postJson(sessionPath(sessionId, SessionSubpath.Sets), set, [
+        HttpStatus.UnprocessableEntity,
+      ]);
+      return logSetResultSchema.parse(await response.json());
+    },
+    async finishSession(sessionId, finish) {
+      const response = await postJson(sessionPath(sessionId, SessionSubpath.Finish), finish);
+      return finishSessionResultSchema.parse(await response.json());
     },
     async exportData() {
       const response = await send(ApiPath.MeExport, {});

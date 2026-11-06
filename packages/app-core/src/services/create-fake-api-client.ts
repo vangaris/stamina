@@ -3,6 +3,7 @@ import {
   DatabaseStatus,
   DoctorOkRejection,
   HealthStatus,
+  HttpStatus,
   ProfileRejection,
   profileRejectionFor,
   RecordStatus,
@@ -32,9 +33,10 @@ import {
   resolveTrainingMode,
   TrainingMode,
 } from '@stamina/domain';
-import { FAKE_AUTH, FAKE_INVITE, HTTP_UNAUTHORIZED } from '../config.ts';
+import { FAKE_AUTH, FAKE_INVITE, FAKE_KEY_SEPARATOR, HTTP_UNAUTHORIZED } from '../config.ts';
 import { buildFakeProgram } from '../utils/build-fake-program.ts';
 import { toHardActivityDates } from '../utils/to-hard-activity-dates.ts';
+import { createFakeSessionLog, type FakeSessionTarget } from './create-fake-session-log.ts';
 
 type StoredConsent = UserExport['consents'][number];
 
@@ -53,7 +55,8 @@ interface StoredScreening {
  * Consents and Screenings follow the server's rules too: no Screening without a saved profile or
  * both consents (checked in that order), the latest Screening wins, Nutrition off turns a
  * body-composition Goal into General fitness,
- * and the doctor statement works for a general referral only.
+ * and the doctor statement works for a general referral only. Sessions come from the user's fake
+ * week; their sets and finish follow the server's replay rules (see `createFakeSessionLog`).
  */
 export function createFakeApiClient(getToken: () => Promise<string | undefined>): ApiClient {
   const profiles = new Map<string, SavedProfile>();
@@ -69,6 +72,20 @@ export function createFakeApiClient(getToken: () => Promise<string | undefined>)
     return week && profile
       ? { ...week, hardActivityDates: toHardActivityDates(week.block.startsOn, profile) }
       : null;
+  };
+
+  const sessionLog = createFakeSessionLog();
+  /** The user's Session with this id, or `ApiError` 404 like the server for anyone else's. */
+  const sessionTarget = async (sessionId: string): Promise<FakeSessionTarget> => {
+    const userId = await requireUserId();
+    const week = programs.get(userId);
+    const session = week?.sessions.find(({ id }) => id === sessionId);
+    if (!week || !session) throw new ApiError(HttpStatus.NotFound);
+    return {
+      key: `${userId}${FAKE_KEY_SEPARATOR}${sessionId}`,
+      session,
+      emphasis: week.block.emphasis,
+    };
   };
 
   const grantedPurposes = (userId: string) =>
@@ -224,6 +241,8 @@ export function createFakeApiClient(getToken: () => Promise<string | undefined>)
         exportedAt: new Date().toISOString(),
         profile: profiles.get(userId) ?? null,
         program: readProgram(userId),
+        setLogs: [],
+        sessionLogs: [],
         consents: [...(consents.get(userId) ?? [])],
         sportRequests: sportRequests.has(userId) ? [sportRequests.get(userId)!] : [],
         screenings: (screenings.get(userId) ?? []).map((stored) => ({
@@ -239,8 +258,13 @@ export function createFakeApiClient(getToken: () => Promise<string | undefined>)
       screenings.delete(userId);
       sportRequests.delete(userId);
       programs.delete(userId);
+      sessionLog.forget(`${userId}${FAKE_KEY_SEPARATOR}`);
     },
     getProgram: async () => readProgram(await requireUserId()),
+    getSession: async (sessionId) => sessionLog.read(await sessionTarget(sessionId)),
+    logSet: async (sessionId, set) => sessionLog.logSet(await sessionTarget(sessionId), set),
+    finishSession: async (sessionId, finish) =>
+      sessionLog.finish(await sessionTarget(sessionId), finish),
     createProgram: async () => {
       const userId = await requireUserId();
       const existing = readProgram(userId);

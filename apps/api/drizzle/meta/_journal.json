@@ -57,6 +57,13 @@
       "when": 1793944778567,
       "tag": "0007_ai_picks",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1793946254868,
+      "tag": "0008_session_logs",
+      "breakpoints": true
     }
   ]
 }

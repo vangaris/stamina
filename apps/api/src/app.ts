@@ -25,6 +25,7 @@ import { exportRoutes } from './routes/export-routes.ts';
 import { inviteRoutes } from './routes/invite-routes.ts';
 import { meRoutes } from './routes/me-routes.ts';
 import { programRoutes } from './routes/program-routes.ts';
+import { sessionRoutes } from './routes/session-routes.ts';
 import { profileRoutes } from './routes/profile-routes.ts';
 import { safetyRoutes } from './routes/safety-routes.ts';
 import { screeningRoutes } from './routes/screening-routes.ts';
@@ -90,6 +91,7 @@ export function createApp({
   app.route(ApiPath.MeExport, exportRoutes({ db, auth, cipher }));
   app.route(ApiPath.Profile, profileRoutes({ db, auth }));
   app.route(ApiPath.Program, programRoutes({ db, ai, auth, now }));
+  app.route(ApiPath.Sessions, sessionRoutes({ db, auth }));
   app.route(ApiPath.Safety, safetyRoutes({ db, auth }));
   app.route(ApiPath.Consent, consentRoutes({ db, auth }));
   app.route(ApiPath.Screening, screeningRoutes({ db, auth, cipher }));

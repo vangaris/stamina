@@ -4,6 +4,8 @@ export enum HttpStatus {
   NoContent = 204,
   BadRequest = 400,
   Unauthorized = 401,
+  NotFound = 404,
+  Conflict = 409,
   UnprocessableEntity = 422,
   InternalServerError = 500,
   ServiceUnavailable = 503,
