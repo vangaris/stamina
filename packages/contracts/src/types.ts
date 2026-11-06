@@ -1,4 +1,19 @@
 import type { z } from 'zod';
+import type {
+  checkinSchema,
+  exportedCheckinSchema,
+  latestCheckinResponseSchema,
+  submitCheckinResultSchema,
+  submitCheckinSchema,
+} from './checkin-schema.ts';
+import type { recheckScreeningSchema } from './recheck-screening-schema.ts';
+import type {
+  confirmDoctorSeenResultSchema,
+  exportedStopFlagSchema,
+  reportStopFlagResultSchema,
+  reportStopFlagSchema,
+  stopStateSchema,
+} from './stop-flag-schema.ts';
 import type { createProgramResultSchema } from './create-program-result-schema.ts';
 import type {
   programBlockSchema,
@@ -81,6 +96,17 @@ export type ScreeningSubmission = z.infer<typeof screeningSubmissionSchema>;
 export type SavedScreening = z.infer<typeof savedScreeningSchema>;
 export type SafetyState = z.infer<typeof safetyStateSchema>;
 export type SaveScreeningResult = z.infer<typeof saveScreeningResultSchema>;
+export type RecheckScreening = z.infer<typeof recheckScreeningSchema>;
+export type SubmitCheckin = z.infer<typeof submitCheckinSchema>;
+export type Checkin = z.infer<typeof checkinSchema>;
+export type SubmitCheckinResult = z.infer<typeof submitCheckinResultSchema>;
+export type LatestCheckinResponse = z.infer<typeof latestCheckinResponseSchema>;
+export type ExportedCheckin = z.infer<typeof exportedCheckinSchema>;
+export type ReportStopFlag = z.infer<typeof reportStopFlagSchema>;
+export type StopStateResponse = z.infer<typeof stopStateSchema>;
+export type ReportStopFlagResult = z.infer<typeof reportStopFlagResultSchema>;
+export type ConfirmDoctorSeenResult = z.infer<typeof confirmDoctorSeenResultSchema>;
+export type ExportedStopFlag = z.infer<typeof exportedStopFlagSchema>;
 export type RecordDoctorOkResult = z.infer<typeof recordDoctorOkResultSchema>;
 export type UserExport = z.infer<typeof userExportSchema>;
 export type ProgramExercise = z.infer<typeof programExerciseSchema>;
@@ -134,6 +160,16 @@ export interface ApiClient {
   grantConsent(grant: ConsentGrant): Promise<ConsentState>;
   /** Missing consent (`422`) is a `Rejected` result, not an error. */
   saveScreening(submission: ScreeningSubmission): Promise<SaveScreeningResult>;
+  /** Answers the asked-again questions; the rest carries over. No earlier Screening (`422`) is a `Rejected` result, not an error. */
+  recheckScreening(recheck: RecheckScreening): Promise<SaveScreeningResult>;
+  /** A repeat of a Check-in id the server has is ignored (`recorded` false). */
+  submitCheckin(checkin: SubmitCheckin): Promise<SubmitCheckinResult>;
+  /** The latest Check-in, or `null` before the first. */
+  getLatestCheckin(): Promise<Checkin | null>;
+  /** A repeat of a stop flag id the server has is ignored (`recorded` false). */
+  reportStopFlag(flag: ReportStopFlag): Promise<ReportStopFlagResult>;
+  /** "A doctor has seen me": ends every pause. Changes nothing when none is open. */
+  confirmDoctorSeen(): Promise<ConfirmDoctorSeenResult>;
   /** `422` (no referral, or pregnancy) is a `Rejected` result, not an error. */
   recordDoctorOk(): Promise<RecordDoctorOkResult>;
   /** The first week of the signed-in user's Program, or `null` before one is created. */

@@ -18,6 +18,8 @@ import type { ScreeningQuestion } from './enums/screening-question.ts';
 import type { ScreeningStatus } from './enums/screening-status.ts';
 import type { SportMovement } from './enums/sport-movement.ts';
 import type { TrainingMode } from './enums/training-mode.ts';
+import type { StopAction } from './enums/stop-action.ts';
+import type { StopFlag } from './enums/stop-flag.ts';
 import type { Weekday } from './enums/weekday.ts';
 
 export interface EligibilityInput {
@@ -51,6 +53,38 @@ export interface ScreeningOutcome {
   nutritionOff: boolean;
   /** Areas exercises must not load. */
   excludedAreas: readonly BodyArea[];
+}
+
+/** What reporting a stop flag does (`STOP_FLAG_EFFECTS`). */
+export interface StopFlagEffect {
+  action: StopAction;
+  /** Show the local emergency number with the stop message. */
+  showEmergency: boolean;
+  /** The Screening questions asked again after the report. */
+  recheck: readonly ScreeningQuestion[];
+}
+
+/** A reported stop flag, as the rules read it. */
+export interface StoredStopFlag {
+  flag: StopFlag;
+  /** The person's calendar day when reported, `YYYY-MM-DD`. */
+  date: string;
+  /** The body area, for new pain; null for every other flag. */
+  area: BodyArea | null;
+  /** ISO moment reported. */
+  reportedAt: string;
+  /** ISO moment the person confirmed a doctor had seen or cleared them; null while open. */
+  confirmedAt: string | null;
+}
+
+/** What the reported stop flags add up to (`resolveStopState`). */
+export interface StopState {
+  /** The distinct flags that still pause training, in the order reported. */
+  pausing: StopFlag[];
+  /** The day of the latest fever: no training that day. */
+  restOn: string | null;
+  /** The areas of every reported new pain. */
+  excludedAreas: BodyArea[];
 }
 
 /** What `resolveTrainingMode` needs. */

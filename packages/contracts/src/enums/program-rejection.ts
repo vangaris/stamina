@@ -4,6 +4,8 @@ export enum ProgramRejection {
   NotReady = 'not-ready',
   /** Screening referred the person and no Limited mode applies: no Program. */
   Referred = 'referred',
+  /** A stop flag pauses training until the person confirms a doctor has seen or cleared them: no Program now. */
+  Paused = 'paused',
   /** The person chose food only, so there is no training week to plan. */
   NoTrainingWeek = 'no-training-week',
   /** The library cannot fill even a Recovery Session for their equipment and excluded areas. */
