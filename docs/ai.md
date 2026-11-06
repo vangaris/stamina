@@ -15,9 +15,9 @@ Every call goes through `createAiGateway` (`apps/api/src/ai/create-ai-gateway.ts
 1. No provider configured (`available: false`): `Unavailable`. No call, no log row.
 2. The UTC month's spend is at or past 80 % of the $10 cap: `KillSwitch`. Everyone falls back to rules.
 3. The person already made 15 calls this UTC day: `UserCapReached`.
-4. The call runs. Whatever happens (accepted, refused by the caller's check, provider failure, unusable answer) one `llm_call` row is written: purpose, model, tokens, cost, outcome, a short detail code, and a pseudonym of the user.
+4. The call runs. Whatever happens (accepted, refused by the caller's check, provider failure, unusable answer) one `llm_call` row is written: purpose, model, tokens, cost, outcome, a short detail code, and a pseudonym of the user. The validator's code for a refused answer is the row's `detail`; the Session itself stores the model and prompt version.
 
-A provider failure never escapes the gateway; the caller falls back. A failure to write the log row does escape: an unlogged call would break the spend count the kill switch relies on. Limits are in `apps/api/src/ai/config.ts`.
+The checks and the call are not atomic, so two simultaneous requests can overshoot the daily or monthly limit by a few calls; the provider's own hard cap is the backstop. A provider failure never escapes the gateway; the caller falls back. A failure to write the log row does escape: an unlogged call would break the spend count the kill switch relies on. Limits are in `apps/api/src/ai/config.ts`.
 
 `llm_call` holds no user id: `user_pseudonym` is an HMAC of the id under a key derived from `SCREENING_ENCRYPTION_KEY` (`pseudonymize-user.ts`). It has no RLS policy and `stamina_app` has no grant, so only the API's own connection reads it. Rotating the Screening key changes every pseudonym, which resets the daily counts once.
 
@@ -29,7 +29,7 @@ Change the prompt or `picks-schema.ts` and you change `SESSION_PICKS_PROMPT_VERS
 
 ## Validation and fallback
 
-`validatePicks` (domain) accepts an answer only if every id is a candidate of its own slot, every slot has exactly its count and no id appears twice. A refused answer or a failed call is retried once; after that the Session keeps the rules picker's exercises. `generateWeek` validates the chosen picks again before using them. Per-Session, so one bad answer never costs the others.
+`validatePicks` (domain) accepts an answer only if every id is a candidate of its own slot, every slot has exactly its count and no id appears twice. A refused answer or a failed call is retried once; after that the Session keeps the rules picker's exercises. `generateWeek` validates the chosen picks again before using them. Per-Session, so one bad answer never costs the others. Waiting for the model is bounded: `SESSION_PICKS_TIME_BUDGET_MS` (45 s) per Program request, 20 s per call; Sessions not yet asked when it runs out keep the rules' exercises.
 
 ## Stored, never regenerated
 
@@ -43,4 +43,4 @@ Phase A production runs the "unavailable" provider: no key, no card, rules only.
 
 ## Evaluation set
 
-`apps/api/eval/` holds cases (`cases/session-picks.json`, English and Greek personas) and a runner: `pnpm --filter @stamina/api eval`. It builds the real prompt for each case from the real exercise library, asks the model once and checks the first answer with the production validators. With `ANTHROPIC_API_KEY` it exits non-zero below 98 % valid; without it an offline harness answers and the report says it measures no model. `.github/workflows/prompt-eval.yml` runs it when a prompt, schema or the set changes and posts the pass rate in the job summary. The set has 12 cases; the spec's target is 50 (25 EN + 25 EL), to grow with the meal-idea prompts.
+`apps/api/eval/` holds cases (`cases/session-picks.json`, English and Greek personas) and a runner: `pnpm --filter @stamina/api eval`. It builds the real prompt for each case from the real exercise library, asks the model once and checks the first answer with the production validators. With `ANTHROPIC_API_KEY` it exits non-zero below 98 % valid; without it an offline harness answers and the report says it measures no model. `.github/workflows/prompt-eval.yml` runs it when a prompt, schema or the set changes and posts the pass rate in the job summary. Session picks are language-neutral today (the prompt has no locale), so the Greek cases run the same prompt as the English ones; the locale field and per-locale report are there for the meal-idea prompts. The runner calls the provider directly, so its spend is not in `llm_call` and does not count toward the kill switch: the provider's own cap covers it. The set has 12 cases; the spec's target is 50 (25 EN + 25 EL), to grow with the meal-idea prompts.

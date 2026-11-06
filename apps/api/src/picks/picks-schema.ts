@@ -16,5 +16,3 @@ export const sessionPicksSchema = z.object({
     }),
   ),
 });
-
-export type SessionPicksAnswer = z.infer<typeof sessionPicksSchema>;

@@ -10,3 +10,13 @@ export const SESSION_PICKS_PROMPT_VERSION = 'session-picks-v1';
 
 /** One call, plus one retry when the answer fails the validators (spec "AI layer", Fallbacks). */
 export const SESSION_PICKS_MAX_ATTEMPTS = 2;
+
+/**
+ * The most time one Program request spends waiting for the model, in milliseconds. Once it is
+ * used up the remaining Sessions keep the rules' exercises, so a slow or hung provider cannot
+ * hold the request for sessions x attempts x the provider's own timeout.
+ */
+export const SESSION_PICKS_TIME_BUDGET_MS = 45_000;
+
+/** Separates a prompt's fixed instructions from its data block; the evaluation harness splits on it. */
+export const PROMPT_DATA_MARKER = '\n\nData:\n';

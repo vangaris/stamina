@@ -122,6 +122,22 @@ describe('the Anthropic provider', () => {
     expect(sent).not.toMatch(/"minItems":([2-9]|\d\d)/);
   });
 
+  it('keeps a field whose name is a dropped keyword and still requires it', async () => {
+    const odd = z.object({ minimum: z.number().min(1), maxLength: z.string().max(5) });
+    const { provider, seen } = providerWith(() => json(messageResponse()));
+    await provider
+      .generateObject({ ...REQUEST, schema: odd as z.ZodType<unknown> })
+      .catch(() => {});
+
+    const sent = seen[0]!.body.output_config.format.schema as {
+      properties: Record<string, unknown>;
+      required: string[];
+    };
+    expect(Object.keys(sent.properties).sort()).toEqual(['maxLength', 'minimum']);
+    expect(sent.required.sort()).toEqual(['maxLength', 'minimum']);
+    expect(sent.properties.minimum).toEqual({ type: 'number' });
+  });
+
   it('keeps the limits it drops from the request enforced on the answer', async () => {
     const { provider } = providerWith(() =>
       json(messageResponse({ content: [{ type: 'text', text: '{"answer":"ok","count":99}' }] })),

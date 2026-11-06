@@ -1,33 +1,29 @@
 import { z } from 'zod';
+import {
+  SCHEMA_MAP_KEYWORDS,
+  STRUCTURED_OUTPUT_MAX_MIN_ITEMS,
+  STRUCTURED_OUTPUT_UNSUPPORTED_KEYWORDS,
+} from './config.ts';
 
 /**
- * Keywords the provider's structured outputs reject (https://platform.claude.com/docs/en/build-with-claude/structured-outputs,
- * "JSON Schema limitations"). They are dropped from what is sent; the answer is still parsed
- * with the full zod schema afterwards, so the constraints are enforced locally.
+ * Drops the keywords the provider rejects from one schema node and every schema below it. The
+ * keys of a `properties`-style map are the caller's field names, not keywords, so they are kept
+ * whatever they are called (a field named `minimum` stays); only the schemas under them are cleaned.
  */
-const UNSUPPORTED_KEYWORDS = [
-  '$schema',
-  'minimum',
-  'maximum',
-  'exclusiveMinimum',
-  'exclusiveMaximum',
-  'multipleOf',
-  'minLength',
-  'maxLength',
-  'maxItems',
-  'uniqueItems',
-] as const;
-
-/** Array `minItems` is supported only as 0 or 1. */
-const MAX_SUPPORTED_MIN_ITEMS = 1;
-
 function strip(node: unknown): unknown {
   if (Array.isArray(node)) return node.map(strip);
   if (node === null || typeof node !== 'object') return node;
   const entries = Object.entries(node)
-    .filter(([key]) => !(UNSUPPORTED_KEYWORDS as readonly string[]).includes(key))
-    .filter(([key, value]) => key !== 'minItems' || Number(value) <= MAX_SUPPORTED_MIN_ITEMS)
-    .map(([key, value]) => [key, strip(value)] as const);
+    .filter(([key]) => !STRUCTURED_OUTPUT_UNSUPPORTED_KEYWORDS.includes(key))
+    .filter(
+      ([key, value]) => key !== 'minItems' || Number(value) <= STRUCTURED_OUTPUT_MAX_MIN_ITEMS,
+    )
+    .map(([key, value]) => [
+      key,
+      SCHEMA_MAP_KEYWORDS.includes(key) && value !== null && typeof value === 'object'
+        ? Object.fromEntries(Object.entries(value).map(([name, child]) => [name, strip(child)]))
+        : strip(value),
+    ]);
   return Object.fromEntries(entries);
 }
 

@@ -2,9 +2,11 @@ import { appendFileSync, readFileSync } from 'node:fs';
 import { loadExerciseLibrary } from '../src/exercises/node.ts';
 import { createAnthropicProvider } from '../src/ai/index.ts';
 import { SESSION_PICKS_CASES_FILE } from './config.ts';
+import { EvalProvider } from './enums/eval-provider.ts';
 import { evalCasesSchema } from './eval-case-schema.ts';
-import { formatReport, meetsThreshold } from './format-report.ts';
+import { formatReport } from './format-report.ts';
 import { harnessProvider } from './harness-provider.ts';
+import { meetsThreshold } from './meets-threshold.ts';
 import { runSessionPicksEval } from './run-session-picks-eval.ts';
 import type { EvalReport } from './types.ts';
 
@@ -24,7 +26,7 @@ const { results, model, promptVersion } = await runSessionPicksEval(
   provider,
 );
 const report: EvalReport = {
-  provider: apiKey ? 'anthropic' : 'harness',
+  provider: apiKey ? EvalProvider.Anthropic : EvalProvider.Harness,
   model,
   promptVersion,
   measuresModel: Boolean(apiKey),

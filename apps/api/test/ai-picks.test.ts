@@ -27,7 +27,7 @@ import { pseudonymizeUser } from '../src/ai/pseudonymize-user.ts';
 import { llmCall, session, sessionExercise } from '../src/db/schema.ts';
 import { withUser } from '../src/db/with-user.ts';
 import { EXERCISE_DATA_DIR } from '../src/exercises/node.ts';
-import { SESSION_PICKS_PROMPT_VERSION } from '../src/picks/index.ts';
+import { PROMPT_DATA_MARKER, SESSION_PICKS_PROMPT_VERSION } from '../src/picks/index.ts';
 import { FAKE_AI_MODEL, FAKE_AI_USAGE } from './support/fake-ai.ts';
 import {
   PROGRAM_NOW,
@@ -48,6 +48,7 @@ import { TEST_ENCRYPTION_KEY } from './support/test-encryption-key.ts';
 interface PromptData {
   goal: string;
   equipment: string[];
+  sport: string | null;
   sportKeyMovements: string[] | null;
   slots: { slot: SessionSlot; count: number; candidates: string[] }[];
   recentExerciseIds: string[];
@@ -57,10 +58,10 @@ interface Pick {
   exerciseId: string;
   reason: string;
 }
-const DATA_MARKER = '\nData:\n';
-const dataOfPrompt = (prompt: string): PromptData =>
-  JSON.parse(prompt.slice(prompt.indexOf(DATA_MARKER) + DATA_MARKER.length));
-const dataOf = (request: AiRequest<unknown>): PromptData => dataOfPrompt(request.prompt);
+const dataOf = (request: AiRequest<unknown>): PromptData =>
+  JSON.parse(
+    request.prompt.slice(request.prompt.indexOf(PROMPT_DATA_MARKER) + PROMPT_DATA_MARKER.length),
+  );
 
 /** One well-formed answer for a prompt: `count` candidates per slot, no id twice. */
 function answerFor(
@@ -233,9 +234,11 @@ describe('AI exercise picks', () => {
           'goal',
           'recentExerciseIds',
           'slots',
+          'sport',
           'sportKeyMovements',
         ]);
         expect(data.goal).toBe(Goal.SportPerformance);
+        expect(data.sport).toBe(LaunchSport.Padel);
 
         // Every id is a library exercise that is safe for this person: the knee is never loaded and
         // Limited mode's jump and change-of-direction work is gone with its sport-support slot.

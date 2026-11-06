@@ -1,6 +1,7 @@
 import type { Exercise } from '@stamina/contracts';
 import { buildPickSpec, validatePicks } from '@stamina/domain';
 import { AiCallError, AiPurpose, type AiProvider } from '../src/ai/index.ts';
+import { UNKNOWN_MODEL } from '../src/ai/config.ts';
 import {
   SESSION_PICKS_PROMPT_VERSION,
   buildPicksPrompt,
@@ -39,7 +40,7 @@ export async function runSessionPicksEval(
   provider: AiProvider,
 ): Promise<{ results: CaseResult[]; model: string; promptVersion: string }> {
   const results: CaseResult[] = [];
-  let model = 'unknown';
+  let model = UNKNOWN_MODEL;
   for (const testCase of cases) {
     const spec = specFor(testCase, library);
     if (spec === null)
@@ -47,6 +48,7 @@ export async function runSessionPicksEval(
     const prompt = buildPicksPrompt(spec, {
       goal: testCase.goal,
       equipment: testCase.equipment,
+      sport: testCase.sport,
       sportMovements: testCase.sportMovements,
     });
     const base = { id: testCase.id, locale: testCase.locale, focus: testCase.focus };

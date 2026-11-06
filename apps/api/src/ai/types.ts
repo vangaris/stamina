@@ -80,3 +80,18 @@ export type AiCallResult<T> =
 export interface AiGateway {
   run<T>(call: AiCall<T>): Promise<AiCallResult<T>>;
 }
+
+export interface AnthropicProviderOptions {
+  apiKey: string;
+  /** Defaults to Claude Haiku 5.5. A model without a price in `ANTHROPIC_PRICES` is refused. */
+  model?: string;
+  /** Defaults to `globalThis.fetch`; tests pass a stub. */
+  fetch?: typeof globalThis.fetch;
+  baseUrl?: string;
+}
+
+/** What a model costs, in millionths of a US dollar per million tokens. */
+export interface AnthropicPrice {
+  inputMicroUsdPerMillion: number;
+  outputMicroUsdPerMillion: number;
+}

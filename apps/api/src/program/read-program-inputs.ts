@@ -1,11 +1,5 @@
 import { ProgramRejection, SportKind } from '@stamina/contracts';
-import {
-  addDays,
-  ConsentPurpose,
-  DEFAULT_EQUIPMENT,
-  TrainingMode,
-  type GenerateWeekInput,
-} from '@stamina/domain';
+import { addDays, ConsentPurpose, DEFAULT_EQUIPMENT, TrainingMode } from '@stamina/domain';
 import { eq, sql } from 'drizzle-orm';
 import { exercise, profile } from '../db/schema.ts';
 import type { UserTx } from '../db/types.ts';
@@ -16,16 +10,8 @@ import { readLatestScreening } from '../safety/read-latest-screening.ts';
 import { toSavedScreening } from '../safety/to-saved-screening.ts';
 import { FIRST_WEEK_IN_BLOCK, START_DELAY_DAYS } from './config.ts';
 import { ProgramInputsStatus } from './enums/program-inputs-status.ts';
+import type { ProgramInputs } from './types.ts';
 import { findProfileSport } from './find-profile-sport.ts';
-
-export type ProgramInputs =
-  | {
-      status: ProgramInputsStatus.Ready;
-      input: GenerateWeekInput;
-      /** The person's sport is a requested one that is not approved yet. */
-      beta: boolean;
-    }
-  | { status: ProgramInputsStatus.Refused; reason: ProgramRejection };
 
 const refused = (reason: ProgramRejection): ProgramInputs => ({
   status: ProgramInputsStatus.Refused,
@@ -65,6 +51,7 @@ export async function readProgramInputs(
   return {
     status: ProgramInputsStatus.Ready,
     beta: saved.sport.kind === SportKind.Other,
+    sport: saved.sport.kind === SportKind.Launch ? saved.sport.sport : null,
     input: {
       goal: saved.goal,
       playDays: saved.playDays,

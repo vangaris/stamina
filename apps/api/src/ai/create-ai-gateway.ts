@@ -2,13 +2,11 @@ import { and, count, eq, gte, sql } from 'drizzle-orm';
 import { llmCall } from '../db/schema.ts';
 import type { Db } from '../db/types.ts';
 import { AiCallError } from './ai-call-error.ts';
-import { DEFAULT_AI_LIMITS, UNKNOWN_MODEL } from './config.ts';
+import { DEFAULT_AI_LIMITS, NO_AI_USAGE, UNKNOWN_MODEL } from './config.ts';
 import { AiCallStatus } from './enums/ai-call-status.ts';
 import { LlmOutcome } from './enums/llm-outcome.ts';
 import { pseudonymizeUser } from './pseudonymize-user.ts';
 import type { AiCall, AiCallResult, AiGateway, AiGatewayOptions, AiUsage } from './types.ts';
-
-const NO_USAGE: AiUsage = { inputTokens: 0, outputTokens: 0, costMicroUsd: 0 };
 
 const startOfUtcDay = (at: Date): Date =>
   new Date(Date.UTC(at.getUTCFullYear(), at.getUTCMonth(), at.getUTCDate()));
@@ -87,7 +85,7 @@ export function createAiGateway(
         const failure = cause instanceof AiCallError ? cause : undefined;
         await record(
           failure?.model ?? UNKNOWN_MODEL,
-          failure?.usage ?? NO_USAGE,
+          failure?.usage ?? NO_AI_USAGE,
           LlmOutcome.Failed,
           failure?.failure ?? null,
         );

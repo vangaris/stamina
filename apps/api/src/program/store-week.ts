@@ -1,17 +1,8 @@
 import { RULES_VERSION, SessionStatus, type GeneratedWeek } from '@stamina/domain';
 import { block, program, session, sessionExercise } from '../db/schema.ts';
 import type { UserTx } from '../db/types.ts';
-import type { StoredPickInfo } from '../picks/index.ts';
 import { FIRST_BLOCK_POSITION, FIRST_REVISION } from './config.ts';
-
-/** What a stored week records besides the generated Sessions. */
-export interface StoreWeekOptions {
-  inputsHash: string;
-  /** The person's sport is a requested one that is not approved yet. */
-  beta: boolean;
-  /** For each Session in `week.sessions` order: how the AI picked it, or `null` for the rules picker. */
-  pickInfo: readonly (StoredPickInfo | null)[];
-}
+import type { StoreWeekOptions } from './types.ts';
 
 /**
  * Inserts the user's Program with its first Block, the week's Sessions and their exercises.

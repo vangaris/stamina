@@ -1,4 +1,4 @@
-import type { AiLimits } from './types.ts';
+import type { AiLimits, AiUsage, AnthropicPrice } from './types.ts';
 
 /** The domain label the pseudonym key is derived under, so the Screening key is never used raw. */
 export const PSEUDONYM_KEY_LABEL = 'stamina:llm-call-pseudonym:v1';
@@ -25,9 +25,7 @@ export const ANTHROPIC_MODEL = 'claude-haiku-5-5';
  * $0.50 out (https://platform.claude.com/docs/en/models/haiku-5-5/overview). Our prompts are
  * far below that tier. A model missing here cannot be priced, so the adapter refuses to start.
  */
-export const ANTHROPIC_PRICES: Readonly<
-  Record<string, { inputMicroUsdPerMillion: number; outputMicroUsdPerMillion: number }>
-> = {
+export const ANTHROPIC_PRICES: Readonly<Record<string, AnthropicPrice>> = {
   [ANTHROPIC_MODEL]: { inputMicroUsdPerMillion: 100_000, outputMicroUsdPerMillion: 500_000 },
 };
 /** Headroom for the answer and any thinking; it also bounds what one call can cost. */
@@ -35,4 +33,34 @@ export const ANTHROPIC_MAX_OUTPUT_TOKENS = 4096;
 /** Picking from a list and drafting from a name need little thinking. */
 export const ANTHROPIC_EFFORT = 'low';
 /** A call that takes longer is a failure the caller falls back from. */
-export const ANTHROPIC_TIMEOUT_MS = 30_000;
+export const ANTHROPIC_TIMEOUT_MS = 20_000;
+
+/** What a call that was never billed used. */
+export const NO_AI_USAGE: AiUsage = { inputTokens: 0, outputTokens: 0, costMicroUsd: 0 };
+
+/**
+ * Keywords the provider's structured outputs reject (https://platform.claude.com/docs/en/build-with-claude/structured-outputs,
+ * "JSON Schema limitations"). They are dropped from what is sent; the answer is still parsed with
+ * the full zod schema afterwards, so the constraints are enforced locally.
+ */
+export const STRUCTURED_OUTPUT_UNSUPPORTED_KEYWORDS: readonly string[] = [
+  '$schema',
+  'minimum',
+  'maximum',
+  'exclusiveMinimum',
+  'exclusiveMaximum',
+  'multipleOf',
+  'minLength',
+  'maxLength',
+  'maxItems',
+  'uniqueItems',
+];
+/** Array `minItems` is supported only as 0 or 1. */
+export const STRUCTURED_OUTPUT_MAX_MIN_ITEMS = 1;
+/** JSON Schema keywords whose value maps names to schemas: the names are the caller's, not keywords. */
+export const SCHEMA_MAP_KEYWORDS: readonly string[] = [
+  'properties',
+  'patternProperties',
+  '$defs',
+  'definitions',
+];

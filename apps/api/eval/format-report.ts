@@ -1,17 +1,9 @@
-import { PASS_RATE_THRESHOLD } from './config.ts';
+import { MICRO_USD_PER_USD, PASS_RATE_THRESHOLD, REPORT_COST_DECIMALS } from './config.ts';
+import { meetsThreshold } from './meets-threshold.ts';
+import { passRate } from './pass-rate.ts';
 import type { EvalReport } from './types.ts';
 
-export const passRate = (results: readonly { failure: string | null }[]): number =>
-  results.length === 0
-    ? 0
-    : results.filter(({ failure }) => failure === null).length / results.length;
-
 const percent = (rate: number): string => `${(rate * 100).toFixed(1)} %`;
-
-/** Whether the report meets the bar. A harness report never fails: it measures no model. */
-export function meetsThreshold(report: EvalReport): boolean {
-  return !report.measuresModel || passRate(report.results) >= PASS_RATE_THRESHOLD;
-}
 
 /** The report as Markdown, for the console and the CI job summary. */
 export function formatReport(report: EvalReport): string {
@@ -39,7 +31,7 @@ export function formatReport(report: EvalReport): string {
     }),
     `| **all** | ${report.results.length} | ${report.results.length - failures.length} | **${percent(rate)}** |`,
     '',
-    `Bar: ${percent(PASS_RATE_THRESHOLD)}. ${meetsThreshold(report) ? 'Met.' : 'NOT met.'} Cost: ${(cost / 1_000_000).toFixed(6)} USD.`,
+    `Bar: ${percent(PASS_RATE_THRESHOLD)}. ${meetsThreshold(report) ? 'Met.' : 'NOT met.'} Cost: ${(cost / MICRO_USD_PER_USD).toFixed(REPORT_COST_DECIMALS)} USD.`,
     ...(failures.length === 0
       ? []
       : ['', 'Failures:', ...failures.map(({ id, failure }) => `- ${id}: ${failure}`)]),

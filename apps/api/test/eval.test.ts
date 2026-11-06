@@ -5,8 +5,11 @@ import { AiCallError, AiCallFailure, type AiProvider } from '../src/ai/index.ts'
 import { EXERCISE_DATA_DIR, loadExerciseLibrary } from '../src/exercises/node.ts';
 import { SESSION_PICKS_CASES_FILE } from '../eval/config.ts';
 import { evalCasesSchema } from '../eval/eval-case-schema.ts';
-import { formatReport, meetsThreshold, passRate } from '../eval/format-report.ts';
+import { EvalProvider } from '../eval/enums/eval-provider.ts';
+import { formatReport } from '../eval/format-report.ts';
 import { harnessProvider } from '../eval/harness-provider.ts';
+import { meetsThreshold } from '../eval/meets-threshold.ts';
+import { passRate } from '../eval/pass-rate.ts';
 import { runSessionPicksEval } from '../eval/run-session-picks-eval.ts';
 import type { EvalReport } from '../eval/types.ts';
 
@@ -15,7 +18,7 @@ const library = await loadExerciseLibrary(EXERCISE_DATA_DIR);
 
 const reportOf = async (provider: AiProvider, measuresModel: boolean): Promise<EvalReport> => {
   const run = await runSessionPicksEval(cases, library, provider);
-  return { provider: 'test', measuresModel, ...run };
+  return { provider: EvalProvider.Harness, measuresModel, ...run };
 };
 
 describe('the evaluation set', () => {
@@ -86,7 +89,12 @@ describe('the evaluation set', () => {
         failure: i < valid ? null : PickProblem.WrongCount,
         costMicroUsd: 0,
       }));
-    const base = { provider: 'p', model: 'm', promptVersion: 'v', measuresModel: true };
+    const base = {
+      provider: EvalProvider.Anthropic,
+      model: 'm',
+      promptVersion: 'v',
+      measuresModel: true,
+    };
     expect(meetsThreshold({ ...base, results: results(49, 50) })).toBe(true);
     expect(meetsThreshold({ ...base, results: results(48, 50) })).toBe(false);
   });

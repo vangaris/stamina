@@ -1,5 +1,7 @@
 import type { PickExercisesInput, PickSpec } from '../types.ts';
-import { slotCandidates, slotCount, slotsOf } from './slot-candidates.ts';
+import { slotCandidates } from './slot-candidates.ts';
+import { slotCount } from './slot-count.ts';
+import { slotsOf } from './slots-of.ts';
 
 /**
  * The candidate list a picker (the AI) fills one Session from, or `null` when no Session of

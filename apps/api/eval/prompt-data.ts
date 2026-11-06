@@ -1,12 +1,9 @@
-import type { SessionSlot } from '@stamina/domain';
+import { PROMPT_DATA_MARKER } from '../src/picks/index.ts';
+import type { PromptData } from './types.ts';
 
-/** The data block of a Session picks prompt, after its fixed instructions. */
-export interface PromptData {
-  slots: { slot: SessionSlot; count: number; candidates: string[] }[];
-}
-
-const MARKER = '\nData:\n';
-
+/** The data block of a Session picks prompt. */
 export function dataOfPrompt(prompt: string): PromptData {
-  return JSON.parse(prompt.slice(prompt.indexOf(MARKER) + MARKER.length)) as PromptData;
+  return JSON.parse(
+    prompt.slice(prompt.indexOf(PROMPT_DATA_MARKER) + PROMPT_DATA_MARKER.length),
+  ) as PromptData;
 }

@@ -54,7 +54,7 @@ export async function createProgram(
   const rulesWeek = generateWeek(inputs.input);
   if (rulesWeek === null) return rejected(ProgramRejection.NoExercises);
   const firstHash = await hashInputs(inputs.input);
-  const picked = await pickWeek(gateway, userId, inputs.input, rulesWeek);
+  const picked = await pickWeek(gateway, userId, inputs.input, rulesWeek, { sport: inputs.sport });
 
   return withUser(db, userId, async (tx): Promise<CreateProgramResult> => {
     await lockUser(tx, userId);

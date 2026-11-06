@@ -2,6 +2,7 @@ import {
   BodyArea,
   Equipment,
   Goal,
+  LaunchSport,
   SessionFocus,
   SportMovement,
   SESSION_LENGTHS_MINUTES,
@@ -26,6 +27,7 @@ export const evalCaseSchema = z.object({
   limited: z.boolean(),
   excludedAreas: z.array(z.enum(BodyArea)),
   equipment: z.array(z.enum(Equipment)),
+  sport: z.enum(LaunchSport).nullable(),
   sportMovements: z.array(z.enum(SportMovement)).nullable(),
   /** How many exercises an earlier Session of the week already used. */
   recentCount: z.number().int().min(0),

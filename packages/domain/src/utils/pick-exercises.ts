@@ -9,7 +9,9 @@ import { SessionFocus } from '../enums/session-focus.ts';
 import { SessionSlot } from '../enums/session-slot.ts';
 import type { PickedExercise, PickExercisesInput, PlannableExercise } from '../types.ts';
 import { compareText } from './compare-text.ts';
-import { slotCandidates, slotCount, slotsOf } from './slot-candidates.ts';
+import { slotCandidates } from './slot-candidates.ts';
+import { slotCount } from './slot-count.ts';
+import { slotsOf } from './slots-of.ts';
 
 /**
  * Fills every slot of one Session from the library, or returns `null` when the library cannot

@@ -1,6 +1,8 @@
-import type { SessionFocus } from '@stamina/domain';
+import type { PickProblem, SessionFocus, SessionSlot } from '@stamina/domain';
+import type { AiCallFailure } from '../src/ai/index.ts';
 import type { Locale } from '@stamina/i18n';
 import type { z } from 'zod';
+import type { EvalProvider } from './enums/eval-provider.ts';
 import type { evalCaseSchema } from './eval-case-schema.ts';
 
 /** One evaluation case: a person-shaped situation the Session picks prompt is built for. */
@@ -12,15 +14,20 @@ export interface CaseResult {
   locale: Locale;
   focus: SessionFocus;
   /** `null` when the first answer passed the validators; else the problem or failure code. */
-  failure: string | null;
+  failure: PickProblem | AiCallFailure | null;
   costMicroUsd: number;
 }
 
 export interface EvalReport {
-  provider: string;
+  provider: EvalProvider;
   model: string;
   promptVersion: string;
   /** False for the offline harness provider: the pass rate then says nothing about a model. */
   measuresModel: boolean;
   results: CaseResult[];
+}
+
+/** The data block of a Session picks prompt, after its fixed instructions. */
+export interface PromptData {
+  slots: { slot: SessionSlot; count: number; candidates: string[] }[];
 }

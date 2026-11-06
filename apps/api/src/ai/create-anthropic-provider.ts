@@ -11,18 +11,16 @@ import {
   TOKENS_PER_MILLION,
 } from './config.ts';
 import { AiCallFailure } from './enums/ai-call-failure.ts';
+import { AnthropicContentType } from './enums/anthropic-content-type.ts';
 import { AnthropicStopReason } from './enums/anthropic-stop-reason.ts';
 import { toStructuredOutputSchema } from './to-structured-output-schema.ts';
-import type { AiProvider, AiRequest, AiResult, AiUsage } from './types.ts';
-
-export interface AnthropicProviderOptions {
-  apiKey: string;
-  /** Defaults to Claude Haiku 5.5. A model without a price in `ANTHROPIC_PRICES` is refused. */
-  model?: string;
-  /** Defaults to `globalThis.fetch`; tests pass a stub. */
-  fetch?: typeof globalThis.fetch;
-  baseUrl?: string;
-}
+import type {
+  AiProvider,
+  AiRequest,
+  AiResult,
+  AiUsage,
+  AnthropicProviderOptions,
+} from './types.ts';
 
 /** The parts of a Messages API response the adapter reads. */
 const responseSchema = z.object({
@@ -104,7 +102,7 @@ export function createAnthropicProvider({
         throw new AiCallError(AiCallFailure.Truncated, model, used);
       }
       // Thinking blocks may come first: the answer is the text block, chosen by type.
-      const text = content.find((block) => block.type === 'text')?.text;
+      const text = content.find((block) => block.type === AnthropicContentType.Text)?.text;
       let object;
       try {
         object = schema.parse(JSON.parse(text ?? ''));

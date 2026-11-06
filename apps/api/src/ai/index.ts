@@ -16,4 +16,5 @@ export type {
   AiRequest,
   AiResult,
   AiUsage,
+  AnthropicProviderOptions,
 } from './types.ts';
