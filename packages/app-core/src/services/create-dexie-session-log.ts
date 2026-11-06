@@ -21,6 +21,13 @@ export function createDexieSessionLog(database: Dexie): SessionLogStore {
         }
       });
     },
+    async removeFinish(sessionId, finishId) {
+      await database.transaction('rw', finishes, async () => {
+        if ((await finishes.get(sessionId))?.finish.id === finishId) {
+          await finishes.delete(sessionId);
+        }
+      });
+    },
     async read(sessionId) {
       const [setRows, finishRow] = await Promise.all([
         sets.where('sessionId').equals(sessionId).toArray(),

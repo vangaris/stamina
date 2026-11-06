@@ -1,3 +1,4 @@
+import { createSyncRunner } from './create-sync-runner.ts';
 import { defaultPipeline } from './pipeline/default-pipeline.ts';
 import type {
   Mediator,
@@ -18,6 +19,7 @@ export function createMediator<Services extends PipelineServices, Stores>({
   stores,
   registry,
 }: MediatorOptions<Services, Stores>): Mediator {
+  const sync = createSyncRunner({ services, stores, registry });
   return {
     async send<R extends Request>(request: R): Promise<ResultOf<R>> {
       const definition = registry[request.type];
@@ -25,7 +27,7 @@ export function createMediator<Services extends PipelineServices, Stores>({
 
       const run = defaultPipeline.reduceRight<(context: PipelineContext) => Promise<unknown>>(
         (next, step) => (context) => step(context, next),
-        (context) => definition.handler(context.request, { services, stores }),
+        (context) => definition.handler(context.request, { services, stores, sync }),
       );
       return (await run({ request, definition, services, elapsedMs: () => 0 })) as ResultOf<R>;
     },

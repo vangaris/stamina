@@ -1,19 +1,9 @@
 import { LoadGuidance, MAX_LOGGED_SETS } from '@stamina/domain';
-import type { Locale } from '@stamina/i18n';
 import { localizedName } from '../../program/index.ts';
-import type { ExerciseView, FocusModel } from '../types.ts';
+import type { FocusModel, FocusModelInput } from '../types.ts';
 import { createNumberFormat } from './create-number-format.ts';
 import { nextSetNumber } from './next-set-number.ts';
 import { toTargetView } from './to-target-view.ts';
-
-export interface FocusModelInput {
-  views: readonly ExerciseView[];
-  /** The exercise on screen. */
-  position: number;
-  /** The person asked for a set beyond the plan. */
-  addingSet: boolean;
-  locale: Locale;
-}
 
 /** Everything Focus mode shows for the exercise at `position`; undefined where there is none. */
 export function buildFocusModel({

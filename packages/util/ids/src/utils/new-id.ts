@@ -1,4 +1,4 @@
-import { BYTE_VALUES, MS_BYTE_DIVISOR, UUID_V7 } from '../config.ts';
+import { BYTE_VALUES, HEX_DIGITS_PER_BYTE, HEX_RADIX, UUID_V7 } from '../config.ts';
 
 let lastMs = 0;
 let sequence = 0;
@@ -26,14 +26,17 @@ export function newId(): string {
   const bytes = random;
   let remaining = lastMs;
   for (let index = UUID_V7.timestampBytes - 1; index >= 0; index -= 1) {
-    bytes[index] = remaining % MS_BYTE_DIVISOR;
-    remaining = Math.floor(remaining / MS_BYTE_DIVISOR);
+    bytes[index] = remaining % BYTE_VALUES;
+    remaining = Math.floor(remaining / BYTE_VALUES);
   }
-  bytes[6] = UUID_V7.version | (sequence >> 8);
-  bytes[7] = sequence & 0xff;
-  bytes[8] = UUID_V7.variant | ((bytes[8] ?? 0) & UUID_V7.variantRandomMask);
+  bytes[UUID_V7.versionByte] = UUID_V7.version | (sequence >> UUID_V7.sequenceHighShift);
+  bytes[UUID_V7.sequenceLowByte] = sequence & UUID_V7.sequenceLowMask;
+  bytes[UUID_V7.variantByte] =
+    UUID_V7.variant | ((bytes[UUID_V7.variantByte] ?? 0) & UUID_V7.variantRandomMask);
 
-  const hex = Array.from(bytes, (byte) => byte.toString(16).padStart(2, '0')).join('');
+  const hex = Array.from(bytes, (byte) =>
+    byte.toString(HEX_RADIX).padStart(HEX_DIGITS_PER_BYTE, '0'),
+  ).join('');
   return UUID_V7.dashAfterHexDigits.reduceRight(
     (text, at) => `${text.slice(0, at)}-${text.slice(at)}`,
     hex,

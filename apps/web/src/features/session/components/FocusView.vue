@@ -3,27 +3,27 @@ import { Button, ButtonVariant } from '@stamina/ui-button';
 import { ChipGroup } from '@stamina/ui-chip-group';
 import { SetDots } from '@stamina/ui-set-dots';
 import { Stepper } from '@stamina/ui-stepper';
-import { MAX_LOGGED_REPS, MAX_WEIGHT_KG, PrescriptionUnit } from '@stamina/domain';
+import { MAX_LOGGED_REPS, MAX_WEIGHT_KG } from '@stamina/domain';
 import { computed, useId } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { pickedOne, toOptions } from '../../onboarding/index.ts';
-import { MIN_REPS, REPS_STEP, SECONDS_STEP, SET_RPE_VALUES, WEIGHT_STEP_KG } from '../config.ts';
+import { MIN_REPS, MIN_WEIGHT_KG, SET_RPE_VALUES, WEIGHT_STEP_KG } from '../config.ts';
 import type { FocusViewEmits, FocusViewProps } from '../types.ts';
 import { createNumberFormat } from '../utils/create-number-format.ts';
+import { toRepsField } from '../utils/to-reps-field.ts';
 
 const props = defineProps<FocusViewProps>();
 const emit = defineEmits<FocusViewEmits>();
 
 const weightKg = defineModel<number>('weightKg', { required: true });
 const reps = defineModel<number>('reps', { required: true });
-const rpe = defineModel<number>('rpe', { required: true });
+const rpe = defineModel<number | undefined>('rpe', { required: true });
 
 const { t } = useI18n();
 const titleId = useId();
 
 const format = computed(() => createNumberFormat(props.locale));
-const timed = computed(() => props.focus.unit === PrescriptionUnit.Seconds);
-const repsKey = computed(() => (timed.value ? 'focus.seconds' : 'focus.reps'));
+const repsField = computed(() => toRepsField(props.focus.unit));
 const rpeOptions = toOptions(SET_RPE_VALUES, String);
 </script>
 
@@ -75,30 +75,30 @@ const rpeOptions = toOptions(SET_RPE_VALUES, String);
         :increment-label="t('session.focus.weight.increase')"
         :unit="t('session.unit.kg')"
         :format="format"
-        :min="0"
+        :min="MIN_WEIGHT_KG"
         :max="MAX_WEIGHT_KG"
         :step="WEIGHT_STEP_KG"
       />
       <Stepper
         v-model="reps"
-        :label="t(`session.${repsKey}.label`)"
-        :decrement-label="t(`session.${repsKey}.decrease`)"
-        :increment-label="t(`session.${repsKey}.increase`)"
-        :unit="t(timed ? 'session.unit.seconds' : 'session.unit.reps', { count: reps })"
+        :label="t(repsField.label)"
+        :decrement-label="t(repsField.decrease)"
+        :increment-label="t(repsField.increase)"
+        :unit="t(repsField.unit, { count: reps })"
         :min="MIN_REPS"
         :max="MAX_LOGGED_REPS"
-        :step="timed ? SECONDS_STEP : REPS_STEP"
+        :step="repsField.step"
       />
       <div class="flex flex-col gap-1">
         <ChipGroup
-          :model-value="rpe"
+          :model-value="rpe ?? null"
           :options="rpeOptions"
           :label="t('session.focus.rpe.label')"
           @update:model-value="rpe = pickedOne($event, SET_RPE_VALUES) ?? rpe"
         />
         <p class="text-sm text-text-muted">{{ t('session.focus.rpe.hint') }}</p>
       </div>
-      <Button block data-testid="set-done" @click="emit('done')">
+      <Button block :disabled="rpe === undefined" data-testid="set-done" @click="emit('done')">
         {{ t('session.focus.done', { set: focus.setNumber }) }}
       </Button>
     </template>

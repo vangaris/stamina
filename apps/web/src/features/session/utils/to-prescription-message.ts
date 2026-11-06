@@ -1,5 +1,6 @@
 import type { SessionExercise } from '@stamina/contracts';
 import { PrescriptionUnit } from '@stamina/domain';
+import { formatRepRange } from '../../program/index.ts';
 import { TargetMessageKey } from '../enums/target-message-key.ts';
 import type { MessageView } from '../types.ts';
 
@@ -10,7 +11,7 @@ export function toPrescriptionMessage({
   repMax,
   unit,
 }: Pick<SessionExercise, 'sets' | 'repMin' | 'repMax' | 'unit'>): MessageView {
-  const range = repMin === repMax ? `${repMin}` : `${repMin}-${repMax}`;
+  const range = formatRepRange({ repMin, repMax });
   const key = unit === PrescriptionUnit.Seconds ? TargetMessageKey.Seconds : TargetMessageKey.Reps;
   return { key, params: { sets, range } };
 }

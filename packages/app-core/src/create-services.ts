@@ -8,6 +8,7 @@ import { createDexieOfflineQueue } from './services/create-dexie-offline-queue.t
 import { createDexiePlanCache } from './services/create-dexie-plan-cache.ts';
 import { createDexieSessionLog } from './services/create-dexie-session-log.ts';
 import { createConsoleLogger } from './services/create-console-logger.ts';
+import { createFixedClock } from './services/create-fixed-clock.ts';
 import { createFakeApiClient } from './services/create-fake-api-client.ts';
 import { createFakeAuthService } from './services/create-fake-auth-service.ts';
 import { createLocalDatabase } from './services/create-local-database.ts';
@@ -35,7 +36,7 @@ export function createServices(env: ServicesEnv): Services {
         auth,
         inviteStorage: createMemoryInviteStorage(),
         logger: test ? createSilentLogger() : createConsoleLogger(),
-        clock: test ? { now: () => 0 } : createSystemClock(),
+        clock: test ? createFixedClock() : createSystemClock(),
         network: test ? { isOnline: () => true } : createBrowserNetwork(),
         offlineQueue,
         sessionLog,

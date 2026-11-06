@@ -11,7 +11,7 @@ import { SwapKind } from '../enums/swap-kind.ts';
 import { QUEUED, REJECTED } from '../testing/create-mock-mediator.ts';
 import { makeLoggedSet, makeSessionDetail } from '../testing/make-session-detail.ts';
 import { setupSession } from '../testing/setup-session.ts';
-import { SWAP_STORAGE_PREFIX } from '../config.ts';
+import { LOG_TAP_GUARD_MS, SWAP_STORAGE_PREFIX } from '../config.ts';
 
 type Setup = ReturnType<typeof setupSession>;
 
@@ -21,10 +21,17 @@ async function opened(options: Parameters<typeof setupSession>[0] = {}) {
   return setup;
 }
 
+/** Taps Done the way a person does: the effort picked (first sets start unrated) and the last tap long past. */
+function tapDone({ flow }: Setup) {
+  vi.advanceTimersByTime(LOG_TAP_GUARD_MS);
+  flow.draft.value.rpe ??= 8;
+  return flow.logCurrentSet();
+}
+
 /** Logs the next set and, if a rest started, skips it. */
-async function logSet({ flow }: Setup) {
-  await flow.logCurrentSet();
-  flow.skipRest();
+async function logSet(setup: Setup) {
+  await tapDone(setup);
+  setup.flow.skipRest();
 }
 
 /** The standard Session has 1 + 3 + 2 planned sets. */
@@ -49,8 +56,18 @@ describe('opening a Session', () => {
       name: 'Leg swings',
       setNumber: 1,
     });
-    expect(flow.draft.value).toEqual({ weightKg: 0, reps: 10, rpe: 6 });
+    expect(flow.draft.value).toEqual({ weightKg: 0, reps: 10, rpe: undefined });
     expect(keepAwake).toHaveBeenCalledTimes(1);
+  });
+
+  it('lets go of the screen again when the person left while the Session was loading', async () => {
+    const setup = setupSession();
+
+    const loading = setup.flow.load();
+    setup.flow.close();
+    await loading;
+
+    expect(setup.keepAwake).not.toHaveBeenCalled();
   });
 
   it('lets go of the screen and the rest timer when closed', async () => {
@@ -105,10 +122,10 @@ describe('opening a Session', () => {
 describe('logging a set', () => {
   it('sends the set with a new id, the exercise, the set number and the steppers values', async () => {
     const setup = await opened();
-    await setup.flow.logCurrentSet(); // warm-up
+    await tapDone(setup); // warm-up
     setup.flow.draft.value = { weightKg: 22.5, reps: 5, rpe: 8 };
 
-    await setup.flow.logCurrentSet();
+    await tapDone(setup);
 
     const [warmUp, main] = setup.sets as [LogSet, LogSet];
     expect(warmUp).toMatchObject({ exerciseId: 'leg-swings', setNumber: 1 });
@@ -126,11 +143,11 @@ describe('logging a set', () => {
 
   it('shows the set and moves on at once, without waiting for the network', async () => {
     const setup = await opened();
-    await setup.flow.logCurrentSet(); // warm-up
+    await tapDone(setup); // warm-up
     let open: () => void = () => undefined;
     setup.state.gate = new Promise<void>((resolve) => (open = resolve));
 
-    const sending = setup.flow.logCurrentSet();
+    const sending = tapDone(setup);
 
     expect(setup.flow.focus.value).toMatchObject({
       name: 'Goblet squat',
@@ -157,7 +174,7 @@ describe('logging a set', () => {
     const setup = await opened();
     setup.state.logOutcome = QUEUED;
 
-    await setup.flow.logCurrentSet();
+    await tapDone(setup);
 
     expect(setup.flow.setStatus.value?.status).toBe(SetSaveStatus.Queued);
     expect(setup.flow.focus.value?.doneSets).toBe(0); // moved to the next exercise already
@@ -168,31 +185,85 @@ describe('logging a set', () => {
     const setup = await opened();
     setup.state.logOutcome = new AppError(AppErrorCode.Unknown);
 
-    await setup.flow.logCurrentSet();
+    await tapDone(setup);
 
     expect(setup.flow.setStatus.value?.status).toBe(SetSaveStatus.NotSent);
     expect(setup.flow.focus.value?.position).toBe(2);
+  });
+
+  it('does not log a set until its effort is picked', async () => {
+    const setup = await opened();
+
+    await setup.flow.logCurrentSet();
+
+    expect(setup.sets).toEqual([]);
+    expect(setup.flow.focus.value?.doneSets).toBe(0);
+  });
+
+  it('starts the first set of the next exercise unrated, and later sets at the last effort', async () => {
+    const setup = await opened();
+    await logSet(setup); // warm-up
+    expect(setup.flow.draft.value.rpe).toBeUndefined();
+    setup.flow.draft.value.rpe = 9;
+
+    await logSet(setup);
+
+    expect(setup.flow.draft.value.rpe).toBe(9);
+  });
+
+  it('logs a quick second tap only once, and again once the moment has passed', async () => {
+    const setup = await opened();
+    let open: () => void = () => undefined;
+    setup.state.gate = new Promise<void>((resolve) => (open = resolve));
+    setup.flow.draft.value.rpe = 8;
+
+    const first = setup.flow.logCurrentSet();
+    setup.flow.draft.value.rpe = 8;
+    const second = setup.flow.logCurrentSet();
+    open();
+    await Promise.all([first, second]);
+
+    expect(setup.sets).toHaveLength(1);
+    expect(setup.flow.focus.value).toMatchObject({ name: 'Goblet squat', setNumber: 1 });
+
+    await tapDone(setup);
+    expect(setup.sets).toHaveLength(2);
   });
 
   it('takes a refused set off the screen again and says so', async () => {
     const setup = await opened();
     setup.state.logOutcome = REJECTED;
 
-    await setup.flow.logCurrentSet();
+    await tapDone(setup);
 
     expect(setup.flow.errorKey.value).toBe(SessionMessageKey.SetRejected);
     expect(setup.flow.phase.value).toBe(SessionPhase.Focus);
     expect(setup.flow.focus.value).toMatchObject({ name: 'Leg swings', doneSets: 0, setNumber: 1 });
   });
 
+  it('keeps the screen the person moved to when a set is refused', async () => {
+    const setup = await opened();
+    setup.state.logOutcome = REJECTED;
+    let open: () => void = () => undefined;
+    setup.state.gate = new Promise<void>((resolve) => (open = resolve));
+
+    const sending = tapDone(setup);
+    setup.flow.showOverview();
+    open();
+    await sending;
+
+    expect(setup.flow.phase.value).toBe(SessionPhase.Overview);
+    expect(setup.flow.errorKey.value).toBe(SessionMessageKey.SetRejected);
+  });
+
   it('shows only the latest set status when answers arrive late', async () => {
     const setup = await opened();
     let open: () => void = () => undefined;
     setup.state.gate = new Promise<void>((resolve) => (open = resolve));
-    const first = setup.flow.logCurrentSet();
+    const first = tapDone(setup);
     setup.state.gate = undefined;
     setup.state.logOutcome = QUEUED;
-    await setup.flow.logCurrentSet();
+    await tapDone(setup);
 
     open();
     await first;
@@ -208,7 +279,7 @@ describe('logging a set', () => {
     const setup = await opened();
     setup.state.logOutcome = new AppError(AppErrorCode.Unauthorized);
 
-    await setup.flow.logCurrentSet();
+    await tapDone(setup);
 
     expect(setup.onNavigate).toHaveBeenCalledWith(RoutePath.Start);
   });
@@ -221,12 +292,12 @@ describe('sets beyond the plan', () => {
     setup.flow.jumpTo(0);
 
     expect(setup.flow.focus.value).toMatchObject({ showSteppers: false, setNumber: 2 });
-    await setup.flow.logCurrentSet();
+    await tapDone(setup);
     expect(setup.sets).toHaveLength(1);
 
     setup.flow.addSet();
     expect(setup.flow.focus.value?.showSteppers).toBe(true);
-    await setup.flow.logCurrentSet();
+    await tapDone(setup);
 
     expect(setup.sets[1]).toMatchObject({ exerciseId: 'leg-swings', setNumber: 2 });
   });
@@ -248,7 +319,7 @@ describe('sets beyond the plan', () => {
     setup.flow.jumpTo(0);
 
     setup.flow.addSet();
-    await setup.flow.logCurrentSet();
+    await tapDone(setup);
 
     expect(setup.flow.focus.value?.canAddSet).toBe(false);
     expect(setup.sets).toEqual([]);
@@ -260,7 +331,7 @@ describe('the rest timer', () => {
     const setup = await opened();
     await logSet(setup); // warm-up
 
-    await setup.flow.logCurrentSet();
+    await tapDone(setup);
 
     expect(setup.flow.restView.value).toEqual({
       remainingSeconds: 120,
@@ -275,7 +346,7 @@ describe('the rest timer', () => {
     const setup = await opened();
     setup.flow.jumpTo(2);
 
-    await setup.flow.logCurrentSet();
+    await tapDone(setup);
 
     expect(setup.flow.restView.value?.totalSeconds).toBe(60);
   });
@@ -286,7 +357,7 @@ describe('the rest timer', () => {
     await logSet(setup);
     await logSet(setup);
 
-    await setup.flow.logCurrentSet(); // third and last main-strength set
+    await tapDone(setup); // third and last main-strength set
 
     expect(setup.flow.restView.value?.next).toEqual({ name: 'Plank', setNumber: 1 });
     expect(setup.flow.focus.value?.name).toBe('Plank');
@@ -295,7 +366,7 @@ describe('the rest timer', () => {
   it('has no rest after a warm-up set', async () => {
     const setup = await opened();
 
-    await setup.flow.logCurrentSet();
+    await tapDone(setup);
 
     expect(setup.flow.restView.value).toBeUndefined();
     expect(setup.flow.focus.value?.name).toBe('Goblet squat');
@@ -305,7 +376,7 @@ describe('the rest timer', () => {
     const setup = await opened();
     for (let set = 0; set < 5; set++) await logSet(setup);
 
-    await setup.flow.logCurrentSet();
+    await tapDone(setup);
 
     expect(setup.flow.restView.value).toBeUndefined();
     expect(setup.flow.phase.value).toBe(SessionPhase.Finish);
@@ -314,12 +385,12 @@ describe('the rest timer', () => {
   it('ends when it runs out, and when skipped', async () => {
     const setup = await opened();
     await logSet(setup);
-    await setup.flow.logCurrentSet();
+    await tapDone(setup);
 
     vi.advanceTimersByTime(120_000);
     expect(setup.flow.restView.value).toBeUndefined();
 
-    await setup.flow.logCurrentSet();
+    await tapDone(setup);
     expect(setup.flow.restView.value).toBeDefined();
     setup.flow.skipRest();
     expect(setup.flow.restView.value).toBeUndefined();
@@ -328,7 +399,7 @@ describe('the rest timer', () => {
   it('adds 15 seconds on request', async () => {
     const setup = await opened();
     await logSet(setup);
-    await setup.flow.logCurrentSet();
+    await tapDone(setup);
 
     setup.flow.addRestTime();
 
@@ -338,7 +409,7 @@ describe('the rest timer', () => {
   it('stops when the screen is closed', async () => {
     const setup = await opened();
     await logSet(setup);
-    await setup.flow.logCurrentSet();
+    await tapDone(setup);
 
     setup.flow.close();
 
@@ -430,9 +501,9 @@ describe('swapping an exercise', () => {
     expect(setup.flow.sheet.value).toBe(SessionSheet.Swap);
 
     setup.flow.swapTo(setup.flow.swapOptions.value[0]!);
-    await setup.flow.logCurrentSet();
+    await tapDone(setup);
     setup.flow.skipRest();
-    await setup.flow.logCurrentSet();
+    await tapDone(setup);
 
     expect(setup.flow.sheet.value).toBe(SessionSheet.None);
     expect(setup.sets.map(({ exerciseId, setNumber }) => [exerciseId, setNumber])).toEqual([
@@ -461,7 +532,7 @@ describe('swapping an exercise', () => {
 
     const original = setup.flow.swapOptions.value.find(({ kind }) => kind === SwapKind.Original)!;
     setup.flow.swapTo(original);
-    await setup.flow.logCurrentSet();
+    await tapDone(setup);
 
     expect(setup.sets[0]).toMatchObject({ exerciseId: 'goblet-squat' });
     expect(setup.storage.size).toBe(0);
@@ -604,7 +675,7 @@ describe('finishing', () => {
 
     setup.flow.showFocus();
     setup.flow.addSet();
-    await setup.flow.logCurrentSet();
+    await tapDone(setup);
 
     expect(setup.sets.at(-1)).toMatchObject({ exerciseId: 'plank', setNumber: 3 });
     expect(setup.flow.phase.value).toBe(SessionPhase.Finish);

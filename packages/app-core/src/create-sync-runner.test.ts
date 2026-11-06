@@ -21,6 +21,7 @@ interface Note extends Request<void> {
 function setup(failOn?: string, failWith: () => unknown = () => new Error('boom')) {
   const services: Services = createServices({ mode: ServicesMode.Test });
   const handled: string[] = [];
+  const undone: string[] = [];
   const sync = createSyncRunner({
     services,
     stores: {},
@@ -28,6 +29,9 @@ function setup(failOn?: string, failWith: () => unknown = () => new Error('boom'
       [TestRequestType.Note]: defineRequest<Note, Services, object>({
         schema: z.object({ type: z.literal(TestRequestType.Note), text: z.string().min(1) }),
         offline: OfflinePolicy.Queue,
+        undoLocal: async ({ text }) => {
+          undone.push(text);
+        },
         handler: async ({ text }) => {
           if (text === failOn) throw failWith();
           handled.push(text);
@@ -41,7 +45,7 @@ function setup(failOn?: string, failWith: () => unknown = () => new Error('boom'
   const note = (text: string): Note => ({ type: TestRequestType.Note, text });
   const remaining = async () =>
     (await services.offlineQueue.pending()).map(({ request }) => (request as Note).text);
-  return { sync, queue, note, handled, remaining };
+  return { sync, queue, note, handled, undone, remaining };
 }
 
 describe('createSyncRunner', () => {
@@ -74,6 +78,52 @@ describe('createSyncRunner', () => {
       expect(await remaining()).toEqual([]);
     },
   );
+
+  it.each([400, 404, 422])(
+    'undoes the local write of an entry dropped for a %i, and of no other entry',
+    async (status) => {
+      const { sync, queue, note, undone } = setup('b', () => new ApiError(status));
+      await queue(note('a'), note('b'), note('c'));
+
+      await sync();
+
+      expect(undone).toEqual(['b']);
+    },
+  );
+
+  it('undoes nothing for an entry kept because the failure is worth retrying', async () => {
+    const { sync, queue, note, undone } = setup('b', () => new ApiError(503));
+    await queue(note('a'), note('b'));
+
+    await sync();
+
+    expect(undone).toEqual([]);
+  });
+
+  it('undoes the local write of an entry that no longer parses, and drops it even if the undo fails', async () => {
+    const services: Services = createServices({ mode: ServicesMode.Test });
+    const attempted: unknown[] = [];
+    const sync = createSyncRunner({
+      services,
+      stores: {},
+      registry: {
+        [TestRequestType.Note]: defineRequest<Note, Services, object>({
+          schema: z.object({ type: z.literal(TestRequestType.Note), text: z.string().min(1) }),
+          offline: OfflinePolicy.Queue,
+          undoLocal: async (request) => {
+            attempted.push(request);
+            throw new Error('storage failed');
+          },
+          handler: async () => undefined,
+        }),
+      },
+    });
+    const stale = { type: TestRequestType.Note, text: '' };
+    await services.offlineQueue.enqueue(stale);
+
+    expect(await sync()).toEqual({ replayed: 1, remaining: 0 });
+    expect(attempted).toEqual([stale]);
+  });
 
   it.each([
     ['401', () => new ApiError(401)],

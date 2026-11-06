@@ -5,6 +5,8 @@ import type { Locale } from '@stamina/i18n';
 import type { RoutePath } from '../../enums/route-path.ts';
 import type { LoadMessageKey } from '../program/index.ts';
 import type { DocumentEvent } from './enums/document-event.ts';
+import type { RepsFieldKey } from './enums/reps-field-key.ts';
+import type { RepsUnitKey } from './enums/reps-unit-key.ts';
 import type { RestMessageKey } from './enums/rest-message-key.ts';
 import type { SessionMessageKey } from './enums/session-message-key.ts';
 import type { SessionPhase } from './enums/session-phase.ts';
@@ -52,7 +54,17 @@ export interface SetTarget {
 export interface SetDraft {
   weightKg: number;
   reps: number;
-  rpe: number;
+  /** Nothing until the person rates the set: the first set of an exercise is never rated for them. */
+  rpe: number | undefined;
+}
+
+/** What the reps (or seconds) stepper says and how it moves. */
+export interface RepsField {
+  label: RepsFieldKey;
+  decrease: RepsFieldKey;
+  increase: RepsFieldKey;
+  unit: RepsUnitKey;
+  step: number;
 }
 
 /** An i18n key with the arguments its message takes. */
@@ -93,6 +105,16 @@ export interface FocusModel {
   unit: PrescriptionUnit;
   hasNextExercise: boolean;
   canSwap: boolean;
+}
+
+/** What `buildFocusModel` needs: the Session's exercises and where the person is in them. */
+export interface FocusModelInput {
+  views: readonly ExerciseView[];
+  /** The exercise on screen. */
+  position: number;
+  /** The person asked for a set beyond the plan. */
+  addingSet: boolean;
+  locale: Locale;
 }
 
 /** One line of the overview table. */

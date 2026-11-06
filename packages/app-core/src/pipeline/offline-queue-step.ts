@@ -17,7 +17,8 @@ async function queue({ request, services }: PipelineContext) {
  * the send fails in a way worth retrying (`isRetryableFailure`: no network, 401, 408, 429, a
  * server error, anything unrecognised): the request is already written on the device, so it must
  * reach the queue or it would never sync. A permanent client error is not queued (the server will
- * never accept it) and reaches the caller.
+ * never accept it): the definition's `undoLocal` takes the local write back, so the device does not
+ * keep what the server refused, and the error reaches the caller.
  */
 export const offlineQueueStep: PipelineStep = async (context, next) => {
   const { network, offlineQueue } = context.services;
@@ -34,6 +35,7 @@ export const offlineQueueStep: PipelineStep = async (context, next) => {
     return await next(context);
   } catch (thrown) {
     if (isRetryableFailure(thrown)) return queue(context);
+    await context.definition.undoLocal?.(context.request, context.services);
     throw thrown;
   }
 };

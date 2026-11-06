@@ -15,7 +15,8 @@ export const finishSession = (sessionId: string, finish: FinishSession): FinishS
 /**
  * Records the finish on the device first (the Session then reads as finished, with its Load),
  * then sends it; offline it waits in the offline queue and resolves `QUEUED_RESULT`. A second
- * finish is ignored by the server and returns the stored one. Never logged.
+ * finish is ignored by the server and returns the stored one; a permanent client error takes the
+ * local finish back (`undoLocal`). Never logged.
  */
 export const finishSessionDefinition = defineRequest<FinishSessionRequest, Services, Stores>({
   schema: z.object({
@@ -24,7 +25,9 @@ export const finishSessionDefinition = defineRequest<FinishSessionRequest, Servi
     finish: finishSessionSchema,
   }),
   offline: OfflinePolicy.Queue,
-  writeLocal: ({ sessionId, finish }, services) =>
-    services.sessionLog.recordFinish(sessionId, { finish, recordedAt: new Date().toISOString() }),
+  writeLocal: ({ sessionId, finish }, { sessionLog, clock }) =>
+    sessionLog.recordFinish(sessionId, { finish, recordedAt: clock.wallTime().toISOString() }),
+  undoLocal: ({ sessionId, finish }, { sessionLog }) =>
+    sessionLog.removeFinish(sessionId, finish.id),
   handler: ({ sessionId, finish }, { services }) => services.api.finishSession(sessionId, finish),
 });

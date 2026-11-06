@@ -58,6 +58,7 @@ export type {
   GrantConsent,
   Handler,
   HealthState,
+  IntervalTimer,
   InviteStorage,
   LocalData,
   LocalFinish,

@@ -8,7 +8,7 @@ import {
 import { newId } from '@stamina/ids';
 import { IDBFactory, IDBKeyRange } from 'fake-indexeddb';
 import { describe, expect, it } from 'vitest';
-import { QUEUED_RESULT } from '../config.ts';
+import { QUEUED_RESULT, TEST_CLOCK } from '../config.ts';
 import {
   AppErrorCode,
   finishSession,
@@ -221,22 +221,66 @@ describe('logging a Session through the mediator', () => {
       },
     );
 
-    it('keeps order: a finish waits behind a set whose online send failed', async () => {
-      const { mediator, sessionId, setFor, services, sync, server } = await setupSession({
-        wrapApi: failingFirstLogSet(() => new ApiError(503)),
+    it.each([400, 404, 422])(
+      'takes the set back off the device on a permanent %i, so the Session does not show it',
+      async (status) => {
+        const { mediator, sessionId, setFor, services } = await setupSession({
+          wrapApi: failingFirstLogSet(() => new ApiError(status)),
+        });
+
+        await expect(mediator.send(logSet(sessionId, setFor(1)))).rejects.toBeDefined();
+
+        expect((await services.sessionLog.read(sessionId)).sets).toEqual([]);
+        expect(loggedNumbers(await mediator.send(getSessionDetail(sessionId)))).toEqual([]);
+      },
+    );
+
+    const failingFinish =
+      (error: () => unknown) =>
+      (api: ApiClient): ApiClient => ({
+        ...api,
+        finishSession: async () => {
+          throw error();
+        },
       });
 
-      expect(await mediator.send(logSet(sessionId, setFor(1)))).toBe(QUEUED_RESULT);
-      expect(await mediator.send(finishSession(sessionId, { id: newId(), rpe: 8 }))).toBe(
-        QUEUED_RESULT,
-      );
+    it.each([400, 404, 422])(
+      'takes the finish back on a permanent %i: the Session does not read as finished and nothing is queued',
+      async (status) => {
+        const { mediator, sessionId, services } = await setupSession({
+          wrapApi: failingFinish(() => new ApiError(status)),
+        });
 
-      expect(await queuedSetNumbers(services)).toEqual([1]);
-      expect(await services.offlineQueue.pending()).toHaveLength(2);
-      expect(await sync()).toEqual({ replayed: 2, remaining: 0 });
-      const stored = await server.getSession(sessionId);
-      expect(loggedNumbers(stored)).toEqual([1]);
-      expect(stored.finished).not.toBeNull();
+        await expect(
+          mediator.send(finishSession(sessionId, { id: newId(), rpe: 8 })),
+        ).rejects.toMatchObject({ code: AppErrorCode.Unknown });
+
+        expect((await services.sessionLog.read(sessionId)).finish).toBeNull();
+        expect((await mediator.send(getSessionDetail(sessionId))).finished).toBeNull();
+        expect(await services.offlineQueue.pending()).toEqual([]);
+      },
+    );
+
+    it('keeps the first finish when a second one is refused for good', async () => {
+      let calls = 0;
+      const { mediator, sessionId, services } = await setupSession({
+        wrapApi: (api) => ({
+          ...api,
+          finishSession: async (id, finish) => {
+            calls += 1;
+            if (calls > 1) throw new ApiError(422);
+            return api.finishSession(id, finish);
+          },
+        }),
+      });
+      const first = { id: newId(), rpe: 8, minutes: 40 };
+      await mediator.send(finishSession(sessionId, first));
+
+      await expect(
+        mediator.send(finishSession(sessionId, { id: newId(), rpe: 3 })),
+      ).rejects.toBeDefined();
+
+      expect((await services.sessionLog.read(sessionId)).finish?.finish.id).toBe(first.id);
     });
   });
 
@@ -377,6 +421,40 @@ describe('logging a Session through the mediator', () => {
         },
       );
 
+      it.each([400, 404, 422])(
+        'also takes the refused set back off the device on a %i, and keeps the others',
+        async (status) => {
+          const { services, sync, sessionId } = await queueTwoSets(
+            failingFirst(() => new ApiError(status)),
+          );
+
+          await sync();
+
+          const sets = (await services.sessionLog.read(sessionId)).sets;
+          expect(sets.map(({ setNumber }) => setNumber)).toEqual([2]);
+        },
+      );
+
+      it('takes a refused finish back off the device when its entry is dropped', async () => {
+        const { mediator, network, sessionId, services, sync } = await setupSession({
+          wrapApi: (api) => ({
+            ...api,
+            finishSession: async () => {
+              throw new ApiError(422);
+            },
+          }),
+        });
+        network.online = false;
+        await mediator.send(finishSession(sessionId, { id: newId(), rpe: 8 }));
+        expect((await services.sessionLog.read(sessionId)).finish).not.toBeNull();
+        network.online = true;
+
+        expect(await sync()).toEqual({ replayed: 1, remaining: 0 });
+
+        expect((await services.sessionLog.read(sessionId)).finish).toBeNull();
+        expect((await mediator.send(getSessionDetail(sessionId))).finished).toBeNull();
+      });
+
       it.each([401, 408, 429, 500, 502, 503])(
         'keeps the entry and everything behind it on a %i, then sends them once it clears',
         async (status) => {
@@ -411,6 +489,18 @@ describe('logging a Session through the mediator', () => {
 
         expect(await sync()).toEqual({ replayed: 3, remaining: 0 });
         expect(loggedNumbers(await server.getSession(sessionId))).toEqual([2]);
+      });
+
+      it('takes the local row back for an entry that no longer parses, and survives a malformed one', async () => {
+        const { services, sync, sessionId, setFor } = await setupSession();
+        const stale = setFor(1, { rpe: 5 });
+        await services.sessionLog.addSet(sessionId, stale);
+        await services.offlineQueue.enqueue({ type: 'LogSet', sessionId, set: stale } as never);
+        await services.offlineQueue.enqueue({ type: 'LogSet', sessionId } as never);
+
+        expect(await sync()).toEqual({ replayed: 2, remaining: 0 });
+
+        expect((await services.sessionLog.read(sessionId)).sets).toEqual([]);
       });
     });
 
@@ -469,6 +559,17 @@ describe('logging a Session through the mediator', () => {
       expect((await mediator.send(getSessionDetail(sessionId))).finished).toMatchObject({
         load: 7 * detail.minutes,
       });
+    });
+
+    it('stamps the local finish with the injected wall-clock time, not the real one', async () => {
+      const { mediator, network, sessionId, services } = await setupSession();
+      network.online = false;
+
+      await mediator.send(finishSession(sessionId, { id: newId(), rpe: 7 }));
+
+      expect((await services.sessionLog.read(sessionId)).finish?.recordedAt).toBe(
+        TEST_CLOCK.wallTime,
+      );
     });
 
     it('ignores a second finish and returns the stored one', async () => {

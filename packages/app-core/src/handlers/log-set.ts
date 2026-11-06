@@ -15,7 +15,7 @@ export const logSet = (sessionId: string, set: LogSet): LogSetRequest => ({
 /**
  * Writes the set on the device first, then sends it; offline (or when the network drops mid-send)
  * it waits in the offline queue and resolves `QUEUED_RESULT`. A `Rejected` answer is a result, not
- * an error, and drops the set from the device. Never logged: weight, reps and RPE are health data.
+ * an error, and drops the set from the device, as does a permanent client error (`undoLocal`). Never logged: weight, reps and RPE are health data.
  */
 export const logSetDefinition = defineRequest<LogSetRequest, Services, Stores>({
   schema: z.object({
@@ -25,6 +25,7 @@ export const logSetDefinition = defineRequest<LogSetRequest, Services, Stores>({
   }),
   offline: OfflinePolicy.Queue,
   writeLocal: ({ sessionId, set }, services) => services.sessionLog.addSet(sessionId, set),
+  undoLocal: ({ set }, services) => services.sessionLog.removeSet(set.id),
   handler: async ({ sessionId, set }, { services }) => {
     const result = await services.api.logSet(sessionId, set);
     if (result.status === RecordStatus.Rejected) await services.sessionLog.removeSet(set.id);

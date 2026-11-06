@@ -1,5 +1,6 @@
 import { createServices, ServicesMode, SyncTrigger, type OfflineQueue } from '@stamina/app-core';
-import { describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
+import { SYNC_RETRY_MS } from '../config.ts';
 import { startAppSync } from './start-app-sync.ts';
 
 const stores = { health: { set: () => undefined }, session: { set: () => undefined } };
@@ -16,33 +17,51 @@ function setup() {
   return { reads: () => pending.mock.calls.length, target, stop };
 }
 
-const settle = () => new Promise((resolve) => setTimeout(resolve, 0));
-
 describe('startAppSync', () => {
+  afterEach(() => vi.useRealTimers());
+
   it('syncs when the app opens, on focus and when the phone is back online', async () => {
+    vi.useFakeTimers();
     const { reads, target } = setup();
-    await settle();
+    await vi.advanceTimersByTimeAsync(0);
     const afterOpen = reads();
     expect(afterOpen).toBeGreaterThan(0);
 
     target.dispatchEvent(new Event(SyncTrigger.Focus));
-    await settle();
+    await vi.advanceTimersByTimeAsync(0);
     const afterFocus = reads();
     expect(afterFocus).toBeGreaterThan(afterOpen);
 
     target.dispatchEvent(new Event(SyncTrigger.Online));
-    await settle();
+    await vi.advanceTimersByTimeAsync(0);
     expect(reads()).toBeGreaterThan(afterFocus);
   });
 
-  it('stops syncing once stopped', async () => {
+  it('syncs again every retry interval while open, with no event', async () => {
+    vi.useFakeTimers();
+    const { reads } = setup();
+    await vi.advanceTimersByTimeAsync(0);
+    const afterOpen = reads();
+
+    await vi.advanceTimersByTimeAsync(SYNC_RETRY_MS - 1);
+    expect(reads()).toBe(afterOpen);
+    await vi.advanceTimersByTimeAsync(1);
+    const afterOne = reads();
+    expect(afterOne).toBeGreaterThan(afterOpen);
+
+    await vi.advanceTimersByTimeAsync(SYNC_RETRY_MS);
+    expect(reads()).toBeGreaterThan(afterOne);
+  });
+
+  it('stops syncing, on events and on the timer, once stopped', async () => {
+    vi.useFakeTimers();
     const { reads, target, stop } = setup();
-    await settle();
+    await vi.advanceTimersByTimeAsync(0);
     const before = reads();
 
     stop();
     target.dispatchEvent(new Event(SyncTrigger.Online));
-    await settle();
+    await vi.advanceTimersByTimeAsync(SYNC_RETRY_MS * 3);
 
     expect(reads()).toBe(before);
   });

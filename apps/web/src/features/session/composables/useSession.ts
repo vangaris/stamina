@@ -1,12 +1,19 @@
 import { AppError, AppErrorCode, finishSession, getSessionDetail, logSet } from '@stamina/app-core';
 import { RecordStatus, type LogSet, type SessionDetail } from '@stamina/contracts';
-import { MAX_LOGGED_SETS, MIN_SET_RPE, sessionLoad } from '@stamina/domain';
+import { MAX_LOGGED_SETS, sessionLoad } from '@stamina/domain';
 import { newId } from '@stamina/ids';
 import { computed, ref, shallowRef } from 'vue';
 import { useMediator } from '../../../mediator.ts';
 import { toMessageKey } from '../../../utils/to-message-key.ts';
 import { localizedName } from '../../program/index.ts';
-import { LOAD_ERROR_KEYS, REST_ADD_SECONDS, ROUTE_WHEN_SIGNED_OUT } from '../config.ts';
+import {
+  LOAD_ERROR_KEYS,
+  LOG_TAP_GUARD_MS,
+  MIN_REPS,
+  MIN_WEIGHT_KG,
+  REST_ADD_SECONDS,
+  ROUTE_WHEN_SIGNED_OUT,
+} from '../config.ts';
 import { SessionMessageKey } from '../enums/session-message-key.ts';
 import { SessionPhase } from '../enums/session-phase.ts';
 import { SessionSheet } from '../enums/session-sheet.ts';
@@ -55,7 +62,7 @@ export function useSession(options: UseSessionOptions) {
   const detail = shallowRef<SessionDetail | undefined>();
   const swaps = ref<Swaps>({});
   const position = ref(0);
-  const draft = ref<SetDraft>({ weightKg: 0, reps: 1, rpe: MIN_SET_RPE });
+  const draft = ref<SetDraft>({ weightKg: MIN_WEIGHT_KG, reps: MIN_REPS, rpe: undefined });
   const addingSet = ref(false);
   const sheet = ref(SessionSheet.None);
   const setStatus = ref<SetStatus | undefined>();
@@ -67,6 +74,11 @@ export function useSession(options: UseSessionOptions) {
   const errorKey = ref<SessionMessageKey | undefined>();
   let latestSetId: string | undefined;
   let stopAwake: (() => void) | undefined;
+  /** The person has left: nothing that finishes after this may keep the screen awake. */
+  let closed = false;
+  /** Set for a moment after a set is logged: a second tap meant for the same set. */
+  let tapGuarded = false;
+  let tapGuard: ReturnType<typeof setTimeout> | undefined;
 
   const rest = useRestTimer({
     onEnd: () => {
@@ -115,16 +127,16 @@ export function useSession(options: UseSessionOptions) {
     draft.value = defaultSetDraft(view);
   }
 
-  /** Back to the first set not logged yet; to the finish question when every planned set is. */
-  function resume() {
+  /** Moves to the first set not logged yet, or to the last exercise when every planned set is. */
+  function moveToFirstOpenSet(): boolean {
     const target = nextSetTarget(views.value, 0);
-    if (target) {
-      moveTo(target.position);
-      phase.value = SessionPhase.Focus;
-    } else {
-      moveTo(Math.max(0, views.value.length - 1));
-      phase.value = SessionPhase.Finish;
-    }
+    moveTo(target ? target.position : Math.max(0, views.value.length - 1));
+    return target !== undefined;
+  }
+
+  /** Opens on the first set not logged yet; on the finish question when every planned set is. */
+  function resume() {
+    phase.value = moveToFirstOpenSet() ? SessionPhase.Focus : SessionPhase.Finish;
   }
 
   async function load() {
@@ -132,9 +144,11 @@ export function useSession(options: UseSessionOptions) {
     messageKey.value = undefined;
     try {
       const loaded = await mediator.send(getSessionDetail(sessionId));
+      if (closed) return;
       detail.value = loaded;
       if (loaded.finished) {
         const { load: score, rpe, minutes } = loaded.finished;
+        // The detail does not say whether this finish is still waiting to be sent, so it reads as sent.
         finished.value = { load: score, rpe, minutes, queued: false };
         phase.value = SessionPhase.Done;
         return;
@@ -153,6 +167,8 @@ export function useSession(options: UseSessionOptions) {
   }
 
   function close() {
+    closed = true;
+    clearTimeout(tapGuard);
     rest.stop();
     releaseAwake();
   }
@@ -165,12 +181,29 @@ export function useSession(options: UseSessionOptions) {
   async function logCurrentSet() {
     const view = views.value[position.value];
     const current = detail.value;
-    if (!view || !current || phase.value !== SessionPhase.Focus || !focus.value?.showSteppers)
+    const { rpe } = draft.value;
+    if (
+      tapGuarded ||
+      rpe === undefined ||
+      !view ||
+      !current ||
+      phase.value !== SessionPhase.Focus ||
+      !focus.value?.showSteppers
+    )
       return;
     const setNumber = nextSetNumber(view.exercise.loggedSets);
     if (setNumber > MAX_LOGGED_SETS) return;
 
-    const set: LogSet = { id: makeId(), exerciseId: view.exerciseId, setNumber, ...draft.value };
+    tapGuarded = true;
+    clearTimeout(tapGuard);
+    tapGuard = setTimeout(() => (tapGuarded = false), LOG_TAP_GUARD_MS);
+    const set: LogSet = {
+      id: makeId(),
+      exerciseId: view.exerciseId,
+      setNumber,
+      ...draft.value,
+      rpe,
+    };
     detail.value = addLoggedSet(current, view.exercise.id, set);
     latestSetId = set.id;
     setStatus.value = undefined;
@@ -199,7 +232,9 @@ export function useSession(options: UseSessionOptions) {
         rest.stop();
         restNext.value = undefined;
         errorKey.value = SessionMessageKey.SetRejected;
-        return resume();
+        // Back to the set that is open now, on whichever screen the person has moved to since.
+        moveToFirstOpenSet();
+        return;
       }
       report(set.id, setNumber, SetSaveStatus.Saved);
     } catch (error) {

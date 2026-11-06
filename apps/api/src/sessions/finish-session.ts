@@ -4,13 +4,14 @@ import { lockUser } from '../db/lock-user.ts';
 import { sessionLog } from '../db/schema.ts';
 import type { Db } from '../db/types.ts';
 import { withUser } from '../db/with-user.ts';
+import { RecordIdTakenError } from './record-id-taken-error.ts';
 import { readSessionPlan } from './read-session-plan.ts';
 import { toFinishedSession } from './to-finished-session.ts';
 
 /**
  * Finishes the user's Session with its session RPE and stores the Load (`sessionLoad`: RPE x
  * minutes, the Session's planned minutes when none are given); `null` when the Session is not
- * the user's or does not exist. A Session finishes once: a second finish (the same id again or
+ * the user's or does not exist; `RecordIdTakenError` when the finish id belongs to another Session. A Session finishes once: a second finish (the same id again or
  * another) changes nothing and returns the stored one with `recorded: false`. Runs under
  * `lockUser`, so two devices finishing at once store one record.
  */
@@ -45,7 +46,7 @@ export async function finishSession(
       return { status: RecordStatus.Saved, recorded: true, finished: toFinishedSession(stored) };
     }
 
-    // Only another person's record with this id can conflict here: the Session has none of its own.
-    throw new Error('the finish record id is already taken');
+    // The Session has no finish of its own (read under the lock), so the id belongs to another Session's.
+    throw new RecordIdTakenError();
   });
 }

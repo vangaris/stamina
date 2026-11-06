@@ -7,9 +7,13 @@ import { signUpToReveal } from './support/program-flow.ts';
 // Needs the local stack: the seed script for invites, the fake auth server and the database.
 test.skip(!!process.env.PLAYWRIGHT_BASE_URL, 'needs the local stack with the seed script');
 
+const SET_RPE = 8;
 const SESSION_RPE = 8;
 const SESSION_LOAD = 360;
 const SYNC_TIMEOUT_MS = 20_000;
+/** A second tap within this time of a logged set is ignored (double-tap guard), so the journey waits it out. */
+const TAP_GUARD_WAIT_MS = 700;
+const JOURNEY_TIMEOUT_MS = 120_000;
 
 /** How many rows the API's database holds for one Session (what the server received). */
 async function serverRows(sessionId: string) {
@@ -33,9 +37,15 @@ async function serverRows(sessionId: string) {
 /** Logs every planned set with the default weight and reps, skipping the rest timer, up to the finish question. */
 async function logEverySet(page: Page): Promise<number> {
   let logged = 0;
+  const done = page.getByTestId('set-done');
   while (!(await page.getByTestId('finish-view').isVisible())) {
-    await page.getByTestId('set-done').click();
+    // The first set of an exercise starts with no effort picked; later sets keep the last one.
+    if (await done.isDisabled()) {
+      await page.getByRole('radio', { name: String(SET_RPE), exact: true }).click();
+    }
+    await done.click();
     logged += 1;
+    await page.waitForTimeout(TAP_GUARD_WAIT_MS);
     const skip = page.getByRole('button', { name: 'Skip rest' });
     await skip.click({ timeout: 500 }).catch(() => undefined);
   }
@@ -46,6 +56,7 @@ test('a Session logged with no signal is saved on the phone and reaches the serv
   page,
   context,
 }, testInfo) => {
+  test.setTimeout(JOURNEY_TIMEOUT_MS);
   await signUpToReveal(page, testInfo.title);
   await page.getByTestId('reveal-continue').click();
   await page.getByTestId('week-link').click();

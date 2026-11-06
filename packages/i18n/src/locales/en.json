@@ -434,7 +434,7 @@
       },
       "rpe": {
         "label": "How hard was it? (RPE)",
-        "hint": "6 is light, 10 is the hardest you can do."
+        "hint": "Pick how hard it was to log the set. 6 is light, 10 is the hardest you can do."
       },
       "done": "Done · set {set}",
       "addSet": "Add a set",

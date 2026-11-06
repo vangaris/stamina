@@ -20,7 +20,7 @@ const roundToStep = (kg: number): number =>
  * every prescribed set was logged, each reached the top of the rep range and none was harder than
  * the target, add 2.5 kg for an upper-body exercise or 5 kg for a lower-body one (`Increase`);
  * otherwise keep the weight (`Hold`). The base is the heaviest weight logged, and the result is
- * rounded to the nearest half kilogram.
+ * rounded to the nearest half kilogram; a `Decrease` is always at least one step below the base.
  *
  * `null` when there is nothing to progress: no sets logged, effort was not rated (no prescribed
  * RIR), the exercise carries no weight (bodyweight, none), or the heaviest weight logged is 0.
@@ -40,9 +40,10 @@ export function progressLoad({
   const targetRpe = FAILURE_RPE - rir;
   const hardSets = logged.filter((set) => set.rpe >= targetRpe + PROGRESSION_HARD_RPE_MARGIN);
   if (hardSets.length >= PROGRESSION_HARD_SETS) {
+    const rounded = roundToStep(base * PROGRESSION_DECREASE_FACTOR);
     return {
       outcome: ProgressionOutcome.Decrease,
-      suggestedWeightKg: roundToStep(base * PROGRESSION_DECREASE_FACTOR),
+      suggestedWeightKg: rounded < base ? rounded : Math.max(0, base - WEIGHT_ROUNDING_KG),
     };
   }
   const topOfRange =

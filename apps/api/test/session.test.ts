@@ -198,6 +198,25 @@ describe('Session screen: logging, finishing, progression', () => {
       expect(mainExerciseOf(await readSessionOf(user, lower.id)).loggedSets).toEqual([set]);
     });
 
+    it('answers 409 for a set id that belongs to another Session, and stores nothing', async () => {
+      const { user, lower, upper } = await player();
+      const taken = setOf(mainExerciseOf(lower).exerciseId, 1, 60, 5, 7);
+      await postSet(user, lower.id, taken);
+
+      const response = await user.call(
+        HttpMethod.Post,
+        sessionPath(upper.id, SessionSubpath.Sets),
+        {
+          ...taken,
+          exerciseId: mainExerciseOf(upper).exerciseId,
+        },
+      );
+
+      expect(response.status).toBe(409);
+      expect(await response.json()).toEqual({ error: ApiErrorCode.IdTaken });
+      expect(mainExerciseOf(await readSessionOf(user, upper.id)).loggedSets).toEqual([]);
+    });
+
     it('ignores a second set with the same number under another id', async () => {
       const { user, lower } = await player();
       const main = mainExerciseOf(lower);
@@ -334,6 +353,26 @@ describe('Session screen: logging, finishing, progression', () => {
       const { result } = await postFinish(user, lower.id, { id: crypto.randomUUID(), rpe: 8 });
 
       expect(result.finished).toMatchObject({ minutes: lower.minutes, load: 8 * lower.minutes });
+    });
+
+    it('answers 409 for a finish id that belongs to another Session, and stores nothing', async () => {
+      const { user, lower, upper } = await player();
+      const first = await postFinish(user, lower.id, { id: crypto.randomUUID(), rpe: 6 });
+
+      const response = await user.call(
+        HttpMethod.Post,
+        sessionPath(upper.id, SessionSubpath.Finish),
+        {
+          id: first.result.finished.id,
+          rpe: 7,
+        },
+      );
+
+      expect(response.status).toBe(409);
+      expect(await response.json()).toEqual({ error: ApiErrorCode.IdTaken });
+      expect(
+        await api.db.select().from(sessionLog).where(eq(sessionLog.userId, user.userId)),
+      ).toHaveLength(1);
     });
 
     it('ignores a second finish and returns the stored one', async () => {

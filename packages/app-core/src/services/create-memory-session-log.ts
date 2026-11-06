@@ -16,6 +16,9 @@ export function createMemorySessionLog(): SessionLogStore & Clearable {
     async recordFinish(sessionId, finish) {
       if (!finishes.has(sessionId)) finishes.set(sessionId, finish);
     },
+    async removeFinish(sessionId, finishId) {
+      if (finishes.get(sessionId)?.finish.id === finishId) finishes.delete(sessionId);
+    },
     async read(sessionId) {
       return {
         sets: [...sets.values()].filter((row) => row.sessionId === sessionId).map(({ set }) => set),

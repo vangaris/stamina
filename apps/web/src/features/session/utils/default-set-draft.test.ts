@@ -18,21 +18,16 @@ function viewOf(
 }
 
 describe('defaultSetDraft', () => {
-  it('starts at the suggested weight, the top of the range and the target effort', () => {
+  it('starts at the suggested weight and the top of the range, with no effort picked', () => {
     expect(defaultSetDraft(viewOf({ suggestedWeightKg: 42.5, repMax: 6, rir: 3 }))).toEqual({
       weightKg: 42.5,
       reps: 6,
-      rpe: 7,
+      rpe: undefined,
     });
   });
 
-  it('starts at 0 kg without a suggestion, and at the lightest rating without a target effort', () => {
-    expect(defaultSetDraft(viewOf({ rir: null }))).toMatchObject({ weightKg: 0, rpe: 6 });
-  });
-
-  it('holds the target effort inside what a set can be rated', () => {
-    expect(defaultSetDraft(viewOf({ rir: 5 })).rpe).toBe(6);
-    expect(defaultSetDraft(viewOf({ rir: 0 })).rpe).toBe(10);
+  it('starts at 0 kg without a suggestion', () => {
+    expect(defaultSetDraft(viewOf())).toMatchObject({ weightKg: 0 });
   });
 
   it('prefers the last logged set to the suggestion, whatever order the sets come in', () => {

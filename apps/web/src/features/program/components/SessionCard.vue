@@ -1,16 +1,16 @@
 <script setup lang="ts">
 import { Button } from '@stamina/ui-button';
 import { Card, CardElement } from '@stamina/ui-card';
-import { Emphasis, SessionFocus } from '@stamina/domain';
+import { SessionFocus } from '@stamina/domain';
 import { computed, useId } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { RouterLink } from 'vue-router';
 import { RouteName } from '../../../enums/route-name.ts';
-import { SessionBlockKind } from '../enums/session-block-kind.ts';
 import { SessionProgress } from '../enums/session-progress.ts';
 import type { SessionCardProps } from '../types.ts';
 import { formatDate } from '../utils/format-date.ts';
 import { groupSessionBlocks } from '../utils/group-session-blocks.ts';
+import { showsPowerSpeedCue } from '../utils/shows-power-speed-cue.ts';
 import ExerciseRow from './ExerciseRow.vue';
 
 const props = defineProps<SessionCardProps>();
@@ -45,7 +45,7 @@ const blocks = computed(() => groupSessionBlocks(props.session));
           {{ t(`program.blocks.${block.kind}`) }}
         </h4>
         <p
-          v-if="block.kind === SessionBlockKind.MainStrength && emphasis === Emphasis.PowerSpeed"
+          v-if="showsPowerSpeedCue(block.kind, emphasis)"
           class="text-sm text-text-muted"
           data-testid="power-speed-cue"
         >

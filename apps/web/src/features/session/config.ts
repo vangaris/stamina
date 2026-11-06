@@ -42,6 +42,15 @@ export const SECONDS_STEP = 5;
 /** A logged set has at least one rep (or one second). */
 export const MIN_REPS = 1;
 
+/** The weight stepper starts and stops at no weight. */
+export const MIN_WEIGHT_KG = 0;
+
+/**
+ * How long a tap on Done is held against a second one. The set is on the screen at once and the
+ * view has moved on to the next one, so a quick second tap would log that set as well.
+ */
+export const LOG_TAP_GUARD_MS = 600;
+
 /** Session minutes are adjusted in steps of five. */
 export const FINISH_MINUTES_STEP = 5;
 export const MIN_FINISH_MINUTES = 5;

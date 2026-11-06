@@ -23,9 +23,10 @@ export const AUTH_ERROR_FOR_BETTER_AUTH_CODE: Record<BetterAuthErrorCode, AuthEr
   [BetterAuthErrorCode.TooManyAttempts]: AuthErrorCode.TooManyAttempts,
 };
 
-export const HTTP_UNAUTHORIZED = 401;
+/** What the Test mode clock reads: monotonic time stands still at 0 and the wall clock at this ISO moment, so a test sees the same times every run. */
+export const TEST_CLOCK = { nowMs: 0, wallTime: '2026-11-06T09:00:00.000Z' } as const;
 
-export const HTTP_NOT_FOUND = 404;
+export const HTTP_UNAUTHORIZED = 401;
 
 export const HTTP_REQUEST_TIMEOUT = 408;
 

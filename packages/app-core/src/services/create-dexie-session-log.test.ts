@@ -55,6 +55,17 @@ describe('createDexieSessionLog', () => {
     });
   });
 
+  it('removes a finish only when it is the one with that id', async () => {
+    const log = open(new IDBFactory());
+    await log.recordFinish(SESSION, { finish: { id: 'f1', rpe: 7 }, recordedAt: FINISHED_AT });
+
+    await log.removeFinish(SESSION, 'f2');
+    expect((await log.read(SESSION)).finish?.finish.id).toBe('f1');
+
+    await log.removeFinish(SESSION, 'f1');
+    expect((await log.read(SESSION)).finish).toBeNull();
+  });
+
   it('survives a reload', async () => {
     const indexedDB = new IDBFactory();
     const before = open(indexedDB);

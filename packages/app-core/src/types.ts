@@ -42,6 +42,8 @@ export type ResultOf<R extends Request> = R extends Request<infer Result> ? Resu
 export interface Context<Services, Stores> {
   services: Services;
   stores: Stores;
+  /** Replays the offline queue now (the mediator's own single-flight runner); for a handler that must not leave requests behind. */
+  sync: SyncRunner;
 }
 
 export type Handler<R extends Request, Services, Stores> = (
@@ -64,6 +66,14 @@ export interface RequestDefinition<R extends Request, Services, Stores> {
    * which is why the write cannot live in the handler.
    */
   writeLocal?(request: R, services: Services): Promise<void>;
+  /**
+   * Takes back what `writeLocal` wrote, when the server refused the request for good (a
+   * permanent client error, see `isRetryableFailure`): online by the offline queue step, and by
+   * the sync runner when it drops a queued entry. Without it a refused set or finish would stay on
+   * the device and show as logged. Must be idempotent. For an entry that no longer parses against
+   * its schema the runner passes the request as it was queued and ignores a failure.
+   */
+  undoLocal?(request: R, services: Services): Promise<void>;
   handler: Handler<R, Services, Stores>;
 }
 
@@ -96,7 +106,7 @@ export interface PipelineContext {
   request: Request;
   definition: Pick<
     RequestDefinition<Request, unknown, unknown>,
-    'schema' | 'offline' | 'writeLocal'
+    'schema' | 'offline' | 'writeLocal' | 'undoLocal'
   >;
   services: PipelineServices;
   /** Milliseconds since the request entered the pipeline; 0 until the timing step runs. */
@@ -128,6 +138,8 @@ export interface Logger {
 export interface Clock {
   /** Monotonic milliseconds. */
   now(): number;
+  /** The wall-clock time, for what is stored or shown as a moment (it can jump when the person changes the device clock). */
+  wallTime(): Date;
 }
 
 export interface Network {
@@ -177,6 +189,8 @@ export interface SessionLogStore {
   removeSet(setId: string): Promise<void>;
   /** A Session finishes once: a later call for the same Session keeps the first. */
   recordFinish(sessionId: string, finish: LocalFinish): Promise<void>;
+  /** Removes the Session's finish only when it is the one with this id, so a refused second finish cannot take back the first. */
+  removeFinish(sessionId: string, finishId: string): Promise<void>;
   read(sessionId: string): Promise<LocalSessionLog>;
 }
 
@@ -447,10 +461,19 @@ export interface SyncResult {
 /** Replays the offline queue in order; concurrent calls share one run. Resolves, never rejects for a failed replay. */
 export type SyncRunner = () => Promise<SyncResult>;
 
+/** Calls `callback` every `ms` milliseconds until the returned function is called. */
+export interface IntervalTimer {
+  every(callback: () => void, ms: number): () => void;
+}
+
 export interface StartSyncOptions {
   sync: SyncRunner;
   /** The browser's `window`; anything that emits `focus` and `online`. */
   target: EventTarget;
+  /** Also sync this often (a no-op while nothing waits), so a request queued after a transient failure while online is retried without a focus or online event. Off when omitted. */
+  retryEveryMs?: number;
+  /** Drives `retryEveryMs`; the system timer when omitted. Tests inject a fake. */
+  timer?: IntervalTimer;
 }
 
 export interface ReadThroughCacheOptions<T> {

@@ -3,6 +3,7 @@ import {
   DatabaseStatus,
   DoctorOkRejection,
   HealthStatus,
+  HttpStatus,
   ProfileRejection,
   profileRejectionFor,
   RecordStatus,
@@ -32,13 +33,7 @@ import {
   resolveTrainingMode,
   TrainingMode,
 } from '@stamina/domain';
-import {
-  FAKE_AUTH,
-  FAKE_INVITE,
-  FAKE_KEY_SEPARATOR,
-  HTTP_NOT_FOUND,
-  HTTP_UNAUTHORIZED,
-} from '../config.ts';
+import { FAKE_AUTH, FAKE_INVITE, FAKE_KEY_SEPARATOR, HTTP_UNAUTHORIZED } from '../config.ts';
 import { buildFakeProgram } from '../utils/build-fake-program.ts';
 import { toHardActivityDates } from '../utils/to-hard-activity-dates.ts';
 import { createFakeSessionLog, type FakeSessionTarget } from './create-fake-session-log.ts';
@@ -85,7 +80,7 @@ export function createFakeApiClient(getToken: () => Promise<string | undefined>)
     const userId = await requireUserId();
     const week = programs.get(userId);
     const session = week?.sessions.find(({ id }) => id === sessionId);
-    if (!week || !session) throw new ApiError(HTTP_NOT_FOUND);
+    if (!week || !session) throw new ApiError(HttpStatus.NotFound);
     return {
       key: `${userId}${FAKE_KEY_SEPARATOR}${sessionId}`,
       session,

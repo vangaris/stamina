@@ -35,3 +35,6 @@ export const UNGATED_ROUTES: readonly RouteName[] = [
   RouteName.Referred,
   RouteName.DevUi,
 ];
+
+/** How often the app retries the offline queue while open, so a request that failed in a way worth retrying while online is sent without waiting for a focus or online event. */
+export const SYNC_RETRY_MS = 30_000;

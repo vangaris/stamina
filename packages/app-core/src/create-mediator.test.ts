@@ -201,7 +201,7 @@ describe('createMediator', () => {
       const ticks = [100, 142];
       const overrides: Partial<Services> = {
         logger: { log: (entry) => lines.push(entry) },
-        clock: { now: () => ticks.shift() ?? 142 },
+        clock: { now: () => ticks.shift() ?? 142, wallTime: () => new Date(0) },
       };
       return { lines, overrides };
     }
