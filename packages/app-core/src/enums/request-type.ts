@@ -19,4 +19,6 @@ export enum RequestType {
   GetSessionDetail = 'GetSessionDetail',
   LogSet = 'LogSet',
   FinishSession = 'FinishSession',
+  LogActivity = 'LogActivity',
+  GetWeekLoad = 'GetWeekLoad',
 }

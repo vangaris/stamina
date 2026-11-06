@@ -1,10 +1,11 @@
-import type { ProgramWeek, SavedScreening, SessionDetail } from '@stamina/contracts';
+import type { ProgramWeek, SavedScreening, SessionDetail, WeekLoad } from '@stamina/contracts';
 import type { Clearable, PlanCache } from '../types.ts';
 
 /** Lost on reload; Test and Dev modes. Production uses the Dexie plan cache. */
 export function createMemoryPlanCache(): PlanCache & Clearable {
   let program: ProgramWeek | undefined;
   let cleared: SavedScreening | undefined;
+  let weekLoad: WeekLoad | undefined;
   const details = new Map<string, SessionDetail>();
   return {
     async saveProgram(week) {
@@ -20,6 +21,12 @@ export function createMemoryPlanCache(): PlanCache & Clearable {
       const detail = details.get(sessionId);
       return detail && structuredClone(detail);
     },
+    async saveWeekLoad(week) {
+      weekLoad = structuredClone(week);
+    },
+    async readWeekLoad() {
+      return weekLoad && structuredClone(weekLoad);
+    },
     async saveClearedScreening(screening) {
       cleared = structuredClone(screening);
     },
@@ -32,6 +39,7 @@ export function createMemoryPlanCache(): PlanCache & Clearable {
     clear() {
       program = undefined;
       cleared = undefined;
+      weekLoad = undefined;
       details.clear();
     },
   };

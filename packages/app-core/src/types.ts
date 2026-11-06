@@ -6,6 +6,8 @@ import type {
   FinishSession as FinishSessionBody,
   FinishSessionResult,
   InviteCheckResponse,
+  LogActivity as LogActivityBody,
+  LogActivityResult,
   LogSet as LogSetBody,
   LogSetResult,
   ProfileAnswers,
@@ -18,6 +20,7 @@ import type {
   ScreeningSubmission,
   SessionDetail,
   UserExport,
+  WeekLoad,
 } from '@stamina/contracts';
 import type { ConsentPurpose, Weekday } from '@stamina/domain';
 import type { DexieOptions } from 'dexie';
@@ -194,6 +197,25 @@ export interface SessionLogStore {
   read(sessionId: string): Promise<LocalSessionLog>;
 }
 
+/** An Activity as the device recorded it: the body plus when (ISO), so the week shows it before the server confirms. */
+export interface LocalActivity {
+  activity: LogActivityBody;
+  recordedAt: string;
+}
+
+/**
+ * The Activities the person logged on this device, written before anything is sent (see
+ * `RequestDefinition.writeLocal`) so the week shows them offline. Rows stay after the server has
+ * them: merging is by id, so a stale row is harmless; only an Activity the server refused is removed.
+ */
+export interface ActivityLogStore {
+  /** Idempotent by the Activity's id: the first `recordedAt` stays. */
+  add(activity: LogActivityBody, recordedAt: string): Promise<void>;
+  remove(id: string): Promise<void>;
+  /** In no particular order. */
+  list(): Promise<readonly LocalActivity[]>;
+}
+
 /**
  * The last plan and Session detail fetched, so the week and an opened Session work without
  * signal, and the Screening of a person last found cleared to train (see `getSafetyDefinition`).
@@ -203,6 +225,9 @@ export interface PlanCache {
   readProgram(): Promise<ProgramWeek | undefined>;
   saveSessionDetail(detail: SessionDetail): Promise<void>;
   readSessionDetail(sessionId: string): Promise<SessionDetail | undefined>;
+  saveWeekLoad(week: WeekLoad): Promise<void>;
+  /** The week's Load as last fetched; undefined when none is kept, or when what is stored is malformed. */
+  readWeekLoad(): Promise<WeekLoad | undefined>;
   /** Only ever a Screening that is not `Referred`: the one safety fact trusted offline. */
   saveClearedScreening(screening: SavedScreening): Promise<void>;
   /** Undefined when none is kept, or when what is stored is malformed or `Referred`. */
@@ -240,6 +265,10 @@ export interface SetRow {
   id: string;
   sessionId: string;
   set: LogSetBody;
+}
+
+export interface ActivityRow extends LocalActivity {
+  id: string;
 }
 
 export interface FinishRow extends LocalFinish {
@@ -299,6 +328,7 @@ export interface Services extends PipelineServices {
   auth: AuthService;
   inviteStorage: InviteStorage;
   sessionLog: SessionLogStore;
+  activityLog: ActivityLogStore;
   planCache: PlanCache;
   localData: LocalData;
 }
@@ -405,6 +435,16 @@ export interface FinishSessionRequest extends Request<FinishSessionResult | Queu
   readonly type: RequestType.FinishSession;
   readonly sessionId: string;
   readonly finish: FinishSessionBody;
+}
+
+/** (`Request` suffix: `LogActivity` is the contract's body type.) */
+export interface LogActivityRequest extends Request<LogActivityResult | Queued> {
+  readonly type: RequestType.LogActivity;
+  readonly activity: LogActivityBody;
+}
+
+export interface GetWeekLoad extends Request<WeekLoad> {
+  readonly type: RequestType.GetWeekLoad;
 }
 
 export interface GetProgram extends Request<ProgramWeek | null> {

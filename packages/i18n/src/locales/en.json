@@ -523,5 +523,55 @@
       "week": "See your week"
     },
     "backToWeek": "Back to your week"
+  },
+  "activity": {
+    "played": {
+      "open": "+ I played",
+      "title": "I played",
+      "close": "Close",
+      "sport": {
+        "label": "Sport",
+        "placeholder": "Choose a sport"
+      },
+      "minutes": {
+        "label": "Time playing",
+        "unit": "{count, plural, one {minute} other {minutes}}",
+        "decrease": "Decrease time playing",
+        "increase": "Increase time playing"
+      },
+      "effort": {
+        "label": "How hard was it?",
+        "options": {
+          "easy": "Easy",
+          "moderate": "Moderate",
+          "hard": "Hard"
+        }
+      },
+      "hot": "It was hot",
+      "load": "Load = {minutes} min × effort {rpe} = {load}",
+      "save": "Save",
+      "cancel": "Cancel"
+    },
+    "row": {
+      "details": "{minutes} min · {effort}",
+      "load": "Load {load}"
+    },
+    "status": {
+      "planned": "Planned",
+      "done": "Done"
+    },
+    "summary": {
+      "thisWeek": "This week {load}",
+      "usual": "your usual {average}",
+      "noUsual": "No usual yet. It builds up as you log weeks."
+    },
+    "notice": {
+      "saved": "Saved. Load {load}.",
+      "queued": "Saved on this phone. Load {load}. It will be sent when you are back online."
+    },
+    "errors": {
+      "dateOutOfRange": "That day is too far from today to log.",
+      "failed": "We could not save that. Please try again."
+    }
   }
 }

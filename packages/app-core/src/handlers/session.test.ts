@@ -17,6 +17,7 @@ import {
   logSet,
   RequestOutcome,
 } from '../index.ts';
+import { createDexieActivityLog } from '../services/create-dexie-activity-log.ts';
 import { createDexieLocalData } from '../services/create-dexie-local-data.ts';
 import { createDexieOfflineQueue } from '../services/create-dexie-offline-queue.ts';
 import { createDexiePlanCache } from '../services/create-dexie-plan-cache.ts';
@@ -627,6 +628,7 @@ describe('logging a Session through the mediator', () => {
       return {
         offlineQueue: createDexieOfflineQueue(database),
         sessionLog: createDexieSessionLog(database),
+        activityLog: createDexieActivityLog(database),
         planCache: createDexiePlanCache(database),
         localData: createDexieLocalData(database),
       };

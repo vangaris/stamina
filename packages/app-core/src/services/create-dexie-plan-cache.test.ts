@@ -1,5 +1,6 @@
 import { IDBFactory, IDBKeyRange } from 'fake-indexeddb';
 import { Emphasis } from '@stamina/domain';
+import type { WeekLoad } from '@stamina/contracts';
 import { describe, expect, it } from 'vitest';
 import { LocalTable } from '../enums/local-table.ts';
 import { testFakeSession } from '../testing/test-fake-session.ts';
@@ -19,6 +20,17 @@ const week = {
   },
   sessions: [testFakeSession],
   hardActivityDates: [],
+};
+
+const weekLoad: WeekLoad = {
+  startsOn: '2026-11-02',
+  sessionLoad: 100,
+  activityLoad: 0,
+  load: 100,
+  average: null,
+  previous: [],
+  plannedActivities: [],
+  activities: [],
 };
 
 function open(indexedDB: IDBFactory) {
@@ -44,6 +56,23 @@ describe('createDexiePlanCache', () => {
 
     expect(await reloaded.readProgram()).toEqual(week);
     expect(await reloaded.readSessionDetail(detail.id)).toEqual(detail);
+  });
+
+  it('returns the week Load saved, across a reload, and none before', async () => {
+    const indexedDB = new IDBFactory();
+    const { cache } = open(indexedDB);
+    expect(await cache.readWeekLoad()).toBeUndefined();
+
+    await cache.saveWeekLoad(weekLoad);
+
+    expect(await open(indexedDB).cache.readWeekLoad()).toEqual(weekLoad);
+  });
+
+  it('treats a cached week Load in an unknown shape as not cached', async () => {
+    const { database, cache } = open(new IDBFactory());
+    await database.table(LocalTable.Cache).put({ key: 'week-load', value: { old: 1 } });
+
+    expect(await cache.readWeekLoad()).toBeUndefined();
   });
 
   it('treats a cached value in an unknown shape as not cached', async () => {

@@ -1,3 +1,5 @@
+import { SportKind } from '@stamina/contracts';
+import { Intensity, LaunchSport } from '@stamina/domain';
 import { newId } from '@stamina/ids';
 import { IDBFactory, IDBKeyRange } from 'fake-indexeddb';
 import { describe, expect, it } from 'vitest';
@@ -6,12 +8,15 @@ import {
   deleteAccount,
   finishSession,
   getProgram,
+  getWeekLoad,
+  logActivity,
   getSession,
   logSet,
   SessionStatus,
   signOut,
   verifyEmailCode,
 } from '../index.ts';
+import { createDexieActivityLog } from '../services/create-dexie-activity-log.ts';
 import { createDexieLocalData } from '../services/create-dexie-local-data.ts';
 import { createDexieOfflineQueue } from '../services/create-dexie-offline-queue.ts';
 import { createDexiePlanCache } from '../services/create-dexie-plan-cache.ts';
@@ -28,6 +33,7 @@ function dexieServices(indexedDB: IDBFactory): Partial<Services> {
   return {
     offlineQueue: createDexieOfflineQueue(database),
     sessionLog: createDexieSessionLog(database),
+    activityLog: createDexieActivityLog(database),
     planCache: createDexiePlanCache(database),
     localData: createDexieLocalData(database),
   };
@@ -38,13 +44,24 @@ const ADAPTERS: [string, () => Partial<Services>][] = [
   ['the IndexedDB adapters', () => dexieServices(new IDBFactory())],
 ];
 
-/** One signed-in person with a program, a cached Session, a queued set and a finish on the device. */
+/** One signed-in person with a program, a cached Session, a queued set, a finish and an Activity on the device. */
 async function withLocalData(services: Partial<Services>) {
   const setup = await setupSession({ services });
   await setup.mediator.send(getProgram());
+  await setup.mediator.send(getWeekLoad());
   setup.network.online = false;
   await setup.mediator.send(logSet(setup.sessionId, setup.setFor(1)));
   await setup.mediator.send(finishSession(setup.sessionId, { id: newId(), rpe: 7 }));
+  await setup.mediator.send(
+    logActivity({
+      id: newId(),
+      sport: { kind: SportKind.Launch, sport: LaunchSport.Padel },
+      date: new Date().toISOString().slice(0, 10),
+      minutes: 60,
+      intensity: Intensity.Moderate,
+      hot: false,
+    }),
+  );
   setup.network.online = true;
   return setup;
 }
@@ -56,21 +73,33 @@ async function localDataLeft(services: Services, sessionId: string) {
     queued: (await services.offlineQueue.pending()).length,
     sets: log.sets.length,
     finished: log.finish !== null,
+    activities: (await services.activityLog.list()).length,
+    cachedWeekLoad: (await services.planCache.readWeekLoad()) !== undefined,
     cachedProgram: (await services.planCache.readProgram()) !== undefined,
     cachedSession: (await services.planCache.readSessionDetail(sessionId)) !== undefined,
   };
 }
 
-const NOTHING = { queued: 0, sets: 0, finished: false, cachedProgram: false, cachedSession: false };
+const NOTHING = {
+  queued: 0,
+  sets: 0,
+  finished: false,
+  activities: 0,
+  cachedWeekLoad: false,
+  cachedProgram: false,
+  cachedSession: false,
+};
 
 describe.each(ADAPTERS)('per-user local data with %s', (_name, adapters) => {
   it('is all there before anything wipes it', async () => {
     const { services, sessionId } = await withLocalData(adapters());
 
     expect(await localDataLeft(services, sessionId)).toEqual({
-      queued: 2,
+      queued: 3,
       sets: 1,
       finished: true,
+      activities: 1,
+      cachedWeekLoad: true,
       cachedProgram: true,
       cachedSession: true,
     });
@@ -99,7 +128,7 @@ describe.each(ADAPTERS)('per-user local data with %s', (_name, adapters) => {
 
     await expect(mediator.send(deleteAccount())).rejects.toBeDefined();
 
-    expect((await localDataLeft(services, sessionId)).queued).toBe(2);
+    expect((await localDataLeft(services, sessionId)).queued).toBe(3);
   });
 
   it('is wiped when a different user signs in without a sign-out in between', async () => {
@@ -149,7 +178,7 @@ describe('the owner survives a reload (IndexedDB)', () => {
     const same = reloadSession(first, dexieServices(indexedDB));
     same.network.online = true;
     await same.mediator.send(getSession());
-    expect((await localDataLeft(same.services, first.sessionId)).queued).toBe(2);
+    expect((await localDataLeft(same.services, first.sessionId)).queued).toBe(3);
 
     await first.services.auth.verifyEmailCode(OTHER_EMAIL, FAKE_AUTH.validCode);
     const other = reloadSession(first, dexieServices(indexedDB));

@@ -32,10 +32,12 @@ import {
   ScreeningStatus,
   resolveTrainingMode,
   TrainingMode,
+  type LoadEntry,
 } from '@stamina/domain';
 import { FAKE_AUTH, FAKE_INVITE, FAKE_KEY_SEPARATOR, HTTP_UNAUTHORIZED } from '../config.ts';
 import { buildFakeProgram } from '../utils/build-fake-program.ts';
 import { toHardActivityDates } from '../utils/to-hard-activity-dates.ts';
+import { createFakeActivityLog, type FakeActivityContext } from './create-fake-activity-log.ts';
 import { createFakeSessionLog, type FakeSessionTarget } from './create-fake-session-log.ts';
 
 type StoredConsent = UserExport['consents'][number];
@@ -87,6 +89,25 @@ export function createFakeApiClient(getToken: () => Promise<string | undefined>)
       emphasis: week.block.emphasis,
     };
   };
+
+  const activityLog = createFakeActivityLog();
+  /** Weeks run from the first Block's start, else from today (the fake keeps no sign-up date). */
+  const activityContext = async (): Promise<FakeActivityContext> => {
+    const userId = await requireUserId();
+    const today = new Date().toISOString().slice(0, 10);
+    return {
+      userId,
+      anchor: programs.get(userId)?.block.startsOn ?? today,
+      today,
+      profile: profiles.get(userId),
+    };
+  };
+  /** The user's finished Sessions as Load on the Session's date. */
+  const finishedSessionEntries = (userId: string): LoadEntry[] =>
+    (programs.get(userId)?.sessions ?? []).flatMap((session) => {
+      const finished = sessionLog.finished(`${userId}${FAKE_KEY_SEPARATOR}${session.id}`);
+      return finished ? [{ date: session.date, load: finished.load }] : [];
+    });
 
   const grantedPurposes = (userId: string) =>
     (consents.get(userId) ?? [])
@@ -243,6 +264,7 @@ export function createFakeApiClient(getToken: () => Promise<string | undefined>)
         program: readProgram(userId),
         setLogs: [],
         sessionLogs: [],
+        activities: activityLog.all(userId),
         consents: [...(consents.get(userId) ?? [])],
         sportRequests: sportRequests.has(userId) ? [sportRequests.get(userId)!] : [],
         screenings: (screenings.get(userId) ?? []).map((stored) => ({
@@ -259,12 +281,18 @@ export function createFakeApiClient(getToken: () => Promise<string | undefined>)
       sportRequests.delete(userId);
       programs.delete(userId);
       sessionLog.forget(`${userId}${FAKE_KEY_SEPARATOR}`);
+      activityLog.forget(userId);
     },
     getProgram: async () => readProgram(await requireUserId()),
     getSession: async (sessionId) => sessionLog.read(await sessionTarget(sessionId)),
     logSet: async (sessionId, set) => sessionLog.logSet(await sessionTarget(sessionId), set),
     finishSession: async (sessionId, finish) =>
       sessionLog.finish(await sessionTarget(sessionId), finish),
+    logActivity: async (activity) => activityLog.log(await activityContext(), activity),
+    getWeekLoad: async () => {
+      const context = await activityContext();
+      return activityLog.week(context, finishedSessionEntries(context.userId));
+    },
     createProgram: async () => {
       const userId = await requireUserId();
       const existing = readProgram(userId);

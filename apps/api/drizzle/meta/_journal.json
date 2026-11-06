@@ -64,6 +64,13 @@
       "when": 1793946254868,
       "tag": "0008_session_logs",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1793984375837,
+      "tag": "0009_activity",
+      "breakpoints": true
     }
   ]
 }

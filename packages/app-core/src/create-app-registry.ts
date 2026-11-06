@@ -10,6 +10,8 @@ import { getSafetyDefinition } from './handlers/get-safety.ts';
 import { getSessionDefinition } from './handlers/get-session.ts';
 import { getSessionDetailDefinition } from './handlers/get-session-detail.ts';
 import { finishSessionDefinition } from './handlers/finish-session.ts';
+import { getWeekLoadDefinition } from './handlers/get-week-load.ts';
+import { logActivityDefinition } from './handlers/log-activity.ts';
 import { logSetDefinition } from './handlers/log-set.ts';
 import { grantConsentDefinition } from './handlers/grant-consent.ts';
 import { recordDoctorOkDefinition } from './handlers/record-doctor-ok.ts';
@@ -44,5 +46,7 @@ export function createAppRegistry(): RequestRegistry<Services, Stores> {
     [RequestType.GetSessionDetail]: getSessionDetailDefinition,
     [RequestType.LogSet]: logSetDefinition,
     [RequestType.FinishSession]: finishSessionDefinition,
+    [RequestType.LogActivity]: logActivityDefinition,
+    [RequestType.GetWeekLoad]: getWeekLoadDefinition,
   } satisfies Record<RequestType, unknown>;
 }

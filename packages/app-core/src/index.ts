@@ -29,6 +29,8 @@ export { getSafety } from './handlers/get-safety.ts';
 export { finishSession } from './handlers/finish-session.ts';
 export { getSession } from './handlers/get-session.ts';
 export { getSessionDetail } from './handlers/get-session-detail.ts';
+export { getWeekLoad } from './handlers/get-week-load.ts';
+export { logActivity } from './handlers/log-activity.ts';
 export { logSet } from './handlers/log-set.ts';
 export { grantConsent } from './handlers/grant-consent.ts';
 export { recordDoctorOk } from './handlers/record-doctor-ok.ts';
@@ -40,6 +42,7 @@ export { startGoogleSignIn } from './handlers/start-google-sign-in.ts';
 export { verifyEmailCode } from './handlers/verify-email-code.ts';
 export { createBetterAuthService } from './services/create-better-auth-service.ts';
 export type {
+  ActivityLogStore,
   AppMediatorOptions,
   AuthService,
   AuthSession,
@@ -55,16 +58,19 @@ export type {
   GetSafety,
   GetSession,
   GetSessionDetail,
+  GetWeekLoad,
   GrantConsent,
   Handler,
   HealthState,
   IntervalTimer,
   InviteStorage,
   LocalData,
+  LocalActivity,
   LocalFinish,
   LocalSessionLog,
   LogEntry,
   Logger,
+  LogActivityRequest,
   LogSetRequest,
   Mediator,
   MediatorOptions,

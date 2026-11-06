@@ -36,9 +36,12 @@ import {
   MIN_SESSION_RPE,
   MIN_SET_RPE,
   WEEKS_IN_BLOCK,
+  ActivitySource,
+  Intensity,
+  MAX_PLAY_MINUTES,
+  MIN_PLAY_MINUTES,
   Weekday,
   type Goal,
-  type Intensity,
   type LaunchSport,
   type Need,
   type Units,
@@ -728,6 +731,66 @@ export const sessionLog = pgTable(
       using: sql`user_id = app_user_id()::uuid`,
     }),
     pgPolicy('session_log_owner_insert', {
+      for: 'insert',
+      to: APP_ROLE,
+      withCheck: sql`user_id = app_user_id()::uuid`,
+    }),
+  ],
+).enableRLS();
+
+/**
+ * One logged Activity ("I played"): the sport, the day, the minutes and intensity, with the RPE
+ * the intensity counts as and the Load (RPE x minutes, `activityLoad`), both set by the server.
+ * `planned` is whether the day was one of the person's play days when it was logged. The id is made
+ * on the device, so a replay is a conflict the insert ignores. Append-only like `session_log`: the
+ * app role reads and inserts its own rows and never rewrites or deletes them.
+ */
+export const activity = pgTable(
+  'activity',
+  {
+    id: uuid('id').primaryKey(),
+    userId: uuid('user_id')
+      .notNull()
+      .references(() => appUser.id, { onDelete: 'cascade' }),
+    sportKind: text('sport_kind').$type<SportKind>().notNull(),
+    /** Set when `sportKind` is `launch`. */
+    launchSport: text('launch_sport').$type<LaunchSport>(),
+    /** The user's own words; set when `sportKind` is `other`. */
+    otherSportName: text('other_sport_name'),
+    date: date('date', { mode: 'string' }).notNull(),
+    minutes: integer('minutes').notNull(),
+    intensity: text('intensity').$type<Intensity>().notNull(),
+    rpe: integer('rpe').notNull(),
+    load: integer('load').notNull(),
+    planned: boolean('planned').notNull(),
+    hot: boolean('hot').notNull(),
+    source: text('source').$type<ActivitySource>().notNull(),
+    loggedAt: timestamp('logged_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => [
+    check(
+      'activity_sport_matches_kind',
+      sql`(${table.sportKind} = ${literal(SportKind.Launch)} and ${table.launchSport} is not null and ${table.otherSportName} is null)
+        or (${table.sportKind} = ${literal(SportKind.Other)} and ${table.launchSport} is null and ${table.otherSportName} is not null)`,
+    ),
+    check(
+      'activity_minutes_valid',
+      sql`${table.minutes} between ${sql.raw(String(MIN_PLAY_MINUTES))} and ${sql.raw(String(MAX_PLAY_MINUTES))}`,
+    ),
+    check('activity_intensity_valid', isOneOf(table.intensity, Object.values(Intensity))),
+    check(
+      'activity_rpe_valid',
+      sql`${table.rpe} between ${sql.raw(String(MIN_SESSION_RPE))} and ${sql.raw(String(MAX_SESSION_RPE))}`,
+    ),
+    check('activity_load_valid', sql`${table.load} = ${table.rpe} * ${table.minutes}`),
+    check('activity_source_valid', isOneOf(table.source, Object.values(ActivitySource))),
+    index('activity_user_date').on(table.userId, table.date),
+    pgPolicy('activity_owner_select', {
+      for: 'select',
+      to: APP_ROLE,
+      using: sql`user_id = app_user_id()::uuid`,
+    }),
+    pgPolicy('activity_owner_insert', {
       for: 'insert',
       to: APP_ROLE,
       withCheck: sql`user_id = app_user_id()::uuid`,

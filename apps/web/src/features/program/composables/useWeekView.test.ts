@@ -1,10 +1,13 @@
-import { finishSession, getSessionDetail, logSet } from '@stamina/app-core';
+import { finishSession, getSessionDetail, logActivity, logSet } from '@stamina/app-core';
+import { SportKind } from '@stamina/contracts';
+import { Intensity, LaunchSport } from '@stamina/domain';
 import { newId } from '@stamina/ids';
 import { describe, expect, it, vi } from 'vitest';
 import { ProgramMessageKey } from '../enums/program-message-key.ts';
 import { ProgramPhase } from '../enums/program-phase.ts';
 import { SessionProgress } from '../enums/session-progress.ts';
-import { setupProgram } from '../testing/setup-program.ts';
+import { ActivityStatus } from '../../activity/index.ts';
+import { profileAnswers, setupProgram } from '../testing/setup-program.ts';
 import { useWeekView } from './useWeekView.ts';
 
 describe('useWeekView', () => {
@@ -89,6 +92,77 @@ describe('useWeekView', () => {
       expect(Object.values(offline.progress.value)).toEqual(
         sessions.map(() => SessionProgress.NotStarted),
       );
+    });
+  });
+
+  describe('Activities and Load', () => {
+    const today = new Date().toISOString().slice(0, 10);
+
+    it('shows the week Load with no average until an earlier week has data', async () => {
+      const setup = await setupProgram();
+      await setup.services.api.createProgram();
+      const flow = useWeekView({ onNavigate: vi.fn(), mediator: setup.mediator });
+
+      await flow.load();
+
+      expect(flow.loadSummary.value).toEqual({ load: 0, average: null });
+    });
+
+    it('shows the Activity played with its Load', async () => {
+      const setup = await setupProgram();
+      await setup.services.api.createProgram();
+      const flow = useWeekView({ onNavigate: vi.fn(), mediator: setup.mediator });
+
+      await setup.mediator.send(
+        logActivity({
+          id: newId(),
+          sport: { kind: SportKind.Launch, sport: LaunchSport.Padel },
+          date: today,
+          minutes: 60,
+          intensity: Intensity.Hard,
+          hot: false,
+        }),
+      );
+      await flow.load();
+
+      const rows = Object.values(flow.activities.value ?? {}).flat();
+      expect(rows.some(({ status, load }) => status === ActivityStatus.Done && load! > 0)).toBe(
+        true,
+      );
+      expect(flow.loadSummary.value?.load).toBeGreaterThan(0);
+    });
+
+    it('still lists the day of an Activity played outside the shown week, so nothing logged is hidden', async () => {
+      const setup = await setupProgram();
+      await setup.services.api.createProgram();
+      const flow = useWeekView({ onNavigate: vi.fn(), mediator: setup.mediator });
+      await setup.mediator.send(
+        logActivity({
+          id: newId(),
+          sport: { kind: SportKind.Launch, sport: LaunchSport.Padel },
+          date: today,
+          minutes: 60,
+          intensity: Intensity.Easy,
+          hot: false,
+        }),
+      );
+
+      await flow.load();
+
+      expect(flow.days.value.some(({ date }) => date === today)).toBe(true);
+      expect(flow.activities.value?.[today]).toHaveLength(1);
+    });
+
+    it("plans no Activities when the sport varies ('It varies')", async () => {
+      const setup = await setupProgram({
+        answers: profileAnswers({ playDays: [], playVaries: true }),
+      });
+      await setup.services.api.createProgram();
+      const flow = useWeekView({ onNavigate: vi.fn(), mediator: setup.mediator });
+
+      await flow.load();
+
+      expect(flow.activities.value).toEqual({});
     });
   });
 });

@@ -27,4 +27,11 @@ describe('plannedActivities', () => {
   it('plans none when there are no play days', () => {
     expect(plannedActivities(STARTS_ON, { ...padel, playDays: [] })).toEqual([]);
   });
+
+  it('plans nothing before the date the plan starts', () => {
+    expect(plannedActivities(STARTS_ON, padel, '2026-11-07').map(({ date }) => date)).toEqual([
+      '2026-11-10',
+    ]);
+    expect(plannedActivities(STARTS_ON, padel, '2026-11-06')).toHaveLength(2);
+  });
 });

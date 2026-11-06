@@ -2,6 +2,7 @@ import { userExportSchema, type UserExport } from '@stamina/contracts';
 import { asc, eq } from 'drizzle-orm';
 import type { FieldCipher } from '../crypto/index.ts';
 import {
+  activity,
   consent,
   profile,
   screening,
@@ -12,6 +13,7 @@ import {
 } from '../db/schema.ts';
 import type { Db } from '../db/types.ts';
 import { withUser } from '../db/with-user.ts';
+import { toLoggedActivity } from '../activities/index.ts';
 import { readProgram } from '../program/index.ts';
 import { toFinishedSession } from '../sessions/index.ts';
 import { toSavedProfile } from '../profile/to-saved-profile.ts';
@@ -19,7 +21,7 @@ import { storedAnswersSchema } from './stored-answers-schema.ts';
 import { toSavedScreening } from './to-saved-screening.ts';
 
 /**
- * Everything held about the user: profile, every consent row, the Program week, every logged set and finished Session, every sport they asked for and every Screening with its
+ * Everything held about the user: profile, every consent row, the Program week, every logged set, finished Session and Activity, every sport they asked for and every Screening with its
  * answers decrypted, oldest first. The one place answers leave the server.
  */
 export async function exportUserData(
@@ -27,7 +29,7 @@ export async function exportUserData(
   cipher: FieldCipher,
   userId: string,
 ): Promise<UserExport> {
-  const { profileRow, consentRows, screeningRows, programWeek, setRows, finishRows } =
+  const { profileRow, consentRows, screeningRows, programWeek, setRows, finishRows, activityRows } =
     await withUser(db, userId, async (tx) => ({
       profileRow: (await tx.select().from(profile).where(eq(profile.userId, userId)))[0],
       consentRows: await tx
@@ -51,6 +53,11 @@ export async function exportUserData(
         .from(sessionLog)
         .where(eq(sessionLog.userId, userId))
         .orderBy(asc(sessionLog.finishedAt)),
+      activityRows: await tx
+        .select()
+        .from(activity)
+        .where(eq(activity.userId, userId))
+        .orderBy(asc(activity.loggedAt)),
     }));
 
   // As the table owner, filtered by the user: a rejected sport is hidden from its requesters by
@@ -100,6 +107,7 @@ export async function exportUserData(
       ...toFinishedSession(row),
       sessionId: row.sessionId,
     })),
+    activities: activityRows.map(toLoggedActivity),
     sportRequests: sportRequestRows.map((row) => ({
       sportId: row.sportId,
       name: row.name,

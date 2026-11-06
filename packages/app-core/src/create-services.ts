@@ -3,6 +3,7 @@ import { ServicesMode } from './enums/services-mode.ts';
 import { createBetterAuthService } from './services/create-better-auth-service.ts';
 import { createBrowserInviteStorage } from './services/create-browser-invite-storage.ts';
 import { createBrowserNetwork } from './services/create-browser-network.ts';
+import { createDexieActivityLog } from './services/create-dexie-activity-log.ts';
 import { createDexieLocalData } from './services/create-dexie-local-data.ts';
 import { createDexieOfflineQueue } from './services/create-dexie-offline-queue.ts';
 import { createDexiePlanCache } from './services/create-dexie-plan-cache.ts';
@@ -12,6 +13,7 @@ import { createFixedClock } from './services/create-fixed-clock.ts';
 import { createFakeApiClient } from './services/create-fake-api-client.ts';
 import { createFakeAuthService } from './services/create-fake-auth-service.ts';
 import { createLocalDatabase } from './services/create-local-database.ts';
+import { createMemoryActivityLog } from './services/create-memory-activity-log.ts';
 import { createMemoryInviteStorage } from './services/create-memory-invite-storage.ts';
 import { createMemoryLocalData } from './services/create-memory-local-data.ts';
 import { createMemoryOfflineQueue } from './services/create-memory-offline-queue.ts';
@@ -21,7 +23,7 @@ import { createSilentLogger } from './services/create-silent-logger.ts';
 import { createSystemClock } from './services/create-system-clock.ts';
 import type { Services, ServicesEnv } from './types.ts';
 
-/** Test and Dev share the in-memory fakes (queue, session log, plan cache and local data included; Production keeps them in IndexedDB); Dev uses the console, the system clock and the browser's network state; Test is silent, fixed-time and always online. */
+/** Test and Dev share the in-memory fakes (queue, session and Activity logs, plan cache and local data included; Production keeps them in IndexedDB); Dev uses the console, the system clock and the browser's network state; Test is silent, fixed-time and always online. */
 export function createServices(env: ServicesEnv): Services {
   switch (env.mode) {
     case ServicesMode.Test:
@@ -30,6 +32,7 @@ export function createServices(env: ServicesEnv): Services {
       const test = env.mode === ServicesMode.Test;
       const offlineQueue = createMemoryOfflineQueue();
       const sessionLog = createMemorySessionLog();
+      const activityLog = createMemoryActivityLog();
       const planCache = createMemoryPlanCache();
       return {
         api: createFakeApiClient(() => auth.getToken()),
@@ -40,8 +43,9 @@ export function createServices(env: ServicesEnv): Services {
         network: test ? { isOnline: () => true } : createBrowserNetwork(),
         offlineQueue,
         sessionLog,
+        activityLog,
         planCache,
-        localData: createMemoryLocalData([offlineQueue, sessionLog, planCache]),
+        localData: createMemoryLocalData([offlineQueue, sessionLog, activityLog, planCache]),
       };
     }
     case ServicesMode.Production: {
@@ -61,6 +65,7 @@ export function createServices(env: ServicesEnv): Services {
         network: createBrowserNetwork(),
         offlineQueue: createDexieOfflineQueue(database),
         sessionLog: createDexieSessionLog(database),
+        activityLog: createDexieActivityLog(database),
         planCache: createDexiePlanCache(database),
         localData: createDexieLocalData(database),
       };

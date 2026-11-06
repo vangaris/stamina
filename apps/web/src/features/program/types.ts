@@ -7,6 +7,7 @@ import type {
 } from '@stamina/contracts';
 import type { Emphasis } from '@stamina/domain';
 import type { Locale } from '@stamina/i18n';
+import type { ActivitiesByDate } from '../activity/index.ts';
 import type { RoutePath } from '../../enums/route-path.ts';
 import type { LoadMessageKey } from './enums/load-message-key.ts';
 import type { PrescriptionMessageKey } from './enums/prescription-message-key.ts';
@@ -76,6 +77,8 @@ export interface WeekListProps {
   showFreeDays: boolean;
   /** Where each Session stands, by Session id. Without it the cards offer no action. */
   progress?: Readonly<Record<string, SessionProgress>> | undefined;
+  /** The week's planned and played Activities by date; a day with one shows it instead of the bare play-day note. */
+  activities?: ActivitiesByDate | undefined;
 }
 
 export interface ProgramGateProps {
