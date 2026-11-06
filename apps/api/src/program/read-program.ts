@@ -1,6 +1,14 @@
 import type { ProgramWeek } from '@stamina/contracts';
 import { desc, eq, inArray } from 'drizzle-orm';
-import { block, exercise, profile, program, session, sessionExercise } from '../db/schema.ts';
+import {
+  block,
+  exercise,
+  profile,
+  program,
+  session,
+  sessionExercise,
+  sessionLog,
+} from '../db/schema.ts';
 import type { UserTx } from '../db/types.ts';
 import { toSavedProfile } from '../profile/to-saved-profile.ts';
 import { toProgramWeek } from './to-program-week.ts';
@@ -8,7 +16,7 @@ import { toProgramWeek } from './to-program-week.ts';
 /**
  * The user's latest generated week, or `null` before their Program exists. Reads as the app role,
  * so row-level security keeps it to the user's own rows. The week's hard Activity dates come from
- * the profile as it is now.
+ * the profile as it is now. A Session with a finish record reads as completed.
  */
 export async function readProgram(tx: UserTx, userId: string): Promise<ProgramWeek | null> {
   const [found] = await tx
@@ -36,6 +44,16 @@ export async function readProgram(tx: UserTx, userId: string): Promise<ProgramWe
       ),
     );
 
+  const finished = await tx
+    .select({ sessionId: sessionLog.sessionId })
+    .from(sessionLog)
+    .where(
+      inArray(
+        sessionLog.sessionId,
+        weekSessions.map((row) => row.id),
+      ),
+    );
+
   const [profileRow] = await tx.select().from(profile).where(eq(profile.userId, userId));
 
   return toProgramWeek({
@@ -45,6 +63,7 @@ export async function readProgram(tx: UserTx, userId: string): Promise<ProgramWe
       row,
       name: { en: nameEn, el: nameEl },
     })),
+    finishedSessionIds: new Set(finished.map(({ sessionId }) => sessionId)),
     play: profileRow === undefined ? null : toSavedProfile(profileRow),
   });
 }

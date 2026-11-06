@@ -1,6 +1,7 @@
 import { AppErrorCode } from './enums/app-error-code.ts';
 import { AuthErrorCode } from './enums/auth-error-code.ts';
 import { BetterAuthErrorCode } from './enums/better-auth-error-code.ts';
+import { LocalTable } from './enums/local-table.ts';
 import type { Queued } from './types.ts';
 
 export const QUEUED_RESULT: Queued = Object.freeze({ queued: true });
@@ -23,6 +24,22 @@ export const AUTH_ERROR_FOR_BETTER_AUTH_CODE: Record<BetterAuthErrorCode, AuthEr
 };
 
 export const HTTP_UNAUTHORIZED = 401;
+
+export const HTTP_NOT_FOUND = 404;
+
+export const HTTP_REQUEST_TIMEOUT = 408;
+
+export const HTTP_TOO_MANY_REQUESTS = 429;
+
+/** The 4xx statuses: the server read the request and said no. */
+export const HTTP_CLIENT_ERROR = { min: 400, max: 499 } as const;
+
+/** 4xx answers that say nothing about the request itself (no or expired token, timeout, rate limit): sending it again later can work. */
+export const RETRYABLE_CLIENT_STATUSES: readonly number[] = [
+  HTTP_UNAUTHORIZED,
+  HTTP_REQUEST_TIMEOUT,
+  HTTP_TOO_MANY_REQUESTS,
+];
 
 export const JSON_HEADERS = { 'Content-Type': 'application/json' } as const;
 
@@ -93,4 +110,41 @@ export const FAKE_PROGRAM_EXERCISES = {
     accessory: { exerciseId: 'fake-dead-bug', name: { en: 'Dead bug', el: null } },
     limitedAccessory: { exerciseId: 'fake-bird-dog', name: { en: 'Bird dog', el: null } },
   },
+} as const;
+
+/** The IndexedDB database: its name and Dexie schema (the primary key first, then indexed fields). */
+export const LOCAL_DATABASE = {
+  name: 'stamina',
+  version: 2,
+  schema: {
+    [LocalTable.Queue]: '++id',
+    [LocalTable.Sets]: 'id, sessionId',
+    [LocalTable.Finishes]: 'sessionId',
+    [LocalTable.Cache]: 'key',
+    [LocalTable.Owner]: 'key',
+  },
+} as const;
+
+/** The key of the one row in the owner table: the id of the user the local data belongs to. */
+export const OWNER_KEY = 'owner';
+
+/** Keys in the cache table: the one Program week, and one Session detail per Session id. */
+export const CACHE_KEY = {
+  program: 'program',
+  clearedScreening: 'cleared-screening',
+  sessionDetailPrefix: 'session:',
+} as const;
+
+/** Joins a user id and a Session id into the key the fake API keeps that Session's sets and finish under. */
+export const FAKE_KEY_SEPARATOR = ':';
+
+/** What the fake API adds to the fake Program to make Sessions the Session screen can run. */
+export const FAKE_SESSION = {
+  /** A Session exercise's id: this prefix plus its number padded to `FAKE_PROGRAM.idDigits`. */
+  exerciseIdPrefix: '00000000-0000-4000-8001-',
+  /** Room for this many exercises per Session in the number above. */
+  exercisesPerSession: 100,
+  /** Variants of an RPE-guided exercise: its id plus the suffix, and its English name plus the suffix (the swap sheet adds the "Easier:" / "Harder:" label itself). */
+  easier: { idSuffix: '-easier', nameSuffix: ' (supported)' },
+  harder: { idSuffix: '-harder', nameSuffix: ' (loaded)' },
 } as const;

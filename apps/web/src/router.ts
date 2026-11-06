@@ -27,6 +27,12 @@ const routes: RouteRecordRaw[] = [
     component: () => import('./pages/SessionPage.vue'),
   },
   {
+    path: RoutePath.SessionDetail,
+    name: RouteName.SessionDetail,
+    props: true,
+    component: () => import('./features/session/index.ts').then((m) => m.SessionContainer),
+  },
+  {
     path: RoutePath.Meals,
     name: RouteName.Meals,
     component: () => import('./pages/MealsPage.vue'),

@@ -12,6 +12,8 @@ export const signOutDefinition = defineRequest<SignOut, Services, Stores>({
   offline: OfflinePolicy.Never,
   handler: async (_request, { services, stores }) => {
     await services.auth.signOut();
+    // The device may be handed to someone else: none of this person's data stays on it.
+    await services.localData.clear();
     stores.session.set({ status: SessionStatus.SignedOut });
   },
 });

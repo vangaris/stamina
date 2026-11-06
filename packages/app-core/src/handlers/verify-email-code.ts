@@ -24,6 +24,7 @@ export const verifyEmailCodeDefinition = defineRequest<VerifyEmailCode, Services
     await services.auth.verifyEmailCode(email, code);
     // The first call to the API creates the user row, so the session is only signed in after it.
     const { userId } = await services.api.me();
+    await services.localData.claim(userId);
     const state: SessionState = { status: SessionStatus.SignedIn, userId };
     stores.session.set(state);
     return state;

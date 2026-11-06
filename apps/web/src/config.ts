@@ -6,7 +6,10 @@ export const AUTH_PATH = '/auth';
 /** API origin used by `vite dev` when `VITE_API_URL` is not set. */
 export const DEV_API_URL = 'http://127.0.0.1:8787';
 
-/** Screens that have no tab bar: people there are signed out or still setting up. */
+/**
+ * Screens that have no tab bar: people there are signed out or still setting up, or (the Session
+ * screen) are in the middle of a workout and need the whole screen.
+ */
 export const ROUTES_WITHOUT_TABS: readonly RouteName[] = [
   RouteName.SignIn,
   RouteName.Start,
@@ -15,6 +18,7 @@ export const ROUTES_WITHOUT_TABS: readonly RouteName[] = [
   RouteName.Screening,
   RouteName.Referred,
   RouteName.Reveal,
+  RouteName.SessionDetail,
 ];
 
 /**

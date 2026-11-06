@@ -13,7 +13,8 @@ export const saveScreening = (submission: SaveScreening['submission']): SaveScre
 /**
  * Sends the answers; the server decides the outcome. Missing consent is a `Rejected` result, not
  * an error. A malformed submission (an answer missing, areas without the question) fails
- * validation before anything is sent. The answers are never logged.
+ * validation before anything is sent. The answers are never logged. The cached cleared Screening
+ * is dropped first; the next online `getSafety` caches the new outcome if it is Ready.
  */
 export const saveScreeningDefinition = defineRequest<SaveScreening, Services, Stores>({
   schema: z.object({
@@ -21,5 +22,9 @@ export const saveScreeningDefinition = defineRequest<SaveScreening, Services, St
     submission: screeningSubmissionSchema,
   }),
   offline: OfflinePolicy.Never,
-  handler: ({ submission }, { services }) => services.api.saveScreening(submission),
+  handler: async ({ submission }, { services }) => {
+    // Before the send, not after: if the reply is lost the server may have saved a referral.
+    await services.planCache.deleteClearedScreening();
+    return services.api.saveScreening(submission);
+  },
 });

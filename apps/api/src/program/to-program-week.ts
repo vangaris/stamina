@@ -1,14 +1,21 @@
 import { programWeekSchema, type ProgramWeek } from '@stamina/contracts';
-import { addDays, DAYS_IN_WEEK, hardActivityDates } from '@stamina/domain';
+import { addDays, DAYS_IN_WEEK, hardActivityDates, SessionStatus } from '@stamina/domain';
 import type { StoredWeek } from './types.ts';
 
 /**
  * The stored week as the contract's `ProgramWeek`: Sessions by date, each with its exercises in
  * the order they are done. The week starts `(week - 1) * 7` days after the Block does. The hard
- * Activity dates come from the profile's play pattern now, not from the stored rows. The schema
- * also guards against a corrupt row.
+ * Activity dates come from the profile's play pattern now, not from the stored rows. A Session
+ * with a finish record is `completed` whatever its stored status. The schema also guards against
+ * a corrupt row.
  */
-export function toProgramWeek({ block, sessions, exercises, play }: StoredWeek): ProgramWeek {
+export function toProgramWeek({
+  block,
+  sessions,
+  exercises,
+  finishedSessionIds,
+  play,
+}: StoredWeek): ProgramWeek {
   const [first] = sessions;
   if (first === undefined) throw new Error('a stored week has at least one Session');
   const startsOn = addDays(block.startsOn, (first.weekInBlock - 1) * DAYS_IN_WEEK);
@@ -28,7 +35,7 @@ export function toProgramWeek({ block, sessions, exercises, play }: StoredWeek):
         weekday: row.weekday,
         focus: row.focus,
         minutes: row.minutes,
-        status: row.status,
+        status: finishedSessionIds.has(row.id) ? SessionStatus.Completed : row.status,
         revision: row.revision,
         rulesVersion: row.rulesVersion,
         inputsHash: row.inputsHash,

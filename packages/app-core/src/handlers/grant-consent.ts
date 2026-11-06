@@ -10,9 +10,13 @@ export const grantConsent = (grant: GrantConsent['grant']): GrantConsent => ({
   grant,
 });
 
-/** Records one consent in the language of the text the person read. Granting twice is harmless. */
+/** Records one consent in the language of the text the person read. Granting twice is harmless.
+ * Drops the cached cleared Screening first; the next online `getSafety` re-derives it. */
 export const grantConsentDefinition = defineRequest<GrantConsent, Services, Stores>({
   schema: z.object({ type: z.literal(RequestType.GrantConsent), grant: consentGrantSchema }),
   offline: OfflinePolicy.Never,
-  handler: ({ grant }, { services }): Promise<ConsentState> => services.api.grantConsent(grant),
+  handler: async ({ grant }, { services }): Promise<ConsentState> => {
+    await services.planCache.deleteClearedScreening();
+    return services.api.grantConsent(grant);
+  },
 });

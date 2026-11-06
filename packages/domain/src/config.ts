@@ -1,3 +1,4 @@
+import { BodyHalf } from './enums/body-half.ts';
 import { ConsentPurpose } from './enums/consent-purpose.ts';
 import { Emphasis } from './enums/emphasis.ts';
 import { Equipment } from './enums/equipment.ts';
@@ -559,3 +560,27 @@ export const MAX_LOGGED_REPS = 600;
 export const MAX_WEIGHT_KG = 1000;
 /** Longest Session minutes the person may report when finishing. */
 export const MAX_SESSION_MINUTES = 300;
+
+/** Movement patterns of the lower body; every other pattern counts as upper body for progression. */
+export const LOWER_BODY_PATTERNS: readonly MovementPattern[] = [
+  MovementPattern.Squat,
+  MovementPattern.Hinge,
+  MovementPattern.Lunge,
+  MovementPattern.JumpLand,
+  MovementPattern.ChangeOfDirection,
+];
+/** Kilograms added to the next Session's weight when every set hit the top of the range at or below the target effort. */
+export const PROGRESSION_INCREMENT_KG: Readonly<Record<BodyHalf, number>> = {
+  [BodyHalf.Upper]: 2.5,
+  [BodyHalf.Lower]: 5,
+};
+/** The next Session's weight after a hard one: 5 % off. */
+export const PROGRESSION_DECREASE_FACTOR = 0.95;
+/** A set is hard when its RPE is at least this many points above the target RPE. */
+export const PROGRESSION_HARD_RPE_MARGIN = 2;
+/** This many hard sets in one Session take weight off the next. */
+export const PROGRESSION_HARD_SETS = 2;
+/** Suggested weights are rounded to the nearest multiple of this, in kilograms (the smallest plate step). */
+export const WEIGHT_ROUNDING_KG = 0.5;
+/** Effort of a set taken to failure; the target RPE is this minus the prescribed reps in reserve. */
+export const FAILURE_RPE = 10;

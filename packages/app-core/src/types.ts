@@ -3,7 +3,11 @@ import type {
   CreateProgramResult,
   ConsentGrant,
   ConsentState,
+  FinishSession as FinishSessionBody,
+  FinishSessionResult,
   InviteCheckResponse,
+  LogSet as LogSetBody,
+  LogSetResult,
   ProfileAnswers,
   ProgramWeek,
   RecordDoctorOkResult,
@@ -12,9 +16,11 @@ import type {
   SaveProfileResult,
   SaveScreeningResult,
   ScreeningSubmission,
+  SessionDetail,
   UserExport,
 } from '@stamina/contracts';
 import type { ConsentPurpose, Weekday } from '@stamina/domain';
+import type { DexieOptions } from 'dexie';
 import type { z } from 'zod';
 import type { HealthStateKind } from './enums/health-state-kind.ts';
 import type { OfflinePolicy } from './enums/offline-policy.ts';
@@ -51,6 +57,13 @@ export type Handler<R extends Request, Services, Stores> = (
 export interface RequestDefinition<R extends Request, Services, Stores> {
   schema: z.ZodType<R>;
   offline: OfflinePolicy;
+  /**
+   * Local-first: runs right after validation, online or offline, before the request is queued or
+   * handled, so what the person did is on the device whatever happens next. It must be idempotent
+   * (a request may be sent again). The handler does not run offline and a replay skips this hook,
+   * which is why the write cannot live in the handler.
+   */
+  writeLocal?(request: R, services: Services): Promise<void>;
   handler: Handler<R, Services, Stores>;
 }
 
@@ -81,7 +94,10 @@ export interface MediatorOptions<Services extends PipelineServices, Stores> {
 
 export interface PipelineContext {
   request: Request;
-  definition: Pick<RequestDefinition<Request, unknown, unknown>, 'schema' | 'offline'>;
+  definition: Pick<
+    RequestDefinition<Request, unknown, unknown>,
+    'schema' | 'offline' | 'writeLocal'
+  >;
   services: PipelineServices;
   /** Milliseconds since the request entered the pipeline; 0 until the timing step runs. */
   elapsedMs: () => number;
@@ -118,11 +134,116 @@ export interface Network {
   isOnline(): boolean;
 }
 
-/** Holds offline requests until a later sync replays them. In memory now, IndexedDB later. */
+/** A request waiting in the `OfflineQueue`; `id` is the queue's own key, ascending in insertion order. */
+export interface QueuedRequest {
+  id: number;
+  request: Request;
+}
+
+/**
+ * Holds requests until a sync replays them: IndexedDB in production (survives a reload), memory
+ * in Test and Dev. Requests are plain serialisable objects.
+ */
 export interface OfflineQueue {
   enqueue(request: Request): Promise<void>;
-  pending(): Promise<readonly Request[]>;
+  /** Everything not yet removed, oldest first. */
+  pending(): Promise<readonly QueuedRequest[]>;
+  /** Drops an entry once it was replayed; an unknown id does nothing. */
+  remove(id: number): Promise<void>;
 }
+
+/** A finish as the device recorded it: the finish body plus when (ISO), so the Session can show it as finished before the server confirms. */
+export interface LocalFinish {
+  finish: FinishSessionBody;
+  recordedAt: string;
+}
+
+/** What this device logged for one Session. */
+export interface LocalSessionLog {
+  /** In no particular order; the Session screen sorts by set number. */
+  sets: readonly LogSetBody[];
+  finish: LocalFinish | null;
+}
+
+/**
+ * What the person logged on this device, written before anything is sent (see
+ * `RequestDefinition.writeLocal`) so the Session screen shows it offline. Rows stay after the
+ * server has them: reading merges by id, so a stale row is harmless; only a set the server
+ * refused is removed.
+ */
+export interface SessionLogStore {
+  /** Idempotent by the set's id. */
+  addSet(sessionId: string, set: LogSetBody): Promise<void>;
+  removeSet(setId: string): Promise<void>;
+  /** A Session finishes once: a later call for the same Session keeps the first. */
+  recordFinish(sessionId: string, finish: LocalFinish): Promise<void>;
+  read(sessionId: string): Promise<LocalSessionLog>;
+}
+
+/**
+ * The last plan and Session detail fetched, so the week and an opened Session work without
+ * signal, and the Screening of a person last found cleared to train (see `getSafetyDefinition`).
+ */
+export interface PlanCache {
+  saveProgram(program: ProgramWeek): Promise<void>;
+  readProgram(): Promise<ProgramWeek | undefined>;
+  saveSessionDetail(detail: SessionDetail): Promise<void>;
+  readSessionDetail(sessionId: string): Promise<SessionDetail | undefined>;
+  /** Only ever a Screening that is not `Referred`: the one safety fact trusted offline. */
+  saveClearedScreening(screening: SavedScreening): Promise<void>;
+  /** Undefined when none is kept, or when what is stored is malformed or `Referred`. */
+  readClearedScreening(): Promise<SavedScreening | undefined>;
+  deleteClearedScreening(): Promise<void>;
+}
+
+/** The in-memory stores (Test and Dev modes) can be emptied; the IndexedDB ones are cleared through the database. */
+export interface Clearable {
+  clear(): void;
+}
+
+/**
+ * The local database holds one person's health data (queue, set and finish log, plan cache), so
+ * it belongs to whoever signed in and never to the next person on the device.
+ */
+export interface LocalData {
+  /** Wipes every local table, the owner included: sign-out and account deletion. */
+  clear(): Promise<void>;
+  /**
+   * Records `userId` as the owner of the local data. When the data belonged to someone else (or to
+   * no one, so nothing vouches for it), it is wiped first: a sign-out that never ran cannot leak.
+   * The same owner again changes nothing.
+   */
+  claim(userId: string): Promise<void>;
+}
+
+export interface QueueRow {
+  /** Set by the database on insert. */
+  id?: number;
+  request: Request;
+}
+
+export interface SetRow {
+  id: string;
+  sessionId: string;
+  set: LogSetBody;
+}
+
+export interface FinishRow extends LocalFinish {
+  sessionId: string;
+}
+
+export interface OwnerRow {
+  key: string;
+  userId: string;
+}
+
+export interface CacheRow {
+  key: string;
+  value: unknown;
+}
+
+/** Tests pass a fake IndexedDB; the browser's is the default. The one database holds the offline queue, the session log, the plan cache and who they belong to. */
+export type LocalDatabaseOptions = Pick<DexieOptions, 'indexedDB' | 'IDBKeyRange'>;
 
 export interface AuthSession {
   userId: string;
@@ -163,6 +284,9 @@ export interface Services extends PipelineServices {
   api: ApiClient;
   auth: AuthService;
   inviteStorage: InviteStorage;
+  sessionLog: SessionLogStore;
+  planCache: PlanCache;
+  localData: LocalData;
 }
 
 /** Test: silent in-memory mocks. Dev: in-memory mocks with a console logger. Production: real. */
@@ -251,6 +375,24 @@ export interface SaveProfile extends Request<SaveProfileResult> {
   readonly answers: ProfileAnswers;
 }
 
+export interface GetSessionDetail extends Request<SessionDetail> {
+  readonly type: RequestType.GetSessionDetail;
+  readonly sessionId: string;
+}
+
+/** (`Request` suffix: `LogSet` and `FinishSession` are the contract's body types.) */
+export interface LogSetRequest extends Request<LogSetResult | Queued> {
+  readonly type: RequestType.LogSet;
+  readonly sessionId: string;
+  readonly set: LogSetBody;
+}
+
+export interface FinishSessionRequest extends Request<FinishSessionResult | Queued> {
+  readonly type: RequestType.FinishSession;
+  readonly sessionId: string;
+  readonly finish: FinishSessionBody;
+}
+
 export interface GetProgram extends Request<ProgramWeek | null> {
   readonly type: RequestType.GetProgram;
 }
@@ -293,4 +435,28 @@ export interface FakeProgramInput {
   limited: boolean;
   /** Generation time; the week starts the next UTC day. */
   now: Date;
+}
+
+export interface SyncResult {
+  /** Entries taken off the queue during this run: replayed, or dropped because the server will never accept them. */
+  replayed: number;
+  /** Entries still waiting afterwards (the run stopped at a failure, or the device is offline). */
+  remaining: number;
+}
+
+/** Replays the offline queue in order; concurrent calls share one run. Resolves, never rejects for a failed replay. */
+export type SyncRunner = () => Promise<SyncResult>;
+
+export interface StartSyncOptions {
+  sync: SyncRunner;
+  /** The browser's `window`; anything that emits `focus` and `online`. */
+  target: EventTarget;
+}
+
+export interface ReadThroughCacheOptions<T> {
+  isOnline: () => boolean;
+  load: () => Promise<T>;
+  save: (value: T) => Promise<void>;
+  /** `undefined` when nothing was remembered. */
+  cached: () => Promise<T | undefined>;
 }

@@ -44,6 +44,8 @@ test('renders every component in both themes', async ({ page }) => {
       'Chip',
       'ChipGroup',
       'ProgressBar',
+      'RestTimer',
+      'SetDots',
       'Sheet',
       'Stepper',
       'Tabs',

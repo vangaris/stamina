@@ -1,7 +1,7 @@
 import { createAppMediator } from '../create-app-mediator.ts';
 import { createServices } from '../create-services.ts';
 import { ServicesMode } from '../enums/services-mode.ts';
-import type { HealthState, LogEntry, Services, SessionState } from '../types.ts';
+import type { HealthState, LogEntry, Services, SessionState, Stores } from '../types.ts';
 
 /** The mediator seam: `createServices({ mode: Test })` mocks, optionally overridden per test. */
 export function setupMediator(overrides: Partial<Services> = {}) {
@@ -13,15 +13,14 @@ export function setupMediator(overrides: Partial<Services> = {}) {
     ...services,
     logger: overrides.logger ?? { log: (entry) => logLines.push(entry) },
   };
-  const mediator = createAppMediator({
-    services: loggedServices,
-    stores: {
-      health: { set: (state) => healthWrites.push(state) },
-      session: { set: (state) => sessionWrites.push(state) },
-    },
-  });
+  const stores: Stores = {
+    health: { set: (state) => healthWrites.push(state) },
+    session: { set: (state) => sessionWrites.push(state) },
+  };
+  const mediator = createAppMediator({ services: loggedServices, stores });
   return {
     mediator,
+    stores,
     services: loggedServices,
     sessionWrites,
     healthWrites,

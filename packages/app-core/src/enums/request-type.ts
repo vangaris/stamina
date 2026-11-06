@@ -16,4 +16,7 @@ export enum RequestType {
   DeleteAccount = 'DeleteAccount',
   GetProgram = 'GetProgram',
   CreateProgram = 'CreateProgram',
+  GetSessionDetail = 'GetSessionDetail',
+  LogSet = 'LogSet',
+  FinishSession = 'FinishSession',
 }

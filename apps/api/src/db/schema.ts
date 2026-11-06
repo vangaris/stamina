@@ -26,7 +26,15 @@ import {
   SessionStatus,
   SportStatus,
   StartingLevel,
+  MAX_LOGGED_REPS,
+  MAX_LOGGED_SETS,
   MAX_RIR,
+  MAX_SESSION_MINUTES,
+  MAX_SESSION_RPE,
+  MAX_SET_RPE,
+  MAX_WEIGHT_KG,
+  MIN_SESSION_RPE,
+  MIN_SET_RPE,
   WEEKS_IN_BLOCK,
   Weekday,
   type Goal,
@@ -44,6 +52,7 @@ import {
   index,
   integer,
   jsonb,
+  numeric,
   pgPolicy,
   pgTable,
   text,
@@ -611,6 +620,114 @@ export const sessionExercise = pgTable(
       using: sql`user_id = app_user_id()::uuid`,
     }),
     pgPolicy('session_exercise_owner_insert', {
+      for: 'insert',
+      to: APP_ROLE,
+      withCheck: sql`user_id = app_user_id()::uuid`,
+    }),
+  ],
+).enableRLS();
+
+/**
+ * One logged set. The id is made on the device, so a replay is a conflict the insert ignores; so
+ * is a second set with the same number for the same Session exercise. `exercise_id` is the
+ * exercise actually done: the planned one or its tagged easier or harder variant (the API checks).
+ * Append-only: the app role reads and inserts its own rows, never rewrites or deletes them.
+ * Weight is read as a JS number; the checks use the domain's logging limits.
+ */
+export const setLog = pgTable(
+  'set_log',
+  {
+    id: uuid('id').primaryKey(),
+    userId: uuid('user_id')
+      .notNull()
+      .references(() => appUser.id, { onDelete: 'cascade' }),
+    sessionId: uuid('session_id')
+      .notNull()
+      .references(() => session.id, { onDelete: 'cascade' }),
+    sessionExerciseId: uuid('session_exercise_id')
+      .notNull()
+      .references(() => sessionExercise.id, { onDelete: 'cascade' }),
+    exerciseId: text('exercise_id')
+      .notNull()
+      .references(() => exercise.id),
+    setNumber: integer('set_number').notNull(),
+    weightKg: numeric('weight_kg', { precision: 6, scale: 2, mode: 'number' }).notNull(),
+    /** Reps, or seconds for a timed hold. */
+    reps: integer('reps').notNull(),
+    rpe: integer('rpe').notNull(),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => [
+    check(
+      'set_log_set_number_valid',
+      sql`${table.setNumber} between 1 and ${sql.raw(String(MAX_LOGGED_SETS))}`,
+    ),
+    check(
+      'set_log_weight_valid',
+      sql`${table.weightKg} between 0 and ${sql.raw(String(MAX_WEIGHT_KG))}`,
+    ),
+    check(
+      'set_log_reps_valid',
+      sql`${table.reps} between 0 and ${sql.raw(String(MAX_LOGGED_REPS))}`,
+    ),
+    check(
+      'set_log_rpe_valid',
+      sql`${table.rpe} between ${sql.raw(String(MIN_SET_RPE))} and ${sql.raw(String(MAX_SET_RPE))}`,
+    ),
+    unique('set_log_session_exercise_set_number').on(table.sessionExerciseId, table.setNumber),
+    index('set_log_user_exercise').on(table.userId, table.exerciseId),
+    index('set_log_session').on(table.sessionId),
+    pgPolicy('set_log_owner_select', {
+      for: 'select',
+      to: APP_ROLE,
+      using: sql`user_id = app_user_id()::uuid`,
+    }),
+    pgPolicy('set_log_owner_insert', {
+      for: 'insert',
+      to: APP_ROLE,
+      withCheck: sql`user_id = app_user_id()::uuid`,
+    }),
+  ],
+).enableRLS();
+
+/**
+ * A Session's finish record: the session RPE, the minutes it took and the Load (RPE x minutes,
+ * `sessionLoad`). One per Session (unique), so a second finish is a conflict the insert ignores.
+ * A Session is completed exactly when it has one; `session.status` is never rewritten (the app
+ * role cannot UPDATE it). Append-only like `set_log`.
+ */
+export const sessionLog = pgTable(
+  'session_log',
+  {
+    id: uuid('id').primaryKey(),
+    userId: uuid('user_id')
+      .notNull()
+      .references(() => appUser.id, { onDelete: 'cascade' }),
+    sessionId: uuid('session_id')
+      .notNull()
+      .unique()
+      .references(() => session.id, { onDelete: 'cascade' }),
+    rpe: integer('rpe').notNull(),
+    minutes: integer('minutes').notNull(),
+    load: integer('load').notNull(),
+    finishedAt: timestamp('finished_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => [
+    check(
+      'session_log_rpe_valid',
+      sql`${table.rpe} between ${sql.raw(String(MIN_SESSION_RPE))} and ${sql.raw(String(MAX_SESSION_RPE))}`,
+    ),
+    check(
+      'session_log_minutes_valid',
+      sql`${table.minutes} between 1 and ${sql.raw(String(MAX_SESSION_MINUTES))}`,
+    ),
+    check('session_log_load_valid', sql`${table.load} = ${table.rpe} * ${table.minutes}`),
+    pgPolicy('session_log_owner_select', {
+      for: 'select',
+      to: APP_ROLE,
+      using: sql`user_id = app_user_id()::uuid`,
+    }),
+    pgPolicy('session_log_owner_insert', {
       for: 'insert',
       to: APP_ROLE,
       withCheck: sql`user_id = app_user_id()::uuid`,

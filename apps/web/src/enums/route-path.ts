@@ -2,6 +2,8 @@ export enum RoutePath {
   Root = '/',
   Today = '/today',
   Session = '/session',
+  /** One Session by its id; the id is the `sessionId` param. */
+  SessionDetail = '/session/:sessionId',
   Meals = '/meals',
   Progress = '/progress',
   SignIn = '/sign-in',

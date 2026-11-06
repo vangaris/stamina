@@ -31,10 +31,11 @@ async function consentAndScreen(services: Services, yes: ScreeningQuestion[]) {
 }
 
 describe('the safety guard', () => {
-  it('gates every route that is not on the ungated list: the four tabs and the Program screens', () => {
+  it('gates every route that is not on the ungated list: the four tabs, a Session and the Program screens', () => {
     expect(GATED_ROUTES).toEqual([
       RouteName.Today,
       RouteName.Session,
+      RouteName.SessionDetail,
       RouteName.Meals,
       RouteName.Progress,
       RouteName.Reveal,

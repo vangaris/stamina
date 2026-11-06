@@ -13,7 +13,12 @@ const { t } = useI18n();
   <ol class="flex flex-col gap-4" data-testid="week-list">
     <template v-for="day in days" :key="day.date">
       <li v-if="day.session">
-        <SessionCard :session="day.session" :emphasis="emphasis" :locale="locale" />
+        <SessionCard
+          :session="day.session"
+          :emphasis="emphasis"
+          :locale="locale"
+          :progress="progress?.[day.session.id]"
+        />
       </li>
       <li
         v-else-if="showFreeDays"

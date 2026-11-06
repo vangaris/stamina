@@ -20,6 +20,7 @@ export const getSessionDefinition = defineRequest<GetSession, Services, Stores>(
     // The first call to the API creates the user row. Email sign-in already made it; a Google
     // sign-in returns here without ever having called the API, so the row is made now.
     const { userId } = await services.api.me();
+    await services.localData.claim(userId);
     const state: SessionState = { status: SessionStatus.SignedIn, userId };
     stores.session.set(state);
     return state;

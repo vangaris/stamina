@@ -27,6 +27,13 @@ export {
   MIN_SESSION_RPE,
   MIN_SET_RPE,
   MAX_RECOVERY_HOURS,
+  LOWER_BODY_PATTERNS,
+  PROGRESSION_DECREASE_FACTOR,
+  PROGRESSION_HARD_RPE_MARGIN,
+  PROGRESSION_HARD_SETS,
+  PROGRESSION_INCREMENT_KG,
+  WEIGHT_ROUNDING_KG,
+  FAILURE_RPE,
   MAX_SESSIONS_PER_WEEK,
   MAX_SPORT_HIGH_LOAD_AREAS,
   MIN_BIRTH_YEAR,
@@ -45,6 +52,7 @@ export {
   SESSION_LENGTHS_MINUTES,
 } from './config.ts';
 export { BodyArea } from './enums/body-area.ts';
+export { BodyHalf } from './enums/body-half.ts';
 export { ConsentPurpose } from './enums/consent-purpose.ts';
 export { Emphasis } from './enums/emphasis.ts';
 export { Equipment } from './enums/equipment.ts';
@@ -88,13 +96,19 @@ export type {
   SportDemands,
   TrainingModeInput,
   TrainingWeek,
+  LoggedEffort,
   PickedExercise,
+  Progression,
+  ProgressLoadInput,
   PickExercisesInput,
   PickSpec,
   PickValidation,
   SlotSpec,
 } from './types.ts';
 export { addDays } from './utils/add-days.ts';
+export { bodyHalfOf } from './utils/body-half-of.ts';
+export { progressLoad } from './utils/progress-load.ts';
+export { sessionLoad } from './utils/session-load.ts';
 export { checkEligibility } from './utils/check-eligibility.ts';
 export { evaluateScreening } from './utils/evaluate-screening.ts';
 export { isGoalAvailable } from './utils/is-goal-available.ts';

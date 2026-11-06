@@ -20,9 +20,12 @@
   "dependencies": {
     "@stamina/contracts": "workspace:^",
     "@stamina/domain": "workspace:^",
+    "@stamina/ids": "workspace:^",
+    "dexie": "^4.4.7",
     "zod": "^4.6.7"
   },
   "devDependencies": {
-    "@stamina/i18n": "workspace:^"
+    "@stamina/i18n": "workspace:^",
+    "fake-indexeddb": "^6.2.7"
   }
 }

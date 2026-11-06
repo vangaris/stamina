@@ -50,6 +50,15 @@ export const finishedSessionSchema = z.object({
   finishedAt: z.iso.datetime(),
 });
 
+/** A logged set in the data export: the set with the Session it belongs to and when the server stored it. */
+export const exportedSetSchema = loggedSetSchema.extend({
+  sessionId: z.uuid(),
+  loggedAt: z.iso.datetime(),
+});
+
+/** A finish record in the data export, with the Session it finished. */
+export const exportedFinishSchema = finishedSessionSchema.extend({ sessionId: z.uuid() });
+
 /** An exercise's tagged easier or harder variant. */
 export const exerciseVariantSchema = z.object({
   exerciseId: z.string().min(1),

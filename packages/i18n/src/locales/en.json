@@ -357,7 +357,12 @@
     "session": {
       "minutes": "{minutes} min",
       "recovery": "A lighter Session: warm-up, core and mobility work.",
-      "powerSpeedCue": "Move fast and stop when the speed drops."
+      "powerSpeedCue": "Move fast and stop when the speed drops.",
+      "action": {
+        "not-started": "Start Session",
+        "in-progress": "Continue Session",
+        "done": "Done"
+      }
     },
     "exercise": {
       "suggestedByAi": "Suggested by AI"
@@ -397,5 +402,126 @@
     "playDay": "Play day",
     "empty": "You do not have a Program yet.",
     "backToToday": "Back to Today"
+  },
+  "session": {
+    "loading": "Opening your Session…",
+    "retry": "Try again",
+    "errors": {
+      "offline": "This Session has not been opened on this phone yet. Connect to the internet and open it once, then it works without signal.",
+      "unknown": "Something went wrong. Please try again.",
+      "setRejected": "That set could not be saved, so it was taken off the list. Please log it again.",
+      "finishFailed": "We could not finish the Session. Please try again."
+    },
+    "focus": {
+      "position": "{slot}, {position} of {total}",
+      "swapped": "Swapped exercise",
+      "setDots": "Set {set} of {total}",
+      "setDotsDone": "All {total, plural, one {# set} other {# sets}} done",
+      "weight": {
+        "label": "Weight",
+        "decrease": "Decrease weight",
+        "increase": "Increase weight"
+      },
+      "reps": {
+        "label": "Reps",
+        "decrease": "Fewer reps",
+        "increase": "More reps"
+      },
+      "seconds": {
+        "label": "Seconds",
+        "decrease": "Fewer seconds",
+        "increase": "More seconds"
+      },
+      "rpe": {
+        "label": "How hard was it? (RPE)",
+        "hint": "6 is light, 10 is the hardest you can do."
+      },
+      "done": "Done · set {set}",
+      "addSet": "Add a set",
+      "nextExercise": "Next exercise",
+      "finish": "Finish Session",
+      "overview": "Overview",
+      "swap": "Swap exercise"
+    },
+    "unit": {
+      "kg": "kg",
+      "reps": "{count, plural, one {rep} other {reps}}",
+      "seconds": "{count, plural, one {second} other {seconds}}",
+      "minutes": "{count, plural, one {minute} other {minutes}}"
+    },
+    "status": {
+      "saved": "Set {set} saved",
+      "queued": "Set {set} saved on this phone. It will sync when you are back online.",
+      "not-sent": "Set {set} saved on this phone. We could not send it just now."
+    },
+    "target": {
+      "reps": "{sets} x {range} reps",
+      "seconds": "{sets} x {range} seconds",
+      "effort": "Stop with {rir, plural, one {# rep} other {# reps}} in reserve (RPE {rpe})",
+      "suggested": {
+        "start": "Start with {weight} kg.",
+        "increase": "Start with {weight} kg. You reached the top of the range last time, so this is a little heavier.",
+        "decrease": "Start with {weight} kg. Last time felt very hard, so this is a little lighter.",
+        "hold": "Start with {weight} kg, the same as last time. Aim for the top of the range first."
+      }
+    },
+    "rest": {
+      "title": "Rest",
+      "skip": "Skip rest",
+      "add": "+{seconds} s",
+      "next": "Next: {name}, set {set}",
+      "announce": "{seconds, plural, one {# second} other {# seconds}} of rest left",
+      "over": "Rest is over"
+    },
+    "overview": {
+      "title": "Session overview",
+      "caption": "Every exercise in this Session",
+      "exercise": "Exercise",
+      "plan": "Plan",
+      "done": "Done",
+      "rowDone": "{done} of {total}",
+      "back": "Back to the exercise",
+      "finish": "Finish Session"
+    },
+    "confirmFinish": {
+      "title": "Finish now?",
+      "body": "{left, plural, one {# planned set is} other {# planned sets are}} not logged yet. You can finish now and your Session is saved with what you logged.",
+      "confirm": "Finish Session",
+      "cancel": "Keep going",
+      "close": "Close"
+    },
+    "swap": {
+      "title": "Swap this exercise",
+      "intro": "For the rest of this Session on this phone. Your sets, reps and effort target stay the same.",
+      "easier": "Easier: {name}",
+      "harder": "Harder: {name}",
+      "original": "Back to the planned exercise: {name}",
+      "none": "This exercise has no easier or harder version.",
+      "close": "Close"
+    },
+    "finish": {
+      "title": "How did it go?",
+      "rpe": {
+        "label": "How hard was the whole Session? (RPE)",
+        "hint": "1 is very easy, 10 is the hardest you can do."
+      },
+      "minutes": {
+        "label": "How long did it take?",
+        "decrease": "Fewer minutes",
+        "increase": "More minutes"
+      },
+      "submit": "Finish Session",
+      "back": "Back"
+    },
+    "done": {
+      "title": "Session done",
+      "load": "Load {load}",
+      "explanation": "Load is how hard it felt times how long it took: RPE {rpe} x {minutes, plural, one {# minute} other {# minutes}}.",
+      "queued": "Saved on this phone. It will sync when you are back online.",
+      "saved": "Saved.",
+      "today": "Back to Today",
+      "week": "See your week"
+    },
+    "backToWeek": "Back to your week"
   }
 }
