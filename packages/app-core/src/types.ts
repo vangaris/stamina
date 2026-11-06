@@ -29,7 +29,7 @@ import type {
   UserExport,
   WeekLoad,
 } from '@stamina/contracts';
-import type { ConsentPurpose, StopState, Weekday } from '@stamina/domain';
+import type { ConsentPurpose, StopFlag, StopState, Weekday } from '@stamina/domain';
 import type { DexieOptions } from 'dexie';
 import type { z } from 'zod';
 import type { HealthStateKind } from './enums/health-state-kind.ts';
@@ -526,8 +526,11 @@ export interface ReportStopFlagRequest extends Request<ReportStopFlagResult | Qu
   readonly report: ReportStopFlagBody;
 }
 
-export interface ConfirmDoctorSeen extends Request<ConfirmDoctorSeenResult> {
+/** (`Request` suffix: `ConfirmDoctorSeen` is the contract's body type.) */
+export interface ConfirmDoctorSeenRequest extends Request<ConfirmDoctorSeenResult> {
   readonly type: RequestType.ConfirmDoctorSeen;
+  /** The kinds the person saw paused: only those end. */
+  readonly flags: readonly StopFlag[];
 }
 
 /** (`Request` suffix: `RecheckScreening` is the contract's body type.) */

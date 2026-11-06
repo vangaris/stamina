@@ -23,6 +23,40 @@ export interface RecheckErrors {
   bodyAreas?: StopFlagMessageKey;
 }
 
+/** The part of `localStorage` the owed re-asks need; tests pass a memory one. */
+export interface RecheckOwedStorage {
+  getItem: (key: string) => string | null;
+  setItem: (key: string, value: string) => void;
+  removeItem: (key: string) => void;
+}
+
+/** Which stop flags still owe the person their repeated Screening questions, kept on this device. */
+export interface RecheckOwedStore {
+  /** The flags whose questions are owed, in the order they were reported. */
+  owed: () => StopFlag[];
+  /** A report was saved and asks questions again: they are owed until answered. */
+  owe: (flag: StopFlag) => void;
+  /** The questions of `flag` were answered (or refused by a rule); they are no longer owed. */
+  settle: (flag: StopFlag) => void;
+}
+
+/** The words of the paused screen's button and the hint under it, as message keys. */
+export interface PausedConfirmCopy {
+  label: StopFlagMessageKey;
+  hint: StopFlagMessageKey;
+}
+
+export interface UseRecheckOptions {
+  mediator: Mediator;
+  /** Called when the server took the answers or refused them by a rule: anything but a failure to send. */
+  onSettled: () => void;
+}
+
+/** A repeated-questions submit that is done with: where the person goes now, or nowhere (carry on). */
+export interface RecheckResult {
+  path: RoutePath | undefined;
+}
+
 export interface UseStopFlagOptions {
   /** Called when the person belongs on another screen (the paused screen, Referred, sign-in, Today after a Session's stop). */
   onNavigate: (path: RoutePath) => void;
@@ -36,12 +70,16 @@ export interface UseStopFlagOptions {
   newId?: () => string;
   /** The time now, for "today" on the person's calendar. Defaults to the browser's clock. */
   now?: () => Date;
+  /** Where the questions a report asks again are noted until answered. Defaults to one over `localStorage`. */
+  recheckOwed?: RecheckOwedStore;
 }
 
 export interface UsePausedOptions {
   onNavigate: (path: RoutePath) => void;
   /** Defaults to the app mediator. */
   mediator?: Mediator;
+  /** Which re-asks are still owed. Defaults to one over `localStorage`. */
+  recheckOwed?: RecheckOwedStore;
 }
 
 export interface UseRestNoticeOptions {
@@ -85,14 +123,4 @@ export interface StopFlagRecheckProps {
 export interface StopFlagRecheckEmits {
   answer: [question: ScreeningQuestion, answer: boolean];
   'update:bodyAreas': [areas: BodyArea[]];
-}
-
-export interface PausedViewProps {
-  outcomes: readonly StopOutcomeView[];
-  busy: boolean;
-  errorKey: StopFlagMessageKey | undefined;
-}
-
-export interface PausedViewEmits {
-  confirm: [];
 }

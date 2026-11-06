@@ -12,6 +12,7 @@ import { useSession } from '../composables/useSession.ts';
 import { SessionPhase } from '../enums/session-phase.ts';
 import { SessionSheet } from '../enums/session-sheet.ts';
 import type { SessionContainerProps } from '../types.ts';
+import { hasStopButton } from '../utils/has-stop-button.ts';
 import { toRestAnnouncement } from '../utils/to-rest-announcement.ts';
 import ConfirmFinishSheet from './ConfirmFinishSheet.vue';
 import DoneView from './DoneView.vue';
@@ -60,13 +61,7 @@ const confirmOpen = computed({
   },
 });
 
-// The Stop button is on every screen a person trains on, so it is never a scroll away.
-const showStop = computed(
-  () =>
-    phase.value === SessionPhase.Focus ||
-    phase.value === SessionPhase.Overview ||
-    phase.value === SessionPhase.Finish,
-);
+const showStop = computed(() => hasStopButton(phase.value));
 const stopOpen = ref(false);
 
 function announceRest(seconds: number) {

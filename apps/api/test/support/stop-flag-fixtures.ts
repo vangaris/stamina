@@ -35,9 +35,11 @@ export async function postStopFlag(user: FixtureUser, entry: ReportStopFlag) {
   };
 }
 
-/** Calls `POST /safety/stop-flags/confirm`. */
-export async function postConfirm(user: FixtureUser) {
-  const response = await user.call(HttpMethod.Post, stopFlagPath(StopFlagSubpath.Confirm));
+/** Calls `POST /safety/stop-flags/confirm` with the kinds the person saw. */
+export async function postConfirm(user: FixtureUser, flags: StopFlag[]) {
+  const response = await user.call(HttpMethod.Post, stopFlagPath(StopFlagSubpath.Confirm), {
+    flags,
+  });
   return {
     status: response.status,
     result: confirmDoctorSeenResultSchema.parse(await response.json()),

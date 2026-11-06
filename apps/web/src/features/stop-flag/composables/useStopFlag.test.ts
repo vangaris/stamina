@@ -14,9 +14,12 @@ import { RoutePath } from '../../../enums/route-path.ts';
 import { ReportStatus } from '../enums/report-status.ts';
 import { StopFlagMessageKey } from '../enums/stop-flag-message-key.ts';
 import { StopFlagStep } from '../enums/stop-flag-step.ts';
+import { StopFlagStorageKey } from '../enums/stop-flag-storage-key.ts';
 import { StopOutcomeKind } from '../enums/stop-outcome-kind.ts';
+import { createMemoryStorage } from '../testing/create-memory-storage.ts';
 import { createMockMediator, QUEUED } from '../testing/create-mock-mediator.ts';
 import { makeScreening } from '../testing/make-safety-state.ts';
+import { createRecheckOwedStore } from '../utils/create-recheck-owed-store.ts';
 import { useStopFlag } from './useStopFlag.ts';
 
 const REPORT_ID = '0f8f3a52-6f0e-4c53-9d3e-2f3a6a9b7c11';
@@ -27,15 +30,18 @@ function setup({ sessionId }: { sessionId?: string } = {}) {
   const mock = createMockMediator();
   const onNavigate = vi.fn();
   const onDone = vi.fn();
+  const storage = createMemoryStorage();
+  const recheckOwed = createRecheckOwedStore(storage);
   const flow = useStopFlag({
     mediator: mock.mediator,
     onNavigate,
     onDone,
     newId: () => REPORT_ID,
     now: () => NOW,
+    recheckOwed,
     ...(sessionId ? { sessionId: () => sessionId } : {}),
   });
-  return { flow, onNavigate, onDone, ...mock };
+  return { flow, onNavigate, onDone, recheckOwed, storage, ...mock };
 }
 
 describe('reporting a stop flag', () => {
@@ -364,6 +370,7 @@ describe('closing the sheet', () => {
       onDone: vi.fn(),
       newId: () => ids.shift() ?? 'none',
       now: () => NOW,
+      recheckOwed: createRecheckOwedStore(createMemoryStorage()),
     });
     await flow.pick(StopFlag.Fever);
     flow.dismiss();
@@ -372,5 +379,96 @@ describe('closing the sheet', () => {
     await flow.pick(StopFlag.Fever);
 
     expect(mock.reports.map(({ id }) => id)).toEqual(['id-one', 'id-two']);
+  });
+});
+
+describe('the questions a report owes', () => {
+  it('notes them on the phone once a report that asks questions is saved, or queued', async () => {
+    const saved = setup();
+    const queued = setup();
+    queued.state.report = QUEUED;
+
+    await saved.flow.pick(StopFlag.ChestPain);
+    await queued.flow.pick(StopFlag.HeadKnock);
+
+    expect(saved.recheckOwed.owed()).toEqual([StopFlag.ChestPain]);
+    expect(queued.recheckOwed.owed()).toEqual([StopFlag.HeadKnock]);
+  });
+
+  it('notes nothing for a report that asks nothing, or one that did not get through', async () => {
+    const fever = setup();
+    const failed = setup();
+    failed.state.report = new AppError(AppErrorCode.Offline);
+
+    await fever.flow.pick(StopFlag.Fever);
+    await failed.flow.pick(StopFlag.ChestPain);
+
+    expect(fever.storage.data.has(StopFlagStorageKey.RecheckOwed)).toBe(false);
+    expect(failed.storage.data.has(StopFlagStorageKey.RecheckOwed)).toBe(false);
+  });
+
+  it('keeps them owed when the sheet is closed before the questions are answered', async () => {
+    const { flow, recheckOwed } = setup();
+    await flow.pick(StopFlag.ChestPain);
+    flow.continueFromOutcome();
+
+    flow.dismiss();
+
+    expect(recheckOwed.owed()).toEqual([StopFlag.ChestPain]);
+  });
+
+  it('settles them when the server saves the answers, whatever the new Screening says', async () => {
+    const { flow, state, recheckOwed } = setup();
+    state.recheck = {
+      status: RecordStatus.Saved,
+      screening: makeScreening({
+        status: ScreeningStatus.Referred,
+        trainingMode: TrainingMode.Referred,
+      }),
+      goalChanged: false,
+    };
+    await flow.pick(StopFlag.Fainting);
+    flow.continueFromOutcome();
+    flow.answer(ScreeningQuestion.Fainting, true);
+
+    await flow.submitRecheck();
+
+    expect(recheckOwed.owed()).toEqual([]);
+  });
+
+  it('settles them when the server refuses the answers by a rule', async () => {
+    const { flow, state, recheckOwed } = setup();
+    state.recheck = { status: RecordStatus.Rejected, reason: ScreeningRejection.NoScreening };
+    await flow.pick(StopFlag.Fainting);
+    flow.continueFromOutcome();
+    flow.answer(ScreeningQuestion.Fainting, false);
+
+    await flow.submitRecheck();
+
+    expect(recheckOwed.owed()).toEqual([]);
+  });
+
+  it('keeps them owed when the answers could not be sent', async () => {
+    const { flow, state, recheckOwed } = setup();
+    state.recheck = new AppError(AppErrorCode.Offline);
+    await flow.pick(StopFlag.Fainting);
+    flow.continueFromOutcome();
+    flow.answer(ScreeningQuestion.Fainting, false);
+
+    await flow.submitRecheck();
+
+    expect(recheckOwed.owed()).toEqual([StopFlag.Fainting]);
+  });
+
+  it('settles only the flag whose questions were answered', async () => {
+    const { flow, recheckOwed } = setup();
+    recheckOwed.owe(StopFlag.HeadKnock);
+    await flow.pick(StopFlag.Fainting);
+    flow.continueFromOutcome();
+    flow.answer(ScreeningQuestion.Fainting, false);
+
+    await flow.submitRecheck();
+
+    expect(recheckOwed.owed()).toEqual([StopFlag.HeadKnock]);
   });
 });

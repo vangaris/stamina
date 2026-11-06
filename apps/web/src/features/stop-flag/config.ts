@@ -1,9 +1,10 @@
 import { AppErrorCode } from '@stamina/app-core';
 import { ScreeningRejection } from '@stamina/contracts';
-import { StopAction, StopFlag } from '@stamina/domain';
+import { PAUSING_STOP_ACTIONS, StopAction, StopFlag } from '@stamina/domain';
 import { RoutePath } from '../../enums/route-path.ts';
 import { StopFlagMessageKey } from './enums/stop-flag-message-key.ts';
 import { StopOutcomeKind } from './enums/stop-outcome-kind.ts';
+import type { PausedConfirmCopy } from './types.ts';
 
 /** The seven options of "Anything unusual today?", in the order the sheet lists them. */
 export const STOP_FLAG_OPTIONS: readonly StopFlag[] = Object.values(StopFlag);
@@ -17,10 +18,24 @@ export const OUTCOME_KIND_FOR_ACTION: Record<StopAction, StopOutcomeKind> = {
 };
 
 /** The outcomes that pause training: the person is taken to the paused screen. */
-export const PAUSING_OUTCOME_KINDS: readonly StopOutcomeKind[] = [
-  StopOutcomeKind.PausedDoctor,
-  StopOutcomeKind.PausedCleared,
-];
+export const PAUSING_OUTCOME_KINDS: readonly StopOutcomeKind[] = PAUSING_STOP_ACTIONS.map(
+  (action) => OUTCOME_KIND_FOR_ACTION[action],
+);
+
+/** The button and hint of the paused screen: a doctor has seen the person, or has cleared them. */
+export const PAUSED_CONFIRM_COPY: Record<
+  StopOutcomeKind.PausedDoctor | StopOutcomeKind.PausedCleared,
+  PausedConfirmCopy
+> = {
+  [StopOutcomeKind.PausedDoctor]: {
+    label: StopFlagMessageKey.PausedConfirm,
+    hint: StopFlagMessageKey.PausedHint,
+  },
+  [StopOutcomeKind.PausedCleared]: {
+    label: StopFlagMessageKey.PausedConfirmCleared,
+    hint: StopFlagMessageKey.PausedHintCleared,
+  },
+};
 
 /** Where a person goes when the server refuses the repeated Screening questions: back to the step it needs first. */
 export const RECHECK_REJECTION_ROUTES: Record<ScreeningRejection, RoutePath> = {

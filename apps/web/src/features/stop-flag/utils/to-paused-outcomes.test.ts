@@ -23,4 +23,13 @@ describe('toPausedOutcomes', () => {
     expect(cleared?.emergencyNumber).toBeUndefined();
     expect(doctor?.emergencyNumber).toBe(EMERGENCY_NUMBER);
   });
+
+  it('carries the emergency number when any flag of a kind shows it, whichever came first', () => {
+    const [outcome] = toPausedOutcomes([StopFlag.HeadKnock, StopFlag.HeadKnock]);
+    const merged = toPausedOutcomes([StopFlag.Heartbeat, StopFlag.ChestPain]);
+
+    expect(outcome?.emergencyNumber).toBeUndefined();
+    expect(merged).toHaveLength(1);
+    expect(merged[0]?.emergencyNumber).toBe(EMERGENCY_NUMBER);
+  });
 });

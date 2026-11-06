@@ -387,7 +387,9 @@ describe('Screening data: encryption, export, deletion, logs', () => {
         note: SENTINELS.stopFlag,
       });
       await send(HttpMethod.Post, `${stopFlagPath()}/${SENTINELS.stopFlag}`);
-      await send(HttpMethod.Post, stopFlagPath(StopFlagSubpath.Confirm));
+      await send(HttpMethod.Post, stopFlagPath(StopFlagSubpath.Confirm), {
+        flags: [StopFlag.ChestPain],
+      });
       await send(HttpMethod.Post, ApiPath.ScreeningRecheck, {
         answers: { [ScreeningQuestion.Fainting]: SENTINELS.stopFlag },
       });

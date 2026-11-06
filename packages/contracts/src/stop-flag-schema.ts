@@ -37,7 +37,10 @@ export const reportStopFlagResultSchema = z.object({
   stop: stopStateSchema,
 });
 
-/** `POST /safety/stop-flags/confirm` answers `200` with the state after every open pause ended. */
+/** The kinds the person saw when they said a doctor has seen them: at least one. */
+export const confirmDoctorSeenSchema = z.object({ flags: z.array(z.enum(StopFlag)).min(1) });
+
+/** `POST /safety/stop-flags/confirm` answers `200` with the state after the confirmed pauses ended. */
 export const confirmDoctorSeenResultSchema = z.object({
   status: z.literal(RecordStatus.Saved),
   stop: stopStateSchema,

@@ -14,4 +14,5 @@
 - [ ] Missed Sessions: 1 → skip; ≥ 2 in a week → repeat the week; ≥ 2 weeks off → restart Block at week 1 with RIR +1
 - [ ] Suggestion cards inline at the top of Today with change, reason (EN/EL templates filled with numbers), Accept and Keep my plan
 - [ ] Accept creates a new Session revision (supersedes the old); accepting an outdated revision is rejected and the client shows the latest; accepting offline is queued
+- [ ] A reported new pain (stop flag, ticket 13) leaves its area excluded from newly generated Programs only; the Sessions already planned still hold exercises that load it. Rewrite them: the unfinished Sessions of the current week are regenerated without the excluded areas as new revisions (not a suggestion: the person already said it hurts), and the Session screen and week show the revised Sessions
 - [ ] API tests cover every trigger with fixture users (seed persona pickup padel → swap Thursday; basketball double game week → Deload suggestion); Playwright covers 'I played' → accept

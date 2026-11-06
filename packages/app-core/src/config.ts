@@ -2,17 +2,9 @@ import { AppErrorCode } from './enums/app-error-code.ts';
 import { AuthErrorCode } from './enums/auth-error-code.ts';
 import { BetterAuthErrorCode } from './enums/better-auth-error-code.ts';
 import { LocalTable } from './enums/local-table.ts';
-import type { StopState } from '@stamina/domain';
 import type { Queued } from './types.ts';
 
 export const QUEUED_RESULT: Queued = Object.freeze({ queued: true });
-
-/** No stop flag in force: what a person who never reported one has. */
-export const NO_STOP_STATE: StopState = Object.freeze({
-  pausing: [],
-  restOn: null,
-  excludedAreas: [],
-}) as StopState;
 
 /** Digits in an emailed code (Better Auth's Email OTP default). */
 export const OTP_LENGTH = 6;

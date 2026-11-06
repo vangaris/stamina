@@ -1,15 +1,8 @@
-import {
-  AppError,
-  AppErrorCode,
-  isQueued,
-  recheckScreening,
-  reportStopFlag,
-} from '@stamina/app-core';
-import { RecordStatus, type ReportStopFlag } from '@stamina/contracts';
+import { AppError, AppErrorCode, isQueued, reportStopFlag } from '@stamina/app-core';
+import type { ReportStopFlag } from '@stamina/contracts';
 import { toLocalDate } from '@stamina/dates';
 import {
   StopAction,
-  TrainingMode,
   stopFlagEffect,
   type BodyArea,
   type ScreeningQuestion,
@@ -17,21 +10,18 @@ import {
 } from '@stamina/domain';
 import { newId } from '@stamina/ids';
 import { computed, ref } from 'vue';
-import { RoutePath } from '../../../enums/route-path.ts';
+import type { RoutePath } from '../../../enums/route-path.ts';
 import { useMediator } from '../../../mediator.ts';
-import { toMessageKey } from '../../../utils/to-message-key.ts';
-import { applyAnswer, createScreeningDraft } from '../../safety/index.ts';
-import { RECHECK_ERROR_KEYS, RECHECK_REJECTION_ROUTES, ROUTE_WHEN_SIGNED_OUT } from '../config.ts';
+import { ROUTE_WHEN_SIGNED_OUT } from '../config.ts';
 import { ReportStatus } from '../enums/report-status.ts';
 import { StopFlagMessageKey } from '../enums/stop-flag-message-key.ts';
 import { StopFlagStep } from '../enums/stop-flag-step.ts';
-import type { RecheckDraft, RecheckErrors, UseStopFlagOptions } from '../types.ts';
-import { toRecheckSubmission } from '../utils/to-recheck-submission.ts';
+import type { UseStopFlagOptions } from '../types.ts';
+import { createRecheckOwedStore } from '../utils/create-recheck-owed-store.ts';
 import { toRouteAfterReport } from '../utils/to-route-after-report.ts';
 import { toStopOutcome } from '../utils/to-stop-outcome.ts';
-import { validateRecheck } from '../utils/validate-recheck.ts';
+import { useRecheck } from './useRecheck.ts';
 
-const NO_ERRORS: RecheckErrors = { answers: {} };
 const NO_QUESTIONS: readonly ScreeningQuestion[] = [];
 
 /**
@@ -40,22 +30,29 @@ const NO_QUESTIONS: readonly ScreeningQuestion[] = [];
  * network, so a person with no signal is told to stop all the same. The report is sent with an id
  * made here (a retry or a replay cannot make two); with no signal it is kept on the phone, which
  * already pauses training. Then the Screening questions the flag asks again are put to the
- * person. A referral leaves for the Referred screen, a pause for the paused screen, and a stop
- * made in a Session leaves the Session for Today. Nothing here is logged: a report is health data.
+ * person. A report that asks questions again notes on the phone that they are owed until the
+ * server has them (or refuses them by a rule), so the paused screen can ask them if the sheet is
+ * closed first. A referral leaves for the Referred screen, a pause for the paused screen, and a
+ * stop made in a Session leaves the Session for Today. Nothing here is logged: a report is health
+ * data.
  */
 export function useStopFlag(options: UseStopFlagOptions) {
   const mediator = options.mediator ?? useMediator();
   const makeId = options.newId ?? newId;
   const now = options.now ?? (() => new Date());
+  const recheckOwed = options.recheckOwed ?? createRecheckOwedStore(localStorage);
 
   const step = ref(StopFlagStep.Options);
   const flag = ref<StopFlag | undefined>();
   const area = ref<BodyArea | undefined>();
   const reportStatus = ref(ReportStatus.Idle);
-  const draft = ref<RecheckDraft>(createScreeningDraft());
-  const errors = ref<RecheckErrors>(NO_ERRORS);
-  const errorKey = ref<StopFlagMessageKey | undefined>();
-  const busy = ref(false);
+  const recheck = useRecheck({
+    mediator,
+    onSettled: () => {
+      if (flag.value) recheckOwed.settle(flag.value);
+    },
+  });
+  const { draft, errors, errorKey, busy } = recheck;
   /** Kept across a failed try, so sending the report again cannot make a second one. */
   let attemptId: string | undefined;
 
@@ -87,10 +84,7 @@ export function useStopFlag(options: UseStopFlagOptions) {
     flag.value = undefined;
     area.value = undefined;
     reportStatus.value = ReportStatus.Idle;
-    draft.value = createScreeningDraft();
-    errors.value = NO_ERRORS;
-    errorKey.value = undefined;
-    busy.value = false;
+    recheck.reset();
     attemptId = undefined;
   }
 
@@ -111,6 +105,7 @@ export function useStopFlag(options: UseStopFlagOptions) {
     try {
       const result = await mediator.send(reportStopFlag(report));
       if (attemptId !== id) return;
+      if (stopFlagEffect(picked).recheck.length > 0) recheckOwed.owe(picked);
       reportStatus.value = isQueued(result) ? ReportStatus.Queued : ReportStatus.Saved;
     } catch (error) {
       if (attemptId !== id) return;
@@ -171,54 +166,17 @@ export function useStopFlag(options: UseStopFlagOptions) {
       finish();
       return;
     }
-    draft.value = { ...createScreeningDraft(), bodyAreas: area.value ? [area.value] : [] };
-    errors.value = NO_ERRORS;
-    errorKey.value = undefined;
+    recheck.reset(area.value ? [area.value] : []);
     step.value = StopFlagStep.Recheck;
-  }
-
-  function answer(question: ScreeningQuestion, value: boolean) {
-    draft.value = applyAnswer(draft.value, question, value);
-    errors.value = { answers: omitKey(errors.value.answers, question) };
-    errorKey.value = undefined;
-  }
-
-  function setBodyAreas(areas: BodyArea[]) {
-    draft.value = { ...draft.value, bodyAreas: areas };
-    errors.value = { answers: errors.value.answers };
-    errorKey.value = undefined;
   }
 
   /** Sends the repeated answers. The server decides the outcome of the new Screening. */
   async function submitRecheck() {
-    if (busy.value || step.value !== StopFlagStep.Recheck) return;
-    errorKey.value = undefined;
-    errors.value = validateRecheck(questions.value, draft.value);
-    if (Object.keys(errors.value.answers).length > 0 || errors.value.bodyAreas) return;
-    const submission = toRecheckSubmission(questions.value, draft.value);
-    if (!submission) {
-      errorKey.value = StopFlagMessageKey.RecheckUnknown;
-      return;
-    }
-
-    busy.value = true;
-    try {
-      const result = await mediator.send(recheckScreening(submission));
-      if (result.status === RecordStatus.Rejected) {
-        return leave(RECHECK_REJECTION_ROUTES[result.reason]);
-      }
-      if (result.screening.trainingMode === TrainingMode.Referred) {
-        return leave(RoutePath.Referred);
-      }
-      finish();
-    } catch (error) {
-      if (error instanceof AppError && error.code === AppErrorCode.Unauthorized) {
-        return leave(ROUTE_WHEN_SIGNED_OUT);
-      }
-      errorKey.value = toMessageKey(error, RECHECK_ERROR_KEYS, StopFlagMessageKey.RecheckUnknown);
-    } finally {
-      busy.value = false;
-    }
+    if (step.value !== StopFlagStep.Recheck) return;
+    const result = await recheck.submit(questions.value);
+    if (!result) return;
+    if (result.path) leave(result.path);
+    else finish();
   }
 
   /** The sheet was closed. A flag that was shown still takes the person where it puts them. */
@@ -246,18 +204,9 @@ export function useStopFlag(options: UseStopFlagOptions) {
     back,
     retry,
     continueFromOutcome,
-    answer,
-    setBodyAreas,
+    answer: recheck.answer,
+    setBodyAreas: recheck.setBodyAreas,
     submitRecheck,
     dismiss,
   };
-}
-
-function omitKey<K extends string, V>(
-  record: Partial<Record<K, V>>,
-  key: K,
-): Partial<Record<K, V>> {
-  return Object.fromEntries(Object.entries(record).filter(([entry]) => entry !== key)) as Partial<
-    Record<K, V>
-  >;
 }

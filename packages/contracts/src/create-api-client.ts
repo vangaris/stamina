@@ -117,8 +117,8 @@ export function createApiClient({
       const response = await postJson(stopFlagPath(), flag);
       return reportStopFlagResultSchema.parse(await response.json());
     },
-    async confirmDoctorSeen() {
-      const response = await postEmpty(stopFlagPath(StopFlagSubpath.Confirm));
+    async confirmDoctorSeen(confirm) {
+      const response = await postJson(stopFlagPath(StopFlagSubpath.Confirm), confirm);
       return confirmDoctorSeenResultSchema.parse(await response.json());
     },
     async recordDoctorOk() {

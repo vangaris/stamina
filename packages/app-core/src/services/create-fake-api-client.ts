@@ -291,7 +291,7 @@ export function createFakeApiClient(getToken: () => Promise<string | undefined>)
     submitCheckin: async (checkin) => checkins.submit(await requireUserId(), checkin),
     getLatestCheckin: async () => checkins.latest(await requireUserId()),
     reportStopFlag: async (report) => stopFlags.report(await requireUserId(), report),
-    confirmDoctorSeen: async () => stopFlags.confirm(await requireUserId()),
+    confirmDoctorSeen: async (confirm) => stopFlags.confirm(await requireUserId(), confirm),
     recordDoctorOk: async () => {
       const latest = latestScreening(await requireUserId());
       if (!latest || latest.outcome.status !== ScreeningStatus.Referred) {

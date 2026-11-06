@@ -27,6 +27,7 @@ export {
 } from './checkin-schema.ts';
 export {
   confirmDoctorSeenResultSchema,
+  confirmDoctorSeenSchema,
   exportedStopFlagSchema,
   reportStopFlagResultSchema,
   reportStopFlagSchema,
@@ -111,6 +112,7 @@ export type {
   FinishSessionResult,
   ExportedActivity,
   Checkin,
+  ConfirmDoctorSeen,
   ConfirmDoctorSeenResult,
   ExportedCheckin,
   ExportedStopFlag,

@@ -4,6 +4,7 @@ import {
   SafetyStatus,
   type Mediator,
   type Queued,
+  type ConfirmDoctorSeenRequest,
   type RecheckScreeningRequest,
   type ReportStopFlagRequest,
   type Request,
@@ -17,6 +18,7 @@ import {
   type ReportStopFlagResult,
   type SaveScreeningResult,
 } from '@stamina/contracts';
+import type { StopFlag } from '@stamina/domain';
 import { makeScreening, makeStop } from './make-safety-state.ts';
 
 export { QUEUED_RESULT as QUEUED };
@@ -55,6 +57,8 @@ export function createMockMediator() {
   const requests: Request[] = [];
   const reports: ReportStopFlag[] = [];
   const rechecks: RecheckScreening[] = [];
+  /** The flags each confirmation named. */
+  const confirmations: (readonly StopFlag[])[] = [];
 
   async function answer(request: Request): Promise<unknown> {
     switch (request.type) {
@@ -78,6 +82,7 @@ export function createMockMediator() {
         );
       }
       case RequestType.ConfirmDoctorSeen:
+        confirmations.push((request as ConfirmDoctorSeenRequest).flags);
         if (state.confirm instanceof Error) throw state.confirm;
         // Confirming ends every pause: the next `GetSafety` finds the person ready.
         if (!(state.safety instanceof Error) && state.safety.status === SafetyStatus.Paused) {
@@ -99,5 +104,5 @@ export function createMockMediator() {
     },
   } as Mediator;
 
-  return { mediator, state, requests, reports, rechecks };
+  return { mediator, state, requests, reports, rechecks, confirmations };
 }

@@ -1,5 +1,8 @@
 import { AppError, AppErrorCode, getSafety, SafetyStatus } from '@stamina/app-core';
+import { toLocalDate } from '@stamina/dates';
+import { isTrainingBlocked } from '@stamina/domain';
 import type { NavigationGuard } from 'vue-router';
+import { RouteName } from '../enums/route-name.ts';
 import { RoutePath } from '../enums/route-path.ts';
 import type { SafetyGuardOptions } from '../types.ts';
 import { routeForSafety } from './route-for-safety.ts';
@@ -11,6 +14,10 @@ import { routeForSafety } from './route-for-safety.ts';
  * route shows nothing and is left alone. Asks the server on every navigation, so a withdrawn
  * consent or a newer Screening takes effect at once.
  *
+ * A Session cannot be opened on a day training is blocked (the day of a reported fever): that
+ * route goes to Today, which says it is a rest day. A person already inside a Session is taken
+ * out by their own Stop button, so only opening one is checked.
+ *
  * An Unauthorized answer goes to the start screen, signed out or not: the server's 401 is the
  * same for no session and for an expired one, so the guard cannot tell a visitor from a signed-in
  * person whose session lapsed, and letting it through would show that person a gated screen
@@ -20,13 +27,17 @@ import { routeForSafety } from './route-for-safety.ts';
 export function createSafetyGuard({
   ungatedRoutes,
   mediator,
+  now = () => new Date(),
 }: SafetyGuardOptions): NavigationGuard {
   return async (to) => {
     const listed = to.name !== undefined && ungatedRoutes.some((name) => name === to.name);
     if (listed || to.matched.length === 0) return true;
     try {
       const state = await mediator().send(getSafety());
-      return state.status === SafetyStatus.Ready ? true : routeForSafety(state);
+      if (state.status !== SafetyStatus.Ready) return routeForSafety(state);
+      const blocked =
+        to.name === RouteName.SessionDetail && isTrainingBlocked(state.stop, toLocalDate(now()));
+      return blocked ? RoutePath.Today : true;
     } catch (error) {
       if (error instanceof AppError && error.code === AppErrorCode.Unauthorized) {
         return RoutePath.Start;

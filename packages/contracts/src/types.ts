@@ -9,6 +9,7 @@ import type {
 import type { recheckScreeningSchema } from './recheck-screening-schema.ts';
 import type {
   confirmDoctorSeenResultSchema,
+  confirmDoctorSeenSchema,
   exportedStopFlagSchema,
   reportStopFlagResultSchema,
   reportStopFlagSchema,
@@ -105,6 +106,7 @@ export type ExportedCheckin = z.infer<typeof exportedCheckinSchema>;
 export type ReportStopFlag = z.infer<typeof reportStopFlagSchema>;
 export type StopStateResponse = z.infer<typeof stopStateSchema>;
 export type ReportStopFlagResult = z.infer<typeof reportStopFlagResultSchema>;
+export type ConfirmDoctorSeen = z.infer<typeof confirmDoctorSeenSchema>;
 export type ConfirmDoctorSeenResult = z.infer<typeof confirmDoctorSeenResultSchema>;
 export type ExportedStopFlag = z.infer<typeof exportedStopFlagSchema>;
 export type RecordDoctorOkResult = z.infer<typeof recordDoctorOkResultSchema>;
@@ -168,8 +170,8 @@ export interface ApiClient {
   getLatestCheckin(): Promise<Checkin | null>;
   /** A repeat of a stop flag id the server has is ignored (`recorded` false). */
   reportStopFlag(flag: ReportStopFlag): Promise<ReportStopFlagResult>;
-  /** "A doctor has seen me": ends every pause. Changes nothing when none is open. */
-  confirmDoctorSeen(): Promise<ConfirmDoctorSeenResult>;
+  /** "A doctor has seen me": ends the open pauses of the kinds the person saw; others stay. */
+  confirmDoctorSeen(confirm: ConfirmDoctorSeen): Promise<ConfirmDoctorSeenResult>;
   /** `422` (no referral, or pregnancy) is a `Rejected` result, not an error. */
   recordDoctorOk(): Promise<RecordDoctorOkResult>;
   /** The first week of the signed-in user's Program, or `null` before one is created. */

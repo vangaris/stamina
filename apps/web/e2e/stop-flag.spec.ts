@@ -8,8 +8,10 @@ test.skip(!!process.env.PLAYWRIGHT_BASE_URL, 'needs the local stack with the see
 const JOURNEY_TIMEOUT_MS = 120_000;
 /** Chest pain asks two Screening questions again: the heart question and the chest question. */
 const RECHECK_QUESTIONS = 2;
+/** A head knock asks one: the head injury question. */
+const HEAD_KNOCK_QUESTIONS = 1;
 
-test('the Stop button stops training until a doctor has seen the person', async ({
+test('the Stop button stops training until a doctor has seen the person, and the questions a flag asks are not skipped', async ({
   page,
 }, testInfo) => {
   test.setTimeout(JOURNEY_TIMEOUT_MS);
@@ -50,7 +52,30 @@ test('the Stop button stops training until a doctor has seen the person', async 
   await page.goto('/today');
   await expect(page).toHaveURL(/\/paused$/);
 
-  // The only way back is the confirmation.
+  // The only way back is the confirmation. The questions were answered, so none are asked again.
+  await expect(page.getByTestId('paused-confirm')).toHaveText('A doctor has seen me');
   await page.getByTestId('paused-confirm').click();
+  await expect(page).toHaveURL(/\/today$/);
+
+  // A head knock reported from a Session; the sheet is closed before its question is answered.
+  await page.getByTestId('week-link').click();
+  await page.getByTestId('session-start').first().click();
+  await expect(page.getByTestId('focus-view')).toBeVisible();
+  await page.getByTestId('stop-open').click();
+  await page.getByTestId('stop-option-head-knock').click();
+  await expect(page.getByTestId('stop-outcome')).toContainText(
+    'Training is paused until a doctor has cleared you.',
+  );
+  await page.getByRole('button', { name: 'Close', exact: true }).click();
+
+  // Paused: a head knock is cleared by a doctor, and the owed question is asked after the confirmation.
+  await expect(page).toHaveURL(/\/paused$/);
+  await expect(page.getByTestId('paused-confirm')).toHaveText('A doctor has cleared me');
+  await page.getByTestId('paused-confirm').click();
+  await expect(page).toHaveURL(/\/paused$/);
+  const owed = page.getByTestId('stop-recheck').getByRole('radiogroup');
+  await expect(owed).toHaveCount(HEAD_KNOCK_QUESTIONS);
+  await owed.first().getByRole('radio', { name: 'No', exact: true }).click();
+  await page.getByTestId('paused-recheck-submit').click();
   await expect(page).toHaveURL(/\/today$/);
 });

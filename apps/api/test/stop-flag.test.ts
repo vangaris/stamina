@@ -127,7 +127,7 @@ describe('stop flags', () => {
       const user = await player();
       await postStopFlag(user, stopFlagOf(flag, TODAY));
 
-      const confirmed = await postConfirm(user);
+      const confirmed = await postConfirm(user, [flag]);
 
       expect(confirmed.status).toBe(200);
       expect(confirmed.result).toEqual({ status: RecordStatus.Saved, stop: NO_STOP });
@@ -147,7 +147,7 @@ describe('stop flags', () => {
       await postStopFlag(user, stopFlagOf(StopFlag.HeadKnock, TODAY));
       expect((await getStopState(user)).pausing).toEqual([StopFlag.ChestPain, StopFlag.HeadKnock]);
 
-      const confirmed = await postConfirm(user);
+      const confirmed = await postConfirm(user, [StopFlag.ChestPain, StopFlag.HeadKnock]);
 
       expect(confirmed.result.stop).toEqual(NO_STOP);
       const rows = await rowsOf(user);
@@ -158,22 +158,61 @@ describe('stop flags', () => {
 
     it('changes nothing when nothing is open, and leaves a confirmed flag as it was', async () => {
       const user = await player();
-      await postConfirm(user);
+      await postConfirm(user, [StopFlag.Fainting]);
       expect(await rowsOf(user)).toEqual([]);
       await postStopFlag(user, stopFlagOf(StopFlag.Fainting, TODAY));
-      await postConfirm(user);
+      await postConfirm(user, [StopFlag.Fainting]);
       const [before] = await rowsOf(user);
 
-      const again = await postConfirm(user);
+      const again = await postConfirm(user, [StopFlag.Fainting]);
 
       expect(again.result.stop).toEqual(NO_STOP);
       expect((await rowsOf(user))[0]!.confirmedAt).toEqual(before!.confirmedAt);
     });
 
+    it('ends only the kinds confirmed: a kind reported later stays paused', async () => {
+      const user = await player();
+      await postStopFlag(user, stopFlagOf(StopFlag.ChestPain, TODAY));
+      await postStopFlag(user, stopFlagOf(StopFlag.Fainting, TODAY));
+
+      const confirmed = await postConfirm(user, [StopFlag.ChestPain]);
+
+      expect(confirmed.result.stop.pausing).toEqual([StopFlag.Fainting]);
+      expect((await getStopState(user)).pausing).toEqual([StopFlag.Fainting]);
+      const open = (await rowsOf(user)).filter((row) => row.confirmedAt === null);
+      expect(open.map((row) => row.flag)).toEqual([StopFlag.Fainting]);
+    });
+
+    it('changes nothing for a kind that is not open', async () => {
+      const user = await player();
+      await postStopFlag(user, stopFlagOf(StopFlag.ChestPain, TODAY));
+
+      const confirmed = await postConfirm(user, [StopFlag.Fainting, StopFlag.Fever]);
+
+      expect(confirmed.result.stop.pausing).toEqual([StopFlag.ChestPain]);
+      expect((await rowsOf(user)).every((row) => row.confirmedAt === null)).toBe(true);
+    });
+
+    it('answers 400 for no kinds, or a body that is not a list of kinds', async () => {
+      const user = await player();
+      await postStopFlag(user, stopFlagOf(StopFlag.ChestPain, TODAY));
+
+      for (const body of [{ flags: [] }, { flags: ['nope'] }, { flags: 'chest-pain' }, {}]) {
+        const response = await user.call(
+          HttpMethod.Post,
+          stopFlagPath(StopFlagSubpath.Confirm),
+          body,
+        );
+        expect(response.status).toBe(400);
+        expect(await response.json()).toEqual({ error: ApiErrorCode.InvalidRequest });
+      }
+      expect((await getStopState(user)).pausing).toEqual([StopFlag.ChestPain]);
+    });
+
     it('a flag reported after a confirmation pauses again', async () => {
       const user = await player();
       await postStopFlag(user, stopFlagOf(StopFlag.Heartbeat, YESTERDAY));
-      await postConfirm(user);
+      await postConfirm(user, [StopFlag.Heartbeat]);
 
       await postStopFlag(user, stopFlagOf(StopFlag.Heartbeat, TODAY));
 
@@ -186,7 +225,7 @@ describe('stop flags', () => {
       await postStopFlag(user, stopFlagOf(StopFlag.NewPain, TODAY));
       await postStopFlag(user, stopFlagOf(StopFlag.ChestPain, TODAY));
 
-      const confirmed = await postConfirm(user);
+      const confirmed = await postConfirm(user, [StopFlag.ChestPain]);
 
       expect(confirmed.result.stop).toEqual({
         pausing: [],
@@ -326,7 +365,7 @@ describe('stop flags', () => {
       const user = await player();
       const entry = stopFlagOf(StopFlag.Breathlessness, TODAY);
       await postStopFlag(user, entry);
-      await postConfirm(user);
+      await postConfirm(user, [StopFlag.Breathlessness]);
       const [before] = await rowsOf(user);
 
       const replay = await postStopFlag(user, {
@@ -422,7 +461,7 @@ describe('stop flags', () => {
       const stranger = await player();
       await postStopFlag(stranger, stopFlagOf(StopFlag.ChestPain, TODAY));
 
-      await postConfirm(user);
+      await postConfirm(user, [StopFlag.ChestPain]);
 
       expect(await getStopState(user)).toEqual(NO_STOP);
       expect((await getStopState(stranger)).pausing).toEqual([StopFlag.ChestPain]);
@@ -482,7 +521,7 @@ describe('stop flags', () => {
       const second = stopFlagOf(StopFlag.ChestPain, TODAY);
       await postStopFlag(user, first);
       await postStopFlag(user, second);
-      await postConfirm(user);
+      await postConfirm(user, [StopFlag.ChestPain]);
 
       const exported = userExportSchema.parse(
         await (await user.call(HttpMethod.Get, ApiPath.MeExport)).json(),
@@ -546,7 +585,7 @@ describe('stop flags', () => {
         status: RecordStatus.Saved,
         screening: { status: ScreeningStatus.Referred, trainingMode: TrainingMode.Referred },
       });
-      await postConfirm(user);
+      await postConfirm(user, [StopFlag.Heartbeat]);
       expect(await postProgram(user)).toMatchObject({
         status: 422,
         result: { reason: ProgramRejection.Referred },

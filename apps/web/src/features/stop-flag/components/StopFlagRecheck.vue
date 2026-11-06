@@ -2,19 +2,17 @@
 import { ChipGroup } from '@stamina/ui-chip-group';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { FieldError, pickedMany, toOptions } from '../../onboarding/index.ts';
+import { FieldError, pickedMany } from '../../onboarding/index.ts';
 import { AREA_QUESTION, BODY_AREAS, QuestionField } from '../../safety/index.ts';
-import type { StopFlagMessageKey } from '../enums/stop-flag-message-key.ts';
 import type { StopFlagRecheckEmits, StopFlagRecheckProps } from '../types.ts';
+import { toAreaOptions } from '../utils/to-area-options.ts';
+import { toMessageText } from '../utils/to-message-text.ts';
 
 defineProps<StopFlagRecheckProps>();
 const emit = defineEmits<StopFlagRecheckEmits>();
 
 const { t } = useI18n();
-const message = (key: StopFlagMessageKey | undefined) => (key ? t(key) : undefined);
-const areaOptions = computed(() =>
-  toOptions(BODY_AREAS, (area) => t(`screening.bodyAreas.options.${area}`)),
-);
+const areaOptions = computed(() => toAreaOptions(t));
 </script>
 
 <template>
@@ -25,7 +23,7 @@ const areaOptions = computed(() =>
         :label="t(`screening.questions.${question}`)"
         unsure
         :answer="draft.answers[question]"
-        :error="message(errors.answers[question])"
+        :error="toMessageText(t, errors.answers[question])"
         @update="emit('answer', question, $event)"
       />
       <div
@@ -39,7 +37,7 @@ const areaOptions = computed(() =>
           multiple
           @update:model-value="emit('update:bodyAreas', pickedMany($event, BODY_AREAS))"
         />
-        <FieldError :message="message(errors.bodyAreas)" />
+        <FieldError :message="toMessageText(t, errors.bodyAreas)" />
       </div>
     </template>
   </div>

@@ -14,6 +14,7 @@ import {
   SafetyStatus,
   signOut,
 } from '../index.ts';
+import { LocalTable } from '../enums/local-table.ts';
 import { createDexieLocalData } from '../services/create-dexie-local-data.ts';
 import { createDexiePlanCache } from '../services/create-dexie-plan-cache.ts';
 import { createLocalDatabase } from '../services/create-local-database.ts';
@@ -102,6 +103,16 @@ describe.each(ADAPTERS)('getSafety without signal with %s', (_name, adapters) =>
     await rejectsOffline(mediator.send(getSafety()));
   });
 
+  it('rejects Offline when the cached Screening has no stop state: it could hide a pause', async () => {
+    const { mediator, network, services } = await clearedAndCached(adapters());
+    const screening = await services.planCache.readClearedScreening();
+    await services.planCache.deleteClearedScreening();
+    await services.planCache.saveClearedScreening(screening!);
+    network.online = false;
+
+    await rejectsOffline(mediator.send(getSafety()));
+  });
+
   it('drops the cached Ready when this app records a doctor statement', async () => {
     const { mediator, network } = await clearedAndCached(adapters());
 
@@ -174,5 +185,18 @@ describe('getSafety after a reload', () => {
 
     await before.mediator.send(signOut());
     await rejectsOffline(reopened(false).mediator.send(getSafety()));
+  });
+});
+
+describe('getSafety when the cached stop state is unreadable', () => {
+  it('rejects Offline when it is in an unknown shape (IndexedDB)', async () => {
+    const indexedDB = new IDBFactory();
+    const before = await clearedAndCached(dexieServices(indexedDB));
+    await createLocalDatabase({ indexedDB, IDBKeyRange })
+      .table(LocalTable.Cache)
+      .put({ key: 'stop', value: { old: 1 } });
+    before.network.online = false;
+
+    await rejectsOffline(before.mediator.send(getSafety()));
   });
 });

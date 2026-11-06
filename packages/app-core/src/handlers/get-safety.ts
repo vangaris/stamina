@@ -1,7 +1,6 @@
 import type { SavedScreening } from '@stamina/contracts';
 import { ConsentPurpose, TrainingMode, type StopState } from '@stamina/domain';
 import { z } from 'zod';
-import { NO_STOP_STATE } from '../config.ts';
 import { defineRequest } from '../define-request.ts';
 import { OfflinePolicy } from '../enums/offline-policy.ts';
 import { RequestType } from '../enums/request-type.ts';
@@ -30,7 +29,8 @@ export const getSafety = (): GetSafety => ({ type: RequestType.GetSafety });
  * `Paused` answer (a `Paused` person is the same cleared person, and caching it is what keeps the
  * pause in force offline) and deleted together on any other answer from the server. Offline
  * serves the cached Screening with the cached stop state and the local flags merged: `Paused`
- * when that stop state pauses, otherwise `Ready`; with nothing cached it rejects
+ * when that stop state pauses, otherwise `Ready`; with nothing cached, or a cached Screening
+ * whose stop state is missing or unreadable (it could hide a pause), it rejects
  * `AppErrorCode.Offline` (the guard then sends the person to Screening). A `Referred` or other
  * non-cleared state is never served from the cache.
  */
@@ -50,7 +50,8 @@ export const getSafetyDefinition = defineRequest<GetSafety, Services, Stores>({
       cached: async () => {
         const screening = await services.planCache.readClearedScreening();
         if (!screening) return undefined;
-        const cachedStop = (await services.planCache.readStop()) ?? NO_STOP_STATE;
+        const cachedStop = await services.planCache.readStop();
+        if (!cachedStop) return undefined;
         return clearedState(screening, await withLocalFlags(services, cachedStop));
       },
     }),

@@ -1,5 +1,6 @@
 import {
   RecordStatus,
+  type ConfirmDoctorSeen,
   type ConfirmDoctorSeenResult,
   type ExportedStopFlag,
   type ReportStopFlag,
@@ -10,7 +11,8 @@ import { resolveStopState, type StopState } from '@stamina/domain';
 /**
  * What the fake API remembers of stop flags, with the server's rules: append-only and idempotent
  * by id (a replay is `recorded: false`); the only change to a stored flag is `confirmedAt`, set
- * once, for every open pausing flag by `confirm`. The state is `resolveStopState` over all of them.
+ * once, by `confirm` on the open pausing flags of the kinds given. The state is
+ * `resolveStopState` over all of them.
  */
 export function createFakeStopFlags() {
   const flags = new Map<string, ExportedStopFlag[]>();
@@ -43,12 +45,14 @@ export function createFakeStopFlags() {
       }
       return { status: RecordStatus.Saved, recorded, stop: stateOf(userId) };
     },
-    confirm(userId: string): ConfirmDoctorSeenResult {
+    confirm(userId: string, { flags: kinds }: ConfirmDoctorSeen): ConfirmDoctorSeenResult {
       const now = new Date().toISOString();
       flags.set(
         userId,
         read(userId).map((stored) =>
-          stored.confirmedAt === null && resolveStopState([stored]).pausing.length > 0
+          stored.confirmedAt === null &&
+          kinds.includes(stored.flag) &&
+          resolveStopState([stored]).pausing.length > 0
             ? { ...stored, confirmedAt: now }
             : stored,
         ),

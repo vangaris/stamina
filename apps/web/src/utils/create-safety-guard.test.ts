@@ -16,9 +16,11 @@ import { createSafetyGuard } from './create-safety-guard.ts';
 
 const GATED_ROUTES = Object.values(RouteName).filter((name) => !UNGATED_ROUTES.includes(name));
 
-async function setup(options: SetupSafetyOptions = {}) {
+const NOW = new Date(2026, 10, 6, 18, 30);
+
+async function setup(options: SetupSafetyOptions = {}, now: () => Date = () => NOW) {
   const { services, mediator } = await setupSafety(options);
-  const guard = createSafetyGuard({ ungatedRoutes: UNGATED_ROUTES, mediator: () => mediator });
+  const guard = createSafetyGuard({ ungatedRoutes: UNGATED_ROUTES, mediator: () => mediator, now });
   const open = (to: Partial<RouteLocationNormalized>) =>
     guard(to as RouteLocationNormalized, {} as RouteLocationNormalized, () => {});
   const go = (name: RouteName) => open({ name, matched: [{} as never] });
@@ -106,7 +108,7 @@ describe('the safety guard', () => {
 
       for (const name of GATED_ROUTES) expect(await go(name)).toBe(RoutePath.Paused);
 
-      await services.api.confirmDoctorSeen();
+      await services.api.confirmDoctorSeen({ flags: [flag] });
 
       expect(await go(RouteName.Today)).toBe(true);
     },
@@ -122,6 +124,37 @@ describe('the safety guard', () => {
 
     expect(await fever.go(RouteName.Today)).toBe(true);
     expect(await pain.go(RouteName.Today)).toBe(true);
+  });
+
+  it('sends the Session route to Today on the day of a fever, and opens every other route', async () => {
+    const { services, go } = await setup();
+    await consentAndScreen(services, []);
+    await report(services, StopFlag.Fever);
+
+    expect(await go(RouteName.SessionDetail)).toBe(RoutePath.Today);
+    for (const name of GATED_ROUTES.filter((route) => route !== RouteName.SessionDetail)) {
+      expect(await go(name)).toBe(true);
+    }
+  });
+
+  it('opens the Session route the day after a fever, by the same calendar', async () => {
+    const tomorrow = new Date(2026, 10, 7, 7, 0);
+    const { services, go } = await setup({}, () => tomorrow);
+    await consentAndScreen(services, []);
+    await report(services, StopFlag.Fever);
+
+    expect(await go(RouteName.SessionDetail)).toBe(true);
+  });
+
+  it('opens the Session route when nothing is reported, and after new pain', async () => {
+    const none = await setup();
+    await consentAndScreen(none.services, []);
+    const pain = await setup();
+    await consentAndScreen(pain.services, []);
+    await report(pain.services, StopFlag.NewPain, BodyArea.Knee);
+
+    expect(await none.go(RouteName.SessionDetail)).toBe(true);
+    expect(await pain.go(RouteName.SessionDetail)).toBe(true);
   });
 
   it('sends a Referred person who also reported a stop flag to the referral screen first', async () => {

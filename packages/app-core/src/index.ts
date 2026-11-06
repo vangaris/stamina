@@ -56,7 +56,7 @@ export type {
   CheckInvite,
   CheckinStore,
   Clock,
-  ConfirmDoctorSeen,
+  ConfirmDoctorSeenRequest,
   Context,
   DeleteAccount,
   ExportData,

@@ -2,6 +2,7 @@ import {
   HttpStatus,
   StopFlagSubpath,
   confirmDoctorSeenResultSchema,
+  confirmDoctorSeenSchema,
   reportStopFlagResultSchema,
   reportStopFlagSchema,
 } from '@stamina/contracts';
@@ -15,9 +16,9 @@ import { StopFlagIdTakenError, confirmDoctorSeen, reportStopFlag } from '../stop
 /**
  * Stop flags: `POST /safety/stop-flags` (one reported flag: `200` `Saved` with where the person
  * stands now, `409` when the id belongs to someone else) and `POST /safety/stop-flags/confirm`
- * ("a doctor has seen me": ends every pause, no body). A repeated id is replay-safe, so a client
- * may resend until it hears back. Bodies are health data: never logged, and an invalid body is
- * never echoed.
+ * ("a doctor has seen me": ends the open pauses of the kinds in the `flags` body). A repeated id
+ * is replay-safe, so a client may resend until it hears back. Bodies are health data: never
+ * logged, and an invalid body is never echoed.
  */
 export function stopFlagRoutes({ db, auth }: { db: Db; auth: TokenVerifier }) {
   const routes = new Hono<AppEnv>();
@@ -40,7 +41,11 @@ export function stopFlagRoutes({ db, auth }: { db: Db; auth: TokenVerifier }) {
   });
 
   routes.post(`/${StopFlagSubpath.Confirm}`, authenticate(auth), async (c) => {
-    const result = await confirmDoctorSeen(db, requireUserId(c));
+    const body = confirmDoctorSeenSchema.safeParse(await c.req.json().catch(() => undefined));
+    if (!body.success) {
+      return c.json({ error: ApiErrorCode.InvalidRequest }, HttpStatus.BadRequest);
+    }
+    const result = await confirmDoctorSeen(db, requireUserId(c), body.data);
     return c.json(confirmDoctorSeenResultSchema.parse(result));
   });
 

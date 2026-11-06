@@ -259,7 +259,7 @@ describe('confirming a doctor has seen the person', () => {
     await mediator.send(reportStopFlag(flagOf(StopFlag.NewPain, { bodyArea: BodyArea.Hip })));
     expect(await mediator.send(getSafety())).toMatchObject({ status: SafetyStatus.Paused });
 
-    const result = await mediator.send(confirmDoctorSeen());
+    const result = await mediator.send(confirmDoctorSeen([StopFlag.ChestPain]));
 
     expect(result).toMatchObject({
       status: RecordStatus.Saved,
@@ -277,17 +277,28 @@ describe('confirming a doctor has seen the person', () => {
   it('changes nothing when no pause is open', async () => {
     const { mediator } = await setup();
 
-    expect(await mediator.send(confirmDoctorSeen())).toMatchObject({
+    expect(await mediator.send(confirmDoctorSeen([StopFlag.ChestPain]))).toMatchObject({
       status: RecordStatus.Saved,
       stop: { pausing: [], restOn: null, excludedAreas: [] },
     });
+  });
+
+  it('ends only the kinds confirmed: another paused kind stays paused', async () => {
+    const { mediator } = await setup();
+    await mediator.send(reportStopFlag(flagOf(StopFlag.ChestPain)));
+    await mediator.send(reportStopFlag(flagOf(StopFlag.Fainting)));
+
+    const result = await mediator.send(confirmDoctorSeen([StopFlag.ChestPain]));
+
+    expect(result.stop.pausing).toEqual([StopFlag.Fainting]);
+    expect(await mediator.send(getSafety())).toMatchObject({ status: SafetyStatus.Paused });
   });
 
   it('rejects Offline without signal: it needs the server', async () => {
     const { mediator, network } = await setup();
     network.online = false;
 
-    await expect(mediator.send(confirmDoctorSeen())).rejects.toMatchObject({
+    await expect(mediator.send(confirmDoctorSeen([StopFlag.ChestPain]))).rejects.toMatchObject({
       code: AppErrorCode.Offline,
     });
   });
@@ -304,14 +315,14 @@ describe('confirming a doctor has seen the person', () => {
     await mediator.send(reportStopFlag(flagOf(StopFlag.ChestPain)));
     expect(await services.offlineQueue.pending()).toHaveLength(1);
 
-    await expect(mediator.send(confirmDoctorSeen())).rejects.toMatchObject({
+    await expect(mediator.send(confirmDoctorSeen([StopFlag.ChestPain]))).rejects.toMatchObject({
       code: AppErrorCode.UnsyncedData,
     });
     expect(await services.stopFlags.list()).toHaveLength(1);
     expect(await mediator.send(getSafety())).toMatchObject({ status: SafetyStatus.Paused });
 
     failing = false;
-    const result = await mediator.send(confirmDoctorSeen());
+    const result = await mediator.send(confirmDoctorSeen([StopFlag.ChestPain]));
 
     expect(result.stop.pausing).toEqual([]);
     expect(await services.stopFlags.list()).toEqual([]);
@@ -330,7 +341,7 @@ describe('what a pause does to the Program', () => {
       reason: ProgramRejection.Paused,
     });
 
-    await mediator.send(confirmDoctorSeen());
+    await mediator.send(confirmDoctorSeen([StopFlag.Fainting]));
 
     expect(await mediator.send(createProgram())).toMatchObject({ status: RecordStatus.Saved });
   });
@@ -441,7 +452,7 @@ describe('the data export', () => {
     const first = flagOf(StopFlag.ChestPain);
     const second = flagOf(StopFlag.NewPain, { bodyArea: BodyArea.Knee });
     await mediator.send(reportStopFlag(first));
-    await mediator.send(confirmDoctorSeen());
+    await mediator.send(confirmDoctorSeen([StopFlag.ChestPain]));
     await mediator.send(reportStopFlag(second));
 
     const { stopFlags } = await mediator.send(exportData());

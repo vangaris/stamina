@@ -557,7 +557,7 @@
       },
       "area-excluded": {
         "title": "Area left out",
-        "body": "Area left out from now on: {area}. Stamina will keep exercises away from it. Please get it checked by a professional."
+        "body": "Left out of the plans Stamina makes from now on: {area}. Please get it checked by a professional."
       },
       "paused-cleared": {
         "title": "Training is paused",
@@ -575,7 +575,9 @@
     "paused": {
       "title": "Training is paused",
       "confirm": "A doctor has seen me",
+      "confirmCleared": "A doctor has cleared me",
       "hint": "Tap this only once a doctor has seen you. Stamina records what you tell us and doesn't check it.",
+      "hintCleared": "Tap this only once a doctor has cleared you. Stamina records what you tell us and doesn't check it.",
       "errors": {
         "stillSaving": "Your report is still saving on this phone. Try again in a moment.",
         "offline": "You are offline. Connect to the internet and try again.",
