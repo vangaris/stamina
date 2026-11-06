@@ -23,6 +23,9 @@ export {
   MAX_SESSION_MINUTES,
   MAX_SESSION_RPE,
   MAX_SET_RPE,
+  ACTIVITY_RPE_BY_INTENSITY,
+  LOAD_AVERAGE_WEEKS,
+  MAX_ACTIVITY_FUTURE_DAYS,
   MAX_WEIGHT_KG,
   MIN_SESSION_RPE,
   MIN_SET_RPE,
@@ -67,6 +70,7 @@ export { SessionStatus } from './enums/session-status.ts';
 export { Eligibility } from './enums/eligibility.ts';
 export { Goal } from './enums/goal.ts';
 export { Intensity } from './enums/intensity.ts';
+export { ActivitySource } from './enums/activity-source.ts';
 export { LaunchSport } from './enums/launch-sport.ts';
 export { LoadGuidance } from './enums/load-guidance.ts';
 export { Need } from './enums/need.ts';
@@ -104,6 +108,11 @@ export type {
   PickSpec,
   PickValidation,
   SlotSpec,
+  LoadEntry,
+  LoadSummary,
+  PlannedActivity,
+  PlannedActivityInput,
+  WeeklyLoad,
 } from './types.ts';
 export { addDays } from './utils/add-days.ts';
 export { bodyHalfOf } from './utils/body-half-of.ts';
@@ -120,6 +129,12 @@ export { resolveTrainingMode } from './utils/resolve-training-mode.ts';
 export { validateTrainingWeek } from './utils/validate-training-week.ts';
 export { generateWeek } from './utils/generate-week.ts';
 export { hardActivityDates } from './utils/hard-activity-dates.ts';
+export { activityLoad } from './utils/activity-load.ts';
+export { activityRpe } from './utils/activity-rpe.ts';
+export { daysBetween } from './utils/days-between.ts';
+export { plannedActivities } from './utils/planned-activities.ts';
+export { summariseWeeklyLoad } from './utils/summarise-weekly-load.ts';
+export { weekStartOf } from './utils/week-start-of.ts';
 export { weekdayOf } from './utils/weekday-of.ts';
 export { buildPickSpec } from './utils/build-pick-spec.ts';
 export { validatePicks } from './utils/validate-picks.ts';

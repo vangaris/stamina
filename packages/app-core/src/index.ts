@@ -5,6 +5,7 @@ export { createServices } from './create-services.ts';
 export { startSync } from './start-sync.ts';
 export { defineRequest } from './define-request.ts';
 export { FAKE_INVITE, QUEUED_RESULT } from './config.ts';
+export { isQueued } from './utils/is-queued.ts';
 export { AppErrorCode } from './enums/app-error-code.ts';
 export { AuthErrorCode } from './enums/auth-error-code.ts';
 export { HealthStateKind } from './enums/health-state-kind.ts';
@@ -29,6 +30,8 @@ export { getSafety } from './handlers/get-safety.ts';
 export { finishSession } from './handlers/finish-session.ts';
 export { getSession } from './handlers/get-session.ts';
 export { getSessionDetail } from './handlers/get-session-detail.ts';
+export { getWeekLoad } from './handlers/get-week-load.ts';
+export { logActivity } from './handlers/log-activity.ts';
 export { logSet } from './handlers/log-set.ts';
 export { grantConsent } from './handlers/grant-consent.ts';
 export { recordDoctorOk } from './handlers/record-doctor-ok.ts';
@@ -40,6 +43,7 @@ export { startGoogleSignIn } from './handlers/start-google-sign-in.ts';
 export { verifyEmailCode } from './handlers/verify-email-code.ts';
 export { createBetterAuthService } from './services/create-better-auth-service.ts';
 export type {
+  ActivityLogStore,
   AppMediatorOptions,
   AuthService,
   AuthSession,
@@ -55,16 +59,19 @@ export type {
   GetSafety,
   GetSession,
   GetSessionDetail,
+  GetWeekLoad,
   GrantConsent,
   Handler,
   HealthState,
   IntervalTimer,
   InviteStorage,
   LocalData,
+  LocalActivity,
   LocalFinish,
   LocalSessionLog,
   LogEntry,
   Logger,
+  LogActivityRequest,
   LogSetRequest,
   Mediator,
   MediatorOptions,

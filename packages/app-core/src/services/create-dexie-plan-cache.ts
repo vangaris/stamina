@@ -1,4 +1,9 @@
-import { programWeekSchema, savedScreeningSchema, sessionDetailSchema } from '@stamina/contracts';
+import {
+  programWeekSchema,
+  savedScreeningSchema,
+  sessionDetailSchema,
+  weekLoadSchema,
+} from '@stamina/contracts';
 import { TrainingMode } from '@stamina/domain';
 import type Dexie from 'dexie';
 import { CACHE_KEY } from '../config.ts';
@@ -25,6 +30,13 @@ export function createDexiePlanCache(database: Dexie): PlanCache {
     },
     async readSessionDetail(sessionId) {
       const parsed = sessionDetailSchema.safeParse((await table.get(sessionKey(sessionId)))?.value);
+      return parsed.success ? parsed.data : undefined;
+    },
+    async saveWeekLoad(week) {
+      await table.put({ key: CACHE_KEY.weekLoad, value: week });
+    },
+    async readWeekLoad() {
+      const parsed = weekLoadSchema.safeParse((await table.get(CACHE_KEY.weekLoad))?.value);
       return parsed.success ? parsed.data : undefined;
     },
     async saveClearedScreening(screening) {

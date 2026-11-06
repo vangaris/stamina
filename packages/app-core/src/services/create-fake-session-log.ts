@@ -37,6 +37,8 @@ export function createFakeSessionLog() {
 
   return {
     read,
+    /** The finish of the Session kept under `key`, if any. */
+    finished: (key: string): FinishedSession | undefined => finishes.get(key),
     /** Account deletion: everything kept for keys under this prefix (the user id and a colon). */
     forget(keyPrefix: string): void {
       for (const map of [sets, finishes]) {

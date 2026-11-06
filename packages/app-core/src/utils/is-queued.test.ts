@@ -1,6 +1,6 @@
-import { QUEUED_RESULT } from '@stamina/app-core';
 import { RecordStatus } from '@stamina/contracts';
 import { describe, expect, it } from 'vitest';
+import { QUEUED_RESULT } from '../config.ts';
 import { isQueued } from './is-queued.ts';
 
 describe('isQueued', () => {

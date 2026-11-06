@@ -18,6 +18,7 @@ import type { Db } from './db/types.ts';
 import { ApiErrorCode } from './enums/api-error-code.ts';
 import type { ErrorReporter } from './error-reporter.ts';
 import { requestLog, type AppEnv, type LogSink } from './request-log.ts';
+import { activityRoutes } from './routes/activity-routes.ts';
 import { consentRoutes } from './routes/consent-routes.ts';
 import { doctorOkRoutes } from './routes/doctor-ok-routes.ts';
 import { exerciseRoutes } from './routes/exercise-routes.ts';
@@ -92,6 +93,7 @@ export function createApp({
   app.route(ApiPath.Profile, profileRoutes({ db, auth }));
   app.route(ApiPath.Program, programRoutes({ db, ai, auth, now }));
   app.route(ApiPath.Sessions, sessionRoutes({ db, auth }));
+  app.route(ApiPath.Activities, activityRoutes({ db, auth, now }));
   app.route(ApiPath.Safety, safetyRoutes({ db, auth }));
   app.route(ApiPath.Consent, consentRoutes({ db, auth }));
   app.route(ApiPath.Screening, screeningRoutes({ db, auth, cipher }));

@@ -14,6 +14,18 @@ export { ProgramRejection } from './enums/program-rejection.ts';
 export { SessionRejection } from './enums/session-rejection.ts';
 export { SessionSubpath } from './enums/session-subpath.ts';
 export { sessionPath } from './utils/session-path.ts';
+export { ActivityRejection } from './enums/activity-rejection.ts';
+export { ActivitySubpath } from './enums/activity-subpath.ts';
+export { activityPath } from './utils/activity-path.ts';
+export {
+  exportedActivitySchema,
+  loggedActivitySchema,
+  logActivityResultSchema,
+  logActivitySchema,
+  plannedActivitySchema,
+  weekLoadSchema,
+  weeklyLoadSchema,
+} from './activity-schema.ts';
 export {
   exerciseVariantSchema,
   finishedSessionSchema,
@@ -78,6 +90,13 @@ export type {
   FinishedSession,
   FinishSession,
   FinishSessionResult,
+  ExportedActivity,
+  LoggedActivity,
+  LogActivity,
+  LogActivityResult,
+  PlannedActivity,
+  WeekLoad,
+  WeeklyLoad,
   LoggedSet,
   LogSet,
   LogSetResult,
