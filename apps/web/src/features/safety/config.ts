@@ -27,6 +27,7 @@ export const CONSENT_ERROR_FIELDS: Record<ConsentPurpose, keyof ConsentErrors> =
 export const SCREENING_REJECTION_ROUTES: Record<ScreeningRejection, RoutePath> = {
   [ScreeningRejection.ConsentMissing]: RoutePath.Consent,
   [ScreeningRejection.ProfileMissing]: RoutePath.Onboarding,
+  [ScreeningRejection.NoScreening]: RoutePath.Screening,
 };
 
 /** The ten questions in page order, then the starting-level question after them. */

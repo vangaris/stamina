@@ -14,9 +14,9 @@ export const DATE_FORMAT: Intl.DateTimeFormatOptions = {
   timeZone: 'UTC',
 };
 
-/** What a refused Program shows. A referral is not here: it leaves for the Referred screen. */
+/** What a refused Program shows. A referral and a pause are not here: they leave for their own screens. */
 export const MESSAGE_FOR_REJECTION: Record<
-  Exclude<ProgramRejection, ProgramRejection.Referred>,
+  Exclude<ProgramRejection, ProgramRejection.Referred | ProgramRejection.Paused>,
   ProgramMessageKey
 > = {
   [ProgramRejection.NotReady]: ProgramMessageKey.NotReady,

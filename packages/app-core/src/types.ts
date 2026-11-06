@@ -1,5 +1,7 @@
 import type {
   ApiClient,
+  Checkin,
+  ConfirmDoctorSeenResult,
   CreateProgramResult,
   ConsentGrant,
   ConsentState,
@@ -12,17 +14,22 @@ import type {
   LogSetResult,
   ProfileAnswers,
   ProgramWeek,
+  RecheckScreening as RecheckScreeningBody,
   RecordDoctorOkResult,
+  ReportStopFlag as ReportStopFlagBody,
+  ReportStopFlagResult,
   SavedProfile,
   SavedScreening,
   SaveProfileResult,
   SaveScreeningResult,
   ScreeningSubmission,
   SessionDetail,
+  SubmitCheckin as SubmitCheckinBody,
+  SubmitCheckinResult,
   UserExport,
   WeekLoad,
 } from '@stamina/contracts';
-import type { ConsentPurpose, Weekday } from '@stamina/domain';
+import type { ConsentPurpose, StopState, Weekday } from '@stamina/domain';
 import type { DexieOptions } from 'dexie';
 import type { z } from 'zod';
 import type { HealthStateKind } from './enums/health-state-kind.ts';
@@ -216,6 +223,45 @@ export interface ActivityLogStore {
   list(): Promise<readonly LocalActivity[]>;
 }
 
+/** A stop flag as the device recorded it: the report plus when (ISO), so the pause holds before the server confirms. */
+export interface LocalStopFlag {
+  report: ReportStopFlagBody;
+  reportedAt: string;
+}
+
+/**
+ * The stop flags the person reported on this device, written before anything is sent (see
+ * `RequestDefinition.writeLocal`) so the pause holds offline. A row stays until the server has the
+ * flag (the report's handler removes it) or refused it; `GetSafety` merges what is left into the
+ * stop state.
+ */
+export interface StopFlagStore {
+  /** Idempotent by the report's id: the first `reportedAt` stays. */
+  add(flag: ReportStopFlagBody, reportedAt: string): Promise<void>;
+  remove(id: string): Promise<void>;
+  /** In no particular order. */
+  list(): Promise<readonly LocalStopFlag[]>;
+}
+
+/** A Check-in as the device recorded it: the body plus when (ISO), so it reads as the latest before the server confirms. */
+export interface LocalCheckin {
+  checkin: SubmitCheckinBody;
+  recordedAt: string;
+}
+
+/**
+ * The Check-ins the person submitted on this device, written before anything is sent (see
+ * `RequestDefinition.writeLocal`). Rows stay after the server has them: reading merges by
+ * recency, so a stale row is harmless; only a Check-in the server refused is removed.
+ */
+export interface CheckinStore {
+  /** Idempotent by the Check-in's id: the first `recordedAt` stays. */
+  add(checkin: SubmitCheckinBody, recordedAt: string): Promise<void>;
+  remove(id: string): Promise<void>;
+  /** The latest by day, then by `recordedAt`; null when none is kept. */
+  latest(): Promise<LocalCheckin | null>;
+}
+
 /**
  * The last plan and Session detail fetched, so the week and an opened Session work without
  * signal, and the Screening of a person last found cleared to train (see `getSafetyDefinition`).
@@ -232,7 +278,16 @@ export interface PlanCache {
   saveClearedScreening(screening: SavedScreening): Promise<void>;
   /** Undefined when none is kept, or when what is stored is malformed or `Referred`. */
   readClearedScreening(): Promise<SavedScreening | undefined>;
+  /** Drops the cached stop state with it: the two are kept and lost together. */
   deleteClearedScreening(): Promise<void>;
+  /** The stop state as the server last reported it; read with the cleared Screening, so a pause holds offline. */
+  saveStop(stop: StopState): Promise<void>;
+  /** Undefined when none is kept, or when what is stored is malformed. */
+  readStop(): Promise<StopState | undefined>;
+  /** The latest Check-in as last fetched; `null` is a fetched "none yet". */
+  saveLatestCheckin(checkin: Checkin | null): Promise<void>;
+  /** Undefined when never fetched (or malformed); `null` when the server had none. */
+  readLatestCheckin(): Promise<Checkin | null | undefined>;
 }
 
 /** The in-memory stores (Test and Dev modes) can be emptied; the IndexedDB ones are cleared through the database. */
@@ -268,6 +323,14 @@ export interface SetRow {
 }
 
 export interface ActivityRow extends LocalActivity {
+  id: string;
+}
+
+export interface StopFlagRow extends LocalStopFlag {
+  id: string;
+}
+
+export interface CheckinRow extends LocalCheckin {
   id: string;
 }
 
@@ -329,6 +392,8 @@ export interface Services extends PipelineServices {
   inviteStorage: InviteStorage;
   sessionLog: SessionLogStore;
   activityLog: ActivityLogStore;
+  stopFlags: StopFlagStore;
+  checkins: CheckinStore;
   planCache: PlanCache;
   localData: LocalData;
 }
@@ -362,8 +427,10 @@ export type SafetyState =
       missing: ConsentPurpose[];
     }
   | { status: SafetyStatus.ScreeningNeeded }
-  | { status: SafetyStatus.Referred; screening: SavedScreening }
-  | { status: SafetyStatus.Ready; screening: SavedScreening };
+  | { status: SafetyStatus.Referred; screening: SavedScreening; stop: StopState }
+  /** Cleared to train, but a reported stop flag pauses it; `stop.pausing` is not empty. */
+  | { status: SafetyStatus.Paused; screening: SavedScreening; stop: StopState }
+  | { status: SafetyStatus.Ready; screening: SavedScreening; stop: StopState };
 
 export interface Stores {
   /** Stores hold state only; the web app backs these with Pinia. */
@@ -441,6 +508,32 @@ export interface FinishSessionRequest extends Request<FinishSessionResult | Queu
 export interface LogActivityRequest extends Request<LogActivityResult | Queued> {
   readonly type: RequestType.LogActivity;
   readonly activity: LogActivityBody;
+}
+
+/** (`Request` suffix: `SubmitCheckin` is the contract's body type.) */
+export interface SubmitCheckinRequest extends Request<SubmitCheckinResult | Queued> {
+  readonly type: RequestType.SubmitCheckin;
+  readonly checkin: SubmitCheckinBody;
+}
+
+export interface GetLatestCheckinRequest extends Request<Checkin | null> {
+  readonly type: RequestType.GetLatestCheckin;
+}
+
+/** (`Request` suffix: `ReportStopFlag` is the contract's body type.) */
+export interface ReportStopFlagRequest extends Request<ReportStopFlagResult | Queued> {
+  readonly type: RequestType.ReportStopFlag;
+  readonly report: ReportStopFlagBody;
+}
+
+export interface ConfirmDoctorSeen extends Request<ConfirmDoctorSeenResult> {
+  readonly type: RequestType.ConfirmDoctorSeen;
+}
+
+/** (`Request` suffix: `RecheckScreening` is the contract's body type.) */
+export interface RecheckScreeningRequest extends Request<SaveScreeningResult> {
+  readonly type: RequestType.RecheckScreening;
+  readonly recheck: RecheckScreeningBody;
 }
 
 export interface GetWeekLoad extends Request<WeekLoad> {

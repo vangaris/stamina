@@ -2,9 +2,17 @@ import { AppErrorCode } from './enums/app-error-code.ts';
 import { AuthErrorCode } from './enums/auth-error-code.ts';
 import { BetterAuthErrorCode } from './enums/better-auth-error-code.ts';
 import { LocalTable } from './enums/local-table.ts';
+import type { StopState } from '@stamina/domain';
 import type { Queued } from './types.ts';
 
 export const QUEUED_RESULT: Queued = Object.freeze({ queued: true });
+
+/** No stop flag in force: what a person who never reported one has. */
+export const NO_STOP_STATE: StopState = Object.freeze({
+  pausing: [],
+  restOn: null,
+  excludedAreas: [],
+}) as StopState;
 
 /** Digits in an emailed code (Better Auth's Email OTP default). */
 export const OTP_LENGTH = 6;
@@ -116,12 +124,14 @@ export const FAKE_PROGRAM_EXERCISES = {
 /** The IndexedDB database: its name and Dexie schema (the primary key first, then indexed fields). */
 export const LOCAL_DATABASE = {
   name: 'stamina',
-  version: 3,
+  version: 4,
   schema: {
     [LocalTable.Queue]: '++id',
     [LocalTable.Sets]: 'id, sessionId',
     [LocalTable.Finishes]: 'sessionId',
     [LocalTable.Activities]: 'id',
+    [LocalTable.StopFlags]: 'id',
+    [LocalTable.Checkins]: 'id',
     [LocalTable.Cache]: 'key',
     [LocalTable.Owner]: 'key',
   },
@@ -130,11 +140,13 @@ export const LOCAL_DATABASE = {
 /** The key of the one row in the owner table: the id of the user the local data belongs to. */
 export const OWNER_KEY = 'owner';
 
-/** Keys in the cache table: the one Program week, the one week's Load, and one Session detail per Session id. */
+/** Keys in the cache table: the one Program week, the one week's Load, the stop state and the latest Check-in, and one Session detail per Session id. */
 export const CACHE_KEY = {
   program: 'program',
   clearedScreening: 'cleared-screening',
   weekLoad: 'week-load',
+  stop: 'stop',
+  latestCheckin: 'latest-checkin',
   sessionDetailPrefix: 'session:',
 } as const;
 

@@ -21,4 +21,9 @@ export enum RequestType {
   FinishSession = 'FinishSession',
   LogActivity = 'LogActivity',
   GetWeekLoad = 'GetWeekLoad',
+  SubmitCheckin = 'SubmitCheckin',
+  GetLatestCheckin = 'GetLatestCheckin',
+  ReportStopFlag = 'ReportStopFlag',
+  ConfirmDoctorSeen = 'ConfirmDoctorSeen',
+  RecheckScreening = 'RecheckScreening',
 }

@@ -9,12 +9,14 @@ import {
   RecordStatus,
   SaveProfileStatus,
   ScreeningRejection,
+  type RecheckScreening,
   SportKind,
   ProgramRejection,
   type ApiClient,
   type ProgramWeek,
   type SavedProfile,
   type SavedScreening,
+  type SaveScreeningResult,
   type ScreeningSubmission,
   type UserExport,
 } from '@stamina/contracts';
@@ -26,6 +28,7 @@ import {
   Goal,
   isGoalAvailable,
   isHotDefaultSport,
+  ScreeningQuestion,
   normalizeSportName,
   normalizeInviteCode,
   ReferralKind,
@@ -38,7 +41,9 @@ import { FAKE_AUTH, FAKE_INVITE, FAKE_KEY_SEPARATOR, HTTP_UNAUTHORIZED } from '.
 import { buildFakeProgram } from '../utils/build-fake-program.ts';
 import { toHardActivityDates } from '../utils/to-hard-activity-dates.ts';
 import { createFakeActivityLog, type FakeActivityContext } from './create-fake-activity-log.ts';
+import { createFakeCheckins } from './create-fake-checkins.ts';
 import { createFakeSessionLog, type FakeSessionTarget } from './create-fake-session-log.ts';
+import { createFakeStopFlags } from './create-fake-stop-flags.ts';
 
 type StoredConsent = UserExport['consents'][number];
 
@@ -48,6 +53,20 @@ interface StoredScreening {
   outcome: ReturnType<typeof evaluateScreening>;
   takenAt: string;
   doctorOkAt: string | null;
+}
+
+/** The latest Screening's answers with the asked-again ones replaced; areas follow the bone, joint and muscle answer, and the starting level carries over. */
+function mergeRecheck(
+  previous: ScreeningSubmission,
+  recheck: RecheckScreening,
+): ScreeningSubmission {
+  const answers = { ...previous.answers, ...recheck.answers };
+  const askedAreas = recheck.answers[ScreeningQuestion.BoneJointMuscle] !== undefined;
+  return {
+    answers,
+    bodyAreas: askedAreas ? [...(recheck.bodyAreas ?? [])] : previous.bodyAreas,
+    startingLevel: previous.startingLevel,
+  };
 }
 
 /**
@@ -89,6 +108,9 @@ export function createFakeApiClient(getToken: () => Promise<string | undefined>)
       emphasis: week.block.emphasis,
     };
   };
+
+  const checkins = createFakeCheckins();
+  const stopFlags = createFakeStopFlags();
 
   const activityLog = createFakeActivityLog();
   /** Weeks run from the first Block's start, else from today (the fake keeps no sign-up date). */
@@ -138,6 +160,32 @@ export function createFakeApiClient(getToken: () => Promise<string | undefined>)
     takenAt,
     doctorOkAt,
   });
+
+  /** Why no Screening is accepted from the user now (no saved profile, then no consent), or `undefined`. */
+  const screeningRejectionFor = (userId: string) => {
+    if (!profiles.has(userId)) return ScreeningRejection.ProfileMissing;
+    const granted = grantedPurposes(userId);
+    if (!Object.values(ConsentPurpose).every((purpose) => granted.includes(purpose))) {
+      return ScreeningRejection.ConsentMissing;
+    }
+    return undefined;
+  };
+
+  /** The one place a Screening is evaluated and kept: a Nutrition-off outcome also moves a body-composition Goal to General fitness. */
+  const storeScreening = (userId: string, submission: ScreeningSubmission): SaveScreeningResult => {
+    const outcome = evaluateScreening(submission);
+    const stored: StoredScreening = {
+      submission,
+      outcome,
+      takenAt: new Date().toISOString(),
+      doctorOkAt: null,
+    };
+    screenings.set(userId, [...(screenings.get(userId) ?? []), stored]);
+    const profile = profiles.get(userId);
+    const goalChanged = !!profile && !isGoalAvailable(profile.goal, outcome);
+    if (profile && goalChanged) profiles.set(userId, { ...profile, goal: Goal.GeneralFitness });
+    return { status: RecordStatus.Saved, screening: toSaved(stored), goalChanged };
+  };
 
   const requireUserId = async () => {
     const token = await getToken();
@@ -205,6 +253,7 @@ export function createFakeApiClient(getToken: () => Promise<string | undefined>)
         profileSaved: profiles.has(userId),
         granted: grantedPurposes(userId),
         screening: latest ? toSaved(latest) : null,
+        stop: stopFlags.state(userId),
       };
     },
     grantConsent: async ({ purpose, locale }) => {
@@ -225,26 +274,24 @@ export function createFakeApiClient(getToken: () => Promise<string | undefined>)
     },
     saveScreening: async (submission) => {
       const userId = await requireUserId();
-      if (!profiles.has(userId)) {
-        return { status: RecordStatus.Rejected, reason: ScreeningRejection.ProfileMissing };
-      }
-      const granted = grantedPurposes(userId);
-      if (!Object.values(ConsentPurpose).every((purpose) => granted.includes(purpose))) {
-        return { status: RecordStatus.Rejected, reason: ScreeningRejection.ConsentMissing };
-      }
-      const outcome = evaluateScreening(submission);
-      const stored: StoredScreening = {
-        submission,
-        outcome,
-        takenAt: new Date().toISOString(),
-        doctorOkAt: null,
-      };
-      screenings.set(userId, [...(screenings.get(userId) ?? []), stored]);
-      const profile = profiles.get(userId);
-      const goalChanged = !!profile && !isGoalAvailable(profile.goal, outcome);
-      if (profile && goalChanged) profiles.set(userId, { ...profile, goal: Goal.GeneralFitness });
-      return { status: RecordStatus.Saved, screening: toSaved(stored), goalChanged };
+      const rejection = screeningRejectionFor(userId);
+      if (rejection) return { status: RecordStatus.Rejected, reason: rejection };
+      return storeScreening(userId, submission);
     },
+    recheckScreening: async (recheck) => {
+      const userId = await requireUserId();
+      const rejection = screeningRejectionFor(userId);
+      if (rejection) return { status: RecordStatus.Rejected, reason: rejection };
+      const latest = latestScreening(userId);
+      if (!latest) {
+        return { status: RecordStatus.Rejected, reason: ScreeningRejection.NoScreening };
+      }
+      return storeScreening(userId, mergeRecheck(latest.submission, recheck));
+    },
+    submitCheckin: async (checkin) => checkins.submit(await requireUserId(), checkin),
+    getLatestCheckin: async () => checkins.latest(await requireUserId()),
+    reportStopFlag: async (report) => stopFlags.report(await requireUserId(), report),
+    confirmDoctorSeen: async () => stopFlags.confirm(await requireUserId()),
     recordDoctorOk: async () => {
       const latest = latestScreening(await requireUserId());
       if (!latest || latest.outcome.status !== ScreeningStatus.Referred) {
@@ -265,6 +312,8 @@ export function createFakeApiClient(getToken: () => Promise<string | undefined>)
         setLogs: [],
         sessionLogs: [],
         activities: activityLog.all(userId),
+        checkins: checkins.all(userId),
+        stopFlags: stopFlags.all(userId),
         consents: [...(consents.get(userId) ?? [])],
         sportRequests: sportRequests.has(userId) ? [sportRequests.get(userId)!] : [],
         screenings: (screenings.get(userId) ?? []).map((stored) => ({
@@ -282,6 +331,8 @@ export function createFakeApiClient(getToken: () => Promise<string | undefined>)
       programs.delete(userId);
       sessionLog.forget(`${userId}${FAKE_KEY_SEPARATOR}`);
       activityLog.forget(userId);
+      checkins.forget(userId);
+      stopFlags.forget(userId);
     },
     getProgram: async () => readProgram(await requireUserId()),
     getSession: async (sessionId) => sessionLog.read(await sessionTarget(sessionId)),
@@ -307,6 +358,9 @@ export function createFakeApiClient(getToken: () => Promise<string | undefined>)
       const { trainingMode } = toSaved(latest);
       if (trainingMode === TrainingMode.Referred) {
         return { status: RecordStatus.Rejected, reason: ProgramRejection.Referred };
+      }
+      if (stopFlags.state(userId).pausing.length > 0) {
+        return { status: RecordStatus.Rejected, reason: ProgramRejection.Paused };
       }
       if (!profile.trainingWeek) {
         return { status: RecordStatus.Rejected, reason: ProgramRejection.NoTrainingWeek };

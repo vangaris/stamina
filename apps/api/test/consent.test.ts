@@ -3,6 +3,7 @@ import { CONSENT_TEXT_VERSIONS, ConsentPurpose } from '@stamina/domain';
 import { Locale } from '@stamina/i18n';
 import { and, eq } from 'drizzle-orm';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import { NO_STOP } from './support/stop-flag-fixtures.ts';
 import { appUser, consent } from '../src/db/schema.ts';
 import { withUser } from '../src/db/with-user.ts';
 import { ApiErrorCode } from '../src/enums/api-error-code.ts';
@@ -54,14 +55,24 @@ describe('/consent and /safety', () => {
     it('is empty before any consent or Screening', async () => {
       const user = await newUser(api);
 
-      expect(await safety(user)).toEqual({ profileSaved: false, granted: [], screening: null });
+      expect(await safety(user)).toEqual({
+        profileSaved: false,
+        granted: [],
+        screening: null,
+        stop: NO_STOP,
+      });
     });
 
     it('reports profileSaved once a profile exists', async () => {
       const user = await newUser(api);
       await saveProfileFor(api, user);
 
-      expect(await safety(user)).toEqual({ profileSaved: true, granted: [], screening: null });
+      expect(await safety(user)).toEqual({
+        profileSaved: true,
+        granted: [],
+        screening: null,
+        stop: NO_STOP,
+      });
     });
   });
 

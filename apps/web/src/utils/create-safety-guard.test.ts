@@ -1,6 +1,6 @@
 import type { Services } from '@stamina/app-core';
 import { ApiError } from '@stamina/contracts';
-import { ScreeningQuestion } from '@stamina/domain';
+import { BodyArea, ScreeningQuestion, StopFlag } from '@stamina/domain';
 import type { RouteLocationNormalized } from 'vue-router';
 import { describe, expect, it } from 'vitest';
 import { UNGATED_ROUTES } from '../config.ts';
@@ -23,6 +23,18 @@ async function setup(options: SetupSafetyOptions = {}) {
     guard(to as RouteLocationNormalized, {} as RouteLocationNormalized, () => {});
   const go = (name: RouteName) => open({ name, matched: [{} as never] });
   return { services, open, go };
+}
+
+const REPORT_ID = '0f8f3a52-6f0e-4c53-9d3e-2f3a6a9b7c11';
+const TODAY = '2026-11-06';
+
+function report(services: Services, flag: StopFlag, bodyArea?: BodyArea) {
+  return services.api.reportStopFlag({
+    id: REPORT_ID,
+    flag,
+    date: TODAY,
+    ...(bodyArea ? { bodyArea } : {}),
+  });
 }
 
 async function consentAndScreen(services: Services, yes: ScreeningQuestion[]) {
@@ -77,6 +89,47 @@ describe('the safety guard', () => {
     await consentAndScreen(services, [ScreeningQuestion.HeartCondition]);
 
     for (const name of GATED_ROUTES) expect(await go(name)).toBe(RoutePath.Referred);
+  });
+
+  it.each([
+    StopFlag.ChestPain,
+    StopFlag.Fainting,
+    StopFlag.Breathlessness,
+    StopFlag.Heartbeat,
+    StopFlag.HeadKnock,
+  ])(
+    'sends a person paused by %s to the paused screen from every gated route, and lets them in once they confirm',
+    async (flag) => {
+      const { services, go } = await setup();
+      await consentAndScreen(services, []);
+      await report(services, flag);
+
+      for (const name of GATED_ROUTES) expect(await go(name)).toBe(RoutePath.Paused);
+
+      await services.api.confirmDoctorSeen();
+
+      expect(await go(RouteName.Today)).toBe(true);
+    },
+  );
+
+  it('does not pause a person for a fever or new pain', async () => {
+    const fever = await setup();
+    await consentAndScreen(fever.services, []);
+    await report(fever.services, StopFlag.Fever);
+    const pain = await setup();
+    await consentAndScreen(pain.services, []);
+    await report(pain.services, StopFlag.NewPain, BodyArea.Knee);
+
+    expect(await fever.go(RouteName.Today)).toBe(true);
+    expect(await pain.go(RouteName.Today)).toBe(true);
+  });
+
+  it('sends a Referred person who also reported a stop flag to the referral screen first', async () => {
+    const { services, go } = await setup();
+    await consentAndScreen(services, [ScreeningQuestion.HeartCondition]);
+    await report(services, StopFlag.ChestPain);
+
+    expect(await go(RouteName.Today)).toBe(RoutePath.Referred);
   });
 
   it('lets a cleared person in, and a Referred person who stated a doctor said they can train', async () => {

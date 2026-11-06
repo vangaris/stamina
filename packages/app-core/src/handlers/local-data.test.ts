@@ -1,5 +1,5 @@
 import { SportKind } from '@stamina/contracts';
-import { Intensity, LaunchSport } from '@stamina/domain';
+import { Intensity, LaunchSport, StopFlag } from '@stamina/domain';
 import { newId } from '@stamina/ids';
 import { IDBFactory, IDBKeyRange } from 'fake-indexeddb';
 import { describe, expect, it } from 'vitest';
@@ -12,11 +12,15 @@ import {
   logActivity,
   getSession,
   logSet,
+  reportStopFlag,
+  submitCheckin,
   SessionStatus,
   signOut,
   verifyEmailCode,
 } from '../index.ts';
 import { createDexieActivityLog } from '../services/create-dexie-activity-log.ts';
+import { createDexieCheckins } from '../services/create-dexie-checkins.ts';
+import { createDexieStopFlags } from '../services/create-dexie-stop-flags.ts';
 import { createDexieLocalData } from '../services/create-dexie-local-data.ts';
 import { createDexieOfflineQueue } from '../services/create-dexie-offline-queue.ts';
 import { createDexiePlanCache } from '../services/create-dexie-plan-cache.ts';
@@ -34,6 +38,8 @@ function dexieServices(indexedDB: IDBFactory): Partial<Services> {
     offlineQueue: createDexieOfflineQueue(database),
     sessionLog: createDexieSessionLog(database),
     activityLog: createDexieActivityLog(database),
+    stopFlags: createDexieStopFlags(database),
+    checkins: createDexieCheckins(database),
     planCache: createDexiePlanCache(database),
     localData: createDexieLocalData(database),
   };
@@ -62,6 +68,11 @@ async function withLocalData(services: Partial<Services>) {
       hot: false,
     }),
   );
+  const today = new Date().toISOString().slice(0, 10);
+  await setup.mediator.send(reportStopFlag({ id: newId(), flag: StopFlag.Fever, date: today }));
+  await setup.mediator.send(
+    submitCheckin({ id: newId(), date: today, sleep: 3, soreness: 3, energy: 3 }),
+  );
   setup.network.online = true;
   return setup;
 }
@@ -74,6 +85,8 @@ async function localDataLeft(services: Services, sessionId: string) {
     sets: log.sets.length,
     finished: log.finish !== null,
     activities: (await services.activityLog.list()).length,
+    stopFlags: (await services.stopFlags.list()).length,
+    checkins: (await services.checkins.latest()) === null ? 0 : 1,
     cachedWeekLoad: (await services.planCache.readWeekLoad()) !== undefined,
     cachedProgram: (await services.planCache.readProgram()) !== undefined,
     cachedSession: (await services.planCache.readSessionDetail(sessionId)) !== undefined,
@@ -85,6 +98,8 @@ const NOTHING = {
   sets: 0,
   finished: false,
   activities: 0,
+  stopFlags: 0,
+  checkins: 0,
   cachedWeekLoad: false,
   cachedProgram: false,
   cachedSession: false,
@@ -95,10 +110,12 @@ describe.each(ADAPTERS)('per-user local data with %s', (_name, adapters) => {
     const { services, sessionId } = await withLocalData(adapters());
 
     expect(await localDataLeft(services, sessionId)).toEqual({
-      queued: 3,
+      queued: 5,
       sets: 1,
       finished: true,
       activities: 1,
+      stopFlags: 1,
+      checkins: 1,
       cachedWeekLoad: true,
       cachedProgram: true,
       cachedSession: true,
@@ -128,7 +145,7 @@ describe.each(ADAPTERS)('per-user local data with %s', (_name, adapters) => {
 
     await expect(mediator.send(deleteAccount())).rejects.toBeDefined();
 
-    expect((await localDataLeft(services, sessionId)).queued).toBe(3);
+    expect((await localDataLeft(services, sessionId)).queued).toBe(5);
   });
 
   it('is wiped when a different user signs in without a sign-out in between', async () => {
@@ -178,7 +195,7 @@ describe('the owner survives a reload (IndexedDB)', () => {
     const same = reloadSession(first, dexieServices(indexedDB));
     same.network.online = true;
     await same.mediator.send(getSession());
-    expect((await localDataLeft(same.services, first.sessionId)).queued).toBe(3);
+    expect((await localDataLeft(same.services, first.sessionId)).queued).toBe(5);
 
     await first.services.auth.verifyEmailCode(OTHER_EMAIL, FAKE_AUTH.validCode);
     const other = reloadSession(first, dexieServices(indexedDB));

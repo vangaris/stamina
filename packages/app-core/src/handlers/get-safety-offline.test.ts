@@ -1,5 +1,6 @@
-import { ConsentPurpose, ScreeningQuestion } from '@stamina/domain';
+import { ConsentPurpose, ScreeningQuestion, StopFlag } from '@stamina/domain';
 import { Locale } from '@stamina/i18n';
+import { newId } from '@stamina/ids';
 import { IDBFactory, IDBKeyRange } from 'fake-indexeddb';
 import { describe, expect, it } from 'vitest';
 import {
@@ -8,6 +9,7 @@ import {
   getSafety,
   grantConsent,
   recordDoctorOk,
+  reportStopFlag,
   saveScreening,
   SafetyStatus,
   signOut,
@@ -141,6 +143,34 @@ describe('getSafety after a reload', () => {
         ...dexieServices(indexedDB),
       });
     expect(await reopened(false).mediator.send(getSafety())).toEqual(before.first);
+
+    await before.mediator.send(signOut());
+    await rejectsOffline(reopened(false).mediator.send(getSafety()));
+  });
+
+  it('still holds a pause from IndexedDB: Paused offline, and Offline once wiped', async () => {
+    const indexedDB = new IDBFactory();
+    const before = await clearedAndCached(dexieServices(indexedDB));
+    await before.mediator.send(
+      reportStopFlag({
+        id: newId(),
+        flag: StopFlag.ChestPain,
+        date: new Date().toISOString().slice(0, 10),
+      }),
+    );
+    expect(await before.mediator.send(getSafety())).toMatchObject({ status: SafetyStatus.Paused });
+
+    const reopened = (online: boolean) =>
+      setupMediator({
+        api: before.services.api,
+        auth: before.services.auth,
+        network: { isOnline: () => online },
+        ...dexieServices(indexedDB),
+      });
+    expect(await reopened(false).mediator.send(getSafety())).toMatchObject({
+      status: SafetyStatus.Paused,
+      stop: { pausing: [StopFlag.ChestPain] },
+    });
 
     await before.mediator.send(signOut());
     await rejectsOffline(reopened(false).mediator.send(getSafety()));

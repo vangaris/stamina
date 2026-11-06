@@ -24,6 +24,7 @@
     "@sentry/vue": "^11.10.0",
     "@stamina/app-core": "workspace:^",
     "@stamina/contracts": "workspace:^",
+    "@stamina/dates": "workspace:^",
     "@stamina/domain": "workspace:^",
     "@stamina/i18n": "workspace:^",
     "@stamina/ids": "workspace:^",

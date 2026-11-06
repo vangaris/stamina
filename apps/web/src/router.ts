@@ -73,6 +73,11 @@ const routes: RouteRecordRaw[] = [
     component: () => import('./features/safety/index.ts').then((m) => m.ReferredContainer),
   },
   {
+    path: RoutePath.Paused,
+    name: RouteName.Paused,
+    component: () => import('./features/stop-flag/index.ts').then((m) => m.PausedContainer),
+  },
+  {
     path: RoutePath.Reveal,
     name: RouteName.Reveal,
     component: () => import('./features/program/index.ts').then((m) => m.RevealContainer),

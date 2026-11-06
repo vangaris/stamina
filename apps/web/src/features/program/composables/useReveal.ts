@@ -8,8 +8,8 @@ import { useProgramLoad } from './useProgramLoad.ts';
 
 /**
  * The reveal: asks the server to create the Program (a repeat returns the stored one, so
- * reloading is safe) and shows its first week. A referral leaves for the Referred screen; any
- * other refusal is explained calmly, with a way on to Today.
+ * reloading is safe) and shows its first week. A referral leaves for the Referred screen and a
+ * pause for the paused screen; any other refusal is explained calmly, with a way on to Today.
  */
 export function useReveal(options: UseProgramOptions) {
   const loaded = useProgramLoad(options, async (mediator) => {
@@ -19,6 +19,9 @@ export function useReveal(options: UseProgramOptions) {
     }
     if (result.reason === ProgramRejection.Referred) {
       return { kind: ProgramOutcomeKind.Leave, path: RoutePath.Referred };
+    }
+    if (result.reason === ProgramRejection.Paused) {
+      return { kind: ProgramOutcomeKind.Leave, path: RoutePath.Paused };
     }
     return {
       kind: ProgramOutcomeKind.Unavailable,
