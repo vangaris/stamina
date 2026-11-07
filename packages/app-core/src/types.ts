@@ -15,7 +15,10 @@ import type {
   LogActivityResult,
   LogSet as LogSetBody,
   LogSetResult,
+  LogWeighIn as LogWeighInBody,
+  LogWeighInResult,
   ProfileAnswers,
+  Progress,
   ProgramWeek,
   RecheckScreening as RecheckScreeningBody,
   RecordDoctorOkResult,
@@ -277,6 +280,9 @@ export interface PlanCache {
   saveWeekLoad(week: WeekLoad): Promise<void>;
   /** The week's Load as last fetched; undefined when none is kept, or when what is stored is malformed. */
   readWeekLoad(): Promise<WeekLoad | undefined>;
+  saveProgress(progress: Progress): Promise<void>;
+  /** The Progress as last fetched; undefined when none is kept, or when what is stored is malformed. */
+  readProgress(): Promise<Progress | undefined>;
   /** Only ever a Screening that is not `Referred`: the one safety fact trusted offline. */
   saveClearedScreening(screening: SavedScreening): Promise<void>;
   /** Undefined when none is kept, or when what is stored is malformed or `Referred`. */
@@ -564,6 +570,16 @@ export interface DeclineAdaptationRequest extends Request<DeclineAdaptationResul
 
 export interface GetWeekLoad extends Request<WeekLoad> {
   readonly type: RequestType.GetWeekLoad;
+}
+
+export interface GetProgress extends Request<Progress> {
+  readonly type: RequestType.GetProgress;
+}
+
+/** (`Request` suffix: `LogWeighIn` is the contract's body type.) */
+export interface LogWeighInRequest extends Request<LogWeighInResult> {
+  readonly type: RequestType.LogWeighIn;
+  readonly weighIn: LogWeighInBody;
 }
 
 export interface GetProgram extends Request<ProgramWeek | null> {

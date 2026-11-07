@@ -1,6 +1,7 @@
 import {
   adaptationSchema,
   checkinSchema,
+  progressSchema,
   programWeekSchema,
   savedScreeningSchema,
   sessionDetailSchema,
@@ -53,6 +54,13 @@ export function createDexiePlanCache(database: Dexie): PlanCache {
     },
     async readWeekLoad() {
       const parsed = weekLoadSchema.safeParse((await table.get(CACHE_KEY.weekLoad))?.value);
+      return parsed.success ? parsed.data : undefined;
+    },
+    async saveProgress(progress) {
+      await table.put({ key: CACHE_KEY.progress, value: progress });
+    },
+    async readProgress() {
+      const parsed = progressSchema.safeParse((await table.get(CACHE_KEY.progress))?.value);
       return parsed.success ? parsed.data : undefined;
     },
     async saveClearedScreening(screening) {

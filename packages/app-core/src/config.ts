@@ -139,6 +139,7 @@ export const CACHE_KEY = {
   program: 'program',
   clearedScreening: 'cleared-screening',
   weekLoad: 'week-load',
+  progress: 'progress',
   stop: 'stop',
   latestCheckin: 'latest-checkin',
   adaptations: 'adaptations',

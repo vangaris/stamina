@@ -1,11 +1,7 @@
 <script setup lang="ts">
-import { useI18n } from 'vue-i18n';
-
-const { t } = useI18n();
+import { ProgressContainer } from '../features/progress/index.ts';
 </script>
 
 <template>
-  <section>
-    <h1 class="text-xl font-semibold">{{ t('nav.progress') }}</h1>
-  </section>
+  <ProgressContainer />
 </template>

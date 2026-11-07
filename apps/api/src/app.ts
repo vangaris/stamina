@@ -29,11 +29,13 @@ import { inviteRoutes } from './routes/invite-routes.ts';
 import { meRoutes } from './routes/me-routes.ts';
 import { programRoutes } from './routes/program-routes.ts';
 import { sessionRoutes } from './routes/session-routes.ts';
+import { progressRoutes } from './routes/progress-routes.ts';
 import { profileRoutes } from './routes/profile-routes.ts';
 import { safetyRoutes } from './routes/safety-routes.ts';
 import { screeningRoutes } from './routes/screening-routes.ts';
 import { sportRoutes } from './routes/sport-routes.ts';
 import { stopFlagRoutes } from './routes/stop-flag-routes.ts';
+import { weighInRoutes } from './routes/weigh-in-routes.ts';
 
 export interface AppDeps {
   db: Db;
@@ -98,6 +100,8 @@ export function createApp({
   app.route(ApiPath.Sessions, sessionRoutes({ db, auth, now }));
   app.route(ApiPath.Activities, activityRoutes({ db, auth, now }));
   app.route(ApiPath.Adaptations, adaptationRoutes({ db, auth, now }));
+  app.route(ApiPath.Progress, progressRoutes({ db, auth, now }));
+  app.route(ApiPath.WeighIns, weighInRoutes({ db, auth, now }));
   app.route(ApiPath.Checkins, checkinRoutes({ db, auth, now }));
   app.route(ApiPath.Safety, safetyRoutes({ db, auth }));
   app.route(ApiPath.StopFlags, stopFlagRoutes({ db, auth, now }));

@@ -709,5 +709,90 @@
       "repeat-week": "You missed {missed, plural, one {# Session} other {# Sessions}} in week {weekInBlock}.",
       "restart-block": "It has been {daysOff} days since your last Session."
     }
+  },
+  "today": {
+    "loading": "Loading your day…",
+    "header": {
+      "load": "Load {load}",
+      "usual": "usual {average}"
+    },
+    "timeline": {
+      "label": "Your day, in time order"
+    },
+    "meal": {
+      "slot": {
+        "breakfast": "Breakfast",
+        "lunch": "Lunch",
+        "dinner": "Dinner",
+        "snack": "Snack"
+      }
+    },
+    "water": {
+      "title": "Water",
+      "progress": "{ml} of {target} ml"
+    },
+    "windDown": {
+      "title": "Wind down",
+      "body": "Time to wind down for the night: lights low, screens away."
+    },
+    "errors": {
+      "failed": "We could not load your day. Check your connection and try again.",
+      "retry": "Try again"
+    }
+  },
+  "progress": {
+    "loading": "Loading your progress…",
+    "retry": "Try again",
+    "errors": {
+      "offline": "Progress needs a connection the first time. Try again when you are back online.",
+      "failed": "We could not load your progress. Please try again."
+    },
+    "sessions": {
+      "label": "Sessions",
+      "value": "{done} of {planned, plural, one {# Session} other {# Sessions}} done",
+      "valueUnplanned": "{done, plural, one {# Session} other {# Sessions}} done",
+      "valueOver": "{done, plural, one {# Session} other {# Sessions}} done, more than the {planned} planned"
+    },
+    "activities": {
+      "label": "Activities",
+      "value": "{logged} of {planned, plural, one {# Activity} other {# Activities}} logged",
+      "valueUnplanned": "{logged, plural, one {# Activity} other {# Activities}} logged",
+      "valueOver": "{logged, plural, one {# Activity} other {# Activities}} logged, more than the {planned} planned"
+    },
+    "load": {
+      "title": "Load per week",
+      "chart": "Load for each of the last weeks and this week",
+      "average": "Your usual",
+      "done": "Done",
+      "planned": "Planned",
+      "week": "Week",
+      "current": "this week"
+    },
+    "verdict": {
+      "title": "How your week is going",
+      "not-enough-history": "Not enough weeks yet to compare: your usual builds up as you log weeks.",
+      "on-track": "This week is heading close to your usual {average}.",
+      "above-usual": "This week is heading above your usual {average}, so leave room for easy days.",
+      "below-usual": "This week is heading below your usual {average}.",
+      "sessions-behind": "A Session from earlier this week is not done yet: {sessionsDone} of {sessionsPlanned, plural, one {# Session} other {# Sessions}} so far."
+    },
+    "weighIn": {
+      "title": "Weekly weigh-in",
+      "optional": "Optional. Weigh in only if you would like to keep track.",
+      "latest": "Last weigh-in: {weight} kg on {date}",
+      "none": "No weigh-in yet.",
+      "due": "You have not weighed in this week.",
+      "done": "You have weighed in this week.",
+      "label": "Weight",
+      "unit": "kg",
+      "hint": "Between {min} and {max} kg.",
+      "save": "Save weight",
+      "saved": "Saved.",
+      "errors": {
+        "invalid": "Enter a weight between {min} and {max} kg.",
+        "offline": "A weigh-in needs a connection. Try again when you are back online.",
+        "failed": "We could not save that. Please try again."
+      }
+    }
   }
 }

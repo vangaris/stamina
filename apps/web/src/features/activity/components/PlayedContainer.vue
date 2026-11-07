@@ -24,7 +24,11 @@ watch(status, (now) => {
 </script>
 
 <template>
-  <div class="flex flex-col gap-3">
+  <!-- Sticks to the bottom of the screen, just above the tab bar once the page has scrolled to its end, so it is always in reach. `--played-bar-clearance` (style.css) keeps focused controls scrolled clear of it, so keep it at least this tall. -->
+  <div
+    class="sticky bottom-0 z-10 -mx-4 flex flex-col gap-3 border-t border-border bg-bg px-4 py-3"
+    data-testid="played-bar"
+  >
     <Button block class="min-h-16!" data-testid="played-open" @click="played.openSheet">
       {{ t('activity.played.open') }}
     </Button>

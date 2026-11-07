@@ -30,4 +30,8 @@ export enum ApiPath {
   Activities = '/activities',
   /** Adaptation suggestions: `GET /adaptations` lists the pending ones; `POST /adaptations/{id}/accept` and `/decline` decide one. */
   Adaptations = '/adaptations',
+  /** How the week is going: `GET /progress` reads Sessions, Activities, the Load bars, the verdict and the weigh-in state. */
+  Progress = '/progress',
+  /** The optional weekly weigh-in: `POST /weigh-ins` stores one (kilograms). */
+  WeighIns = '/weigh-ins',
 }

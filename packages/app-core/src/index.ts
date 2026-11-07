@@ -39,6 +39,8 @@ export { finishSession } from './handlers/finish-session.ts';
 export { getSession } from './handlers/get-session.ts';
 export { getSessionDetail } from './handlers/get-session-detail.ts';
 export { getWeekLoad } from './handlers/get-week-load.ts';
+export { getProgress } from './handlers/get-progress.ts';
+export { logWeighIn } from './handlers/log-weigh-in.ts';
 export { logActivity } from './handlers/log-activity.ts';
 export { logSet } from './handlers/log-set.ts';
 export { grantConsent } from './handlers/grant-consent.ts';
@@ -73,6 +75,7 @@ export type {
   GetProfile,
   GetSafety,
   GetSession,
+  GetProgress,
   GetSessionDetail,
   GetWeekLoad,
   GrantConsent,
@@ -101,6 +104,7 @@ export type {
   ProfileState,
   Queued,
   QueuedRequest,
+  LogWeighInRequest,
   RecheckScreeningRequest,
   RecordDoctorOk,
   ReportStopFlagRequest,

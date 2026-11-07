@@ -37,6 +37,7 @@
     "@stamina/ui-chip": "workspace:^",
     "@stamina/ui-chip-group": "workspace:^",
     "@stamina/ui-exercise-image": "workspace:^",
+    "@stamina/ui-load-bars": "workspace:^",
     "@stamina/ui-progress-bar": "workspace:^",
     "@stamina/ui-rest-timer": "workspace:^",
     "@stamina/ui-select": "workspace:^",

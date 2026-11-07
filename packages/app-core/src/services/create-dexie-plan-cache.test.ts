@@ -2,6 +2,7 @@ import { IDBFactory, IDBKeyRange } from 'fake-indexeddb';
 import { BodyArea, Emphasis, StopFlag, type StopState } from '@stamina/domain';
 import type { Checkin, WeekLoad } from '@stamina/contracts';
 import { describe, expect, it } from 'vitest';
+import { buildProgress } from '../testing/build-progress.ts';
 import { LocalTable } from '../enums/local-table.ts';
 import { buildAdaptation } from '../testing/build-adaptation.ts';
 import { testFakeSession } from '../testing/test-fake-session.ts';
@@ -168,6 +169,25 @@ describe('createDexiePlanCache', () => {
       await cache.deleteSessionDetail(detail.id);
 
       expect(await cache.readSessionDetail(detail.id)).toBeUndefined();
+    });
+  });
+
+  describe('Progress', () => {
+    it('returns the Progress saved, across a reload, and none before', async () => {
+      const indexedDB = new IDBFactory();
+      const { cache } = open(indexedDB);
+      expect(await cache.readProgress()).toBeUndefined();
+
+      await cache.saveProgress(buildProgress());
+
+      expect(await open(indexedDB).cache.readProgress()).toEqual(buildProgress());
+    });
+
+    it('treats a cached Progress in an unknown shape as not cached', async () => {
+      const { database, cache } = open(new IDBFactory());
+      await database.table(LocalTable.Cache).put({ key: 'progress', value: { old: 1 } });
+
+      expect(await cache.readProgress()).toBeUndefined();
     });
   });
 });

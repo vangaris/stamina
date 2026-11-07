@@ -22,6 +22,7 @@ import type { ScreeningStatus } from './enums/screening-status.ts';
 import type { SportMovement } from './enums/sport-movement.ts';
 import type { TrainingMode } from './enums/training-mode.ts';
 import type { StopAction } from './enums/stop-action.ts';
+import type { VerdictKind } from './enums/verdict-kind.ts';
 import type { StopFlag } from './enums/stop-flag.ts';
 import type { Weekday } from './enums/weekday.ts';
 
@@ -290,6 +291,62 @@ export interface LoadSummary {
   previous: WeeklyLoad[];
   /** The mean of `previous`, or null while there is none. */
   average: number | null;
+}
+
+/** What `weekVerdict` weighs for the week that holds today. */
+export interface WeekVerdictInput {
+  /** Load already done this week (Sessions plus Activities). */
+  done: number;
+  /** Extra Load still to come this week: the Sessions not finished and the planned Activities not logged on a play day from today on. */
+  planned: number;
+  /** The person's average of the weeks before, or null while there is none. */
+  average: number | null;
+  /** Sessions dated before today this week that are not finished; any makes the person behind. */
+  sessionsMissed: number;
+}
+
+/** A Session as Progress counts it. */
+export interface ProgressSession {
+  /** The day it is planned for, `YYYY-MM-DD`. */
+  date: string;
+  /** Its week of the Block (1 to `WEEKS_IN_BLOCK`); sets the effort a planned Session counts at. */
+  weekInBlock: number;
+  minutes: number;
+  finished: boolean;
+}
+
+/** An Activity as Progress counts it. */
+export interface ProgressActivity {
+  date: string;
+  /** The day was one of the person's play days when it was logged. */
+  planned: boolean;
+}
+
+/** The Load of one week: `done` so far, and the `planned` extra still to come. */
+export interface ProgressWeekLoad {
+  startsOn: string;
+  done: number;
+  planned: number;
+}
+
+/** The week that holds today against the person's own usual (what `summariseProgress` returns). */
+export interface ProgressSummary {
+  weekStartsOn: string;
+  /** `planned` is every Session the week has, finished or not. */
+  sessions: { done: number; planned: number };
+  /** `logged` is every Activity logged in the week; `planned` the play days it has. */
+  activities: { logged: number; planned: number };
+  /** The weeks the average covers, oldest first, then this week last. */
+  weeks: ProgressWeekLoad[];
+  average: number | null;
+  verdict: {
+    kind: VerdictKind;
+    /** The week's Load as the verdict weighed it: done plus planned. */
+    load: number;
+    average: number | null;
+    sessionsDone: number;
+    sessionsPlanned: number;
+  };
 }
 
 /** Everything `generateWeek` reads. */

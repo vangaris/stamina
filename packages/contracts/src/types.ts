@@ -71,6 +71,16 @@ import type {
 } from './adaptation-schema.ts';
 import type { userExportSchema } from './user-export-schema.ts';
 import type {
+  progressSchema,
+  progressVerdictSchema,
+  progressWeekSchema,
+} from './progress-schema.ts';
+import type {
+  exportedWeighInSchema,
+  logWeighInResultSchema,
+  logWeighInSchema,
+} from './weigh-in-schema.ts';
+import type {
   exerciseVariantSchema,
   finishedSessionSchema,
   finishSessionResultSchema,
@@ -144,6 +154,12 @@ export type LogActivityResult = z.infer<typeof logActivityResultSchema>;
 export type PlannedActivity = z.infer<typeof plannedActivitySchema>;
 export type WeeklyLoad = z.infer<typeof weeklyLoadSchema>;
 export type WeekLoad = z.infer<typeof weekLoadSchema>;
+export type ProgressWeek = z.infer<typeof progressWeekSchema>;
+export type ProgressVerdict = z.infer<typeof progressVerdictSchema>;
+export type Progress = z.infer<typeof progressSchema>;
+export type LogWeighIn = z.infer<typeof logWeighInSchema>;
+export type LogWeighInResult = z.infer<typeof logWeighInResultSchema>;
+export type ExportedWeighIn = z.infer<typeof exportedWeighInSchema>;
 export type SessionRevisionRef = z.infer<typeof sessionRevisionRefSchema>;
 export type AdaptationChange = z.infer<typeof adaptationChangeSchema>;
 export type Adaptation = z.infer<typeof adaptationSchema>;
@@ -206,6 +222,10 @@ export interface ApiClient {
   logActivity(activity: LogActivity): Promise<LogActivityResult>;
   /** The week that holds today: its Load, the average of the weeks before, and its Activities. */
   getWeekLoad(): Promise<WeekLoad>;
+  /** The week that holds today against the person's usual: Sessions, Activities, the Load bars, the verdict and whether a weigh-in is due. */
+  getProgress(): Promise<Progress>;
+  /** Stores one weigh-in (kilograms). A weight outside the accepted range or a day too far ahead or too far back is an `ApiError` 400. */
+  logWeighIn(weighIn: LogWeighIn): Promise<LogWeighInResult>;
   /** The pending Adaptation suggestions that still apply, oldest first. The server evaluates the rules first. */
   getAdaptations(): Promise<AdaptationList>;
   /**

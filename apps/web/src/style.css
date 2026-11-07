@@ -10,3 +10,16 @@
     @apply bg-bg font-sans text-base text-text;
   }
 }
+
+/*
+ * The "I played" bar sticks to the bottom of the screen (4rem button, its padding and border, and
+ * the saved notice under it). A focused control scrolls this far clear of the edge, so the bar
+ * never hides it. Keep it at least as tall as the bar in `PlayedContainer`.
+ */
+:root {
+  --played-bar-clearance: 8rem;
+}
+
+html {
+  scroll-padding-bottom: var(--played-bar-clearance);
+}

@@ -44,6 +44,8 @@ import {
   MIN_PLAY_MINUTES,
   MAX_CHECKIN_SCORE,
   MIN_CHECKIN_SCORE,
+  MAX_BODY_WEIGHT_KG,
+  MIN_BODY_WEIGHT_KG,
   StopFlag,
   Weekday,
   type AdaptationChange,
@@ -845,6 +847,43 @@ export const checkin = pgTable(
       using: sql`user_id = app_user_id()::uuid`,
     }),
     pgPolicy('checkin_owner_insert', {
+      for: 'insert',
+      to: APP_ROLE,
+      withCheck: sql`user_id = app_user_id()::uuid`,
+    }),
+  ],
+).enableRLS();
+
+/**
+ * One weekly weigh-in, in kilograms. Written only online (there is no device-made id), so the id
+ * is the database's. More than one may share a day; the latest by day then time is the current
+ * weight. Append-only like `checkin`: the app role reads and inserts its own rows and never
+ * rewrites or deletes them. Health data: never logged, returned only by the user's own
+ * Progress and export.
+ */
+export const weighIn = pgTable(
+  'weigh_in',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    userId: uuid('user_id')
+      .notNull()
+      .references(() => appUser.id, { onDelete: 'cascade' }),
+    weightKg: numeric('weight_kg', { precision: 5, scale: 2, mode: 'number' }).notNull(),
+    date: date('date', { mode: 'string' }).notNull(),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => [
+    check(
+      'weigh_in_weight_valid',
+      sql`${table.weightKg} between ${sql.raw(String(MIN_BODY_WEIGHT_KG))} and ${sql.raw(String(MAX_BODY_WEIGHT_KG))}`,
+    ),
+    index('weigh_in_user_date').on(table.userId, table.date),
+    pgPolicy('weigh_in_owner_select', {
+      for: 'select',
+      to: APP_ROLE,
+      using: sql`user_id = app_user_id()::uuid`,
+    }),
+    pgPolicy('weigh_in_owner_insert', {
       for: 'insert',
       to: APP_ROLE,
       withCheck: sql`user_id = app_user_id()::uuid`,
