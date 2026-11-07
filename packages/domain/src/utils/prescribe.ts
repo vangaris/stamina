@@ -7,6 +7,7 @@ import {
   DELOAD_WEEK_IN_BLOCK,
   LIMITED_RIR_FLOOR,
   MAIN_STRENGTH_PRESCRIPTION,
+  MAX_RIR,
   POWER_SPEED_RIR_FLOOR,
   SPORT_SUPPORT_PRESCRIPTION,
   SPORT_SUPPORT_RIR_FLOOR,
@@ -27,6 +28,7 @@ const weekRir = (weekInBlock: number): number =>
  * reps in reserve (`RpeGuided`), or the body is the load (`Bodyweight`). The Deload week halves
  * the sets (rounded up, at least one). Power and speed work and every Limited-mode exercise stay
  * at least 3 reps from failure (RPE 7 or easier); ballistic exercises carry no rating at all.
+ * `rirBoost` adds reps in reserve to every rated exercise, never past `MAX_RIR`.
  */
 export function prescribe({
   slot,
@@ -35,6 +37,7 @@ export function prescribe({
   limited,
   rirSuitable,
   needsEquipment,
+  rirBoost = 0,
 }: PrescribeInput): Prescription {
   const rated = slot !== SessionSlot.WarmUp && slot !== SessionSlot.CoolDown;
   const base = weekRir(weekInBlock);
@@ -63,6 +66,7 @@ export function prescribe({
   }
   if (rir !== null && limited) rir = Math.max(rir, LIMITED_RIR_FLOOR);
   if (!rirSuitable) rir = null;
+  if (rir !== null) rir = Math.min(MAX_RIR, rir + rirBoost);
 
   const sets =
     weekInBlock === DELOAD_WEEK_IN_BLOCK

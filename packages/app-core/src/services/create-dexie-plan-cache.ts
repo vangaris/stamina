@@ -1,4 +1,5 @@
 import {
+  adaptationSchema,
   checkinSchema,
   programWeekSchema,
   savedScreeningSchema,
@@ -7,6 +8,7 @@ import {
   weekLoadSchema,
 } from '@stamina/contracts';
 import { TrainingMode } from '@stamina/domain';
+import { z } from 'zod';
 import type Dexie from 'dexie';
 import { CACHE_KEY } from '../config.ts';
 import { LocalTable } from '../enums/local-table.ts';
@@ -32,6 +34,18 @@ export function createDexiePlanCache(database: Dexie): PlanCache {
     },
     async readSessionDetail(sessionId) {
       const parsed = sessionDetailSchema.safeParse((await table.get(sessionKey(sessionId)))?.value);
+      return parsed.success ? parsed.data : undefined;
+    },
+    async deleteSessionDetail(sessionId) {
+      await table.delete(sessionKey(sessionId));
+    },
+    async saveAdaptations(adaptations) {
+      await table.put({ key: CACHE_KEY.adaptations, value: adaptations });
+    },
+    async readAdaptations() {
+      const parsed = z
+        .array(adaptationSchema)
+        .safeParse((await table.get(CACHE_KEY.adaptations))?.value);
       return parsed.success ? parsed.data : undefined;
     },
     async saveWeekLoad(week) {

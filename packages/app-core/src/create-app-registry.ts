@@ -1,4 +1,7 @@
 import { RequestType } from './enums/request-type.ts';
+import { acceptAdaptationDefinition } from './handlers/accept-adaptation.ts';
+import { declineAdaptationDefinition } from './handlers/decline-adaptation.ts';
+import { getAdaptationsDefinition } from './handlers/get-adaptations.ts';
 import { confirmDoctorSeenDefinition } from './handlers/confirm-doctor-seen.ts';
 import { getLatestCheckinDefinition } from './handlers/get-latest-checkin.ts';
 import { recheckScreeningDefinition } from './handlers/recheck-screening.ts';
@@ -58,5 +61,8 @@ export function createAppRegistry(): RequestRegistry<Services, Stores> {
     [RequestType.ReportStopFlag]: reportStopFlagDefinition,
     [RequestType.ConfirmDoctorSeen]: confirmDoctorSeenDefinition,
     [RequestType.RecheckScreening]: recheckScreeningDefinition,
+    [RequestType.GetAdaptations]: getAdaptationsDefinition,
+    [RequestType.AcceptAdaptation]: acceptAdaptationDefinition,
+    [RequestType.DeclineAdaptation]: declineAdaptationDefinition,
   } satisfies Record<RequestType, unknown>;
 }

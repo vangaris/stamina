@@ -26,4 +26,7 @@ export enum RequestType {
   ReportStopFlag = 'ReportStopFlag',
   ConfirmDoctorSeen = 'ConfirmDoctorSeen',
   RecheckScreening = 'RecheckScreening',
+  GetAdaptations = 'GetAdaptations',
+  AcceptAdaptation = 'AcceptAdaptation',
+  DeclineAdaptation = 'DeclineAdaptation',
 }

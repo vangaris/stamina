@@ -33,6 +33,7 @@ const session = useSession({
   onNavigate: (path) => void router.replace(path),
 });
 const {
+  sessionId: activeId,
   phase,
   messageKey,
   errorKey,
@@ -81,7 +82,7 @@ onBeforeUnmount(session.close);
         {{ t('stopFlag.stop') }}
       </Button>
     </div>
-    <ReportStopFlagContainer v-model:open="stopOpen" :session-id="sessionId" />
+    <ReportStopFlagContainer v-model:open="stopOpen" :session-id="activeId" />
     <SessionGate
       v-if="phase === SessionPhase.Loading || phase === SessionPhase.Failed"
       :phase="phase"

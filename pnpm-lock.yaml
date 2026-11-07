@@ -181,6 +181,9 @@ importers:
       '@stamina/ui-stepper':
         specifier: workspace:^
         version: link:../../packages/ui/stepper
+      '@stamina/ui-suggestion-card':
+        specifier: workspace:^
+        version: link:../../packages/ui/suggestion-card
       '@stamina/ui-tabs':
         specifier: workspace:^
         version: link:../../packages/ui/tabs
@@ -571,6 +574,31 @@ importers:
       '@stamina/a11y':
         specifier: workspace:^
         version: link:../../util/a11y
+    devDependencies:
+      '@stamina/ui-test':
+        specifier: workspace:^
+        version: link:../../util/ui-test
+      '@vue/test-utils':
+        specifier: ^2.5.1
+        version: 2.5.1(@vue/compiler-dom@3.5.44)(@vue/server-renderer@3.5.44)(vue@3.5.44(typescript@6.0.3))
+      vitest:
+        specifier: ^5.0.5
+        version: 5.0.5(@types/node@22.20.5)(jsdom@30.1.3)(vite@8.3.5(@types/node@22.20.5)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(tsx@4.23.15)(yaml@2.9.0))
+      vue:
+        specifier: ^3.5.44
+        version: 3.5.44(typescript@6.0.3)
+      vue-tsc:
+        specifier: ^3.3.14
+        version: 3.3.14(typescript@6.0.3)
+
+  packages/ui/suggestion-card:
+    dependencies:
+      '@stamina/ui-button':
+        specifier: workspace:^
+        version: link:../button
+      '@stamina/ui-card':
+        specifier: workspace:^
+        version: link:../card
     devDependencies:
       '@stamina/ui-test':
         specifier: workspace:^

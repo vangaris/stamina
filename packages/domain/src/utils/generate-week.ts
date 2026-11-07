@@ -90,6 +90,7 @@ export function generateWeek(input: GenerateWeekInput): GeneratedWeek | null {
             limited,
             rirSuitable: exercise.rirSuitable,
             needsEquipment: exercise.equipment.length > 0,
+            rirBoost: input.rirBoost ?? 0,
           }),
         };
       }),

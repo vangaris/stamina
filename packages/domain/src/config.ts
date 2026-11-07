@@ -1,3 +1,4 @@
+import { AdaptationRule } from './enums/adaptation-rule.ts';
 import { BodyHalf } from './enums/body-half.ts';
 import { ConsentPurpose } from './enums/consent-purpose.ts';
 import { Emphasis } from './enums/emphasis.ts';
@@ -691,3 +692,10 @@ export const RESTART_RIR_STEP = 1;
 
 /** Activities and Check-ins older than this many days no longer raise an Adaptation. */
 export const ADAPTATION_LOOKBACK_DAYS = 14;
+
+/** The rules that suggest an early Deload, in the order the first that holds wins. */
+export const DELOAD_RULES: readonly AdaptationRule[] = [
+  AdaptationRule.DeloadLoad,
+  AdaptationRule.DeloadCheckins,
+  AdaptationRule.DeloadEffort,
+];

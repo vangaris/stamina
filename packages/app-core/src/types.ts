@@ -1,4 +1,7 @@
 import type {
+  AcceptAdaptationResult,
+  Adaptation,
+  DeclineAdaptationResult,
   ApiClient,
   Checkin,
   ConfirmDoctorSeenResult,
@@ -284,6 +287,12 @@ export interface PlanCache {
   saveStop(stop: StopState): Promise<void>;
   /** Undefined when none is kept, or when what is stored is malformed. */
   readStop(): Promise<StopState | undefined>;
+  /** Drops one cached Session detail (its Session was superseded by a revision); nothing for an unknown id. */
+  deleteSessionDetail(sessionId: string): Promise<void>;
+  /** The pending Adaptations as last fetched, less those decided on this device since. */
+  saveAdaptations(adaptations: readonly Adaptation[]): Promise<void>;
+  /** Undefined when never fetched (or malformed); an empty list is a fetched "none". */
+  readAdaptations(): Promise<Adaptation[] | undefined>;
   /** The latest Check-in as last fetched; `null` is a fetched "none yet". */
   saveLatestCheckin(checkin: Checkin | null): Promise<void>;
   /** Undefined when never fetched (or malformed); `null` when the server had none. */
@@ -539,6 +548,20 @@ export interface RecheckScreeningRequest extends Request<SaveScreeningResult> {
   readonly recheck: RecheckScreeningBody;
 }
 
+export interface GetAdaptationsRequest extends Request<Adaptation[]> {
+  readonly type: RequestType.GetAdaptations;
+}
+
+export interface AcceptAdaptationRequest extends Request<AcceptAdaptationResult | Queued> {
+  readonly type: RequestType.AcceptAdaptation;
+  readonly adaptation: Adaptation;
+}
+
+export interface DeclineAdaptationRequest extends Request<DeclineAdaptationResult | Queued> {
+  readonly type: RequestType.DeclineAdaptation;
+  readonly adaptationId: string;
+}
+
 export interface GetWeekLoad extends Request<WeekLoad> {
   readonly type: RequestType.GetWeekLoad;
 }
@@ -575,6 +598,15 @@ export interface ExportData extends Request<UserExport> {
 
 export interface DeleteAccount extends Request<void> {
   readonly type: RequestType.DeleteAccount;
+}
+
+/** The fake API's stored week: the Program without the hard Activity days, which it works out on read. */
+export type FakeWeek = Omit<ProgramWeek, 'hardActivityDates'>;
+
+/** The fake API client: the `ApiClient` plus what tests and the Dev mode need to set it up. */
+export interface FakeApiClient extends ApiClient {
+  /** Stores a pending Adaptation for the signed-in user (the fake raises none itself); `basis` and `change` name Sessions of that user's fake week. */
+  seedAdaptation(adaptation: Adaptation): Promise<void>;
 }
 
 export interface FakeProgramInput {

@@ -188,6 +188,8 @@ export interface PrescribeInput {
   rirSuitable: boolean;
   /** Whether the exercise needs equipment beyond the body. */
   needsEquipment: boolean;
+  /** Reps in reserve added to a rated exercise (never past `MAX_RIR`); absent means none. */
+  rirBoost?: number;
 }
 
 /** How hard and how much of one exercise. */

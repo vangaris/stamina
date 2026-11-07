@@ -4,6 +4,7 @@ import { useI18n } from 'vue-i18n';
 import { RouterLink } from 'vue-router';
 import { useApiHealth } from '../composables/useApiHealth.ts';
 import { RoutePath } from '../enums/route-path.ts';
+import { AdaptationContainer } from '../features/adaptation/index.ts';
 import { PlayedContainer } from '../features/activity/index.ts';
 import { CheckinContainer } from '../features/checkin/index.ts';
 import { RestNoticeContainer } from '../features/stop-flag/index.ts';
@@ -21,6 +22,7 @@ const apiStatus = computed(() => t(`status.${state.value.kind}`));
       {{ t('status.server', { state: apiStatus }) }}
     </p>
     <div class="mt-4 flex flex-col gap-4">
+      <AdaptationContainer />
       <RestNoticeContainer />
       <CheckinContainer />
     </div>

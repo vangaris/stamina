@@ -119,6 +119,22 @@ describe('opening a Session', () => {
   });
 });
 
+describe('a revised Session', () => {
+  it('writes to the id the detail answers with, not the one the screen was opened with', async () => {
+    const OLD_ID = '00000000-0000-4000-8000-0000000000aa';
+    const setup = await opened({ sessionId: OLD_ID });
+
+    expect(setup.flow.sessionId.value).toBe(makeSessionDetail().id);
+    expect(setup.requests[0]).toMatchObject({ sessionId: OLD_ID });
+
+    await tapDone(setup);
+
+    expect(setup.requests.find(({ type }) => type === RequestType.LogSet)).toMatchObject({
+      sessionId: makeSessionDetail().id,
+    });
+  });
+});
+
 describe('logging a set', () => {
   it('sends the set with a new id, the exercise, the set number and the steppers values', async () => {
     const setup = await opened();

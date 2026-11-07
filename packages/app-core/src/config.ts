@@ -79,6 +79,8 @@ export const FAKE_PROGRAM = {
   idDigits: 12,
   /** Reps in reserve for build week 1, and the least the fake uses for a Limited user (RPE 7). */
   weekRir: 3,
+  /** Reps in reserve of a Deload week, which an accepted Deload raises each rated exercise to. */
+  deloadRir: 4,
   limitedMinRir: 3,
   mainSets: 4,
   mainReps: { min: 4, max: 6 },
@@ -132,13 +134,14 @@ export const LOCAL_DATABASE = {
 /** The key of the one row in the owner table: the id of the user the local data belongs to. */
 export const OWNER_KEY = 'owner';
 
-/** Keys in the cache table: the one Program week, the one week's Load, the stop state and the latest Check-in, and one Session detail per Session id. */
+/** Keys in the cache table: the one Program week, the one week's Load, the stop state, the latest Check-in and the pending Adaptations, and one Session detail per Session id. */
 export const CACHE_KEY = {
   program: 'program',
   clearedScreening: 'cleared-screening',
   weekLoad: 'week-load',
   stop: 'stop',
   latestCheckin: 'latest-checkin',
+  adaptations: 'adaptations',
   sessionDetailPrefix: 'session:',
 } as const;
 

@@ -12,7 +12,7 @@ import {
   type RecheckScreening,
   SportKind,
   ProgramRejection,
-  type ApiClient,
+  type Adaptation,
   type ProgramWeek,
   type SavedProfile,
   type SavedScreening,
@@ -40,10 +40,12 @@ import {
 import { FAKE_AUTH, FAKE_INVITE, FAKE_KEY_SEPARATOR, HTTP_UNAUTHORIZED } from '../config.ts';
 import { buildFakeProgram } from '../utils/build-fake-program.ts';
 import { toHardActivityDates } from '../utils/to-hard-activity-dates.ts';
+import { createFakeAdaptations, type FakeAdaptationContext } from './create-fake-adaptations.ts';
 import { createFakeActivityLog, type FakeActivityContext } from './create-fake-activity-log.ts';
 import { createFakeCheckins } from './create-fake-checkins.ts';
 import { createFakeSessionLog, type FakeSessionTarget } from './create-fake-session-log.ts';
 import { createFakeStopFlags } from './create-fake-stop-flags.ts';
+import type { FakeApiClient, FakeWeek } from '../types.ts';
 
 type StoredConsent = UserExport['consents'][number];
 
@@ -79,14 +81,16 @@ function mergeRecheck(
  * and the doctor statement works for a general referral only. Sessions come from the user's fake
  * week; their sets and finish follow the server's replay rules (see `createFakeSessionLog`).
  */
-export function createFakeApiClient(getToken: () => Promise<string | undefined>): ApiClient {
+export function createFakeApiClient(getToken: () => Promise<string | undefined>): FakeApiClient {
   const profiles = new Map<string, SavedProfile>();
   const redeemed = new Set<string>();
   const consents = new Map<string, StoredConsent[]>();
   const screenings = new Map<string, StoredScreening[]>();
   /** Per user: the "Other" sport asked for (the fake has no approvals). */
   const sportRequests = new Map<string, UserExport['sportRequests'][number]>();
-  const programs = new Map<string, Omit<ProgramWeek, 'hardActivityDates'>>();
+  const programs = new Map<string, FakeWeek>();
+  /** A Session id a revision replaced, and the id of its current row: the old id still opens the Session, like the server's. */
+  const supersededBy = new Map<string, string>();
   const readProgram = (userId: string): ProgramWeek | null => {
     const week = programs.get(userId);
     const profile = profiles.get(userId);
@@ -100,12 +104,40 @@ export function createFakeApiClient(getToken: () => Promise<string | undefined>)
   const sessionTarget = async (sessionId: string): Promise<FakeSessionTarget> => {
     const userId = await requireUserId();
     const week = programs.get(userId);
-    const session = week?.sessions.find(({ id }) => id === sessionId);
+    let currentId = sessionId;
+    while (supersededBy.has(currentId)) currentId = supersededBy.get(currentId)!;
+    const session = week?.sessions.find(({ id }) => id === currentId);
     if (!week || !session) throw new ApiError(HttpStatus.NotFound);
     return {
-      key: `${userId}${FAKE_KEY_SEPARATOR}${sessionId}`,
+      key: `${userId}${FAKE_KEY_SEPARATOR}${currentId}`,
       session,
       emphasis: week.block.emphasis,
+    };
+  };
+
+  const adaptations = createFakeAdaptations();
+  const adaptationContext = async (): Promise<FakeAdaptationContext> => {
+    const userId = await requireUserId();
+    const week = programs.get(userId);
+    return {
+      userId,
+      today: new Date().toISOString().slice(0, 10),
+      week,
+      isUntouched: (sessionId) => {
+        const session = week?.sessions.find(({ id }) => id === sessionId);
+        if (!week || !session) return false;
+        const key = `${userId}${FAKE_KEY_SEPARATOR}${sessionId}`;
+        const detail = sessionLog.read({ key, session, emphasis: week.block.emphasis });
+        return (
+          detail.finished === null &&
+          detail.exercises.every(({ loggedSets }) => loggedSets.length === 0)
+        );
+      },
+      program: () => readProgram(userId),
+      commit: (revised, superseded) => {
+        programs.set(userId, revised);
+        for (const [old, current] of superseded) supersededBy.set(old, current);
+      },
     };
   };
 
@@ -199,6 +231,8 @@ export function createFakeApiClient(getToken: () => Promise<string | undefined>)
   };
 
   return {
+    seedAdaptation: async (adaptation: Adaptation) =>
+      adaptations.seed(await requireUserId(), adaptation),
     health: async () => ({ status: HealthStatus.Ok, database: DatabaseStatus.Up }),
     me: async () => ({ userId: await requireUserId() }),
     checkInvite: async (code) => ({ valid: isUsable(code) }),
@@ -316,6 +350,7 @@ export function createFakeApiClient(getToken: () => Promise<string | undefined>)
         stopFlags: stopFlags.all(userId),
         consents: [...(consents.get(userId) ?? [])],
         sportRequests: sportRequests.has(userId) ? [sportRequests.get(userId)!] : [],
+        adaptations: adaptations.all(userId),
         screenings: (screenings.get(userId) ?? []).map((stored) => ({
           ...toSaved(stored),
           answers: { ...stored.submission.answers },
@@ -333,6 +368,7 @@ export function createFakeApiClient(getToken: () => Promise<string | undefined>)
       activityLog.forget(userId);
       checkins.forget(userId);
       stopFlags.forget(userId);
+      adaptations.forget(userId);
     },
     getProgram: async () => readProgram(await requireUserId()),
     getSession: async (sessionId) => sessionLog.read(await sessionTarget(sessionId)),
@@ -344,6 +380,10 @@ export function createFakeApiClient(getToken: () => Promise<string | undefined>)
       const context = await activityContext();
       return activityLog.week(context, finishedSessionEntries(context.userId));
     },
+    getAdaptations: async () => ({ adaptations: adaptations.pending(await adaptationContext()) }),
+    acceptAdaptation: async (id, accept) =>
+      adaptations.accept(await adaptationContext(), id, accept),
+    declineAdaptation: async (id) => adaptations.decline(await requireUserId(), id),
     createProgram: async () => {
       const userId = await requireUserId();
       const existing = readProgram(userId);
