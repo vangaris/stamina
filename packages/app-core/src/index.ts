@@ -41,6 +41,9 @@ export { getSessionDetail } from './handlers/get-session-detail.ts';
 export { getWeekLoad } from './handlers/get-week-load.ts';
 export { getProgress } from './handlers/get-progress.ts';
 export { logWeighIn } from './handlers/log-weigh-in.ts';
+export { getNutrition } from './handlers/get-nutrition.ts';
+export { logWater } from './handlers/log-water.ts';
+export { saveNutritionSetup } from './handlers/save-nutrition-setup.ts';
 export { logActivity } from './handlers/log-activity.ts';
 export { logSet } from './handlers/log-set.ts';
 export { grantConsent } from './handlers/grant-consent.ts';
@@ -55,6 +58,7 @@ export { createBetterAuthService } from './services/create-better-auth-service.t
 export type {
   AcceptAdaptationRequest,
   ActivityLogStore,
+  WaterLogStore,
   AppMediatorOptions,
   AuthService,
   AuthSession,
@@ -75,6 +79,7 @@ export type {
   GetProfile,
   GetSafety,
   GetSession,
+  GetNutritionRequest,
   GetProgress,
   GetSessionDetail,
   GetWeekLoad,
@@ -87,6 +92,7 @@ export type {
   LocalData,
   LocalStopFlag,
   LocalActivity,
+  LocalWater,
   LocalFinish,
   LocalSessionLog,
   LogEntry,
@@ -104,7 +110,9 @@ export type {
   ProfileState,
   Queued,
   QueuedRequest,
+  LogWaterRequest,
   LogWeighInRequest,
+  SaveNutritionSetupRequest,
   RecheckScreeningRequest,
   RecordDoctorOk,
   ReportStopFlagRequest,

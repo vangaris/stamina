@@ -1,11 +1,7 @@
 <script setup lang="ts">
-import { useI18n } from 'vue-i18n';
-
-const { t } = useI18n();
+import { MealsContainer } from '../features/nutrition/index.ts';
 </script>
 
 <template>
-  <section>
-    <h1 class="text-xl font-semibold">{{ t('nav.meals') }}</h1>
-  </section>
+  <MealsContainer />
 </template>

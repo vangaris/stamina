@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { NutritionStatus } from '@stamina/contracts';
 import { Button, ButtonVariant } from '@stamina/ui-button';
 import { computed, onMounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -9,9 +10,11 @@ import { i18n } from '../../../i18n.ts';
 import { PlayedContainer } from '../../activity/index.ts';
 import { AdaptationContainer } from '../../adaptation/index.ts';
 import { CheckinContainer } from '../../checkin/index.ts';
+import { UnlockMealsCard, useNutrition } from '../../nutrition/index.ts';
 import { RestNoticeContainer } from '../../stop-flag/index.ts';
 import { useToday } from '../composables/useToday.ts';
 import { TodayStatus } from '../enums/today-status.ts';
+import { toTimelineExtras } from '../utils/to-timeline-extras.ts';
 import TodayHeader from './TodayHeader.vue';
 import TodayTimeline from './TodayTimeline.vue';
 
@@ -19,7 +22,13 @@ const { t } = useI18n();
 const { locale } = i18n.global;
 const router = useRouter();
 const { state } = useApiHealth();
-const today = useToday({ onNavigate: (path) => void router.replace(path) });
+const onNavigate = (path: RoutePath) => void router.replace(path);
+const nutritionFlow = useNutrition({ onNavigate });
+const { nutrition } = nutritionFlow;
+const today = useToday({
+  onNavigate,
+  extras: () => toTimelineExtras(nutrition.value),
+});
 const { status, date, entries, summary } = today;
 
 /** Bumped when an Activity or a Check-in reached the server: the suggestions it may have raised are read again. */
@@ -31,11 +40,16 @@ const readSuggestions = () => {
 const playedSaved = () => {
   readSuggestions();
   void today.load();
+  // The day type, and so the targets, may have changed.
+  void nutritionFlow.load();
 };
 
 const apiStatus = computed(() => t(`status.${state.value.kind}`));
 
-onMounted(today.load);
+onMounted(() => {
+  void today.load();
+  void nutritionFlow.load();
+});
 </script>
 
 <template>
@@ -63,8 +77,16 @@ onMounted(today.load);
           {{ t('today.errors.retry') }}
         </Button>
       </div>
-      <TodayTimeline :entries="entries" :locale="locale" />
+      <UnlockMealsCard v-if="nutrition?.status === NutritionStatus.Locked" />
+      <TodayTimeline :entries="entries" :locale="locale" @log-water="nutritionFlow.addWater" />
     </template>
+    <RouterLink
+      :to="RoutePath.Settings"
+      data-testid="settings-link"
+      class="inline-block text-base font-medium text-accent underline"
+    >
+      {{ t('settings.link') }}
+    </RouterLink>
     <RouterLink
       :to="RoutePath.Week"
       data-testid="week-link"

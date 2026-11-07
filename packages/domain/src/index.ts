@@ -26,6 +26,37 @@ export {
   CONSENT_TEXT_VERSIONS,
   DEFAULT_EQUIPMENT,
   ENERGY_MIX_TOTAL,
+  CARBS_G_PER_KG,
+  DRINKS_BASE_ML,
+  DRINKS_MAX_EXERCISE_ML_PER_HOUR,
+  DRINKS_ML_PER_HOT_TRAINING_HOUR,
+  DRINKS_ML_PER_TRAINING_HOUR,
+  DURING_CARBS_G_PER_HOUR,
+  DURING_CARBS_MINUTES,
+  ELECTROLYTE_NOTE_MINUTES,
+  EVERYDAY_ACTIVITY_FACTOR,
+  FALLBACK_METS_PER_INTENSITY,
+  FAT_LOSS_DEFICIT_HALVED_KCAL,
+  FAT_LOSS_DEFICIT_KCAL,
+  FAT_MAX_ENERGY_SHARE,
+  FAT_MIN_ENERGY_SHARE,
+  MAX_DISLIKE_LENGTH,
+  MAX_DISLIKES,
+  MAX_HEIGHT_CM,
+  MAX_MEALS_PER_DAY,
+  MEAL_TIMES,
+  MIN_HEIGHT_CM,
+  MIN_MEALS_PER_DAY,
+  MUSCLE_GAIN_SURPLUS_KCAL,
+  PRE_ACTIVITY_ML_PER_KG,
+  PROTEIN_G_PER_KG,
+  PROTEIN_G_PER_KG_LOSING_FAT,
+  RATE_CHECK_INTERVALS_TO_HALVE,
+  RATE_CHECK_INTERVALS_TO_PROMPT,
+  RATE_CHECK_LOSS_PCT,
+  RECALCULATE_AT_KG_CHANGE,
+  RESTING_SEX_CONSTANT,
+  SESSION_MET,
   EXERCISE_IMAGE_ORIGIN,
   COUNTRY_CODES,
   EEA_COUNTRY_CODES,
@@ -85,6 +116,16 @@ export {
 export { AdaptationChangeKind } from './enums/adaptation-change-kind.ts';
 export { AdaptationRule } from './enums/adaptation-rule.ts';
 export { AdaptationStatus } from './enums/adaptation-status.ts';
+export { Allergen } from './enums/allergen.ts';
+export { BodyDirection } from './enums/body-direction.ts';
+export { CookingEffort } from './enums/cooking-effort.ts';
+export { DayType } from './enums/day-type.ts';
+export { EatingPattern } from './enums/eating-pattern.ts';
+export { EnergySex } from './enums/energy-sex.ts';
+export { EverydayActivity } from './enums/everyday-activity.ts';
+export { MealSlot } from './enums/meal-slot.ts';
+export { TrainingKind } from './enums/training-kind.ts';
+export { WaterAmount } from './enums/water-amount.ts';
 export { BodyArea } from './enums/body-area.ts';
 export { BodyHalf } from './enums/body-half.ts';
 export { ConsentPurpose } from './enums/consent-purpose.ts';
@@ -123,6 +164,13 @@ export { Units } from './enums/units.ts';
 export { Weekday } from './enums/weekday.ts';
 export { VerdictKind } from './enums/verdict-kind.ts';
 export type {
+  DayTargets,
+  DayTargetsInput,
+  MealSlotTime,
+  RateCheckResult,
+  RestingEnergyInput,
+  TrainingBlock,
+  WeeklyWeight,
   EligibilityInput,
   ExerciseFilter,
   ExerciseTags,
@@ -208,3 +256,8 @@ export { stopFlagEffect } from './utils/stop-flag-effect.ts';
 export { weekdayOf } from './utils/weekday-of.ts';
 export { buildPickSpec } from './utils/build-pick-spec.ts';
 export { validatePicks } from './utils/validate-picks.ts';
+export { dayTargets } from './utils/day-targets.ts';
+export { mealSlots } from './utils/meal-slots.ts';
+export { rateCheck } from './utils/rate-check.ts';
+export { restingEnergy } from './utils/resting-energy.ts';
+export { toWeeklyWeights } from './utils/to-weekly-weights.ts';

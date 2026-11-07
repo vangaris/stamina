@@ -7,7 +7,19 @@ import {
 import {
   AdaptationRule,
   AdaptationStatus,
+  Allergen,
   BodyArea,
+  BodyDirection,
+  CookingEffort,
+  EatingPattern,
+  EnergySex,
+  EverydayActivity,
+  MAX_DISLIKES,
+  MAX_HEIGHT_CM,
+  MAX_MEALS_PER_DAY,
+  MIN_HEIGHT_CM,
+  MIN_MEALS_PER_DAY,
+  WaterAmount,
   ConsentPurpose,
   Emphasis,
   Equipment,
@@ -103,6 +115,14 @@ export const appUser = pgTable(
 /** A SQL string literal for a code constant (never user input), so a check constraint is built from an enum. */
 const literal = (value: string) => sql.raw(`'${value}'`);
 
+/** `column in ('a', 'b')` for the values of a code enum, so a check constraint can never drift from it. */
+const isOneOf = (column: AnyPgColumn, values: readonly string[]) =>
+  sql`${column} in (${sql.raw(values.map((value) => `'${value}'`).join(', '))})`;
+
+/** `column <@ ARRAY['a', 'b']`: every element of a text[] column is a value of a code enum. */
+const hasOnly = (column: AnyPgColumn, values: readonly string[]) =>
+  sql`${column} <@ ARRAY[${sql.raw(values.map((value) => `'${value}'`).join(', '))}]::text[]`;
+
 /**
  * A code that lets one person in. It is redeemed when their profile is first saved (never when
  * typed), so someone turned away at onboarding does not burn it. Codes are issued by the
@@ -167,6 +187,22 @@ export const profile = pgTable(
     locale: text('locale').notNull(),
     units: text('units').$type<Units>().notNull(),
     hotConditionsDefault: boolean('hot_conditions_default').notNull(),
+    /**
+     * The Unlock Meals setup (ticket 16): these nine columns are all set once it is saved, all
+     * null before. `nutritionWeightKg` is the weight the targets are based on; a later weigh-in
+     * 2 kg or more away resets it. Health data: never logged.
+     */
+    sex: text('sex').$type<EnergySex>(),
+    heightCm: numeric('height_cm', { precision: 5, scale: 2, mode: 'number' }),
+    nutritionWeightKg: numeric('nutrition_weight_kg', { precision: 5, scale: 2, mode: 'number' }),
+    everydayActivity: text('everyday_activity').$type<EverydayActivity>(),
+    eatingPattern: text('eating_pattern').$type<EatingPattern>(),
+    allergens: text('allergens').array().$type<Allergen[]>(),
+    dislikes: text('dislikes').array(),
+    mealsPerDay: integer('meals_per_day'),
+    cookingEffort: text('cooking_effort').$type<CookingEffort>(),
+    /** Set only for a body-composition Goal, even when the setup is saved; null is maintenance. */
+    bodyDirection: text('body_direction').$type<BodyDirection>(),
     createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
     updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
   },
@@ -181,6 +217,51 @@ export const profile = pgTable(
       sql`(${table.sessionsPerWeek} is null) = (${table.sessionMinutes} is null)
         and (${table.sessionsPerWeek} is null) = (${table.availableDays} is null)`,
     ),
+    check(
+      'profile_nutrition_all_or_none',
+      sql`(${table.sex} is null) = (${table.heightCm} is null)
+        and (${table.sex} is null) = (${table.nutritionWeightKg} is null)
+        and (${table.sex} is null) = (${table.everydayActivity} is null)
+        and (${table.sex} is null) = (${table.eatingPattern} is null)
+        and (${table.sex} is null) = (${table.allergens} is null)
+        and (${table.sex} is null) = (${table.dislikes} is null)
+        and (${table.sex} is null) = (${table.mealsPerDay} is null)
+        and (${table.sex} is null) = (${table.cookingEffort} is null)`,
+    ),
+    check('profile_sex_valid', isOneOf(table.sex, Object.values(EnergySex))),
+    check(
+      'profile_height_valid',
+      sql`${table.heightCm} between ${sql.raw(String(MIN_HEIGHT_CM))} and ${sql.raw(String(MAX_HEIGHT_CM))}`,
+    ),
+    check(
+      'profile_nutrition_weight_valid',
+      sql`${table.nutritionWeightKg} between ${sql.raw(String(MIN_BODY_WEIGHT_KG))} and ${sql.raw(String(MAX_BODY_WEIGHT_KG))}`,
+    ),
+    check(
+      'profile_everyday_activity_valid',
+      isOneOf(table.everydayActivity, Object.values(EverydayActivity)),
+    ),
+    check(
+      'profile_eating_pattern_valid',
+      isOneOf(table.eatingPattern, Object.values(EatingPattern)),
+    ),
+    check('profile_allergens_valid', hasOnly(table.allergens, Object.values(Allergen))),
+    check(
+      'profile_dislikes_valid',
+      sql`cardinality(${table.dislikes}) <= ${sql.raw(String(MAX_DISLIKES))}`,
+    ),
+    check(
+      'profile_meals_per_day_valid',
+      sql`${table.mealsPerDay} between ${sql.raw(String(MIN_MEALS_PER_DAY))} and ${sql.raw(String(MAX_MEALS_PER_DAY))}`,
+    ),
+    check(
+      'profile_cooking_effort_valid',
+      isOneOf(table.cookingEffort, Object.values(CookingEffort)),
+    ),
+    check(
+      'profile_body_direction_valid',
+      isOneOf(table.bodyDirection, Object.values(BodyDirection)),
+    ),
     pgPolicy('profile_owner', {
       for: 'all',
       to: APP_ROLE,
@@ -189,10 +270,6 @@ export const profile = pgTable(
     }),
   ],
 ).enableRLS();
-
-/** `column in ('a', 'b')` for the values of a code enum, so a check constraint can never drift from it. */
-const isOneOf = (column: AnyPgColumn, values: readonly string[]) =>
-  sql`${column} in (${sql.raw(values.map((value) => `'${value}'`).join(', '))})`;
 
 /**
  * What a person agreed to, one row per grant. Append-only: the app role can read and insert its
@@ -304,10 +381,6 @@ export const screening = pgTable(
     }),
   ],
 ).enableRLS();
-
-/** `column <@ ARRAY['a', 'b']`: every element of a text[] column is a value of a code enum. */
-const hasOnly = (column: AnyPgColumn, values: readonly string[]) =>
-  sql`${column} <@ ARRAY[${sql.raw(values.map((value) => `'${value}'`).join(', '))}]::text[]`;
 
 /**
  * The curated exercise library: reference data, the same for everyone. Written only by the
@@ -847,6 +920,46 @@ export const checkin = pgTable(
       using: sql`user_id = app_user_id()::uuid`,
     }),
     pgPolicy('checkin_owner_insert', {
+      for: 'insert',
+      to: APP_ROLE,
+      withCheck: sql`user_id = app_user_id()::uuid`,
+    }),
+  ],
+).enableRLS();
+
+/**
+ * One quick-log of water, 250 or 500 ml (`WaterAmount`). The id is made on the device, so a
+ * replay is a conflict the insert ignores and a retry never counts twice. Append-only like
+ * `checkin`: the app role reads and inserts its own rows and never rewrites or deletes them.
+ * Health data: never logged, returned only by the user's own Meals read and export.
+ */
+export const waterLog = pgTable(
+  'water_log',
+  {
+    id: uuid('id').primaryKey(),
+    userId: uuid('user_id')
+      .notNull()
+      .references(() => appUser.id, { onDelete: 'cascade' }),
+    date: date('date', { mode: 'string' }).notNull(),
+    ml: integer('ml').$type<WaterAmount>().notNull(),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => [
+    check(
+      'water_log_ml_valid',
+      sql`${table.ml} in (${sql.raw(
+        Object.values(WaterAmount)
+          .filter((value) => typeof value === 'number')
+          .join(', '),
+      )})`,
+    ),
+    index('water_log_user_date').on(table.userId, table.date),
+    pgPolicy('water_log_owner_select', {
+      for: 'select',
+      to: APP_ROLE,
+      using: sql`user_id = app_user_id()::uuid`,
+    }),
+    pgPolicy('water_log_owner_insert', {
       for: 'insert',
       to: APP_ROLE,
       withCheck: sql`user_id = app_user_id()::uuid`,

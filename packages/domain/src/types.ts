@@ -1,3 +1,9 @@
+import type { BodyDirection } from './enums/body-direction.ts';
+import type { MealSlot } from './enums/meal-slot.ts';
+import type { DayType } from './enums/day-type.ts';
+import type { EnergySex } from './enums/energy-sex.ts';
+import type { EverydayActivity } from './enums/everyday-activity.ts';
+import type { TrainingKind } from './enums/training-kind.ts';
 import type { AdaptationChangeKind } from './enums/adaptation-change-kind.ts';
 import type { AdaptationRule } from './enums/adaptation-rule.ts';
 import type { AdaptationStatus } from './enums/adaptation-status.ts';
@@ -594,4 +600,74 @@ export interface AppliedAdaptation {
   } | null;
   supersedes: string[];
   sessions: RevisedSession[];
+}
+
+/** One Session or Activity of a day, as the nutrition targets see it. */
+export interface TrainingBlock {
+  kind: TrainingKind;
+  minutes: number;
+  mets: number;
+  hot: boolean;
+  hard: boolean;
+}
+
+export interface DayTargetsInput {
+  sex: EnergySex;
+  ageYears: number;
+  heightCm: number;
+  /** The basis weight the targets are computed from. */
+  weightKg: number;
+  everydayActivity: EverydayActivity;
+  /** `null` is maintenance. */
+  bodyDirection: BodyDirection | null;
+  trainings: readonly TrainingBlock[];
+  /** The rate check halves a fat-loss deficit. */
+  deficitHalved: boolean;
+}
+
+export interface DayTargets {
+  dayType: DayType;
+  restingKcal: number;
+  energyKcal: number;
+  /** The deficit applied (0 or negative). */
+  deficitKcal: number;
+  gainKcal: number;
+  /** The target would have gone below resting energy and was raised to it. */
+  floorApplied: boolean;
+  deficitHalved: boolean;
+  proteinG: number;
+  carbsG: number;
+  fatG: number;
+  drinksMl: number;
+  drinkCapApplied: boolean;
+  drinkToThirst: boolean;
+  preActivityMl: { min: number; max: number } | null;
+  electrolyteNote: boolean;
+  duringCarbsGPerHour: { min: number; max: number } | null;
+}
+
+export interface WeeklyWeight {
+  /** The weigh-in's own date, `YYYY-MM-DD`. */
+  date: string;
+  weightKg: number;
+}
+
+export interface RateCheckResult {
+  deficitHalved: boolean;
+  prompt: boolean;
+  /** The loss of the latest interval as a percent (negative for a gain); `null` without one. */
+  weeklyLossPct: number | null;
+}
+
+export interface MealSlotTime {
+  slot: MealSlot;
+  /** Minute of the day. */
+  at: number;
+}
+
+export interface RestingEnergyInput {
+  sex: EnergySex;
+  ageYears: number;
+  heightCm: number;
+  weightKg: number;
 }

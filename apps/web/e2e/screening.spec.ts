@@ -80,7 +80,7 @@ test('the cleared path: consent, every question answered, then Today', async ({
 
   // Done is done: the tabs open, and the consent and Screening addresses lead on to Today.
   await page.goto('/meals');
-  await expect(page.getByRole('heading', { name: 'Meals' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Meals', level: 1 })).toBeVisible();
   await page.goto('/screening');
   await expect(page).toHaveURL(/\/today$/);
 });

@@ -1,6 +1,7 @@
 import {
   adaptationSchema,
   checkinSchema,
+  nutritionStateSchema,
   progressSchema,
   programWeekSchema,
   savedScreeningSchema,
@@ -62,6 +63,15 @@ export function createDexiePlanCache(database: Dexie): PlanCache {
     async readProgress() {
       const parsed = progressSchema.safeParse((await table.get(CACHE_KEY.progress))?.value);
       return parsed.success ? parsed.data : undefined;
+    },
+    async saveNutrition(date, nutrition) {
+      await table.put({ key: CACHE_KEY.nutrition, value: { date, nutrition } });
+    },
+    async readNutrition(date) {
+      const parsed = z
+        .object({ date: z.literal(date), nutrition: nutritionStateSchema })
+        .safeParse((await table.get(CACHE_KEY.nutrition))?.value);
+      return parsed.success ? parsed.data.nutrition : undefined;
     },
     async saveClearedScreening(screening) {
       await table.put({ key: CACHE_KEY.clearedScreening, value: screening });

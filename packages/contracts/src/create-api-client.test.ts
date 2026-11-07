@@ -141,3 +141,28 @@ describe('createApiClient profile and invite calls', () => {
     expect(await empty.getProfile()).toBeNull();
   });
 });
+
+describe('createApiClient Meals calls', () => {
+  it('asks for a day with a query string, and saves the setup with PUT, a 422 being a result', async () => {
+    const day = stubFetch({ status: 'locked' });
+    const client = createApiClient({ baseUrl: 'https://api.example', fetch: day.fetchStub });
+    expect(await client.getNutrition('2026-11-06')).toEqual({ status: 'locked' });
+    expect(day.requested).toEqual(['https://api.example/nutrition?date=2026-11-06']);
+
+    const methods: (string | undefined)[] = [];
+    const rejected = createApiClient({
+      baseUrl: 'https://api.example',
+      fetch: (async (_input: URL | RequestInfo, init?: RequestInit) => {
+        methods.push(init?.method);
+        return Response.json({ status: 'rejected', reason: 'nutrition-off' }, { status: 422 });
+      }) as typeof fetch,
+    });
+    const setup = {} as Parameters<typeof rejected.saveNutritionSetup>[0];
+
+    expect(await rejected.saveNutritionSetup(setup)).toEqual({
+      status: 'rejected',
+      reason: 'nutrition-off',
+    });
+    expect(methods).toEqual(['PUT']);
+  });
+});

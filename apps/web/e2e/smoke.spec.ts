@@ -55,7 +55,7 @@ test.describe('signed in and cleared', () => {
 
     for (const tab of ['Session', 'Meals', 'Progress', 'Today']) {
       await nav.getByRole('link', { name: tab }).click();
-      await expect(page.getByRole('heading', { name: tab })).toBeVisible();
+      await expect(page.getByRole('heading', { name: tab, level: 1, exact: true })).toBeVisible();
       await expect(nav.getByRole('link', { name: tab })).toHaveAttribute('aria-current', 'page');
     }
   });

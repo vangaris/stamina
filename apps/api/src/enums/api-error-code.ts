@@ -7,4 +7,6 @@ export enum ApiErrorCode {
   NotFound = 'not_found',
   /** A client-made record id already belongs to another Session, Activity or person. Not retryable. */
   IdTaken = 'id_taken',
+  /** The latest Screening turned Nutrition off, so the request (a water log) is refused. Not retryable. */
+  NutritionOff = 'nutrition_off',
 }

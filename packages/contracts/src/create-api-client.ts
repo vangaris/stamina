@@ -16,6 +16,7 @@ import { stopFlagPath } from './utils/stop-flag-path.ts';
 import { ActivitySubpath } from './enums/activity-subpath.ts';
 import { activityPath } from './utils/activity-path.ts';
 import { ApiPath } from './enums/api-path.ts';
+import { NutritionSubpath } from './enums/nutrition-subpath.ts';
 import { HttpHeaderName } from './enums/http-header-name.ts';
 import { HttpMethod } from './enums/http-method.ts';
 import { HttpStatus } from './enums/http-status.ts';
@@ -40,6 +41,9 @@ import { saveScreeningResultSchema } from './save-screening-result-schema.ts';
 import type { ApiClient, ApiClientOptions } from './types.ts';
 import { progressSchema } from './progress-schema.ts';
 import { logWeighInResultSchema } from './weigh-in-schema.ts';
+import { nutritionStateSchema, saveNutritionSetupResultSchema } from './nutrition-schema.ts';
+import { logWaterResultSchema } from './water-schema.ts';
+import { nutritionPath } from './utils/nutrition-path.ts';
 import { userExportSchema } from './user-export-schema.ts';
 
 const BEARER_SCHEME = 'Bearer';
@@ -66,6 +70,9 @@ export function createApiClient({
 
   const postJson = (path: string, body: unknown, acceptedStatuses?: number[]) =>
     send(path, { method: HttpMethod.Post, body: JSON.stringify(body) }, acceptedStatuses);
+
+  const putJson = (path: string, body: unknown, acceptedStatuses?: number[]) =>
+    send(path, { method: HttpMethod.Put, body: JSON.stringify(body) }, acceptedStatuses);
 
   const postEmpty = (path: string, acceptedStatuses?: number[]) =>
     send(path, { method: HttpMethod.Post }, acceptedStatuses);
@@ -171,6 +178,20 @@ export function createApiClient({
     async logWeighIn(weighIn) {
       const response = await postJson(ApiPath.WeighIns, weighIn);
       return logWeighInResultSchema.parse(await response.json());
+    },
+    async getNutrition(date) {
+      const response = await send(`${nutritionPath()}?${new URLSearchParams({ date })}`, {});
+      return nutritionStateSchema.parse(await response.json());
+    },
+    async saveNutritionSetup(setup) {
+      const response = await putJson(nutritionPath(NutritionSubpath.Setup), setup, [
+        HttpStatus.UnprocessableEntity,
+      ]);
+      return saveNutritionSetupResultSchema.parse(await response.json());
+    },
+    async logWater(water) {
+      const response = await postJson(ApiPath.Water, water);
+      return logWaterResultSchema.parse(await response.json());
     },
     async getAdaptations() {
       const response = await send(adaptationPath(), {});

@@ -7,14 +7,17 @@ import {
   createApiClient,
   saveScreeningResultSchema,
   SportKind,
+  NutritionSubpath,
   StopFlagSubpath,
   checkinPath,
+  nutritionPath,
   stopFlagPath,
   userExportSchema,
   type ScreeningSubmission,
 } from '@stamina/contracts';
 import { NO_STOP } from './support/stop-flag-fixtures.ts';
 import {
+  Allergen,
   BodyArea,
   ConsentPurpose,
   Goal,
@@ -32,6 +35,7 @@ import { appUser, consent, profile, screening, sport } from '../src/db/schema.ts
 import { ApiErrorCode } from '../src/enums/api-error-code.ts';
 import type { ErrorReporter } from '../src/error-reporter.ts';
 import { checkinOf } from './support/checkin-fixtures.ts';
+import { setupOf, waterOf } from './support/nutrition-fixtures.ts';
 import { issueInvite, validSubmission } from './support/profile-fixtures.ts';
 import {
   consentToBoth,
@@ -425,6 +429,50 @@ describe('Screening data: encryption, export, deletion, logs', () => {
       expectNoSentinel(lines);
       expectNoSentinel(bodies);
       expect(lines.join('\n')).not.toContain('72.5');
+    });
+
+    it('keep Meals setup, targets and water data out of every log line and error body', async () => {
+      const user = await consented();
+      lines.length = 0;
+      const bodies: string[] = [];
+      const send = async (method: HttpMethod, path: string, body?: unknown) => {
+        bodies.push(await (await user.call(method, path, body)).text());
+      };
+      const setupPath = nutritionPath(NutritionSubpath.Setup);
+      const setup = setupOf({
+        heightCm: 171.25,
+        weightKg: 63.75,
+        allergens: [Allergen.Peanuts],
+        dislikes: ['anchovies'],
+      });
+      const today = new Date().toISOString().slice(0, 10);
+
+      await send(HttpMethod.Put, `${setupPath}?q=${SENTINELS.nutrition}`, {
+        ...setup,
+        sex: SENTINELS.nutrition,
+        heightCm: SENTINELS.nutrition,
+        weightKg: SENTINELS.nutrition,
+        allergens: [SENTINELS.nutrition],
+        dislikes: [SENTINELS.nutrition],
+      });
+      await send(HttpMethod.Put, setupPath, { ...setup, note: SENTINELS.nutrition });
+      await send(HttpMethod.Get, `${ApiPath.Nutrition}?date=${SENTINELS.nutrition}`);
+      await send(HttpMethod.Get, `${ApiPath.Nutrition}?date=${today}&q=${SENTINELS.nutrition}`);
+      await send(HttpMethod.Post, `${ApiPath.Water}?q=${SENTINELS.nutrition}`, {
+        id: SENTINELS.nutrition,
+        ml: SENTINELS.nutrition,
+        date: SENTINELS.nutrition,
+      });
+      await send(HttpMethod.Post, ApiPath.Water, { ...waterOf(), note: SENTINELS.nutrition });
+      await send(HttpMethod.Get, ApiPath.MeExport);
+
+      expect(lines).toHaveLength(7);
+      expectNoSentinel(lines);
+      expectNoSentinel(bodies);
+      const text = lines.join('\n');
+      for (const value of ['171.25', '63.75', Allergen.Peanuts, 'anchovies']) {
+        expect(text).not.toContain(value);
+      }
     });
 
     it('keep plaintext and keys out of an error report when decryption fails', async () => {

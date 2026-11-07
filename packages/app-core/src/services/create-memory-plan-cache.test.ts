@@ -2,6 +2,7 @@ import type { Checkin } from '@stamina/contracts';
 import { BodyArea, Emphasis, StopFlag, type StopState } from '@stamina/domain';
 import { describe, expect, it } from 'vitest';
 import { buildAdaptation } from '../testing/build-adaptation.ts';
+import { buildReadyNutrition } from '../testing/build-nutrition.ts';
 import { buildProgress } from '../testing/build-progress.ts';
 import { testFakeSession } from '../testing/test-fake-session.ts';
 import { buildFakeSessionDetail } from '../utils/build-fake-session-detail.ts';
@@ -108,5 +109,22 @@ describe('createMemoryPlanCache Progress', () => {
 
     cache.clear();
     expect(await cache.readProgress()).toBeUndefined();
+  });
+});
+
+describe('createMemoryPlanCache Meals', () => {
+  it('returns the day saved, as a copy, and none for another day', async () => {
+    const cache = createMemoryPlanCache();
+    expect(await cache.readNutrition('2026-11-06')).toBeUndefined();
+
+    const nutrition = buildReadyNutrition();
+    await cache.saveNutrition('2026-11-06', nutrition);
+    const read = await cache.readNutrition('2026-11-06');
+    expect(read).toEqual(nutrition);
+    expect(read).not.toBe(nutrition);
+    expect(await cache.readNutrition('2026-11-07')).toBeUndefined();
+
+    cache.clear();
+    expect(await cache.readNutrition('2026-11-06')).toBeUndefined();
   });
 });

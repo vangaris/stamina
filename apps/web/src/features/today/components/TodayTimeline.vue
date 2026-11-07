@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n';
 import { TimelineEntryKind } from '../enums/timeline-entry-kind.ts';
-import type { TodayTimelineProps } from '../types.ts';
+import type { TodayTimelineEmits, TodayTimelineProps } from '../types.ts';
 import { formatTime } from '../utils/format-time.ts';
 import TimelineActivityEntry from './TimelineActivityEntry.vue';
 import TimelineMealEntry from './TimelineMealEntry.vue';
@@ -10,6 +10,7 @@ import TimelineWaterEntry from './TimelineWaterEntry.vue';
 import TimelineWindDownEntry from './TimelineWindDownEntry.vue';
 
 defineProps<TodayTimelineProps>();
+const emit = defineEmits<TodayTimelineEmits>();
 
 const { t } = useI18n();
 </script>
@@ -34,7 +35,11 @@ const { t } = useI18n();
         v-else-if="entry.kind === TimelineEntryKind.Activity"
         :activity="entry.activity"
       />
-      <TimelineWaterEntry v-else-if="entry.kind === TimelineEntryKind.Water" :water="entry.water" />
+      <TimelineWaterEntry
+        v-else-if="entry.kind === TimelineEntryKind.Water"
+        :water="entry.water"
+        @log="emit('logWater', $event)"
+      />
       <TimelineMealEntry v-else-if="entry.kind === TimelineEntryKind.MealSlot" :meal="entry.meal" />
       <TimelineWindDownEntry v-else />
     </li>

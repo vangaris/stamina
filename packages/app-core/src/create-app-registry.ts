@@ -19,9 +19,12 @@ import { getSessionDefinition } from './handlers/get-session.ts';
 import { getSessionDetailDefinition } from './handlers/get-session-detail.ts';
 import { finishSessionDefinition } from './handlers/finish-session.ts';
 import { getWeekLoadDefinition } from './handlers/get-week-load.ts';
+import { getNutritionDefinition } from './handlers/get-nutrition.ts';
 import { getProgressDefinition } from './handlers/get-progress.ts';
 import { logActivityDefinition } from './handlers/log-activity.ts';
+import { logWaterDefinition } from './handlers/log-water.ts';
 import { logWeighInDefinition } from './handlers/log-weigh-in.ts';
+import { saveNutritionSetupDefinition } from './handlers/save-nutrition-setup.ts';
 import { logSetDefinition } from './handlers/log-set.ts';
 import { grantConsentDefinition } from './handlers/grant-consent.ts';
 import { recordDoctorOkDefinition } from './handlers/record-doctor-ok.ts';
@@ -60,6 +63,9 @@ export function createAppRegistry(): RequestRegistry<Services, Stores> {
     [RequestType.GetWeekLoad]: getWeekLoadDefinition,
     [RequestType.GetProgress]: getProgressDefinition,
     [RequestType.LogWeighIn]: logWeighInDefinition,
+    [RequestType.GetNutrition]: getNutritionDefinition,
+    [RequestType.SaveNutritionSetup]: saveNutritionSetupDefinition,
+    [RequestType.LogWater]: logWaterDefinition,
     [RequestType.SubmitCheckin]: submitCheckinDefinition,
     [RequestType.GetLatestCheckin]: getLatestCheckinDefinition,
     [RequestType.ReportStopFlag]: reportStopFlagDefinition,

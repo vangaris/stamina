@@ -7,6 +7,7 @@ import {
   ProfileRejection,
   profileRejectionFor,
   RecordStatus,
+  SaveNutritionSetupStatus,
   SaveProfileStatus,
   ScreeningRejection,
   type RecheckScreening,
@@ -44,6 +45,7 @@ import { toHardActivityDates } from '../utils/to-hard-activity-dates.ts';
 import { createFakeAdaptations, type FakeAdaptationContext } from './create-fake-adaptations.ts';
 import { createFakeActivityLog, type FakeActivityContext } from './create-fake-activity-log.ts';
 import { createFakeCheckins } from './create-fake-checkins.ts';
+import { createFakeNutrition, type FakeNutritionContext } from './create-fake-nutrition.ts';
 import { createFakeWeighIns } from './create-fake-weigh-ins.ts';
 import { createFakeSessionLog, type FakeSessionTarget } from './create-fake-session-log.ts';
 import { createFakeStopFlags } from './create-fake-stop-flags.ts';
@@ -166,6 +168,22 @@ export function createFakeApiClient(getToken: () => Promise<string | undefined>)
     });
 
   const weighIns = createFakeWeighIns();
+
+  const nutrition = createFakeNutrition();
+  const nutritionContext = async (): Promise<FakeNutritionContext> => {
+    const context = await activityContext();
+    const { userId } = context;
+    return {
+      userId,
+      today: context.today,
+      anchor: context.anchor,
+      profile: profiles.get(userId),
+      nutritionOff: latestScreening(userId)?.outcome.nutritionOff ?? false,
+      sessions: programs.get(userId)?.sessions ?? [],
+      activities: activityLog.all(userId),
+      weighIns: weighIns.all(userId),
+    };
+  };
 
   const grantedPurposes = (userId: string) =>
     (consents.get(userId) ?? [])
@@ -353,6 +371,8 @@ export function createFakeApiClient(getToken: () => Promise<string | undefined>)
         checkins: checkins.all(userId),
         stopFlags: stopFlags.all(userId),
         weighIns: weighIns.all(userId),
+        nutritionSetup: nutrition.setup(userId),
+        waterLogs: nutrition.allWater(userId),
         consents: [...(consents.get(userId) ?? [])],
         sportRequests: sportRequests.has(userId) ? [sportRequests.get(userId)!] : [],
         adaptations: adaptations.all(userId),
@@ -375,6 +395,7 @@ export function createFakeApiClient(getToken: () => Promise<string | undefined>)
       stopFlags.forget(userId);
       adaptations.forget(userId);
       weighIns.forget(userId);
+      nutrition.forget(userId);
     },
     getProgram: async () => readProgram(await requireUserId()),
     getSession: async (sessionId) => sessionLog.read(await sessionTarget(sessionId)),
@@ -408,8 +429,25 @@ export function createFakeApiClient(getToken: () => Promise<string | undefined>)
       });
       return { ...summary, weighIn: weighIns.status(context.userId, summary.weekStartsOn) };
     },
-    logWeighIn: async (entry) =>
-      weighIns.log(await requireUserId(), new Date().toISOString().slice(0, 10), entry),
+    logWeighIn: async (entry) => {
+      const userId = await requireUserId();
+      const result = weighIns.log(userId, new Date().toISOString().slice(0, 10), entry);
+      nutrition.rebase(userId, result.weightKg, result.date, weighIns.all(userId));
+      return result;
+    },
+    getNutrition: async (date) => nutrition.read(await nutritionContext(), date),
+    saveNutritionSetup: async (setup) => {
+      const { userId, today } = await nutritionContext();
+      const basisKg = nutrition.setup(userId)?.weightKg;
+      const rejected = nutrition.save(await nutritionContext(), setup);
+      if (rejected) return rejected;
+      if (basisKg !== setup.weightKg) weighIns.log(userId, today, { weightKg: setup.weightKg });
+      return {
+        status: SaveNutritionSetupStatus.Saved,
+        nutrition: nutrition.read(await nutritionContext(), today),
+      };
+    },
+    logWater: async (water) => nutrition.logWater(await nutritionContext(), water),
     getAdaptations: async () => ({ adaptations: adaptations.pending(await adaptationContext()) }),
     acceptAdaptation: async (id, accept) =>
       adaptations.accept(await adaptationContext(), id, accept),
