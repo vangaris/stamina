@@ -1,3 +1,10 @@
+import {
+  acceptAdaptationResultSchema,
+  adaptationListSchema,
+  declineAdaptationResultSchema,
+} from './adaptation-schema.ts';
+import { AdaptationSubpath } from './enums/adaptation-subpath.ts';
+import { adaptationPath } from './utils/adaptation-path.ts';
 import { ApiError } from './api-error.ts';
 import { logActivityResultSchema, weekLoadSchema } from './activity-schema.ts';
 import { latestCheckinResponseSchema, submitCheckinResultSchema } from './checkin-schema.ts';
@@ -154,6 +161,24 @@ export function createApiClient({
     async getWeekLoad() {
       const response = await send(activityPath(ActivitySubpath.Week), {});
       return weekLoadSchema.parse(await response.json());
+    },
+    async getAdaptations() {
+      const response = await send(adaptationPath(), {});
+      return adaptationListSchema.parse(await response.json());
+    },
+    async acceptAdaptation(adaptationId, accept) {
+      const response = await postJson(
+        adaptationPath(adaptationId, AdaptationSubpath.Accept),
+        accept,
+        [HttpStatus.UnprocessableEntity],
+      );
+      return acceptAdaptationResultSchema.parse(await response.json());
+    },
+    async declineAdaptation(adaptationId) {
+      const response = await postEmpty(adaptationPath(adaptationId, AdaptationSubpath.Decline), [
+        HttpStatus.UnprocessableEntity,
+      ]);
+      return declineAdaptationResultSchema.parse(await response.json());
     },
     async exportData() {
       const response = await send(ApiPath.MeExport, {});

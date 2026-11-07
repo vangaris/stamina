@@ -59,6 +59,16 @@ import type {
   weekLoadSchema,
   weeklyLoadSchema,
 } from './activity-schema.ts';
+import type {
+  acceptAdaptationResultSchema,
+  acceptAdaptationSchema,
+  adaptationChangeSchema,
+  adaptationListSchema,
+  adaptationSchema,
+  declineAdaptationResultSchema,
+  exportedAdaptationSchema,
+  sessionRevisionRefSchema,
+} from './adaptation-schema.ts';
 import type { userExportSchema } from './user-export-schema.ts';
 import type {
   exerciseVariantSchema,
@@ -134,6 +144,14 @@ export type LogActivityResult = z.infer<typeof logActivityResultSchema>;
 export type PlannedActivity = z.infer<typeof plannedActivitySchema>;
 export type WeeklyLoad = z.infer<typeof weeklyLoadSchema>;
 export type WeekLoad = z.infer<typeof weekLoadSchema>;
+export type SessionRevisionRef = z.infer<typeof sessionRevisionRefSchema>;
+export type AdaptationChange = z.infer<typeof adaptationChangeSchema>;
+export type Adaptation = z.infer<typeof adaptationSchema>;
+export type AdaptationList = z.infer<typeof adaptationListSchema>;
+export type AcceptAdaptation = z.infer<typeof acceptAdaptationSchema>;
+export type AcceptAdaptationResult = z.infer<typeof acceptAdaptationResultSchema>;
+export type DeclineAdaptationResult = z.infer<typeof declineAdaptationResultSchema>;
+export type ExportedAdaptation = z.infer<typeof exportedAdaptationSchema>;
 
 export interface ApiClientOptions {
   baseUrl: string;
@@ -188,6 +206,15 @@ export interface ApiClient {
   logActivity(activity: LogActivity): Promise<LogActivityResult>;
   /** The week that holds today: its Load, the average of the weeks before, and its Activities. */
   getWeekLoad(): Promise<WeekLoad>;
+  /** The pending Adaptation suggestions that still apply, oldest first. The server evaluates the rules first. */
+  getAdaptations(): Promise<AdaptationList>;
+  /**
+   * Accepts a suggestion: the Program changes (new Session revisions). A repeat of an accept the
+   * server has is ignored (`recorded` false); `422` (stale, or declined) is a `Rejected` result, not an error.
+   */
+  acceptAdaptation(adaptationId: string, accept: AcceptAdaptation): Promise<AcceptAdaptationResult>;
+  /** Declines a suggestion ("Keep my plan"); a repeat is ignored (`recorded` false); `422` (accepted already) is a `Rejected` result, not an error. */
+  declineAdaptation(adaptationId: string): Promise<DeclineAdaptationResult>;
   /** Everything Stamina holds about the signed-in user. */
   exportData(): Promise<UserExport>;
   /** Hard-deletes the signed-in user's rows. Resolves once they are gone. */

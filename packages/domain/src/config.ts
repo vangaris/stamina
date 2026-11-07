@@ -654,3 +654,40 @@ export const PAUSING_STOP_ACTIONS: readonly StopAction[] = [
   StopAction.PauseUntilDoctor,
   StopAction.PauseUntilCleared,
 ];
+
+/** A Check-in answer at or below this is low. */
+export const POOR_CHECKIN_SCORE = 2;
+/** A Check-in is poor when at least this many of its 3 answers are low. */
+export const POOR_CHECKIN_ANSWERS = 2;
+/** Soreness at or below this, with a Session that loads a targeted area, swaps those exercises. */
+export const SORE_AREA_SORENESS = 2;
+/** An Adaptation lightens a Session by this many reps in reserve (never past `MAX_RIR`) and this many sets (never below one). */
+export const LIGHTER_RIR_STEP = 1;
+export const LIGHTER_SETS_STEP = 1;
+/** The days a Session may move to, tried in this order, relative to its own day. */
+export const MOVE_SESSION_OFFSETS: readonly number[] = [1, -1];
+
+/** Early Deload: Load above this multiple of the person's average ... */
+export const DELOAD_LOAD_FACTOR = 1.3;
+/** ... in each of this many weeks in a row (this week so far and the ones before it). */
+export const DELOAD_LOAD_WEEKS = 2;
+/** Early Deload: this many poor Check-ins ... */
+export const DELOAD_POOR_CHECKINS = 3;
+/** ... on different days within this many days, today included. */
+export const DELOAD_POOR_CHECKIN_DAYS = 5;
+/** Early Deload: this many finished Sessions in a row ... */
+export const DELOAD_EFFORT_SESSIONS = 2;
+/** ... each at least this many RPE points above its target. */
+export const DELOAD_EFFORT_MARGIN = 2;
+/** A declined Deload is asked again after this many days, only if its reason still holds. */
+export const ADAPTATION_REASK_DAYS = 3;
+
+/** This many unfinished Sessions dated before today, in the current week, repeat the week. */
+export const MISSED_SESSIONS_TO_REPEAT = 2;
+/** This many days without a finished Session (two weeks) restart the Block. */
+export const DAYS_OFF_TO_RESTART = 14;
+/** A restarted Block carries this many more reps in reserve (never past `MAX_RIR`). */
+export const RESTART_RIR_STEP = 1;
+
+/** Activities and Check-ins older than this many days no longer raise an Adaptation. */
+export const ADAPTATION_LOOKBACK_DAYS = 14;

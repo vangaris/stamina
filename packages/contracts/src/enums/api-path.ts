@@ -28,4 +28,6 @@ export enum ApiPath {
   Sessions = '/sessions',
   /** Activities: `POST /activities` logs one, `GET /activities/week` reads this week's Load. */
   Activities = '/activities',
+  /** Adaptation suggestions: `GET /adaptations` lists the pending ones; `POST /adaptations/{id}/accept` and `/decline` decide one. */
+  Adaptations = '/adaptations',
 }
