@@ -81,3 +81,8 @@ export interface LoadSummaryProps {
   summary: LoadSummaryView;
   locale: Locale;
 }
+
+export interface PlayedContainerEmits {
+  /** The Activity reached the server, so what it raises (a suggestion) can be read now. */
+  saved: [];
+}

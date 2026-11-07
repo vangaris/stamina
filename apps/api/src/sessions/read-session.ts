@@ -4,6 +4,7 @@ import { setLog } from '../db/schema.ts';
 import type { UserTx } from '../db/types.ts';
 import { readProgressions } from './read-progressions.ts';
 import { readSessionPlan } from './read-session-plan.ts';
+import { resolveCurrentSessionId } from './resolve-current-session-id.ts';
 import { toSessionDetail } from './to-session-detail.ts';
 
 /**
@@ -18,8 +19,9 @@ export async function readSession(
   userId: string,
   sessionId: string,
 ): Promise<SessionDetail | null> {
-  const plan = await readSessionPlan(tx, userId, sessionId);
+  const currentId = await resolveCurrentSessionId(tx, sessionId);
+  const plan = await readSessionPlan(tx, userId, currentId);
   if (plan === null) return null;
-  const sets = await tx.select().from(setLog).where(eq(setLog.sessionId, sessionId));
+  const sets = await tx.select().from(setLog).where(eq(setLog.sessionId, currentId));
   return toSessionDetail(plan, sets, await readProgressions(tx, userId, plan));
 }

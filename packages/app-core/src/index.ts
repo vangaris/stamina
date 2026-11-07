@@ -19,6 +19,9 @@ export { SessionStatus } from './enums/session-status.ts';
 export { SyncTrigger } from './enums/sync-trigger.ts';
 export { AppError } from './errors/app-error.ts';
 export { AuthError } from './errors/auth-error.ts';
+export { acceptAdaptation } from './handlers/accept-adaptation.ts';
+export { declineAdaptation } from './handlers/decline-adaptation.ts';
+export { getAdaptations } from './handlers/get-adaptations.ts';
 export { confirmDoctorSeen } from './handlers/confirm-doctor-seen.ts';
 export { getLatestCheckin } from './handlers/get-latest-checkin.ts';
 export { recheckScreening } from './handlers/recheck-screening.ts';
@@ -48,6 +51,7 @@ export { startGoogleSignIn } from './handlers/start-google-sign-in.ts';
 export { verifyEmailCode } from './handlers/verify-email-code.ts';
 export { createBetterAuthService } from './services/create-better-auth-service.ts';
 export type {
+  AcceptAdaptationRequest,
   ActivityLogStore,
   AppMediatorOptions,
   AuthService,
@@ -58,9 +62,12 @@ export type {
   Clock,
   ConfirmDoctorSeenRequest,
   Context,
+  DeclineAdaptationRequest,
   DeleteAccount,
+  FakeApiClient,
   ExportData,
   FinishSessionRequest,
+  GetAdaptationsRequest,
   GetHealth,
   GetLatestCheckinRequest,
   GetProfile,

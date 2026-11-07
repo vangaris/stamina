@@ -7,6 +7,7 @@ import { withUser } from '../db/with-user.ts';
 import { findPlannedExercise } from './find-planned-exercise.ts';
 import { RecordIdTakenError } from './record-id-taken-error.ts';
 import { readSessionPlan } from './read-session-plan.ts';
+import { resolveCurrentSessionId } from './resolve-current-session-id.ts';
 
 const rejected = (reason: SessionRejection): LogSetResult => ({
   status: RecordStatus.Rejected,
@@ -15,7 +16,10 @@ const rejected = (reason: SessionRejection): LogSetResult => ({
 
 /**
  * Records one set of the user's Session, or says why not; `null` when the Session is not the
- * user's or does not exist. Replays are safe: a set whose id the server holds for this Session, or
+ * user's or does not exist. A revision that replaced the Session (an Adaptation was accepted)
+ * takes the set: the id resolves to the current revision, so a set queued on a phone before the
+ * plan changed still lands, and is `ExerciseNotInSession` only when the revision dropped the
+ * exercise. Replays are safe: a set whose id the server holds for this Session, or
  * whose number is already logged for that Session exercise, changes nothing and answers `Saved`
  * with `recorded: false` (the first write wins), even after the Session is finished. A new set
  * after the finish is `SessionFinished`; a set id that belongs to another Session throws `RecordIdTakenError`; an exercise that is neither planned nor a tagged easier
@@ -30,13 +34,14 @@ export async function logSet(
 ): Promise<LogSetResult | null> {
   return withUser(db, userId, async (tx) => {
     await lockUser(tx, userId);
-    const plan = await readSessionPlan(tx, userId, sessionId);
+    const current = await resolveCurrentSessionId(tx, sessionId);
+    const plan = await readSessionPlan(tx, userId, current);
     if (plan === null) return null;
 
     const [replay] = await tx
       .select({ id: setLog.id })
       .from(setLog)
-      .where(and(eq(setLog.id, set.id), eq(setLog.sessionId, sessionId)));
+      .where(and(eq(setLog.id, set.id), eq(setLog.sessionId, current)));
     if (replay !== undefined) return { status: RecordStatus.Saved, recorded: false };
     if (plan.finished !== null) return rejected(SessionRejection.SessionFinished);
 
@@ -48,7 +53,7 @@ export async function logSet(
       .values({
         id: set.id,
         userId,
-        sessionId,
+        sessionId: current,
         sessionExerciseId: planned.row.id,
         exerciseId: set.exerciseId,
         setNumber: set.setNumber,

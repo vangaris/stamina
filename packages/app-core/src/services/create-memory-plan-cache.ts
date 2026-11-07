@@ -1,4 +1,5 @@
 import type {
+  Adaptation,
   Checkin,
   ProgramWeek,
   SavedScreening,
@@ -15,6 +16,7 @@ export function createMemoryPlanCache(): PlanCache & Clearable {
   let weekLoad: WeekLoad | undefined;
   let stop: StopState | undefined;
   let latestCheckin: Checkin | null | undefined;
+  let adaptations: Adaptation[] | undefined;
   const details = new Map<string, SessionDetail>();
   return {
     async saveProgram(week) {
@@ -29,6 +31,15 @@ export function createMemoryPlanCache(): PlanCache & Clearable {
     async readSessionDetail(sessionId) {
       const detail = details.get(sessionId);
       return detail && structuredClone(detail);
+    },
+    async deleteSessionDetail(sessionId) {
+      details.delete(sessionId);
+    },
+    async saveAdaptations(pending) {
+      adaptations = structuredClone([...pending]);
+    },
+    async readAdaptations() {
+      return adaptations && structuredClone(adaptations);
     },
     async saveWeekLoad(week) {
       weekLoad = structuredClone(week);
@@ -63,6 +74,7 @@ export function createMemoryPlanCache(): PlanCache & Clearable {
       cleared = undefined;
       stop = undefined;
       latestCheckin = undefined;
+      adaptations = undefined;
       weekLoad = undefined;
       details.clear();
     },

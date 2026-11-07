@@ -11,6 +11,8 @@ export interface SetupSessionOptions {
   /** What the swap store starts with, as raw storage entries. */
   storage?: Record<string, string>;
   locale?: Locale;
+  /** The id the screen is opened with, when it is not the detail's own (an older revision). */
+  sessionId?: string;
 }
 
 export function memoryStorage(initial: Record<string, string> = {}) {
@@ -28,6 +30,7 @@ export function setupSession({
   detail = makeSessionDetail(),
   storage: initialStorage,
   locale = Locale.En,
+  sessionId = detail.id,
 }: SetupSessionOptions = {}) {
   const mock = createMockMediator(detail);
   const { data, storage } = memoryStorage(initialStorage);
@@ -38,7 +41,7 @@ export function setupSession({
   let ids = 0;
   const newId = () => `10000000-0000-4000-8000-${String(++ids).padStart(12, '0')}`;
   const flow = useSession({
-    sessionId: detail.id,
+    sessionId,
     locale: () => locale,
     onNavigate,
     mediator: mock.mediator,

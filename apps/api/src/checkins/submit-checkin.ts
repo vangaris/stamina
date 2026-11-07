@@ -4,6 +4,7 @@ import { lockUser } from '../db/lock-user.ts';
 import { checkin } from '../db/schema.ts';
 import type { Db } from '../db/types.ts';
 import { withUser } from '../db/with-user.ts';
+import { refreshAdaptations } from '../adaptations/index.ts';
 import { CheckinIdTakenError } from './checkin-id-taken-error.ts';
 import { toCheckin } from './to-checkin.ts';
 
@@ -11,12 +12,14 @@ import { toCheckin } from './to-checkin.ts';
  * Records one Check-in of the user. There is no limit on its day: a Check-in sent offline arrives
  * whenever the device is next online, and refusing it would delete it. Replays are safe: an id the
  * user already has returns the stored Check-in with `recorded: false` and changes nothing. An id
- * that belongs to another person throws `CheckinIdTakenError`. Runs under `lockUser`.
+ * that belongs to another person throws `CheckinIdTakenError`. Runs under `lockUser`. A new Check-in runs the Adaptation rules at `now` in
+ * the same transaction (`refreshAdaptations`), so a poor day can raise a suggestion at once.
  */
 export async function submitCheckin(
   db: Db,
   userId: string,
   entry: SubmitCheckin,
+  now: Date,
 ): Promise<SubmitCheckinResult> {
   return withUser(db, userId, async (tx) => {
     await lockUser(tx, userId);
@@ -39,6 +42,7 @@ export async function submitCheckin(
       .onConflictDoNothing()
       .returning();
     if (stored === undefined) throw new CheckinIdTakenError();
+    await refreshAdaptations(tx, userId, now);
     return { status: RecordStatus.Saved, recorded: true, checkin: toCheckin(stored) };
   });
 }

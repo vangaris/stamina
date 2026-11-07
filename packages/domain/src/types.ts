@@ -1,3 +1,6 @@
+import type { AdaptationChangeKind } from './enums/adaptation-change-kind.ts';
+import type { AdaptationRule } from './enums/adaptation-rule.ts';
+import type { AdaptationStatus } from './enums/adaptation-status.ts';
 import type { BodyHalf } from './enums/body-half.ts';
 import type { ProgressionOutcome } from './enums/progression-outcome.ts';
 import type { PickProblem } from './enums/pick-problem.ts';
@@ -185,6 +188,8 @@ export interface PrescribeInput {
   rirSuitable: boolean;
   /** Whether the exercise needs equipment beyond the body. */
   needsEquipment: boolean;
+  /** Reps in reserve added to a rated exercise (never past `MAX_RIR`); absent means none. */
+  rirBoost?: number;
 }
 
 /** How hard and how much of one exercise. */
@@ -307,6 +312,11 @@ export interface GenerateWeekInput extends PlayPattern {
    * means the rules pick that Session. A choice that does not pass `validatePicks` is ignored.
    */
   picks?: readonly (readonly PickedExercise[] | null)[];
+  /**
+   * Reps in reserve added to every rated exercise, never past `MAX_RIR`; absent means none. A
+   * restarted Block asks for `RESTART_RIR_STEP`.
+   */
+  rirBoost?: number;
 }
 
 /** One exercise of a generated Session with its prescription, in the order it is done. */
@@ -356,4 +366,175 @@ export interface Progression {
   outcome: ProgressionOutcome;
   /** Kilograms, rounded to the nearest half. */
   suggestedWeightKg: number;
+}
+
+/** A Session revision an Adaptation was raised on and applies to. */
+export interface SessionRevisionRef {
+  sessionId: string;
+  revision: number;
+}
+
+/** What accepting an Adaptation changes. `kind` says which; days are `YYYY-MM-DD` UTC. */
+export type AdaptationChange =
+  | { kind: AdaptationChangeKind.MoveSession; sessionId: string; from: string; to: string }
+  | { kind: AdaptationChangeKind.SwapToRecovery; sessionId: string }
+  | { kind: AdaptationChangeKind.DropSet; sessionId: string }
+  | { kind: AdaptationChangeKind.LightenSession; sessionId: string }
+  | {
+      kind: AdaptationChangeKind.SwapExercises;
+      sessionId: string;
+      /** The targeted body areas the replaced exercises loaded. */
+      areas: BodyArea[];
+    }
+  | { kind: AdaptationChangeKind.DeloadWeek; sessionIds: string[] }
+  | {
+      kind: AdaptationChangeKind.RepeatWeek;
+      /** The first day of the repeated week: tomorrow. */
+      startsOn: string;
+      /** The week of the Block that is repeated, 1 to 4. */
+      weekInBlock: number;
+    }
+  | { kind: AdaptationChangeKind.RestartBlock; startsOn: string };
+
+/**
+ * The numbers a reason template is filled with, by name. Whole numbers only: the reason is plain
+ * numbers, never text. Keys per rule (see `proposeAdaptations`):
+ * - `UnplannedActivity`: `load`, `minutes`, `hours` (from the Activity's day to the Session's), `windowHours`
+ * - `PoorCheckin`: `sleep`, `soreness`, `energy`
+ * - `SoreArea`: `soreness`
+ * - `DeloadLoad`: `load` (this week so far), `previousLoad` (last week), `average`, `percent` (the limit, 130)
+ * - `DeloadCheckins`: `count`, `days`
+ * - `DeloadEffort`: `sessions`, `margin`
+ * - `RepeatWeek`: `missed`, `weekInBlock`
+ * - `RestartBlock`: `daysOff`
+ */
+export type AdaptationReasonParams = Readonly<Record<string, number>>;
+
+/** An Adaptation the rules raise, before it is stored. */
+export interface AdaptationProposal {
+  ruleId: AdaptationRule;
+  /** Names the facts it was raised on (an Activity id, a Check-in day, a week), so the same facts raise it once. */
+  triggerKey: string;
+  /** 1 the first time; a declined Deload asked again carries 2, 3 ... */
+  ask: number;
+  change: AdaptationChange;
+  params: AdaptationReasonParams;
+  /** The Session revisions the change applies to; accepting is refused when any is no longer the current, unfinished one. */
+  basis: SessionRevisionRef[];
+  /** The last day (`YYYY-MM-DD`) the suggestion is still worth showing, or `null` until used or declined. */
+  validUntil: string | null;
+}
+
+/** A Session as the Adaptation rules see it: a current (not superseded) revision. */
+export interface AdaptationSession extends GeneratedSession {
+  id: string;
+  revision: number;
+  /** It has a finish record. */
+  finished: boolean;
+  /** It has at least one logged set (a finished Session has). Started Sessions are never revised. */
+  started: boolean;
+}
+
+/** A finished Session: when, and how hard it felt against how hard it was meant to. */
+export interface FinishedSessionFact {
+  /** The Session's planned day. */
+  date: string;
+  /** Session RPE the person gave. */
+  rpe: number;
+  /** The lowest reps in reserve the Session prescribed; `null` when it rated no exercise. The target RPE is `FAILURE_RPE` minus this. */
+  lowestRir: number | null;
+  /** Finished order, oldest first among equal days. */
+  finishedAt: string;
+}
+
+/** An Activity as the rules see it. */
+export interface ActivityFact {
+  id: string;
+  date: string;
+  intensity: Intensity;
+  minutes: number;
+  load: number;
+  /** It matched the person's play days when it was logged. */
+  planned: boolean;
+}
+
+/** A Check-in as the rules see it. */
+export interface CheckinFact {
+  id: string;
+  date: string;
+  sleep: number;
+  soreness: number;
+  energy: number;
+}
+
+/** An Adaptation already stored, for one rule and trigger. */
+export interface AdaptationHistoryEntry {
+  ruleId: AdaptationRule;
+  triggerKey: string;
+  ask: number;
+  status: AdaptationStatus;
+  /** ISO instant of the decision; `null` while pending. */
+  decidedAt: string | null;
+  /** The Session revisions it applies to and its last day: a pending one lapses with them. */
+  basis: SessionRevisionRef[];
+  validUntil: string | null;
+}
+
+/** What `generateWeek` reads except the week itself: where the Block is, the start day, picks, and RIR boost. */
+export type GenerationBasis = Omit<
+  GenerateWeekInput,
+  'weekInBlock' | 'startsOn' | 'picks' | 'rirBoost'
+>;
+
+/** Everything `proposeAdaptations` and `applyAdaptation` read, gathered by the server for one user. */
+export interface AdaptationContext {
+  /** The person's day, `YYYY-MM-DD` UTC, and the instant it was read at (ISO). */
+  today: string;
+  now: string;
+  /** The current Program week: its first day and its week of the Block. */
+  weekStartsOn: string;
+  weekInBlock: number;
+  /** The first Block's first day: the anchor weekly Load counts from. */
+  programStartsOn: string;
+  /** The current (not superseded) Sessions of the current week, by date. */
+  sessions: readonly AdaptationSession[];
+  /** Every finished Session of the Program, any week. */
+  finished: readonly FinishedSessionFact[];
+  /** Activities dated within `ADAPTATION_LOOKBACK_DAYS` of today, or later. */
+  activities: readonly ActivityFact[];
+  /** Check-ins dated within `ADAPTATION_LOOKBACK_DAYS` of today. */
+  checkins: readonly CheckinFact[];
+  /** Every Session and Activity Load entry of the Program (for the weekly Load). */
+  loadEntries: readonly LoadEntry[];
+  /**
+   * What generated the Program, as it is now: the play pattern, training week, Sport Profile,
+   * mode, equipment, library, and excluded areas (Screening's plus those of reported new pain).
+   * A repeated week or restarted Block is `generateWeek` over this.
+   */
+  generation: GenerationBasis;
+  /** Every Adaptation stored for the user. */
+  history: readonly AdaptationHistoryEntry[];
+}
+
+/** One Session as an Adaptation leaves it, ready to store as a new revision of `supersedes`. */
+export interface RevisedSession extends GeneratedSession {
+  /** The id of the revision this one replaces; `null` for a Session of a regenerated week. */
+  supersedes: string | null;
+}
+
+/**
+ * What accepting an Adaptation stores. `block` is `null` when the Sessions stay in the current
+ * Block (move, swap, lighten, Deload); a repeated week or restarted Block gets a new Block, and
+ * `supersedes` lists every unfinished Session of the current week it replaces.
+ */
+export interface AppliedAdaptation {
+  block: {
+    emphasis: Emphasis;
+    /** The first day of the week: the Block's `startsOn` plus `(weekInBlock - 1) * 7` days. */
+    startsOn: string;
+    weekInBlock: number;
+    limited: boolean;
+  } | null;
+  supersedes: string[];
+  sessions: RevisedSession[];
 }

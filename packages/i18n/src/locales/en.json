@@ -681,5 +681,33 @@
       "dateOutOfRange": "That day is too far from today to log.",
       "failed": "We could not save that. Please try again."
     }
+  },
+  "adaptation": {
+    "title": "A suggestion for you",
+    "accept": "Accept",
+    "decline": "Keep my plan",
+    "stale": "Your plan changed. Here is the latest.",
+    "queued": "Saved on this phone. It will be sent when you are back online.",
+    "failed": "We could not send that. Please try again.",
+    "change": {
+      "move-session": "Move your Session from {from} to {to}.",
+      "swap-to-recovery": "Make this Session a gentle Recovery Session.",
+      "drop-set": "Do one set fewer on each exercise in this Session.",
+      "lighten-session": "Keep one more rep in reserve and do one set fewer in this Session.",
+      "swap-exercises": "Swap the exercises that load the muscles you feel today for ones that leave them out.",
+      "deload-week": "Take an easier week: fewer sets and one more rep in reserve in your remaining Sessions.",
+      "repeat-week": "Plan this week again from {day}, at the same targets.",
+      "restart-block": "Start a fresh Block from {day}, with one more rep in reserve."
+    },
+    "reason": {
+      "unplanned-activity": "You played for {minutes} min at a hard effort (Load {load}), and your next Session is {hours} hours later. Your body usually needs about {windowHours} hours.",
+      "poor-checkin": "Your Check-in today: sleep {sleep}, muscles {soreness}, energy {energy}, out of 5.",
+      "sore-area": "Your muscles feel sore today ({soreness} out of 5) and this Session would work them.",
+      "deload-load": "Your Load is {load} this week and was {previousLoad} last week, both above {percent}% of your usual {average}.",
+      "deload-checkins": "You had {count} low Check-ins in the last {days} days.",
+      "deload-effort": "Your last {sessions} Sessions felt {margin} or more above the planned effort.",
+      "repeat-week": "You missed {missed, plural, one {# Session} other {# Sessions}} in week {weekInBlock}.",
+      "restart-block": "It has been {daysOff} days since your last Session."
+    }
   }
 }

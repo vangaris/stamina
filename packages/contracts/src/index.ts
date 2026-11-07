@@ -3,6 +3,19 @@ export { createApiClient } from './create-api-client.ts';
 export { profileRejectionFor } from './utils/profile-rejection-for.ts';
 export { consentGrantSchema, consentStateSchema } from './consent-schema.ts';
 export { ApiPath } from './enums/api-path.ts';
+export { AdaptationRejection } from './enums/adaptation-rejection.ts';
+export { AdaptationSubpath } from './enums/adaptation-subpath.ts';
+export { adaptationPath } from './utils/adaptation-path.ts';
+export {
+  acceptAdaptationResultSchema,
+  acceptAdaptationSchema,
+  adaptationChangeSchema,
+  adaptationListSchema,
+  adaptationSchema,
+  declineAdaptationResultSchema,
+  exportedAdaptationSchema,
+  sessionRevisionRefSchema,
+} from './adaptation-schema.ts';
 export { DatabaseStatus } from './enums/database-status.ts';
 export { DoctorOkRejection } from './enums/doctor-ok-rejection.ts';
 export { HealthStatus } from './enums/health-status.ts';
@@ -99,6 +112,14 @@ export { savedScreeningSchema } from './saved-screening-schema.ts';
 export { screeningSubmissionSchema } from './screening-submission-schema.ts';
 export { userExportSchema } from './user-export-schema.ts';
 export type {
+  AcceptAdaptation,
+  AcceptAdaptationResult,
+  Adaptation,
+  AdaptationChange,
+  AdaptationList,
+  DeclineAdaptationResult,
+  ExportedAdaptation,
+  SessionRevisionRef,
   ApiClient,
   ApiClientOptions,
   CatalogSport,

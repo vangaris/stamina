@@ -57,7 +57,7 @@ import { useRestTimer } from './useRestTimer.ts';
  * and the finish follow from there. `load` also keeps the screen awake until `close`.
  */
 export function useSession(options: UseSessionOptions) {
-  const { sessionId, locale, onNavigate } = options;
+  const { locale, onNavigate } = options;
   const mediator = options.mediator ?? useMediator();
   const swapStore = options.swapStore ?? createSwapStore(localStorage);
   const makeId = options.newId ?? newId;
@@ -65,6 +65,8 @@ export function useSession(options: UseSessionOptions) {
 
   const phase = ref(SessionPhase.Loading);
   const messageKey = ref<SessionMessageKey | undefined>();
+  /** The Session being done: the id asked for, then the id of its current revision once loaded. */
+  const sessionId = ref(options.sessionId);
   const detail = shallowRef<SessionDetail | undefined>();
   const swaps = ref<Swaps>({});
   const position = ref(0);
@@ -149,8 +151,10 @@ export function useSession(options: UseSessionOptions) {
     phase.value = SessionPhase.Loading;
     messageKey.value = undefined;
     try {
-      const loaded = await mediator.send(getSessionDetail(sessionId));
+      const loaded = await mediator.send(getSessionDetail(sessionId.value));
       if (closed) return;
+      // A revised Session answers under its current id: every later write goes to that one.
+      sessionId.value = loaded.id;
       detail.value = loaded;
       if (loaded.finished) {
         const { load: score, rpe, minutes } = loaded.finished;
@@ -160,7 +164,7 @@ export function useSession(options: UseSessionOptions) {
         return;
       }
       stopAwake ??= startAwake();
-      swaps.value = swapStore.read(sessionId);
+      swaps.value = swapStore.read(sessionId.value);
       finishMinutes.value = loaded.minutes;
       resume();
     } catch (error) {
@@ -230,7 +234,7 @@ export function useSession(options: UseSessionOptions) {
     }
 
     try {
-      const result = await mediator.send(logSet(sessionId, set));
+      const result = await mediator.send(logSet(sessionId.value, set));
       if (isQueued(result)) return report(set.id, setNumber, SetSaveStatus.Queued);
       if (result.status === RecordStatus.Rejected) {
         // The server will not keep it, so neither does the screen: back to where it was.
@@ -300,7 +304,7 @@ export function useSession(options: UseSessionOptions) {
     const view = views.value[position.value];
     if (!view) return;
     swaps.value = withSwap(swaps.value, view.exercise, option.exerciseId);
-    swapStore.write(sessionId, swaps.value);
+    swapStore.write(sessionId.value, swaps.value);
     sheet.value = SessionSheet.None;
     const swapped = views.value[position.value];
     if (swapped) draft.value = defaultSetDraft(swapped);
@@ -313,7 +317,9 @@ export function useSession(options: UseSessionOptions) {
     errorKey.value = undefined;
     const minutes = finishMinutes.value;
     try {
-      const result = await mediator.send(finishSession(sessionId, { id: makeId(), rpe, minutes }));
+      const result = await mediator.send(
+        finishSession(sessionId.value, { id: makeId(), rpe, minutes }),
+      );
       finished.value = isQueued(result)
         ? { load: sessionLoad(rpe, minutes), rpe, minutes, queued: true }
         : {
@@ -322,7 +328,7 @@ export function useSession(options: UseSessionOptions) {
             minutes: result.finished.minutes,
             queued: false,
           };
-      swapStore.clear(sessionId);
+      swapStore.clear(sessionId.value);
       close();
       phase.value = SessionPhase.Done;
     } catch (error) {
@@ -336,6 +342,7 @@ export function useSession(options: UseSessionOptions) {
   }
 
   return {
+    sessionId,
     phase,
     messageKey,
     errorKey,

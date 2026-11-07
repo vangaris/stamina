@@ -3,6 +3,7 @@ import { BodyArea, Emphasis, StopFlag, type StopState } from '@stamina/domain';
 import type { Checkin, WeekLoad } from '@stamina/contracts';
 import { describe, expect, it } from 'vitest';
 import { LocalTable } from '../enums/local-table.ts';
+import { buildAdaptation } from '../testing/build-adaptation.ts';
 import { testFakeSession } from '../testing/test-fake-session.ts';
 import { buildFakeSessionDetail } from '../utils/build-fake-session-detail.ts';
 import { createDexiePlanCache } from './create-dexie-plan-cache.ts';
@@ -135,6 +136,38 @@ describe('createDexiePlanCache', () => {
 
       await cache.saveLatestCheckin(checkin);
       expect(await open(indexedDB).cache.readLatestCheckin()).toEqual(checkin);
+    });
+  });
+
+  describe('Adaptations and Session details', () => {
+    const pending = buildAdaptation(testFakeSession);
+
+    it('returns the pending list saved, across a reload, and none before', async () => {
+      const indexedDB = new IDBFactory();
+      const { cache } = open(indexedDB);
+      expect(await cache.readAdaptations()).toBeUndefined();
+
+      await cache.saveAdaptations([pending]);
+      expect(await open(indexedDB).cache.readAdaptations()).toEqual([pending]);
+
+      await cache.saveAdaptations([]);
+      expect(await open(indexedDB).cache.readAdaptations()).toEqual([]);
+    });
+
+    it('treats cached Adaptations in an unknown shape as not cached', async () => {
+      const { database, cache } = open(new IDBFactory());
+      await database.table(LocalTable.Cache).put({ key: 'adaptations', value: [{ old: 1 }] });
+
+      expect(await cache.readAdaptations()).toBeUndefined();
+    });
+
+    it('drops one Session detail', async () => {
+      const { cache } = open(new IDBFactory());
+      await cache.saveSessionDetail(detail);
+
+      await cache.deleteSessionDetail(detail.id);
+
+      expect(await cache.readSessionDetail(detail.id)).toBeUndefined();
     });
   });
 });

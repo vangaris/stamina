@@ -1,12 +1,15 @@
 <script setup lang="ts">
-import { onMounted } from 'vue';
+import { onMounted, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { ReportStopFlagContainer } from '../../stop-flag/index.ts';
 import { useCheckin } from '../composables/useCheckin.ts';
 import { CHECKIN_QUESTIONS, CHECKIN_SCORES } from '../config.ts';
+import { CheckinStatus } from '../enums/checkin-status.ts';
+import type { CheckinContainerEmits } from '../types.ts';
 import CheckinDone from './CheckinDone.vue';
 import CheckinQuestion from './CheckinQuestion.vue';
 
+const emit = defineEmits<CheckinContainerEmits>();
 const router = useRouter();
 const checkin = useCheckin({ onNavigate: (path) => void router.replace(path) });
 const { position, question, selected, sent, messageKey, asking, done, sending, canGoBack } =
@@ -14,6 +17,9 @@ const { position, question, selected, sent, messageKey, asking, done, sending, c
 const { errorKey, unusualOpen, unusualDone } = checkin;
 
 onMounted(checkin.load);
+watch(checkin.status, (now) => {
+  if (now === CheckinStatus.Saved) emit('saved');
+});
 </script>
 
 <template>

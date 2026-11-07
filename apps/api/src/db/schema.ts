@@ -5,6 +5,8 @@ import {
   type SportSource,
 } from '@stamina/contracts';
 import {
+  AdaptationRule,
+  AdaptationStatus,
   BodyArea,
   ConsentPurpose,
   Emphasis,
@@ -44,9 +46,12 @@ import {
   MIN_CHECKIN_SCORE,
   StopFlag,
   Weekday,
+  type AdaptationChange,
+  type AdaptationReasonParams,
   type Goal,
   type LaunchSport,
   type Need,
+  type SessionRevisionRef,
   type Units,
 } from '@stamina/domain';
 import { Locale } from '@stamina/i18n';
@@ -556,6 +561,7 @@ export const session = pgTable(
     ),
     unique('session_block_date_revision').on(table.blockId, table.date, table.revision),
     index('session_user_date').on(table.userId, table.date),
+    index('session_supersedes').on(table.supersedesId),
     pgPolicy('session_owner_select', {
       for: 'select',
       to: APP_ROLE,
@@ -894,6 +900,93 @@ export const stopFlag = pgTable(
       to: APP_ROLE,
       using: sql`user_id = app_user_id()::uuid and confirmed_at is null`,
       withCheck: sql`user_id = app_user_id()::uuid and confirmed_at is not null`,
+    }),
+  ],
+).enableRLS();
+
+/**
+ * One Adaptation: a suggestion the rules raised, stored once and never rewritten. `rule_id` and
+ * `trigger_key` name the facts it was raised on (an Activity id, a Check-in id, a week's first day),
+ * so the same facts raise it once; `ask` counts a declined Deload asked again. `change`, `params`
+ * and `basis` are the domain's change, the whole numbers its reason is filled with and the Session
+ * revisions it was raised on. Whether it was accepted or declined is the separate
+ * `adaptation_decision` row, so a suggestion with none is pending. Append-only like `activity`: the
+ * app role reads and inserts its own rows and never rewrites or deletes them. Health-adjacent:
+ * never logged.
+ */
+export const adaptation = pgTable(
+  'adaptation',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    userId: uuid('user_id')
+      .notNull()
+      .references(() => appUser.id, { onDelete: 'cascade' }),
+    ruleId: text('rule_id').$type<AdaptationRule>().notNull(),
+    triggerKey: text('trigger_key').notNull(),
+    ask: integer('ask').notNull().default(1),
+    change: jsonb('change').$type<AdaptationChange>().notNull(),
+    params: jsonb('params').$type<AdaptationReasonParams>().notNull(),
+    basis: jsonb('basis').$type<SessionRevisionRef[]>().notNull(),
+    /** The last day the suggestion is worth showing; null until used or declined. */
+    validUntil: date('valid_until', { mode: 'string' }),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => [
+    check('adaptation_rule_valid', isOneOf(table.ruleId, Object.values(AdaptationRule))),
+    check('adaptation_ask_positive', sql`${table.ask} >= 1`),
+    unique('adaptation_user_rule_trigger_ask').on(
+      table.userId,
+      table.ruleId,
+      table.triggerKey,
+      table.ask,
+    ),
+    index('adaptation_user_created').on(table.userId, table.createdAt),
+    pgPolicy('adaptation_owner_select', {
+      for: 'select',
+      to: APP_ROLE,
+      using: sql`user_id = app_user_id()::uuid`,
+    }),
+    pgPolicy('adaptation_owner_insert', {
+      for: 'insert',
+      to: APP_ROLE,
+      withCheck: sql`user_id = app_user_id()::uuid`,
+    }),
+  ],
+).enableRLS();
+
+/**
+ * The person's answer to an Adaptation: accepted ("Accept") or declined ("Keep my plan"). One per
+ * Adaptation (its primary key), so a second decision is a conflict the insert ignores and the
+ * first wins. Append-only like `adaptation`.
+ */
+export const adaptationDecision = pgTable(
+  'adaptation_decision',
+  {
+    adaptationId: uuid('adaptation_id')
+      .primaryKey()
+      .references(() => adaptation.id, { onDelete: 'cascade' }),
+    userId: uuid('user_id')
+      .notNull()
+      .references(() => appUser.id, { onDelete: 'cascade' }),
+    decision: text('decision')
+      .$type<AdaptationStatus.Accepted | AdaptationStatus.Declined>()
+      .notNull(),
+    decidedAt: timestamp('decided_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => [
+    check(
+      'adaptation_decision_valid',
+      isOneOf(table.decision, [AdaptationStatus.Accepted, AdaptationStatus.Declined]),
+    ),
+    pgPolicy('adaptation_decision_owner_select', {
+      for: 'select',
+      to: APP_ROLE,
+      using: sql`user_id = app_user_id()::uuid`,
+    }),
+    pgPolicy('adaptation_decision_owner_insert', {
+      for: 'insert',
+      to: APP_ROLE,
+      withCheck: sql`user_id = app_user_id()::uuid`,
     }),
   ],
 ).enableRLS();

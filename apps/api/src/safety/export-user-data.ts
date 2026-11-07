@@ -16,6 +16,7 @@ import {
 import type { Db } from '../db/types.ts';
 import { withUser } from '../db/with-user.ts';
 import { toLoggedActivity } from '../activities/index.ts';
+import { readAdaptationRows, toExportedAdaptation } from '../adaptations/index.ts';
 import { toCheckin } from '../checkins/index.ts';
 import { readProgram } from '../program/index.ts';
 import { toFinishedSession } from '../sessions/index.ts';
@@ -24,7 +25,7 @@ import { storedAnswersSchema } from './stored-answers-schema.ts';
 import { toSavedScreening } from './to-saved-screening.ts';
 
 /**
- * Everything held about the user: profile, every consent row, the Program week, every logged set, finished Session, Activity, Check-in and stop flag, every sport they asked for and every Screening with its
+ * Everything held about the user: profile, every consent row, the Program week, every logged set, finished Session, Activity, Check-in, Adaptation (with its decision) and stop flag, every sport they asked for and every Screening with its
  * answers decrypted, oldest first. The one place answers leave the server.
  */
 export async function exportUserData(
@@ -41,6 +42,7 @@ export async function exportUserData(
     finishRows,
     activityRows,
     checkinRows,
+    adaptationRows,
     stopFlagRows,
   } = await withUser(db, userId, async (tx) => ({
     profileRow: (await tx.select().from(profile).where(eq(profile.userId, userId)))[0],
@@ -75,6 +77,7 @@ export async function exportUserData(
       .from(checkin)
       .where(eq(checkin.userId, userId))
       .orderBy(asc(checkin.submittedAt)),
+    adaptationRows: await readAdaptationRows(tx, userId),
     stopFlagRows: await tx
       .select()
       .from(stopFlag)
@@ -131,6 +134,7 @@ export async function exportUserData(
     })),
     activities: activityRows.map(toLoggedActivity),
     checkins: checkinRows.map(toCheckin),
+    adaptations: adaptationRows.map(toExportedAdaptation),
     stopFlags: stopFlagRows.map((row) => ({
       id: row.id,
       flag: row.flag,

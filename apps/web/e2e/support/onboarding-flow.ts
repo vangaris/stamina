@@ -40,10 +40,14 @@ export async function answerAbout(
   await page.getByRole('button', { name: 'Continue' }).click();
 }
 
-export async function answerSport(page: Page) {
+/** Kitesurfing, hard: on Saturdays, or on days that vary (then no Activity is a planned one). */
+export async function answerSport(
+  page: Page,
+  { playVaries = false }: { playVaries?: boolean } = {},
+) {
   await expect(page.getByRole('heading', { name: 'Your sport' })).toBeVisible();
   await page.getByRole('radio', { name: 'Kitesurfing', exact: true }).click();
-  await page.getByRole('checkbox', { name: 'Sat', exact: true }).click();
+  await page.getByRole('checkbox', { name: playVaries ? 'It varies' : 'Sat', exact: true }).click();
   await page.getByRole('radio', { name: 'Hard', exact: true }).click();
   await page.getByRole('button', { name: 'Continue' }).click();
 }

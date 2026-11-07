@@ -10,4 +10,5 @@ export type {
   ActivityRowView,
   LoadSummaryProps,
   LoadSummaryView,
+  PlayedContainerEmits,
 } from './types.ts';

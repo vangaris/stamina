@@ -20,7 +20,15 @@ import { StopFlagIdTakenError, confirmDoctorSeen, reportStopFlag } from '../stop
  * is replay-safe, so a client may resend until it hears back. Bodies are health data: never
  * logged, and an invalid body is never echoed.
  */
-export function stopFlagRoutes({ db, auth }: { db: Db; auth: TokenVerifier }) {
+export function stopFlagRoutes({
+  db,
+  auth,
+  now,
+}: {
+  db: Db;
+  auth: TokenVerifier;
+  now: () => Date;
+}) {
   const routes = new Hono<AppEnv>();
 
   routes.post('/', authenticate(auth), async (c) => {
@@ -30,7 +38,7 @@ export function stopFlagRoutes({ db, auth }: { db: Db; auth: TokenVerifier }) {
     }
 
     try {
-      const result = await reportStopFlag(db, requireUserId(c), body.data);
+      const result = await reportStopFlag(db, requireUserId(c), body.data, now());
       return c.json(reportStopFlagResultSchema.parse(result));
     } catch (error) {
       if (error instanceof StopFlagIdTakenError) {

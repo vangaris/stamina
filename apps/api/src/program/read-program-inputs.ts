@@ -14,7 +14,7 @@ import { toSavedProfile } from '../profile/to-saved-profile.ts';
 import { readGrantedPurposes } from '../safety/read-granted-purposes.ts';
 import { readLatestScreening } from '../safety/read-latest-screening.ts';
 import { toSavedScreening } from '../safety/to-saved-screening.ts';
-import { readStopState } from '../stop-flags/index.ts';
+import { readStopState } from '../stop-flags/read-stop-state.ts';
 import { FIRST_WEEK_IN_BLOCK, START_DELAY_DAYS } from './config.ts';
 import { ProgramInputsStatus } from './enums/program-inputs-status.ts';
 import type { ProgramInputs } from './types.ts';

@@ -6,10 +6,11 @@ import {
   summariseWeeklyLoad,
   type LoadEntry,
 } from '@stamina/domain';
-import { asc, eq } from 'drizzle-orm';
-import { activity, profile, session, sessionLog } from '../db/schema.ts';
+import { eq } from 'drizzle-orm';
+import { profile } from '../db/schema.ts';
 import type { UserTx } from '../db/types.ts';
 import { readLoadAnchor } from './read-load-anchor.ts';
+import { readLoadEntries } from './read-load-entries.ts';
 import { toLoggedActivity } from './to-logged-activity.ts';
 
 const sum = (entries: readonly LoadEntry[]) => entries.reduce((total, { load }) => total + load, 0);
@@ -24,16 +25,7 @@ export async function readWeekLoad(tx: UserTx, userId: string, now: Date): Promi
   const today = now.toISOString().slice(0, 10);
   const anchor = await readLoadAnchor(tx, userId, today);
 
-  const sessionEntries: LoadEntry[] = await tx
-    .select({ date: session.date, load: sessionLog.load })
-    .from(sessionLog)
-    .innerJoin(session, eq(session.id, sessionLog.sessionId))
-    .where(eq(sessionLog.userId, userId));
-  const activityRows = await tx
-    .select()
-    .from(activity)
-    .where(eq(activity.userId, userId))
-    .orderBy(asc(activity.date), asc(activity.loggedAt), asc(activity.id));
+  const { sessionEntries, activityRows } = await readLoadEntries(tx, userId);
 
   const summary = summariseWeeklyLoad({
     anchor,

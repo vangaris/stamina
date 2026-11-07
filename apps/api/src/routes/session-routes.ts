@@ -25,12 +25,12 @@ const invalidRequest = (c: Context<AppEnv>) =>
 
 /**
  * One Session: `GET /sessions/{id}` (the Session with what is logged, `404` when it is not the
- * signed-in user's or the id is not a UUID), `POST /sessions/{id}/sets` (one set: `200` `Saved`,
+ * signed-in user's or the id is not a UUID; an id a revision replaced answers with that revision), `POST /sessions/{id}/sets` (one set: `200` `Saved`,
  * `422` `Rejected`) and `POST /sessions/{id}/finish` (`200` with the stored finish). A set or finish id that belongs to another Session answers `409`. Sets and
  * finishes are replay-safe, so a client may resend them until it hears back. Bodies are
  * health-adjacent: never logged, and a rejected body is never echoed.
  */
-export function sessionRoutes({ db, auth }: { db: Db; auth: TokenVerifier }) {
+export function sessionRoutes({ db, auth, now }: { db: Db; auth: TokenVerifier; now: () => Date }) {
   const routes = new Hono<AppEnv>();
 
   routes.get('/:id', authenticate(auth), async (c) => {
@@ -64,8 +64,8 @@ export function sessionRoutes({ db, auth }: { db: Db; auth: TokenVerifier }) {
     const body = finishSessionSchema.safeParse(await c.req.json().catch(() => undefined));
     if (!body.success) return invalidRequest(c);
 
-    const result = await finishSession(db, requireUserId(c), sessionId, body.data).catch((error) =>
-      respondSessionError(c, error),
+    const result = await finishSession(db, requireUserId(c), sessionId, body.data, now()).catch(
+      (error) => respondSessionError(c, error),
     );
     if (result instanceof Response) return result;
     return result === null ? notFound(c) : c.json(finishSessionResultSchema.parse(result));

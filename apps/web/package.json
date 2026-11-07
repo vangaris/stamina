@@ -43,6 +43,7 @@
     "@stamina/ui-set-dots": "workspace:^",
     "@stamina/ui-sheet": "workspace:^",
     "@stamina/ui-stepper": "workspace:^",
+    "@stamina/ui-suggestion-card": "workspace:^",
     "@stamina/ui-tabs": "workspace:^",
     "@stamina/ui-text-field": "workspace:^",
     "@stamina/ui-toast": "workspace:^",

@@ -1,4 +1,23 @@
 export {
+  ADAPTATION_LOOKBACK_DAYS,
+  ADAPTATION_REASK_DAYS,
+  DAYS_OFF_TO_RESTART,
+  DELOAD_EFFORT_MARGIN,
+  DELOAD_EFFORT_SESSIONS,
+  DELOAD_LOAD_FACTOR,
+  DELOAD_LOAD_WEEKS,
+  DELOAD_POOR_CHECKIN_DAYS,
+  DELOAD_POOR_CHECKINS,
+  DELOAD_SET_FACTOR,
+  DELOAD_WEEK_IN_BLOCK,
+  LIGHTER_RIR_STEP,
+  LIGHTER_SETS_STEP,
+  MISSED_SESSIONS_TO_REPEAT,
+  MOVE_SESSION_OFFSETS,
+  POOR_CHECKIN_ANSWERS,
+  POOR_CHECKIN_SCORE,
+  RESTART_RIR_STEP,
+  SORE_AREA_SORENESS,
   ADULT_AGE,
   DAYS_IN_WEEK,
   LIMITED_RIR_FLOOR,
@@ -59,6 +78,9 @@ export {
   SCREENING_QUESTIONS,
   SESSION_LENGTHS_MINUTES,
 } from './config.ts';
+export { AdaptationChangeKind } from './enums/adaptation-change-kind.ts';
+export { AdaptationRule } from './enums/adaptation-rule.ts';
+export { AdaptationStatus } from './enums/adaptation-status.ts';
 export { BodyArea } from './enums/body-area.ts';
 export { BodyHalf } from './enums/body-half.ts';
 export { ConsentPurpose } from './enums/consent-purpose.ts';
@@ -123,8 +145,25 @@ export type {
   PlannedActivity,
   PlannedActivityInput,
   WeeklyLoad,
+  ActivityFact,
+  GenerationBasis,
+  AdaptationChange,
+  AdaptationContext,
+  AdaptationHistoryEntry,
+  AdaptationProposal,
+  AdaptationReasonParams,
+  AdaptationSession,
+  AppliedAdaptation,
+  CheckinFact,
+  FinishedSessionFact,
+  GeneratedExercise,
+  GeneratedSession,
+  PlannableExercise,
+  RevisedSession,
+  SessionRevisionRef,
 } from './types.ts';
 export { addDays } from './utils/add-days.ts';
+export { isBasisCurrent } from './utils/is-basis-current.ts';
 export { bodyHalfOf } from './utils/body-half-of.ts';
 export { progressLoad } from './utils/progress-load.ts';
 export { sessionLoad } from './utils/session-load.ts';
@@ -138,6 +177,9 @@ export { selectExercises } from './utils/select-exercises.ts';
 export { resolveTrainingMode } from './utils/resolve-training-mode.ts';
 export { validateTrainingWeek } from './utils/validate-training-week.ts';
 export { generateWeek } from './utils/generate-week.ts';
+export { proposeAdaptations } from './utils/propose-adaptations.ts';
+export { applyAdaptation } from './utils/apply-adaptation.ts';
+export { reviseAvoidingAreas } from './utils/revise-avoiding-areas.ts';
 export { hardActivityDates } from './utils/hard-activity-dates.ts';
 export { activityLoad } from './utils/activity-load.ts';
 export { activityRpe } from './utils/activity-rpe.ts';

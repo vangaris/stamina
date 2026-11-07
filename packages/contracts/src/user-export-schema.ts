@@ -4,6 +4,7 @@ import { z } from 'zod';
 import { programWeekSchema } from './program-schema.ts';
 import { savedProfileSchema } from './saved-profile-schema.ts';
 import { exportedActivitySchema } from './activity-schema.ts';
+import { exportedAdaptationSchema } from './adaptation-schema.ts';
 import { exportedCheckinSchema } from './checkin-schema.ts';
 import { exportedStopFlagSchema } from './stop-flag-schema.ts';
 import { savedScreeningSchema } from './saved-screening-schema.ts';
@@ -43,6 +44,8 @@ export const userExportSchema = z.object({
   activities: z.array(exportedActivitySchema),
   /** Every Check-in the person sent, oldest first. */
   checkins: z.array(exportedCheckinSchema),
+  /** Every Adaptation suggested to the person, decided or not, oldest first. */
+  adaptations: z.array(exportedAdaptationSchema),
   /** Every stop flag the person reported, oldest first. */
   stopFlags: z.array(exportedStopFlagSchema),
   screenings: z.array(

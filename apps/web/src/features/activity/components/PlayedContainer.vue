@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import { Button } from '@stamina/ui-button';
-import { onMounted } from 'vue';
+import { onMounted, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import { PlayedStatus } from '../enums/played-status.ts';
 import { usePlayed } from '../composables/usePlayed.ts';
+import type { PlayedContainerEmits } from '../types.ts';
 import PlayedSheet from './PlayedSheet.vue';
 
+const emit = defineEmits<PlayedContainerEmits>();
 const { t } = useI18n();
 const router = useRouter();
 const played = usePlayed({
@@ -16,6 +18,9 @@ const played = usePlayed({
 const { open, status, messageKey, draft, sportOptions, preview, saving, savedLoad } = played;
 
 onMounted(played.load);
+watch(status, (now) => {
+  if (now === PlayedStatus.Saved) emit('saved');
+});
 </script>
 
 <template>
