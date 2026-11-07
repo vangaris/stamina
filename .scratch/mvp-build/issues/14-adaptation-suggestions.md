@@ -4,7 +4,7 @@
 
 **Blocked by:** 12: Activities and Load, 13: Check-in and stop flags
 
-**Status:** ready-for-agent
+**Status:** in-progress
 
 **Roadmap week:** 5
 
