@@ -4,7 +4,7 @@
 
 **Blocked by:** 11: Session screen, 12: Activities and Load
 
-**Status:** ready-for-agent
+**Status:** in-progress
 
 **Roadmap week:** 6
 
