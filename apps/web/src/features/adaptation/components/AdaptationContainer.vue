@@ -1,13 +1,15 @@
 <script setup lang="ts">
 import { SuggestionCard } from '@stamina/ui-suggestion-card';
-import { onMounted } from 'vue';
+import { onMounted, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import { AdaptationCardState } from '../enums/adaptation-card-state.ts';
 import { AdaptationMessageKey } from '../enums/adaptation-message-key.ts';
 import { AdaptationTestId } from '../enums/adaptation-test-id.ts';
 import { useAdaptations } from '../composables/useAdaptations.ts';
+import type { AdaptationContainerProps } from '../types.ts';
 
+const props = defineProps<AdaptationContainerProps>();
 const { t } = useI18n();
 const router = useRouter();
 const adaptations = useAdaptations({
@@ -17,6 +19,7 @@ const adaptations = useAdaptations({
 const { cards, noticeKey } = adaptations;
 
 onMounted(adaptations.load);
+watch(() => props.refreshKey, adaptations.load);
 </script>
 
 <template>

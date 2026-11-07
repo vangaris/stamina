@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { RouterLink } from 'vue-router';
 import { useApiHealth } from '../composables/useApiHealth.ts';
@@ -12,6 +12,12 @@ import { RestNoticeContainer } from '../features/stop-flag/index.ts';
 const { t } = useI18n();
 const { state } = useApiHealth();
 
+/** Bumped when an Activity or a Check-in reached the server: the suggestions it may have raised are read again. */
+const suggestionsKey = ref(0);
+const readSuggestions = () => {
+  suggestionsKey.value += 1;
+};
+
 const apiStatus = computed(() => t(`status.${state.value.kind}`));
 </script>
 
@@ -22,12 +28,12 @@ const apiStatus = computed(() => t(`status.${state.value.kind}`));
       {{ t('status.server', { state: apiStatus }) }}
     </p>
     <div class="mt-4 flex flex-col gap-4">
-      <AdaptationContainer />
+      <AdaptationContainer :refresh-key="suggestionsKey" />
       <RestNoticeContainer />
-      <CheckinContainer />
+      <CheckinContainer @saved="readSuggestions" />
     </div>
     <div class="mt-4">
-      <PlayedContainer />
+      <PlayedContainer @saved="readSuggestions" />
     </div>
     <RouterLink
       :to="RoutePath.Week"

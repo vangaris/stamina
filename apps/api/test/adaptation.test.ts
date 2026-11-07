@@ -19,6 +19,7 @@ import {
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { EXERCISE_DATA_DIR } from '../src/exercises/node.ts';
 import { insertActivity } from './support/activity-fixtures.ts';
+import { checkinOf, postCheckin } from './support/checkin-fixtures.ts';
 import {
   acceptedProgram,
   adaptationOf,
@@ -196,6 +197,21 @@ describe('Adaptations', () => {
         expect(exercise.rir).toBe(old.rir === null ? null : old.rir + LIGHTER_RIR_STEP);
         expect(exercise.sets).toBe(Math.max(1, old.sets - LIGHTER_SETS_STEP));
       });
+    });
+
+    it('that only reports soreness lightens the Session when the library has nothing to swap in for its main lift', async () => {
+      const { user, week } = await player();
+      const lower = sessionOfFocus(week, SessionFocus.Lower);
+      await postCheckin(user, checkinOf(SAT, { sleep: 4, soreness: 2, energy: 4 }));
+
+      const suggestion = await adaptationOf(user, AdaptationRule.SoreArea);
+
+      expect(suggestion).toMatchObject({
+        change: { kind: AdaptationChangeKind.LightenSession, sessionId: lower.id },
+        params: { soreness: 2 },
+        validUntil: SAT,
+      });
+      expect(await pendingRules(user)).toEqual([AdaptationRule.SoreArea]);
     });
 
     it('that is good changes nothing, nor does one on a day with no heavy Session', async () => {

@@ -54,3 +54,8 @@ export interface CheckinDoneEmits {
   (event: 'nothing-unusual'): void;
   (event: 'something-unusual'): void;
 }
+
+export interface CheckinContainerEmits {
+  /** The Check-in reached the server, so what it raises (a suggestion) can be read now. */
+  saved: [];
+}

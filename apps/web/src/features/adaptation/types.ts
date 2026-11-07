@@ -27,3 +27,8 @@ export interface UseAdaptationsOptions {
   /** Defaults to the app mediator. */
   mediator?: Mediator;
 }
+
+export interface AdaptationContainerProps {
+  /** Changes whenever something that can raise a suggestion reached the server: the container reads them again. */
+  refreshKey?: number;
+}
