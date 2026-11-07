@@ -1,9 +1,11 @@
 import { RecordStatus, type ReportStopFlag, type ReportStopFlagResult } from '@stamina/contracts';
+import { StopFlag } from '@stamina/domain';
 import { eq } from 'drizzle-orm';
 import { lockUser } from '../db/lock-user.ts';
 import { session, stopFlag } from '../db/schema.ts';
 import type { Db } from '../db/types.ts';
 import { withUser } from '../db/with-user.ts';
+import { reviseForNewPain } from '../adaptations/index.ts';
 import { readStopState } from './read-stop-state.ts';
 import { StopFlagIdTakenError } from './stop-flag-id-taken-error.ts';
 
@@ -13,12 +15,14 @@ import { StopFlagIdTakenError } from './stop-flag-id-taken-error.ts';
  * refusing it would delete it. The Session it was reported from is kept only when it is one of the
  * user's own (read under their policies); otherwise it is stored as none, never refused. Replays
  * are safe: an id the user already has changes nothing (`recorded: false`). An id that belongs to
- * another person throws `StopFlagIdTakenError`. Runs under `lockUser`.
+ * another person throws `StopFlagIdTakenError`. Runs under `lockUser`. New pain also rewrites the upcoming Sessions that
+ * load the area (new revisions, nothing asked; `reviseForNewPain`) in the same transaction.
  */
 export async function reportStopFlag(
   db: Db,
   userId: string,
   entry: ReportStopFlag,
+  now: Date,
 ): Promise<ReportStopFlagResult> {
   return withUser(db, userId, async (tx) => {
     await lockUser(tx, userId);
@@ -53,6 +57,7 @@ export async function reportStopFlag(
       .onConflictDoNothing()
       .returning({ id: stopFlag.id });
     if (stored === undefined) throw new StopFlagIdTakenError();
+    if (entry.flag === StopFlag.NewPain) await reviseForNewPain(tx, userId, now);
     return { status: RecordStatus.Saved, recorded: true, stop: await readStopState(tx, userId) };
   });
 }

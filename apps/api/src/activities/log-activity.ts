@@ -18,6 +18,7 @@ import { lockUser } from '../db/lock-user.ts';
 import { activity, profile } from '../db/schema.ts';
 import type { Db } from '../db/types.ts';
 import { withUser } from '../db/with-user.ts';
+import { refreshAdaptations } from '../adaptations/index.ts';
 import { ActivityIdTakenError } from './activity-id-taken-error.ts';
 import { readLoadAnchor } from './read-load-anchor.ts';
 import { toLoggedActivity } from './to-logged-activity.ts';
@@ -30,7 +31,9 @@ import { toLoggedActivity } from './to-logged-activity.ts';
  * the Activity `planned` when its day is one of the profile's play days. Replays are safe: an id
  * the user already has returns the stored Activity with `recorded: false` and changes nothing
  * (checked before the date, so a late retry of a saved Activity still answers `Saved`). An id that
- * belongs to another person throws `ActivityIdTakenError`. Runs under `lockUser`.
+ * belongs to another person throws `ActivityIdTakenError`. Runs under `lockUser`. A new Activity
+ * runs the Adaptation rules in the same transaction (`refreshAdaptations`), so a hard unplanned day
+ * can raise a suggestion at once.
  */
 export async function logActivity(
   db: Db,
@@ -83,6 +86,7 @@ export async function logActivity(
       .onConflictDoNothing()
       .returning();
     if (stored === undefined) throw new ActivityIdTakenError();
+    await refreshAdaptations(tx, userId, now);
     return { status: RecordStatus.Saved, recorded: true, activity: toLoggedActivity(stored) };
   });
 }

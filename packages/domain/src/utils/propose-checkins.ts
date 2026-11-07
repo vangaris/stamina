@@ -15,7 +15,9 @@ import { targetedAreas } from './targeted-areas.ts';
 /**
  * Rules 2 and 3: a poor Check-in lightens (or makes a Recovery Session of) the heavy Session of
  * its day; a Check-in that is not poor but reports soreness swaps the exercises that load the
- * areas the Session targets. A good Check-in produces nothing. Raised on the Check-in's id.
+ * areas the Session targets, or, when every one of them cannot be replaced (most library
+ * exercises load several areas, so a swap often has no candidate), lightens the Session instead.
+ * A good Check-in produces nothing. Raised on the Check-in's id.
  */
 export function proposeCheckins(context: AdaptationContext): AdaptationProposal[] {
   const { today, history } = context;
@@ -51,12 +53,19 @@ export function proposeCheckins(context: AdaptationContext): AdaptationProposal[
     } else if (checkin.soreness <= SORE_AREA_SORENESS) {
       if (isRaised(history, AdaptationRule.SoreArea, checkin.id)) continue;
       const areas = targetedAreas(context, session);
-      if (areas.length === 0 || swapSessionExercises(context, session, areas) === null) continue;
+      if (areas.length === 0) continue;
+      const change =
+        swapSessionExercises(context, session, areas) !== null
+          ? { kind: AdaptationChangeKind.SwapExercises as const, sessionId: session.id, areas }
+          : lightenExercises(session.exercises) !== null
+            ? { kind: AdaptationChangeKind.LightenSession as const, sessionId: session.id }
+            : null;
+      if (change === null) continue;
       proposals.push({
         ruleId: AdaptationRule.SoreArea,
         triggerKey: checkin.id,
         ask: 1,
-        change: { kind: AdaptationChangeKind.SwapExercises, sessionId: session.id, areas },
+        change,
         params: { soreness: checkin.soreness },
         basis,
         validUntil: checkin.date,

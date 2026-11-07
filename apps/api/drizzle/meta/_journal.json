@@ -78,6 +78,13 @@
       "when": 1794000252374,
       "tag": "0010_checkin_and_stop_flag",
       "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1794035529350,
+      "tag": "0011_adaptation",
+      "breakpoints": true
     }
   ]
 }

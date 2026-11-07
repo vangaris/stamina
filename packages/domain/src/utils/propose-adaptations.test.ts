@@ -393,12 +393,15 @@ describe('proposeAdaptations: SoreArea', () => {
     expect(proposals.map(({ ruleId }) => ruleId)).toEqual([AdaptationRule.PoorCheckin]);
   });
 
-  it('suggests nothing when an exercise cannot be replaced, never a half Session', () => {
+  it('lightens the Session instead when an exercise cannot be replaced, never a half Session', () => {
     const generation: GenerationBasis = {
       ...PADEL_GENERATION,
       library: LIBRARY.filter(({ id }) => id !== 'squat-4' && id !== 'hinge-4'),
     };
-    expect(only(ctx([4, 2, 4], undefined, { generation }))).toBeUndefined();
+    expect(only(ctx([4, 2, 4], undefined, { generation }))).toMatchObject({
+      change: { kind: AdaptationChangeKind.LightenSession, sessionId: 's1' },
+      params: { soreness: 2 },
+    });
   });
 
   it('suggests nothing for a Recovery Session (it targets no area)', () => {

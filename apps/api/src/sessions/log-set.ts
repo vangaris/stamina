@@ -7,6 +7,7 @@ import { withUser } from '../db/with-user.ts';
 import { findPlannedExercise } from './find-planned-exercise.ts';
 import { RecordIdTakenError } from './record-id-taken-error.ts';
 import { readSessionPlan } from './read-session-plan.ts';
+import { readSupersedingSessionId } from './read-superseding-session-id.ts';
 
 const rejected = (reason: SessionRejection): LogSetResult => ({
   status: RecordStatus.Rejected,
@@ -15,7 +16,8 @@ const rejected = (reason: SessionRejection): LogSetResult => ({
 
 /**
  * Records one set of the user's Session, or says why not; `null` when the Session is not the
- * user's or does not exist. Replays are safe: a set whose id the server holds for this Session, or
+ * user's or does not exist, or when a revision replaced it (an Adaptation was accepted; the id is no longer
+ * part of the plan). Replays are safe: a set whose id the server holds for this Session, or
  * whose number is already logged for that Session exercise, changes nothing and answers `Saved`
  * with `recorded: false` (the first write wins), even after the Session is finished. A new set
  * after the finish is `SessionFinished`; a set id that belongs to another Session throws `RecordIdTakenError`; an exercise that is neither planned nor a tagged easier
@@ -31,7 +33,7 @@ export async function logSet(
   return withUser(db, userId, async (tx) => {
     await lockUser(tx, userId);
     const plan = await readSessionPlan(tx, userId, sessionId);
-    if (plan === null) return null;
+    if (plan === null || (await readSupersedingSessionId(tx, sessionId)) !== null) return null;
 
     const [replay] = await tx
       .select({ id: setLog.id })
