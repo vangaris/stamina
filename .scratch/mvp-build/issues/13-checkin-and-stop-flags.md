@@ -4,7 +4,7 @@
 
 **Blocked by:** 06: Consent, Screening and outcomes, 11: Session screen
 
-**Status:** in-progress
+**Status:** done
 
 **Roadmap week:** 5
 
