@@ -10,6 +10,8 @@ import { exportedStopFlagSchema } from './stop-flag-schema.ts';
 import { savedScreeningSchema } from './saved-screening-schema.ts';
 import { exportedFinishSchema, exportedSetSchema } from './session-schema.ts';
 import { exportedWeighInSchema } from './weigh-in-schema.ts';
+import { nutritionSetupSchema } from './nutrition-schema.ts';
+import { exportedWaterLogSchema } from './water-schema.ts';
 
 /**
  * Everything Stamina holds about the signed-in user, as JSON. Screening answers are decrypted
@@ -51,6 +53,10 @@ export const userExportSchema = z.object({
   stopFlags: z.array(exportedStopFlagSchema),
   /** Every weigh-in the person logged, oldest first. */
   weighIns: z.array(exportedWeighInSchema),
+  /** The Unlock Meals setup (weight is the basis weight the targets use), or `null` before it. */
+  nutritionSetup: nutritionSetupSchema.nullable(),
+  /** Every water log the person made, oldest first. */
+  waterLogs: z.array(exportedWaterLogSchema),
   screenings: z.array(
     savedScreeningSchema.extend({
       answers: z.record(z.enum(ScreeningQuestion), z.boolean()),

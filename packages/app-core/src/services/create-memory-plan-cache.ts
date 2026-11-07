@@ -1,6 +1,7 @@
 import type {
   Adaptation,
   Checkin,
+  NutritionState,
   ProgramWeek,
   Progress,
   SavedScreening,
@@ -16,6 +17,7 @@ export function createMemoryPlanCache(): PlanCache & Clearable {
   let cleared: SavedScreening | undefined;
   let weekLoad: WeekLoad | undefined;
   let progress: Progress | undefined;
+  let nutrition: { date: string; state: NutritionState } | undefined;
   let stop: StopState | undefined;
   let latestCheckin: Checkin | null | undefined;
   let adaptations: Adaptation[] | undefined;
@@ -55,6 +57,12 @@ export function createMemoryPlanCache(): PlanCache & Clearable {
     async readProgress() {
       return progress && structuredClone(progress);
     },
+    async saveNutrition(date, state) {
+      nutrition = { date, state: structuredClone(state) };
+    },
+    async readNutrition(date) {
+      return nutrition?.date === date ? structuredClone(nutrition.state) : undefined;
+    },
     async saveClearedScreening(screening) {
       cleared = structuredClone(screening);
     },
@@ -85,6 +93,7 @@ export function createMemoryPlanCache(): PlanCache & Clearable {
       adaptations = undefined;
       weekLoad = undefined;
       progress = undefined;
+      nutrition = undefined;
       details.clear();
     },
   };

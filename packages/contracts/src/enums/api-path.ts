@@ -34,4 +34,8 @@ export enum ApiPath {
   Progress = '/progress',
   /** The optional weekly weigh-in: `POST /weigh-ins` stores one (kilograms). */
   WeighIns = '/weigh-ins',
+  /** Meals: `GET /nutrition?date=` reads the day's targets, `PUT /nutrition/setup` saves the Unlock Meals setup. */
+  Nutrition = '/nutrition',
+  /** `POST /water` logs 250 or 500 ml, idempotent on the client-made id. */
+  Water = '/water',
 }

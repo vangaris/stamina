@@ -118,12 +118,13 @@ export const FAKE_PROGRAM_EXERCISES = {
 /** The IndexedDB database: its name and Dexie schema (the primary key first, then indexed fields). */
 export const LOCAL_DATABASE = {
   name: 'stamina',
-  version: 4,
+  version: 5,
   schema: {
     [LocalTable.Queue]: '++id',
     [LocalTable.Sets]: 'id, sessionId',
     [LocalTable.Finishes]: 'sessionId',
     [LocalTable.Activities]: 'id',
+    [LocalTable.WaterLogs]: 'id',
     [LocalTable.StopFlags]: 'id',
     [LocalTable.Checkins]: 'id',
     [LocalTable.Cache]: 'key',
@@ -134,12 +135,13 @@ export const LOCAL_DATABASE = {
 /** The key of the one row in the owner table: the id of the user the local data belongs to. */
 export const OWNER_KEY = 'owner';
 
-/** Keys in the cache table: the one Program week, the one week's Load, the stop state, the latest Check-in and the pending Adaptations, and one Session detail per Session id. */
+/** Keys in the cache table: the one Program week, the one week's Load, the Progress, the one Meals day last fetched, the stop state, the latest Check-in and the pending Adaptations, and one Session detail per Session id. */
 export const CACHE_KEY = {
   program: 'program',
   clearedScreening: 'cleared-screening',
   weekLoad: 'week-load',
   progress: 'progress',
+  nutrition: 'nutrition',
   stop: 'stop',
   latestCheckin: 'latest-checkin',
   adaptations: 'adaptations',

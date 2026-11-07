@@ -1,3 +1,7 @@
+import { DayType } from './enums/day-type.ts';
+import { EnergySex } from './enums/energy-sex.ts';
+import { EverydayActivity } from './enums/everyday-activity.ts';
+import { MealSlot } from './enums/meal-slot.ts';
 import { AdaptationRule } from './enums/adaptation-rule.ts';
 import { BodyHalf } from './enums/body-half.ts';
 import { ConsentPurpose } from './enums/consent-purpose.ts';
@@ -711,3 +715,122 @@ export const DELOAD_RULES: readonly AdaptationRule[] = [
   AdaptationRule.DeloadCheckins,
   AdaptationRule.DeloadEffort,
 ];
+
+// --- Nutrition and hydration (ticket 16). General sports-nutrition guidance for healthy adults. ---
+
+/** Weight change from the basis weight that resets the basis to the new weigh-in. */
+export const RECALCULATE_AT_KG_CHANGE = 2;
+export const MIN_HEIGHT_CM = 120;
+export const MAX_HEIGHT_CM = 230;
+export const MIN_MEALS_PER_DAY = 3;
+export const MAX_MEALS_PER_DAY = 5;
+export const MAX_DISLIKES = 10;
+export const MAX_DISLIKE_LENGTH = 40;
+
+/** Mifflin-St Jeor sex constants (kcal/day). `Unspecified` sits midway between the two. */
+export const RESTING_SEX_CONSTANT: Record<EnergySex, number> = {
+  [EnergySex.Male]: 5,
+  [EnergySex.Female]: -161,
+  [EnergySex.Unspecified]: -78,
+};
+/** Resting energy times this, by how active the day is outside training. */
+export const EVERYDAY_ACTIVITY_FACTOR: Record<EverydayActivity, number> = {
+  [EverydayActivity.Sitting]: 1.4,
+  [EverydayActivity.OnFeet]: 1.5,
+  [EverydayActivity.Physical]: 1.7,
+};
+/**
+ * MET of every Session. Sessions carry no intensity, so one constant.
+ * [INFERENCE] value for dietitian review.
+ */
+export const SESSION_MET = 5.0;
+/**
+ * METs by intensity for a sport with no Sport Profile (an unapproved Other sport).
+ * [INFERENCE] values for dietitian review.
+ */
+export const FALLBACK_METS_PER_INTENSITY: Record<Intensity, number> = {
+  [Intensity.Easy]: 3,
+  [Intensity.Moderate]: 5,
+  [Intensity.Hard]: 7,
+};
+/** Minutes in an hour, for MET-hour sums. */
+export const MINUTES_IN_HOUR = 60;
+
+/** Carbohydrate grams per kg of body weight by day type (hard day: midpoint of 6-7). */
+export const CARBS_G_PER_KG: Record<DayType, number> = {
+  [DayType.Rest]: 3,
+  [DayType.Session]: 4,
+  [DayType.Activity]: 5,
+  [DayType.HardActivity]: 6.5,
+};
+export const PROTEIN_G_PER_KG = 1.6;
+export const PROTEIN_G_PER_KG_LOSING_FAT = 2.0;
+/** Fat is at least this share of energy ... */
+export const FAT_MIN_ENERGY_SHARE = 0.2;
+/** ... and fills the remainder up to this share. */
+export const FAT_MAX_ENERGY_SHARE = 0.35;
+export const KCAL_PER_G_PROTEIN = 4;
+export const KCAL_PER_G_CARBS = 4;
+export const KCAL_PER_G_FAT = 9;
+/** Energy deficit of a fat-loss Goal (never on a HardActivity day) and its halved form. */
+export const FAT_LOSS_DEFICIT_KCAL = 400;
+export const FAT_LOSS_DEFICIT_HALVED_KCAL = 200;
+export const MUSCLE_GAIN_SURPLUS_KCAL = 250;
+
+/** Rate check: a weekly weight loss above this percent of the earlier week is too fast. */
+export const RATE_CHECK_LOSS_PCT = 1;
+/** Rate check: an interval between two weigh-ins shorter than this many days is ignored. */
+export const RATE_CHECK_MIN_INTERVAL_DAYS = 3;
+/** Rate check: an interval between two weigh-ins longer than this many days is ignored. */
+export const RATE_CHECK_MAX_INTERVAL_DAYS = 14;
+/**
+ * Rate check: this many too-fast intervals in a row halve the deficit.
+ * [INFERENCE] on the 'twice' wording of the source rule; for dietitian review.
+ */
+export const RATE_CHECK_INTERVALS_TO_HALVE = 2;
+/**
+ * Rate check: the check firing at two consecutive weekly evaluations, i.e. this many too-fast
+ * intervals in a row, prompts talking to a dietitian or doctor.
+ * [INFERENCE] on the 'twice' wording of the source rule; for dietitian review.
+ */
+export const RATE_CHECK_INTERVALS_TO_PROMPT = 3;
+
+/** Daily drinks base by sex (ml). */
+export const DRINKS_BASE_ML: Record<EnergySex, number> = {
+  [EnergySex.Male]: 2000,
+  [EnergySex.Female]: 1600,
+  [EnergySex.Unspecified]: 1800,
+};
+export const DRINKS_ML_PER_TRAINING_HOUR = 500;
+export const DRINKS_ML_PER_HOT_TRAINING_HOUR = 250;
+/** The exercise addition never exceeds this per training hour. */
+export const DRINKS_MAX_EXERCISE_ML_PER_HOUR = 1000;
+/** Drinks before an Activity, per kg of body weight (2-4 hours before). */
+export const PRE_ACTIVITY_ML_PER_KG = { min: 5, max: 10 } as const;
+/** An Activity longer than this many minutes adds the electrolyte note. */
+export const ELECTROLYTE_NOTE_MINUTES = 120;
+/** An Activity longer than this many minutes adds carbohydrate for during it. */
+export const DURING_CARBS_MINUTES = 90;
+export const DURING_CARBS_G_PER_HOUR = { min: 30, max: 60 } as const;
+
+/** Meal times by meals per day, as minutes of the day. A slot appears with its time. */
+export const MEAL_TIMES: Record<number, readonly { slot: MealSlot; at: number }[]> = {
+  3: [
+    { slot: MealSlot.Breakfast, at: 8 * 60 },
+    { slot: MealSlot.Lunch, at: 13 * 60 },
+    { slot: MealSlot.Dinner, at: 19 * 60 + 30 },
+  ],
+  4: [
+    { slot: MealSlot.Breakfast, at: 8 * 60 },
+    { slot: MealSlot.Lunch, at: 13 * 60 },
+    { slot: MealSlot.Snack, at: 16 * 60 + 30 },
+    { slot: MealSlot.Dinner, at: 19 * 60 + 30 },
+  ],
+  5: [
+    { slot: MealSlot.Breakfast, at: 8 * 60 },
+    { slot: MealSlot.Snack, at: 10 * 60 + 30 },
+    { slot: MealSlot.Lunch, at: 13 * 60 },
+    { slot: MealSlot.Snack, at: 16 * 60 + 30 },
+    { slot: MealSlot.Dinner, at: 19 * 60 + 30 },
+  ],
+};

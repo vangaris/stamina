@@ -794,5 +794,174 @@
         "failed": "We could not save that. Please try again."
       }
     }
+  },
+  "meals": {
+    "loading": "Loading your meals…",
+    "retry": "Try again",
+    "errors": {
+      "offline": "Meals needs a connection the first time. Try again when you are back online.",
+      "failed": "We could not load your meals. Please try again."
+    },
+    "dayType": {
+      "rest": "Rest day",
+      "session": "Session day",
+      "activity": "Activity day",
+      "hard-activity": "Hard Activity day"
+    },
+    "unlockCard": {
+      "title": "Unlock Meals",
+      "body": "Add a few details and Stamina works out your daily food and drink targets.",
+      "action": "Unlock Meals"
+    },
+    "unlock": {
+      "title": "Unlock Meals",
+      "intro": "A few details so your targets fit you. They are kept private to you.",
+      "sex": {
+        "label": "Sex, for the energy formula",
+        "hint": "The energy formula uses it. Prefer not to say is fine.",
+        "options": {
+          "female": "Female",
+          "male": "Male",
+          "prefer-not-to-say": "Prefer not to say"
+        }
+      },
+      "height": {
+        "label": "Height",
+        "unit": "cm",
+        "hint": "Between {min} and {max} cm."
+      },
+      "weight": {
+        "label": "Weight",
+        "unit": "kg",
+        "hint": "Between {min} and {max} kg."
+      },
+      "everyday": {
+        "label": "A usual day, outside training",
+        "options": {
+          "mostly-sitting": "Mostly sitting",
+          "on-my-feet": "On my feet",
+          "physical-job": "Physical job"
+        }
+      },
+      "direction": {
+        "label": "What would you like your body to do?",
+        "options": {
+          "lose-fat": "Lose fat",
+          "gain-muscle": "Gain muscle"
+        }
+      },
+      "eating": {
+        "label": "Eating pattern",
+        "options": {
+          "everything": "Everything",
+          "pescatarian": "Pescatarian",
+          "vegetarian": "Vegetarian",
+          "vegan": "Vegan"
+        }
+      },
+      "allergens": {
+        "label": "Allergens to avoid",
+        "hint": "Tick any that apply to you.",
+        "options": {
+          "celery": "Celery",
+          "gluten": "Gluten",
+          "crustaceans": "Crustaceans",
+          "eggs": "Eggs",
+          "fish": "Fish",
+          "lupin": "Lupin",
+          "milk": "Milk",
+          "molluscs": "Molluscs",
+          "mustard": "Mustard",
+          "tree-nuts": "Tree nuts",
+          "peanuts": "Peanuts",
+          "sesame": "Sesame",
+          "soybeans": "Soybeans",
+          "sulphites": "Sulphites"
+        }
+      },
+      "dislikes": {
+        "label": "Foods you dislike",
+        "hint": "Add up to {max}.",
+        "add": "Add",
+        "listLabel": "Foods you dislike",
+        "remove": "Remove {name}"
+      },
+      "mealsPerDay": {
+        "label": "Meals per day"
+      },
+      "cooking": {
+        "label": "Cooking effort",
+        "options": {
+          "quick": "Quick",
+          "normal": "Normal"
+        }
+      },
+      "save": "Unlock Meals",
+      "errors": {
+        "sex": "Choose an option.",
+        "height": "Enter a height between {min} and {max} cm.",
+        "weight": "Enter a weight between {min} and {max} kg.",
+        "everydayActivity": "Choose an option.",
+        "bodyDirection": "Choose an option.",
+        "nutritionOff": "Nutrition is switched off for you, so Meals cannot be unlocked.",
+        "directionNotAllowed": "That choice does not fit your Goal. Please check it and try again.",
+        "offline": "Saving needs a connection. Try again when you are back online.",
+        "failed": "We could not save that. Please try again."
+      }
+    },
+    "targets": {
+      "title": "Today's targets",
+      "energy": "{kcal} kcal",
+      "protein": "Protein {grams} g",
+      "carbs": "Carbohydrate {grams} g",
+      "fat": "Fat {grams} g",
+      "gain": "Includes {kcal} kcal extra for building muscle.",
+      "deficit": "Includes {kcal} kcal less for fat loss.",
+      "floor": "Kept at {kcal} kcal, your resting energy, so it never goes below it."
+    },
+    "rateCheck": {
+      "halved": "Your weight has been dropping faster than about {percent}% a week, so the deficit is halved for now.",
+      "promptTitle": "Talk to a dietitian or doctor",
+      "prompt": "Your weight has been dropping faster than about {percent}% a week for several weeks. Please talk to a dietitian or doctor about it."
+    },
+    "water": {
+      "title": "Water",
+      "progress": "{ml} of {target} ml",
+      "add": "+{ml} ml",
+      "addLabel": "Add {ml} ml of water",
+      "toThirst": "Drink to thirst. There is no need to force it.",
+      "cap": "The extra for training is capped at {ml} ml per hour.",
+      "preActivity": "Before your Activity: {min} to {max} ml, {fromHours} to {toHours} hours ahead.",
+      "electrolytes": "On a long or hot day, a drink with electrolytes can go alongside your water.",
+      "duringCarbs": "During a long Activity, {min} to {max} g of carbohydrate per hour is the usual guidance.",
+      "errors": {
+        "failed": "We could not save that. Please try again."
+      }
+    },
+    "guidance": "These targets are general sports-nutrition guidance for healthy adults. For a plan made for you, ask a dietitian."
+  },
+  "settings": {
+    "link": "Settings",
+    "title": "Settings",
+    "back": "Back to Settings",
+    "safety": {
+      "link": "Safety",
+      "title": "Safety",
+      "intro": "Things worth knowing, in plain words."
+    }
+  },
+  "reds": {
+    "title": "Warning signs to know",
+    "intro": "Training hard without eating enough can wear you down. These signs are worth noticing:",
+    "signs": {
+      "tired": "Feeling tired all the time or low on energy",
+      "ill": "Getting ill or injured more often than usual",
+      "aches": "Aches that do not settle with rest",
+      "mood": "Mood feeling low or more irritable than usual",
+      "cold": "Feeling cold more than other people",
+      "sleep": "Sleeping badly",
+      "food": "Thinking about food or weight much more than you would like"
+    },
+    "talk": "If several of these apply to you, talk to a doctor or dietitian."
   }
 }

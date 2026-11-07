@@ -12,6 +12,7 @@ import {
   sport,
   sportRequest,
   stopFlag,
+  waterLog,
   weighIn,
 } from '../db/schema.ts';
 import type { Db } from '../db/types.ts';
@@ -21,12 +22,13 @@ import { readAdaptationRows, toExportedAdaptation } from '../adaptations/index.t
 import { toCheckin } from '../checkins/index.ts';
 import { readProgram } from '../program/index.ts';
 import { toFinishedSession } from '../sessions/index.ts';
+import { toNutritionSetup } from '../nutrition/index.ts';
 import { toSavedProfile } from '../profile/to-saved-profile.ts';
 import { storedAnswersSchema } from './stored-answers-schema.ts';
 import { toSavedScreening } from './to-saved-screening.ts';
 
 /**
- * Everything held about the user: profile, every consent row, the Program week, every logged set, finished Session, Activity, Check-in, Adaptation (with its decision), stop flag and weigh-in, every sport they asked for and every Screening with its
+ * Everything held about the user: profile, every consent row, the Program week, every logged set, finished Session, Activity, Check-in, Adaptation (with its decision), stop flag, weigh-in and water log, the Unlock Meals setup, every sport they asked for and every Screening with its
  * answers decrypted, oldest first. The one place answers leave the server.
  */
 export async function exportUserData(
@@ -46,6 +48,7 @@ export async function exportUserData(
     adaptationRows,
     stopFlagRows,
     weighInRows,
+    waterRows,
   } = await withUser(db, userId, async (tx) => ({
     profileRow: (await tx.select().from(profile).where(eq(profile.userId, userId)))[0],
     consentRows: await tx
@@ -90,6 +93,11 @@ export async function exportUserData(
       .from(weighIn)
       .where(eq(weighIn.userId, userId))
       .orderBy(asc(weighIn.createdAt)),
+    waterRows: await tx
+      .select()
+      .from(waterLog)
+      .where(eq(waterLog.userId, userId))
+      .orderBy(asc(waterLog.createdAt)),
   }));
 
   // As the table owner, filtered by the user: a rejected sport is hidden from its requesters by
@@ -155,6 +163,13 @@ export async function exportUserData(
       id: row.id,
       date: row.date,
       weightKg: row.weightKg,
+      loggedAt: row.createdAt.toISOString(),
+    })),
+    nutritionSetup: profileRow ? toNutritionSetup(profileRow, true) : null,
+    waterLogs: waterRows.map((row) => ({
+      id: row.id,
+      date: row.date,
+      ml: row.ml,
       loggedAt: row.createdAt.toISOString(),
     })),
     sportRequests: sportRequestRows.map((row) => ({

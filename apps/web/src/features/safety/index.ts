@@ -1,4 +1,5 @@
 export { default as ConsentContainer } from './components/ConsentContainer.vue';
+export { default as RedsCard } from './components/RedsCard.vue';
 export { default as QuestionField } from './components/QuestionField.vue';
 export { default as ReferredContainer } from './components/ReferredContainer.vue';
 export { default as SafetyGate } from './components/SafetyGate.vue';

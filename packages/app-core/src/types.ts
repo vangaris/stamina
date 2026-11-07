@@ -15,8 +15,12 @@ import type {
   LogActivityResult,
   LogSet as LogSetBody,
   LogSetResult,
+  LogWater as LogWaterBody,
+  LogWaterResult,
   LogWeighIn as LogWeighInBody,
   LogWeighInResult,
+  NutritionSetup,
+  NutritionState,
   ProfileAnswers,
   Progress,
   ProgramWeek,
@@ -26,6 +30,7 @@ import type {
   ReportStopFlagResult,
   SavedProfile,
   SavedScreening,
+  SaveNutritionSetupResult,
   SaveProfileResult,
   SaveScreeningResult,
   ScreeningSubmission,
@@ -229,6 +234,27 @@ export interface ActivityLogStore {
   list(): Promise<readonly LocalActivity[]>;
 }
 
+/** A water log as the device recorded it: the body plus when (ISO), so the day's water counts it before the server confirms. */
+export interface LocalWater {
+  water: LogWaterBody;
+  recordedAt: string;
+}
+
+/**
+ * The water logs the person made on this device, written before anything is sent (see
+ * `RequestDefinition.writeLocal`) so the water bar counts them offline. A row stays until the
+ * server has the log (the handler removes it: the server's day total carries no ids to merge by,
+ * so a row left behind would count twice) or refused it; `GetNutrition` adds what is left to the
+ * day's water.
+ */
+export interface WaterLogStore {
+  /** Idempotent by the log's id: the first `recordedAt` stays. */
+  add(water: LogWaterBody, recordedAt: string): Promise<void>;
+  remove(id: string): Promise<void>;
+  /** In no particular order. */
+  list(): Promise<readonly LocalWater[]>;
+}
+
 /** A stop flag as the device recorded it: the report plus when (ISO), so the pause holds before the server confirms. */
 export interface LocalStopFlag {
   report: ReportStopFlagBody;
@@ -283,6 +309,10 @@ export interface PlanCache {
   saveProgress(progress: Progress): Promise<void>;
   /** The Progress as last fetched; undefined when none is kept, or when what is stored is malformed. */
   readProgress(): Promise<Progress | undefined>;
+  /** Meals for `date` (`YYYY-MM-DD`) as last fetched; only the latest fetch is kept. */
+  saveNutrition(date: string, nutrition: NutritionState): Promise<void>;
+  /** Undefined when none is kept for that date, or when what is stored is malformed. */
+  readNutrition(date: string): Promise<NutritionState | undefined>;
   /** Only ever a Screening that is not `Referred`: the one safety fact trusted offline. */
   saveClearedScreening(screening: SavedScreening): Promise<void>;
   /** Undefined when none is kept, or when what is stored is malformed or `Referred`. */
@@ -338,6 +368,10 @@ export interface SetRow {
 }
 
 export interface ActivityRow extends LocalActivity {
+  id: string;
+}
+
+export interface WaterRow extends LocalWater {
   id: string;
 }
 
@@ -407,6 +441,7 @@ export interface Services extends PipelineServices {
   inviteStorage: InviteStorage;
   sessionLog: SessionLogStore;
   activityLog: ActivityLogStore;
+  waterLog: WaterLogStore;
   stopFlags: StopFlagStore;
   checkins: CheckinStore;
   planCache: PlanCache;
@@ -580,6 +615,23 @@ export interface GetProgress extends Request<Progress> {
 export interface LogWeighInRequest extends Request<LogWeighInResult> {
   readonly type: RequestType.LogWeighIn;
   readonly weighIn: LogWeighInBody;
+}
+
+export interface GetNutritionRequest extends Request<NutritionState> {
+  readonly type: RequestType.GetNutrition;
+  /** The person's calendar day, `YYYY-MM-DD`. */
+  readonly date: string;
+}
+
+export interface SaveNutritionSetupRequest extends Request<SaveNutritionSetupResult> {
+  readonly type: RequestType.SaveNutritionSetup;
+  readonly setup: NutritionSetup;
+}
+
+/** (`Request` suffix: `LogWater` is the contract's body type.) */
+export interface LogWaterRequest extends Request<LogWaterResult | Queued> {
+  readonly type: RequestType.LogWater;
+  readonly water: LogWaterBody;
 }
 
 export interface GetProgram extends Request<ProgramWeek | null> {

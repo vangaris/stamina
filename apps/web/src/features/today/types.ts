@@ -1,5 +1,5 @@
 import type { Mediator } from '@stamina/app-core';
-import type { SessionFocus } from '@stamina/domain';
+import type { SessionFocus, WaterAmount } from '@stamina/domain';
 import type { Locale } from '@stamina/i18n';
 import type { ActivityRowView, LoadSummaryView } from '../activity/index.ts';
 import type { SessionProgress } from '../program/index.ts';
@@ -80,6 +80,10 @@ export interface TodayTimelineProps {
   locale: Locale;
 }
 
+export interface TodayTimelineEmits {
+  (event: 'logWater', amount: WaterAmount): void;
+}
+
 export interface TimelineSessionEntryProps {
   session: TimelineSession;
 }
@@ -94,4 +98,8 @@ export interface TimelineMealEntryProps {
 
 export interface TimelineWaterEntryProps {
   water: TimelineWater;
+}
+
+export interface TimelineWaterEntryEmits {
+  (event: 'log', amount: WaterAmount): void;
 }

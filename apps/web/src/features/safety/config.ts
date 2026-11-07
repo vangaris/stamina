@@ -1,6 +1,7 @@
 import { ScreeningRejection } from '@stamina/contracts';
 import { BodyArea, ConsentPurpose, SCREENING_QUESTIONS, ScreeningQuestion } from '@stamina/domain';
 import { RoutePath } from '../../enums/route-path.ts';
+import { RedsSign } from './enums/reds-sign.ts';
 import { SafetyMessageKey } from './enums/safety-message-key.ts';
 import { ScreeningField } from './enums/screening-field.ts';
 import type { ConsentErrors } from './types.ts';
@@ -52,4 +53,15 @@ export const FIELD_ORDER: readonly (ScreeningQuestion | ScreeningField)[] = [
     question === AREA_QUESTION ? [question, ScreeningField.BodyAreas] : [question],
   ),
   ScreeningField.StartingLevel,
+];
+
+/** The warning signs the REDs card lists, in the order shown. */
+export const REDS_SIGNS: readonly RedsSign[] = [
+  RedsSign.Tired,
+  RedsSign.Ill,
+  RedsSign.Aches,
+  RedsSign.Mood,
+  RedsSign.Cold,
+  RedsSign.Sleep,
+  RedsSign.Food,
 ];

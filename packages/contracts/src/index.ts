@@ -3,6 +3,19 @@ export { createApiClient } from './create-api-client.ts';
 export { profileRejectionFor } from './utils/profile-rejection-for.ts';
 export { consentGrantSchema, consentStateSchema } from './consent-schema.ts';
 export { ApiPath } from './enums/api-path.ts';
+export { NutritionStatus } from './enums/nutrition-status.ts';
+export { NutritionSubpath } from './enums/nutrition-subpath.ts';
+export { nutritionPath } from './utils/nutrition-path.ts';
+export { SaveNutritionSetupRejection } from './enums/save-nutrition-setup-rejection.ts';
+export { SaveNutritionSetupStatus } from './enums/save-nutrition-setup-status.ts';
+export {
+  dayTargetsSchema,
+  mealSlotTimeSchema,
+  nutritionSetupSchema,
+  nutritionStateSchema,
+  saveNutritionSetupResultSchema,
+} from './nutrition-schema.ts';
+export { exportedWaterLogSchema, logWaterResultSchema, logWaterSchema } from './water-schema.ts';
 export { AdaptationRejection } from './enums/adaptation-rejection.ts';
 export { AdaptationSubpath } from './enums/adaptation-subpath.ts';
 export { adaptationPath } from './utils/adaptation-path.ts';
@@ -149,9 +162,14 @@ export type {
   ExportedCheckin,
   ExportedStopFlag,
   LatestCheckinResponse,
+  ExportedWaterLog,
   ExportedWeighIn,
+  LogWater,
+  LogWaterResult,
   LogWeighIn,
   LogWeighInResult,
+  NutritionSetup,
+  NutritionState,
   Progress,
   ProgressVerdict,
   ProgressWeek,
@@ -190,6 +208,7 @@ export type {
   ProgramWeek,
   RecordDoctorOkResult,
   SafetyState,
+  SaveNutritionSetupResult,
   SaveProfileResult,
   SaveScreeningResult,
   SavedProfile,

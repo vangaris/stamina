@@ -43,6 +43,16 @@ const routes: RouteRecordRaw[] = [
     component: () => import('./pages/ProgressPage.vue'),
   },
   {
+    path: RoutePath.Settings,
+    name: RouteName.Settings,
+    component: () => import('./features/settings/index.ts').then((m) => m.SettingsContainer),
+  },
+  {
+    path: RoutePath.SettingsSafety,
+    name: RouteName.SettingsSafety,
+    component: () => import('./features/settings/index.ts').then((m) => m.SettingsSafetyContainer),
+  },
+  {
     path: RoutePath.SignIn,
     name: RouteName.SignIn,
     component: () => import('./features/sign-in/index.ts').then((m) => m.SignInContainer),

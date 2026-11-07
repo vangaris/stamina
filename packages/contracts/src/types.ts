@@ -76,6 +76,16 @@ import type {
   progressWeekSchema,
 } from './progress-schema.ts';
 import type {
+  nutritionSetupSchema,
+  nutritionStateSchema,
+  saveNutritionSetupResultSchema,
+} from './nutrition-schema.ts';
+import type {
+  exportedWaterLogSchema,
+  logWaterResultSchema,
+  logWaterSchema,
+} from './water-schema.ts';
+import type {
   exportedWeighInSchema,
   logWeighInResultSchema,
   logWeighInSchema,
@@ -160,6 +170,12 @@ export type Progress = z.infer<typeof progressSchema>;
 export type LogWeighIn = z.infer<typeof logWeighInSchema>;
 export type LogWeighInResult = z.infer<typeof logWeighInResultSchema>;
 export type ExportedWeighIn = z.infer<typeof exportedWeighInSchema>;
+export type NutritionSetup = z.infer<typeof nutritionSetupSchema>;
+export type NutritionState = z.infer<typeof nutritionStateSchema>;
+export type SaveNutritionSetupResult = z.infer<typeof saveNutritionSetupResultSchema>;
+export type LogWater = z.infer<typeof logWaterSchema>;
+export type LogWaterResult = z.infer<typeof logWaterResultSchema>;
+export type ExportedWaterLog = z.infer<typeof exportedWaterLogSchema>;
 export type SessionRevisionRef = z.infer<typeof sessionRevisionRefSchema>;
 export type AdaptationChange = z.infer<typeof adaptationChangeSchema>;
 export type Adaptation = z.infer<typeof adaptationSchema>;
@@ -226,6 +242,12 @@ export interface ApiClient {
   getProgress(): Promise<Progress>;
   /** Stores one weigh-in (kilograms). A weight outside the accepted range or a day too far ahead or too far back is an `ApiError` 400. */
   logWeighIn(weighIn: LogWeighIn): Promise<LogWeighInResult>;
+  /** What Meals shows for the person's calendar day (`YYYY-MM-DD`): locked, off, or the day's targets with water so far. A day too far ahead is an `ApiError` 400. */
+  getNutrition(date: string): Promise<NutritionState>;
+  /** Saves the Unlock Meals setup; `422` (Nutrition off, or a body direction without a body-composition Goal) is a `Rejected` result, not an error. */
+  saveNutritionSetup(setup: NutritionSetup): Promise<SaveNutritionSetupResult>;
+  /** A repeat of a water log id the server has returns the stored row and counts once. A day too far ahead is an `ApiError` 400; while the latest Screening has Nutrition off it is an `ApiError` 422 and nothing is stored. */
+  logWater(water: LogWater): Promise<LogWaterResult>;
   /** The pending Adaptation suggestions that still apply, oldest first. The server evaluates the rules first. */
   getAdaptations(): Promise<AdaptationList>;
   /**

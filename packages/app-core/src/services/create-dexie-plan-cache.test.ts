@@ -2,6 +2,7 @@ import { IDBFactory, IDBKeyRange } from 'fake-indexeddb';
 import { BodyArea, Emphasis, StopFlag, type StopState } from '@stamina/domain';
 import type { Checkin, WeekLoad } from '@stamina/contracts';
 import { describe, expect, it } from 'vitest';
+import { buildReadyNutrition } from '../testing/build-nutrition.ts';
 import { buildProgress } from '../testing/build-progress.ts';
 import { LocalTable } from '../enums/local-table.ts';
 import { buildAdaptation } from '../testing/build-adaptation.ts';
@@ -188,6 +189,38 @@ describe('createDexiePlanCache', () => {
       await database.table(LocalTable.Cache).put({ key: 'progress', value: { old: 1 } });
 
       expect(await cache.readProgress()).toBeUndefined();
+    });
+  });
+
+  describe('Meals', () => {
+    it('returns the day saved, across a reload, none before, and none for another day', async () => {
+      const indexedDB = new IDBFactory();
+      const { cache } = open(indexedDB);
+      expect(await cache.readNutrition('2026-11-06')).toBeUndefined();
+
+      await cache.saveNutrition('2026-11-06', buildReadyNutrition());
+
+      const reloaded = open(indexedDB).cache;
+      expect(await reloaded.readNutrition('2026-11-06')).toEqual(buildReadyNutrition());
+      expect(await reloaded.readNutrition('2026-11-07')).toBeUndefined();
+    });
+
+    it('keeps only the latest day fetched', async () => {
+      const { cache } = open(new IDBFactory());
+      await cache.saveNutrition('2026-11-06', buildReadyNutrition());
+      await cache.saveNutrition('2026-11-07', buildReadyNutrition({ date: '2026-11-07' }));
+
+      expect(await cache.readNutrition('2026-11-06')).toBeUndefined();
+      expect(await cache.readNutrition('2026-11-07')).toMatchObject({ date: '2026-11-07' });
+    });
+
+    it('treats a cached day in an unknown shape as not cached', async () => {
+      const { database, cache } = open(new IDBFactory());
+      await database
+        .table(LocalTable.Cache)
+        .put({ key: 'nutrition', value: { date: '2026-11-06', nutrition: { old: 1 } } });
+
+      expect(await cache.readNutrition('2026-11-06')).toBeUndefined();
     });
   });
 });

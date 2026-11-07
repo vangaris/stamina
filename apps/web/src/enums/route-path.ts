@@ -6,6 +6,8 @@ export enum RoutePath {
   SessionDetail = '/session/:sessionId',
   Meals = '/meals',
   Progress = '/progress',
+  Settings = '/settings',
+  SettingsSafety = '/settings/safety',
   SignIn = '/sign-in',
   Start = '/start',
   Onboarding = '/onboarding',

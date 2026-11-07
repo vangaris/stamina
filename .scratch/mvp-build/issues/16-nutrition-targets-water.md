@@ -4,16 +4,16 @@
 
 **Blocked by:** 06: Consent, Screening and outcomes, 12: Activities and Load
 
-**Status:** ready-for-agent
+**Status:** done
 
 **Roadmap week:** 6
 
-- [ ] 'Unlock Meals' inputs: height, weight, sex for the energy formula, everyday activity, eating pattern, 14 EU allergens, dislikes, meals per day, cooking effort
-- [ ] Energy = Mifflin-St Jeor (midpoint for 'prefer not to say') × 1.4 / 1.5 / 1.7 + (MET − 1) × kg × hours per Session or Activity; day types rest / Session / Activity / hard Activity
-- [ ] Goal adjustment: fat loss −400 kcal never on hard-Activity days; muscle gain +250; floor = resting energy; > 1 %/week loss for 2 weeks halves the deficit with a reason; firing twice shows the dietitian/doctor prompt
-- [ ] Protein 1.6 g/kg (2.0 when losing fat); carbs 3/4/5/6–7 g/kg by day type; fat ≥ 20 %
-- [ ] Drinks 2.0 / 1.6 / 1.8 L + 0.5 L per training hour + 0.25 L/h hot, capped at 1 L per hour of exercise with 'drink to thirst'; pre-Activity cue; electrolyte note for > 2 h or hot
-- [ ] +250 / +500 ml water logging; REDs warning-signs card in Meals and Settings → Safety
-- [ ] Nutrition off for 9b users; recalculation on ≥ 2 kg weight change or Goal/schedule change
-- [ ] Today timeline shows meal slots (from meals per day) and the water bar, using the `MealSlot` and `Water` timeline entries from ticket 15 (`useToday` `extras`)
-- [ ] API tests cover targets per day type, floor, rate check and cap with fixture users
+- [x] 'Unlock Meals' inputs: height, weight, sex for the energy formula, everyday activity, eating pattern, 14 EU allergens, dislikes, meals per day, cooking effort
+- [x] Energy = Mifflin-St Jeor (midpoint for 'prefer not to say') × 1.4 / 1.5 / 1.7 + (MET − 1) × kg × hours per Session or Activity; day types rest / Session / Activity / hard Activity
+- [x] Goal adjustment: fat loss −400 kcal never on hard-Activity days; muscle gain +250; floor = resting energy; > 1 %/week loss for 2 weeks halves the deficit with a reason; firing twice shows the dietitian/doctor prompt
+- [x] Protein 1.6 g/kg (2.0 when losing fat); carbs 3/4/5/6–7 g/kg by day type; fat ≥ 20 %
+- [x] Drinks 2.0 / 1.6 / 1.8 L + 0.5 L per training hour + 0.25 L/h hot, capped at 1 L per hour of exercise (the cap is implemented but cannot bind with these amounts: the most added is 0.75 L per hour) with 'drink to thirst'; pre-Activity cue; electrolyte note for > 2 h or hot
+- [x] +250 / +500 ml water logging; REDs warning-signs card in Meals and Settings → Safety
+- [x] Nutrition off for 9b users; recalculation on ≥ 2 kg weight change or Goal/schedule change
+- [x] Today timeline shows meal slots (from meals per day) and the water bar, using the `MealSlot` and `Water` timeline entries from ticket 15 (`useToday` `extras`)
+- [x] API tests cover targets per day type, floor, rate check and cap with fixture users

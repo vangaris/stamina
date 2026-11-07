@@ -4,6 +4,8 @@ export enum RouteName {
   SessionDetail = 'session-detail',
   Meals = 'meals',
   Progress = 'progress',
+  Settings = 'settings',
+  SettingsSafety = 'settings-safety',
   SignIn = 'sign-in',
   Start = 'start',
   Onboarding = 'onboarding',
