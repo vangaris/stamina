@@ -2,6 +2,7 @@ import {
   ProfileStatus,
   RequestType,
   type GetNutritionRequest,
+  type LogMealRequest,
   type LogWaterRequest,
   type Mediator,
   type ProfileState,
@@ -11,6 +12,7 @@ import {
 import {
   NutritionStatus,
   SaveNutritionSetupStatus,
+  type LogMeal,
   type LogWater,
   type NutritionSetup,
   type NutritionState,
@@ -25,7 +27,7 @@ export const LOCAL_NOW = new Date(2026, 10, 7, 12);
 
 /**
  * A mediator that answers the nutrition requests and the profile from what the test sets, and
- * records what was sent. A water log adds to the ready day's water, as the server would.
+ * records what was sent. A water log adds to the ready day's water and a meal log sets the slot's status, as the server would.
  */
 export function createMockMediator() {
   const state = {
@@ -35,11 +37,13 @@ export function createMockMediator() {
     /** Undefined: saving answers with the day ready for what was sent. */
     saveOutcome: undefined as SaveNutritionSetupResult | Error | undefined,
     waterError: undefined as Error | undefined,
+    mealError: undefined as Error | undefined,
   };
   const requests: Request[] = [];
   const dates: string[] = [];
   const setups: NutritionSetup[] = [];
   const waterLogs: LogWater[] = [];
+  const mealLogs: LogMeal[] = [];
 
   async function answer(request: Request): Promise<unknown> {
     switch (request.type) {
@@ -67,6 +71,20 @@ export function createMockMediator() {
         }
         return { id: water.id, date: water.date, ml: water.ml };
       }
+      case RequestType.LogMeal: {
+        const { meal } = request as LogMealRequest;
+        mealLogs.push(meal);
+        if (state.mealError) throw state.mealError;
+        if (state.nutrition.status === NutritionStatus.Ready) {
+          state.nutrition = {
+            ...state.nutrition,
+            meals: state.nutrition.meals.map((entry, index) =>
+              index === meal.slotIndex ? { ...entry, status: meal.status } : entry,
+            ),
+          };
+        }
+        return { id: meal.id, date: meal.date, slotIndex: meal.slotIndex, status: meal.status };
+      }
       default:
         throw new Error(`unexpected request ${request.type}`);
     }
@@ -83,5 +101,5 @@ export function createMockMediator() {
     state.profile = { status: ProfileStatus.Present, profile };
   }
 
-  return { mediator, state, requests, dates, setups, waterLogs, setProfile };
+  return { mediator, state, requests, dates, setups, waterLogs, mealLogs, setProfile };
 }

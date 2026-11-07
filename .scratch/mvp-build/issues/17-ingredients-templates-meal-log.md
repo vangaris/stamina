@@ -4,12 +4,12 @@
 
 **Blocked by:** 16: Nutrition targets and water
 
-**Status:** in-progress
+**Status:** done
 
 **Roadmap week:** 6
 
-- [ ] ~300 ingredients with ID, EN/EL names, 14-allergen tags and household units
-- [ ] ~60 templates (4 eating patterns × 5 slots × 3 options) tagged by pattern and allergens
-- [ ] Template selection excludes every template containing an allergen the user listed; portions scaled to the slot's protein and carb targets
-- [ ] Next-meal card first, then targets and the day list; ate it / something else / skipped in one tap
-- [ ] API tests prove a tree-nut-allergic vegan never receives a template containing tree nuts or animal products
+- [x] ~300 ingredients with ID, EN/EL names, 14-allergen tags and household units
+- [x] ~60 templates (4 eating patterns × 5 slots × 3 options) tagged by pattern and allergens
+- [x] Template selection excludes every template containing an allergen the user listed; portions scaled to the slot's protein and carb targets
+- [x] Next-meal card first, then targets and the day list; ate it / something else / skipped in one tap
+- [x] API tests prove a tree-nut-allergic vegan never receives a template containing tree nuts or animal products

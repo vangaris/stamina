@@ -373,6 +373,7 @@ export function createFakeApiClient(getToken: () => Promise<string | undefined>)
         weighIns: weighIns.all(userId),
         nutritionSetup: nutrition.setup(userId),
         waterLogs: nutrition.allWater(userId),
+        mealLogs: nutrition.allMeals(userId),
         consents: [...(consents.get(userId) ?? [])],
         sportRequests: sportRequests.has(userId) ? [sportRequests.get(userId)!] : [],
         adaptations: adaptations.all(userId),
@@ -448,6 +449,7 @@ export function createFakeApiClient(getToken: () => Promise<string | undefined>)
       };
     },
     logWater: async (water) => nutrition.logWater(await nutritionContext(), water),
+    logMeal: async (meal) => nutrition.logMeal(await nutritionContext(), meal),
     getAdaptations: async () => ({ adaptations: adaptations.pending(await adaptationContext()) }),
     acceptAdaptation: async (id, accept) =>
       adaptations.accept(await adaptationContext(), id, accept),

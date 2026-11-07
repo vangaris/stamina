@@ -19,6 +19,7 @@ import {
   MAX_MEALS_PER_DAY,
   MIN_HEIGHT_CM,
   MIN_MEALS_PER_DAY,
+  MealLogStatus,
   WaterAmount,
   ConsentPurpose,
   Emphasis,
@@ -960,6 +961,46 @@ export const waterLog = pgTable(
       using: sql`user_id = app_user_id()::uuid`,
     }),
     pgPolicy('water_log_owner_insert', {
+      for: 'insert',
+      to: APP_ROLE,
+      withCheck: sql`user_id = app_user_id()::uuid`,
+    }),
+  ],
+).enableRLS();
+
+/**
+ * One tap on a meal slot: ate it, ate something else, or skipped (`MealLogStatus`), with the
+ * template the person saw. The id is made on the device, so a replay is a conflict the insert
+ * ignores. Append-only like `water_log`: changing your mind adds a row, the latest per
+ * (date, slot) wins, and the app role never rewrites or deletes rows. Health data: never
+ * logged, returned only by the user's own Meals read and export.
+ */
+export const mealLog = pgTable(
+  'meal_log',
+  {
+    id: uuid('id').primaryKey(),
+    userId: uuid('user_id')
+      .notNull()
+      .references(() => appUser.id, { onDelete: 'cascade' }),
+    date: date('date', { mode: 'string' }).notNull(),
+    slotIndex: integer('slot_index').notNull(),
+    status: text('status').$type<MealLogStatus>().notNull(),
+    templateId: text('template_id'),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => [
+    check(
+      'meal_log_slot_index_valid',
+      sql`${table.slotIndex} between 0 and ${sql.raw(String(MAX_MEALS_PER_DAY - 1))}`,
+    ),
+    check('meal_log_status_valid', isOneOf(table.status, Object.values(MealLogStatus))),
+    index('meal_log_user_date').on(table.userId, table.date),
+    pgPolicy('meal_log_owner_select', {
+      for: 'select',
+      to: APP_ROLE,
+      using: sql`user_id = app_user_id()::uuid`,
+    }),
+    pgPolicy('meal_log_owner_insert', {
       for: 'insert',
       to: APP_ROLE,
       withCheck: sql`user_id = app_user_id()::uuid`,

@@ -1,0 +1,458 @@
+[
+  {
+    "id": "pescatarian-breakfast-1",
+    "pattern": "pescatarian",
+    "slot": "breakfast",
+    "effort": "quick",
+    "names": {
+      "en": "Greek yoghurt with honey, walnuts and blueberries",
+      "el": "Γιαούρτι με μέλι, καρύδια και μύρτιλα"
+    },
+    "ingredients": [
+      {
+        "ingredientId": "yoghurt-greek-2pct",
+        "grams": 200
+      },
+      {
+        "ingredientId": "honey",
+        "grams": 15
+      },
+      {
+        "ingredientId": "walnuts",
+        "grams": 20
+      },
+      {
+        "ingredientId": "blueberries",
+        "grams": 80
+      },
+      {
+        "ingredientId": "banana",
+        "grams": 100
+      }
+    ]
+  },
+  {
+    "id": "pescatarian-breakfast-2",
+    "pattern": "pescatarian",
+    "slot": "breakfast",
+    "effort": "normal",
+    "names": {
+      "en": "Scrambled eggs with smoked salmon on sourdough",
+      "el": "Αυγά ανακατεμένα με καπνιστό σολομό σε ψωμί με προζύμι"
+    },
+    "ingredients": [
+      {
+        "ingredientId": "egg-whole-raw",
+        "grams": 100
+      },
+      {
+        "ingredientId": "olive-oil",
+        "grams": 10
+      },
+      {
+        "ingredientId": "bread-sourdough",
+        "grams": 70
+      },
+      {
+        "ingredientId": "tomato",
+        "grams": 100
+      },
+      {
+        "ingredientId": "smoked-salmon",
+        "grams": 40
+      }
+    ]
+  },
+  {
+    "id": "pescatarian-breakfast-3",
+    "pattern": "pescatarian",
+    "slot": "breakfast",
+    "effort": "quick",
+    "names": {
+      "en": "Quinoa porridge with banana, strawberries and pumpkin seeds",
+      "el": "Χυλός κινόα με μπανάνα, φράουλες και κολοκυθόσπορους"
+    },
+    "ingredients": [
+      {
+        "ingredientId": "quinoa-cooked",
+        "grams": 150
+      },
+      {
+        "ingredientId": "rice-milk",
+        "grams": 150
+      },
+      {
+        "ingredientId": "honey",
+        "grams": 10
+      },
+      {
+        "ingredientId": "strawberries",
+        "grams": 100
+      },
+      {
+        "ingredientId": "pumpkin-seeds",
+        "grams": 15
+      },
+      {
+        "ingredientId": "banana",
+        "grams": 80
+      },
+      {
+        "ingredientId": "cinnamon-ground",
+        "grams": 1
+      }
+    ]
+  },
+  {
+    "id": "pescatarian-lunch-1",
+    "pattern": "pescatarian",
+    "slot": "lunch",
+    "effort": "quick",
+    "names": {
+      "en": "Greek salad with chickpeas",
+      "el": "Ελληνική σαλάτα με ρεβίθια"
+    },
+    "ingredients": [
+      {
+        "ingredientId": "tomato",
+        "grams": 150
+      },
+      {
+        "ingredientId": "cucumber",
+        "grams": 100
+      },
+      {
+        "ingredientId": "feta",
+        "grams": 60
+      },
+      {
+        "ingredientId": "kalamata-olives",
+        "grams": 30
+      },
+      {
+        "ingredientId": "olive-oil",
+        "grams": 15
+      },
+      {
+        "ingredientId": "chickpeas-cooked",
+        "grams": 150
+      }
+    ]
+  },
+  {
+    "id": "pescatarian-lunch-2",
+    "pattern": "pescatarian",
+    "slot": "lunch",
+    "effort": "normal",
+    "names": {
+      "en": "Tuna pasta with tomato and capers",
+      "el": "Μακαρόνια με τόνο, ντομάτα και κάπαρη"
+    },
+    "ingredients": [
+      {
+        "ingredientId": "pasta-cooked",
+        "grams": 250
+      },
+      {
+        "ingredientId": "tuna-canned-water",
+        "grams": 100
+      },
+      {
+        "ingredientId": "canned-chopped-tomatoes",
+        "grams": 150
+      },
+      {
+        "ingredientId": "olive-oil",
+        "grams": 15
+      },
+      {
+        "ingredientId": "capers",
+        "grams": 10
+      },
+      {
+        "ingredientId": "parsley",
+        "grams": 5
+      }
+    ]
+  },
+  {
+    "id": "pescatarian-lunch-3",
+    "pattern": "pescatarian",
+    "slot": "lunch",
+    "effort": "normal",
+    "names": {
+      "en": "Lentil soup with rice",
+      "el": "Φακές με ρύζι"
+    },
+    "ingredients": [
+      {
+        "ingredientId": "lentils-brown-cooked",
+        "grams": 250
+      },
+      {
+        "ingredientId": "rice-white-cooked",
+        "grams": 100
+      },
+      {
+        "ingredientId": "onion",
+        "grams": 60
+      },
+      {
+        "ingredientId": "carrot",
+        "grams": 60
+      },
+      {
+        "ingredientId": "olive-oil",
+        "grams": 15
+      },
+      {
+        "ingredientId": "tomato-paste",
+        "grams": 10
+      },
+      {
+        "ingredientId": "lemon-juice",
+        "grams": 10
+      }
+    ]
+  },
+  {
+    "id": "pescatarian-dinner-1",
+    "pattern": "pescatarian",
+    "slot": "dinner",
+    "effort": "normal",
+    "names": {
+      "en": "Baked salmon with potatoes and green beans",
+      "el": "Σολομός στο φούρνο με πατάτες και φασολάκια"
+    },
+    "ingredients": [
+      {
+        "ingredientId": "salmon-baked",
+        "grams": 150
+      },
+      {
+        "ingredientId": "potato-boiled",
+        "grams": 250
+      },
+      {
+        "ingredientId": "green-beans",
+        "grams": 150
+      },
+      {
+        "ingredientId": "olive-oil",
+        "grams": 10
+      },
+      {
+        "ingredientId": "lemon-juice",
+        "grams": 15
+      }
+    ]
+  },
+  {
+    "id": "pescatarian-dinner-2",
+    "pattern": "pescatarian",
+    "slot": "dinner",
+    "effort": "normal",
+    "names": {
+      "en": "Prawns with tomato and feta, with rice",
+      "el": "Γαρίδες με ντομάτα και φέτα, με ρύζι"
+    },
+    "ingredients": [
+      {
+        "ingredientId": "prawns-cooked",
+        "grams": 150
+      },
+      {
+        "ingredientId": "canned-chopped-tomatoes",
+        "grams": 200
+      },
+      {
+        "ingredientId": "feta",
+        "grams": 40
+      },
+      {
+        "ingredientId": "rice-white-cooked",
+        "grams": 200
+      },
+      {
+        "ingredientId": "olive-oil",
+        "grams": 10
+      }
+    ]
+  },
+  {
+    "id": "pescatarian-dinner-3",
+    "pattern": "pescatarian",
+    "slot": "dinner",
+    "effort": "quick",
+    "names": {
+      "en": "Chickpea and spinach rice stew",
+      "el": "Ρεβίθια με σπανάκι και ρύζι"
+    },
+    "ingredients": [
+      {
+        "ingredientId": "chickpeas-cooked",
+        "grams": 150
+      },
+      {
+        "ingredientId": "spinach",
+        "grams": 150
+      },
+      {
+        "ingredientId": "rice-white-cooked",
+        "grams": 150
+      },
+      {
+        "ingredientId": "olive-oil",
+        "grams": 15
+      },
+      {
+        "ingredientId": "onion",
+        "grams": 50
+      },
+      {
+        "ingredientId": "tomato-paste",
+        "grams": 15
+      }
+    ]
+  },
+  {
+    "id": "pescatarian-snack-1",
+    "pattern": "pescatarian",
+    "slot": "snack",
+    "effort": "quick",
+    "names": {
+      "en": "Apple with almonds",
+      "el": "Μήλο με αμύγδαλα"
+    },
+    "ingredients": [
+      {
+        "ingredientId": "apple",
+        "grams": 150
+      },
+      {
+        "ingredientId": "almonds",
+        "grams": 20
+      }
+    ]
+  },
+  {
+    "id": "pescatarian-snack-2",
+    "pattern": "pescatarian",
+    "slot": "snack",
+    "effort": "quick",
+    "names": {
+      "en": "Greek yoghurt with strawberries and honey",
+      "el": "Γιαούρτι με φράουλες και μέλι"
+    },
+    "ingredients": [
+      {
+        "ingredientId": "yoghurt-greek-0pct",
+        "grams": 150
+      },
+      {
+        "ingredientId": "honey",
+        "grams": 10
+      },
+      {
+        "ingredientId": "strawberries",
+        "grams": 100
+      },
+      {
+        "ingredientId": "pumpkin-seeds",
+        "grams": 10
+      }
+    ]
+  },
+  {
+    "id": "pescatarian-snack-3",
+    "pattern": "pescatarian",
+    "slot": "snack",
+    "effort": "normal",
+    "names": {
+      "en": "Boiled eggs with cherry tomatoes",
+      "el": "Βραστά αυγά με ντοματίνια"
+    },
+    "ingredients": [
+      {
+        "ingredientId": "egg-boiled",
+        "grams": 100
+      },
+      {
+        "ingredientId": "cherry-tomatoes",
+        "grams": 100
+      },
+      {
+        "ingredientId": "olive-oil",
+        "grams": 5
+      }
+    ]
+  },
+  {
+    "id": "pescatarian-snack-4",
+    "pattern": "pescatarian",
+    "slot": "snack",
+    "effort": "quick",
+    "names": {
+      "en": "Hummus with carrot and cucumber sticks",
+      "el": "Χούμους με καρότο και αγγούρι"
+    },
+    "ingredients": [
+      {
+        "ingredientId": "hummus",
+        "grams": 60
+      },
+      {
+        "ingredientId": "carrot",
+        "grams": 100
+      },
+      {
+        "ingredientId": "cucumber",
+        "grams": 50
+      }
+    ]
+  },
+  {
+    "id": "pescatarian-snack-5",
+    "pattern": "pescatarian",
+    "slot": "snack",
+    "effort": "quick",
+    "names": {
+      "en": "Orange with pumpkin seeds",
+      "el": "Πορτοκάλι με κολοκυθόσπορους"
+    },
+    "ingredients": [
+      {
+        "ingredientId": "orange",
+        "grams": 200
+      },
+      {
+        "ingredientId": "pumpkin-seeds",
+        "grams": 20
+      }
+    ]
+  },
+  {
+    "id": "pescatarian-snack-6",
+    "pattern": "pescatarian",
+    "slot": "snack",
+    "effort": "quick",
+    "names": {
+      "en": "Tuna rice cakes with cucumber",
+      "el": "Ρυζογκοφρέτες με τόνο και αγγούρι"
+    },
+    "ingredients": [
+      {
+        "ingredientId": "rice-cakes",
+        "grams": 25
+      },
+      {
+        "ingredientId": "tuna-canned-water",
+        "grams": 50
+      },
+      {
+        "ingredientId": "cucumber",
+        "grams": 50
+      }
+    ]
+  }
+]

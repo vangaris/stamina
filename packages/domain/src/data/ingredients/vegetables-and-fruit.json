@@ -1,0 +1,3147 @@
+[
+  {
+    "id": "tomato",
+    "origin": "plant",
+    "names": {
+      "en": "Tomato",
+      "el": "Ντομάτα"
+    },
+    "allergens": [],
+    "per100g": {
+      "kcal": 18,
+      "proteinG": 0.9,
+      "carbsG": 3.9,
+      "fatG": 0.2
+    },
+    "units": [
+      {
+        "grams": 120,
+        "names": {
+          "en": {
+            "one": "medium tomato",
+            "other": "medium tomatoes"
+          },
+          "el": {
+            "one": "ντομάτα",
+            "other": "ντομάτες"
+          }
+        }
+      },
+      {
+        "grams": 150,
+        "names": {
+          "en": {
+            "one": "piece",
+            "other": "pieces"
+          },
+          "el": {
+            "one": "τεμάχιο",
+            "other": "τεμάχια"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "cherry-tomatoes",
+    "origin": "plant",
+    "names": {
+      "en": "Cherry tomatoes",
+      "el": "Ντοματίνια"
+    },
+    "allergens": [],
+    "per100g": {
+      "kcal": 18,
+      "proteinG": 0.9,
+      "carbsG": 3.9,
+      "fatG": 0.2
+    },
+    "units": [
+      {
+        "grams": 80,
+        "names": {
+          "en": {
+            "one": "handful",
+            "other": "handfuls"
+          },
+          "el": {
+            "one": "χούφτα",
+            "other": "χούφτες"
+          }
+        }
+      },
+      {
+        "grams": 15,
+        "names": {
+          "en": {
+            "one": "piece",
+            "other": "pieces"
+          },
+          "el": {
+            "one": "τεμάχιο",
+            "other": "τεμάχια"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "cucumber",
+    "origin": "plant",
+    "names": {
+      "en": "Cucumber",
+      "el": "Αγγούρι"
+    },
+    "allergens": [],
+    "per100g": {
+      "kcal": 15,
+      "proteinG": 0.7,
+      "carbsG": 3.6,
+      "fatG": 0.1
+    },
+    "units": [
+      {
+        "grams": 200,
+        "names": {
+          "en": {
+            "one": "piece",
+            "other": "pieces"
+          },
+          "el": {
+            "one": "τεμάχιο",
+            "other": "τεμάχια"
+          }
+        }
+      },
+      {
+        "grams": 7,
+        "names": {
+          "en": {
+            "one": "slice",
+            "other": "slices"
+          },
+          "el": {
+            "one": "φέτα",
+            "other": "φέτες"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "onion-red",
+    "origin": "plant",
+    "names": {
+      "en": "Red onion",
+      "el": "Κόκκινο κρεμμύδι"
+    },
+    "allergens": [],
+    "per100g": {
+      "kcal": 40,
+      "proteinG": 1.1,
+      "carbsG": 9.3,
+      "fatG": 0.1
+    },
+    "units": [
+      {
+        "grams": 110,
+        "names": {
+          "en": {
+            "one": "medium onion",
+            "other": "medium onions"
+          },
+          "el": {
+            "one": "κρεμμύδι",
+            "other": "κρεμμύδια"
+          }
+        }
+      },
+      {
+        "grams": 10,
+        "names": {
+          "en": {
+            "one": "tablespoon",
+            "other": "tablespoons"
+          },
+          "el": {
+            "one": "κουταλιά της σούπας",
+            "other": "κουταλιές της σούπας"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "onion",
+    "origin": "plant",
+    "names": {
+      "en": "Onion",
+      "el": "Ξερό κρεμμύδι"
+    },
+    "allergens": [],
+    "per100g": {
+      "kcal": 40,
+      "proteinG": 1.1,
+      "carbsG": 9.3,
+      "fatG": 0.1
+    },
+    "units": [
+      {
+        "grams": 110,
+        "names": {
+          "en": {
+            "one": "medium onion",
+            "other": "medium onions"
+          },
+          "el": {
+            "one": "κρεμμύδι",
+            "other": "κρεμμύδια"
+          }
+        }
+      },
+      {
+        "grams": 10,
+        "names": {
+          "en": {
+            "one": "tablespoon",
+            "other": "tablespoons"
+          },
+          "el": {
+            "one": "κουταλιά της σούπας",
+            "other": "κουταλιές της σούπας"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "spring-onion",
+    "origin": "plant",
+    "names": {
+      "en": "Spring onion",
+      "el": "Φρέσκο κρεμμυδάκι"
+    },
+    "allergens": [],
+    "per100g": {
+      "kcal": 32,
+      "proteinG": 1.8,
+      "carbsG": 7.3,
+      "fatG": 0.2
+    },
+    "units": [
+      {
+        "grams": 15,
+        "names": {
+          "en": {
+            "one": "piece",
+            "other": "pieces"
+          },
+          "el": {
+            "one": "τεμάχιο",
+            "other": "τεμάχια"
+          }
+        }
+      },
+      {
+        "grams": 6,
+        "names": {
+          "en": {
+            "one": "tablespoon",
+            "other": "tablespoons"
+          },
+          "el": {
+            "one": "κουταλιά της σούπας",
+            "other": "κουταλιές της σούπας"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "garlic",
+    "origin": "plant",
+    "names": {
+      "en": "Garlic",
+      "el": "Σκόρδο"
+    },
+    "allergens": [],
+    "per100g": {
+      "kcal": 149,
+      "proteinG": 6.4,
+      "carbsG": 33,
+      "fatG": 0.5
+    },
+    "units": [
+      {
+        "grams": 3,
+        "names": {
+          "en": {
+            "one": "clove",
+            "other": "cloves"
+          },
+          "el": {
+            "one": "σκελίδα",
+            "other": "σκελίδες"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "carrot",
+    "origin": "plant",
+    "names": {
+      "en": "Carrot",
+      "el": "Καρότο"
+    },
+    "allergens": [],
+    "per100g": {
+      "kcal": 41,
+      "proteinG": 0.9,
+      "carbsG": 9.6,
+      "fatG": 0.2
+    },
+    "units": [
+      {
+        "grams": 70,
+        "names": {
+          "en": {
+            "one": "medium carrot",
+            "other": "medium carrots"
+          },
+          "el": {
+            "one": "καρότο",
+            "other": "καρότα"
+          }
+        }
+      },
+      {
+        "grams": 110,
+        "names": {
+          "en": {
+            "one": "cup",
+            "other": "cups"
+          },
+          "el": {
+            "one": "φλιτζάνι",
+            "other": "φλιτζάνια"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "courgette",
+    "origin": "plant",
+    "names": {
+      "en": "Courgette",
+      "el": "Κολοκυθάκι"
+    },
+    "allergens": [],
+    "per100g": {
+      "kcal": 17,
+      "proteinG": 1.2,
+      "carbsG": 3.1,
+      "fatG": 0.3
+    },
+    "units": [
+      {
+        "grams": 200,
+        "names": {
+          "en": {
+            "one": "piece",
+            "other": "pieces"
+          },
+          "el": {
+            "one": "τεμάχιο",
+            "other": "τεμάχια"
+          }
+        }
+      },
+      {
+        "grams": 120,
+        "names": {
+          "en": {
+            "one": "cup",
+            "other": "cups"
+          },
+          "el": {
+            "one": "φλιτζάνι",
+            "other": "φλιτζάνια"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "aubergine",
+    "origin": "plant",
+    "names": {
+      "en": "Aubergine",
+      "el": "Μελιτζάνα"
+    },
+    "allergens": [],
+    "per100g": {
+      "kcal": 25,
+      "proteinG": 1,
+      "carbsG": 6,
+      "fatG": 0.2
+    },
+    "units": [
+      {
+        "grams": 300,
+        "names": {
+          "en": {
+            "one": "piece",
+            "other": "pieces"
+          },
+          "el": {
+            "one": "τεμάχιο",
+            "other": "τεμάχια"
+          }
+        }
+      },
+      {
+        "grams": 80,
+        "names": {
+          "en": {
+            "one": "cup",
+            "other": "cups"
+          },
+          "el": {
+            "one": "φλιτζάνι",
+            "other": "φλιτζάνια"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "pepper-red",
+    "origin": "plant",
+    "names": {
+      "en": "Red pepper",
+      "el": "Κόκκινη πιπεριά"
+    },
+    "allergens": [],
+    "per100g": {
+      "kcal": 31,
+      "proteinG": 1,
+      "carbsG": 6,
+      "fatG": 0.3
+    },
+    "units": [
+      {
+        "grams": 150,
+        "names": {
+          "en": {
+            "one": "piece",
+            "other": "pieces"
+          },
+          "el": {
+            "one": "τεμάχιο",
+            "other": "τεμάχια"
+          }
+        }
+      },
+      {
+        "grams": 90,
+        "names": {
+          "en": {
+            "one": "cup",
+            "other": "cups"
+          },
+          "el": {
+            "one": "φλιτζάνι",
+            "other": "φλιτζάνια"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "pepper-green",
+    "origin": "plant",
+    "names": {
+      "en": "Green pepper",
+      "el": "Πράσινη πιπεριά"
+    },
+    "allergens": [],
+    "per100g": {
+      "kcal": 20,
+      "proteinG": 0.9,
+      "carbsG": 4.6,
+      "fatG": 0.2
+    },
+    "units": [
+      {
+        "grams": 150,
+        "names": {
+          "en": {
+            "one": "piece",
+            "other": "pieces"
+          },
+          "el": {
+            "one": "τεμάχιο",
+            "other": "τεμάχια"
+          }
+        }
+      },
+      {
+        "grams": 90,
+        "names": {
+          "en": {
+            "one": "cup",
+            "other": "cups"
+          },
+          "el": {
+            "one": "φλιτζάνι",
+            "other": "φλιτζάνια"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "broccoli",
+    "origin": "plant",
+    "names": {
+      "en": "Broccoli",
+      "el": "Μπρόκολο"
+    },
+    "allergens": [],
+    "per100g": {
+      "kcal": 34,
+      "proteinG": 2.8,
+      "carbsG": 6.6,
+      "fatG": 0.4
+    },
+    "units": [
+      {
+        "grams": 90,
+        "names": {
+          "en": {
+            "one": "cup",
+            "other": "cups"
+          },
+          "el": {
+            "one": "φλιτζάνι",
+            "other": "φλιτζάνια"
+          }
+        }
+      },
+      {
+        "grams": 150,
+        "names": {
+          "en": {
+            "one": "piece",
+            "other": "pieces"
+          },
+          "el": {
+            "one": "τεμάχιο",
+            "other": "τεμάχια"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "cauliflower",
+    "origin": "plant",
+    "names": {
+      "en": "Cauliflower",
+      "el": "Κουνουπίδι"
+    },
+    "allergens": [],
+    "per100g": {
+      "kcal": 25,
+      "proteinG": 1.9,
+      "carbsG": 5,
+      "fatG": 0.3
+    },
+    "units": [
+      {
+        "grams": 100,
+        "names": {
+          "en": {
+            "one": "cup",
+            "other": "cups"
+          },
+          "el": {
+            "one": "φλιτζάνι",
+            "other": "φλιτζάνια"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "spinach",
+    "origin": "plant",
+    "names": {
+      "en": "Spinach",
+      "el": "Σπανάκι"
+    },
+    "allergens": [],
+    "per100g": {
+      "kcal": 23,
+      "proteinG": 2.9,
+      "carbsG": 3.6,
+      "fatG": 0.4
+    },
+    "units": [
+      {
+        "grams": 30,
+        "names": {
+          "en": {
+            "one": "handful",
+            "other": "handfuls"
+          },
+          "el": {
+            "one": "χούφτα",
+            "other": "χούφτες"
+          }
+        }
+      },
+      {
+        "grams": 30,
+        "names": {
+          "en": {
+            "one": "cup",
+            "other": "cups"
+          },
+          "el": {
+            "one": "φλιτζάνι",
+            "other": "φλιτζάνια"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "kale",
+    "origin": "plant",
+    "names": {
+      "en": "Kale",
+      "el": "Κέιλ"
+    },
+    "allergens": [],
+    "per100g": {
+      "kcal": 43,
+      "proteinG": 3.3,
+      "carbsG": 4.4,
+      "fatG": 0.9
+    },
+    "units": [
+      {
+        "grams": 30,
+        "names": {
+          "en": {
+            "one": "handful",
+            "other": "handfuls"
+          },
+          "el": {
+            "one": "χούφτα",
+            "other": "χούφτες"
+          }
+        }
+      },
+      {
+        "grams": 20,
+        "names": {
+          "en": {
+            "one": "cup",
+            "other": "cups"
+          },
+          "el": {
+            "one": "φλιτζάνι",
+            "other": "φλιτζάνια"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "cabbage-white",
+    "origin": "plant",
+    "names": {
+      "en": "White cabbage",
+      "el": "Λευκό λάχανο"
+    },
+    "allergens": [],
+    "per100g": {
+      "kcal": 25,
+      "proteinG": 1.3,
+      "carbsG": 5.8,
+      "fatG": 0.1
+    },
+    "units": [
+      {
+        "grams": 90,
+        "names": {
+          "en": {
+            "one": "cup",
+            "other": "cups"
+          },
+          "el": {
+            "one": "φλιτζάνι",
+            "other": "φλιτζάνια"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "cabbage-red",
+    "origin": "plant",
+    "names": {
+      "en": "Red cabbage",
+      "el": "Κόκκινο λάχανο"
+    },
+    "allergens": [],
+    "per100g": {
+      "kcal": 31,
+      "proteinG": 1.4,
+      "carbsG": 7.4,
+      "fatG": 0.2
+    },
+    "units": [
+      {
+        "grams": 90,
+        "names": {
+          "en": {
+            "one": "cup",
+            "other": "cups"
+          },
+          "el": {
+            "one": "φλιτζάνι",
+            "other": "φλιτζάνια"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "lettuce-romaine",
+    "origin": "plant",
+    "names": {
+      "en": "Romaine lettuce",
+      "el": "Μαρούλι ρομάνα"
+    },
+    "allergens": [],
+    "per100g": {
+      "kcal": 17,
+      "proteinG": 1.2,
+      "carbsG": 3.3,
+      "fatG": 0.3
+    },
+    "units": [
+      {
+        "grams": 50,
+        "names": {
+          "en": {
+            "one": "handful",
+            "other": "handfuls"
+          },
+          "el": {
+            "one": "χούφτα",
+            "other": "χούφτες"
+          }
+        }
+      },
+      {
+        "grams": 10,
+        "names": {
+          "en": {
+            "one": "piece",
+            "other": "pieces"
+          },
+          "el": {
+            "one": "τεμάχιο",
+            "other": "τεμάχια"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "lettuce-iceberg",
+    "origin": "plant",
+    "names": {
+      "en": "Iceberg lettuce",
+      "el": "Μαρούλι iceberg"
+    },
+    "allergens": [],
+    "per100g": {
+      "kcal": 14,
+      "proteinG": 0.9,
+      "carbsG": 3,
+      "fatG": 0.1
+    },
+    "units": [
+      {
+        "grams": 40,
+        "names": {
+          "en": {
+            "one": "handful",
+            "other": "handfuls"
+          },
+          "el": {
+            "one": "χούφτα",
+            "other": "χούφτες"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "rocket",
+    "origin": "plant",
+    "names": {
+      "en": "Rocket",
+      "el": "Ρόκα"
+    },
+    "allergens": [],
+    "per100g": {
+      "kcal": 25,
+      "proteinG": 2.6,
+      "carbsG": 3.7,
+      "fatG": 0.7
+    },
+    "units": [
+      {
+        "grams": 20,
+        "names": {
+          "en": {
+            "one": "handful",
+            "other": "handfuls"
+          },
+          "el": {
+            "one": "χούφτα",
+            "other": "χούφτες"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "salad-leaves-mixed",
+    "origin": "plant",
+    "names": {
+      "en": "Mixed salad leaves",
+      "el": "Ανάμεικτα φύλλα σαλάτας"
+    },
+    "allergens": [],
+    "per100g": {
+      "kcal": 17,
+      "proteinG": 1.5,
+      "carbsG": 2.5,
+      "fatG": 0.3
+    },
+    "units": [
+      {
+        "grams": 30,
+        "names": {
+          "en": {
+            "one": "handful",
+            "other": "handfuls"
+          },
+          "el": {
+            "one": "χούφτα",
+            "other": "χούφτες"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "beetroot-cooked",
+    "origin": "plant",
+    "names": {
+      "en": "Beetroot, cooked",
+      "el": "Παντζάρι, βραστό"
+    },
+    "allergens": [],
+    "per100g": {
+      "kcal": 44,
+      "proteinG": 1.7,
+      "carbsG": 10,
+      "fatG": 0.2
+    },
+    "units": [
+      {
+        "grams": 80,
+        "names": {
+          "en": {
+            "one": "piece",
+            "other": "pieces"
+          },
+          "el": {
+            "one": "τεμάχιο",
+            "other": "τεμάχια"
+          }
+        }
+      },
+      {
+        "grams": 130,
+        "names": {
+          "en": {
+            "one": "cup",
+            "other": "cups"
+          },
+          "el": {
+            "one": "φλιτζάνι",
+            "other": "φλιτζάνια"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "celery",
+    "origin": "plant",
+    "names": {
+      "en": "Celery",
+      "el": "Σέλινο"
+    },
+    "allergens": [
+      "celery"
+    ],
+    "per100g": {
+      "kcal": 14,
+      "proteinG": 0.7,
+      "carbsG": 3,
+      "fatG": 0.2
+    },
+    "units": [
+      {
+        "grams": 40,
+        "names": {
+          "en": {
+            "one": "stalk",
+            "other": "stalks"
+          },
+          "el": {
+            "one": "στέλεχος",
+            "other": "στελέχη"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "celeriac",
+    "origin": "plant",
+    "names": {
+      "en": "Celeriac",
+      "el": "Σελινόριζα"
+    },
+    "allergens": [
+      "celery"
+    ],
+    "per100g": {
+      "kcal": 42,
+      "proteinG": 1.5,
+      "carbsG": 9.2,
+      "fatG": 0.3
+    },
+    "units": [
+      {
+        "grams": 130,
+        "names": {
+          "en": {
+            "one": "cup",
+            "other": "cups"
+          },
+          "el": {
+            "one": "φλιτζάνι",
+            "other": "φλιτζάνια"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "leek",
+    "origin": "plant",
+    "names": {
+      "en": "Leek",
+      "el": "Πράσο"
+    },
+    "allergens": [],
+    "per100g": {
+      "kcal": 61,
+      "proteinG": 1.5,
+      "carbsG": 14,
+      "fatG": 0.3
+    },
+    "units": [
+      {
+        "grams": 150,
+        "names": {
+          "en": {
+            "one": "piece",
+            "other": "pieces"
+          },
+          "el": {
+            "one": "τεμάχιο",
+            "other": "τεμάχια"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "fennel-bulb",
+    "origin": "plant",
+    "names": {
+      "en": "Fennel bulb",
+      "el": "Φινόκιο"
+    },
+    "allergens": [],
+    "per100g": {
+      "kcal": 31,
+      "proteinG": 1.2,
+      "carbsG": 7.3,
+      "fatG": 0.2
+    },
+    "units": [
+      {
+        "grams": 200,
+        "names": {
+          "en": {
+            "one": "piece",
+            "other": "pieces"
+          },
+          "el": {
+            "one": "τεμάχιο",
+            "other": "τεμάχια"
+          }
+        }
+      },
+      {
+        "grams": 90,
+        "names": {
+          "en": {
+            "one": "cup",
+            "other": "cups"
+          },
+          "el": {
+            "one": "φλιτζάνι",
+            "other": "φλιτζάνια"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "mushrooms",
+    "origin": "plant",
+    "names": {
+      "en": "Mushrooms",
+      "el": "Μανιτάρια"
+    },
+    "allergens": [],
+    "per100g": {
+      "kcal": 25,
+      "proteinG": 3.1,
+      "carbsG": 3.3,
+      "fatG": 0.3
+    },
+    "units": [
+      {
+        "grams": 70,
+        "names": {
+          "en": {
+            "one": "cup",
+            "other": "cups"
+          },
+          "el": {
+            "one": "φλιτζάνι",
+            "other": "φλιτζάνια"
+          }
+        }
+      },
+      {
+        "grams": 20,
+        "names": {
+          "en": {
+            "one": "piece",
+            "other": "pieces"
+          },
+          "el": {
+            "one": "τεμάχιο",
+            "other": "τεμάχια"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "green-beans",
+    "origin": "plant",
+    "names": {
+      "en": "Green beans",
+      "el": "Φασολάκια"
+    },
+    "allergens": [],
+    "per100g": {
+      "kcal": 33,
+      "proteinG": 1.8,
+      "carbsG": 7,
+      "fatG": 0.2
+    },
+    "units": [
+      {
+        "grams": 80,
+        "names": {
+          "en": {
+            "one": "handful",
+            "other": "handfuls"
+          },
+          "el": {
+            "one": "χούφτα",
+            "other": "χούφτες"
+          }
+        }
+      },
+      {
+        "grams": 100,
+        "names": {
+          "en": {
+            "one": "cup",
+            "other": "cups"
+          },
+          "el": {
+            "one": "φλιτζάνι",
+            "other": "φλιτζάνια"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "peas-green",
+    "origin": "plant",
+    "names": {
+      "en": "Green peas",
+      "el": "Αρακάς"
+    },
+    "allergens": [],
+    "per100g": {
+      "kcal": 77,
+      "proteinG": 5.2,
+      "carbsG": 13.6,
+      "fatG": 0.4
+    },
+    "units": [
+      {
+        "grams": 80,
+        "names": {
+          "en": {
+            "one": "handful",
+            "other": "handfuls"
+          },
+          "el": {
+            "one": "χούφτα",
+            "other": "χούφτες"
+          }
+        }
+      },
+      {
+        "grams": 145,
+        "names": {
+          "en": {
+            "one": "cup",
+            "other": "cups"
+          },
+          "el": {
+            "one": "φλιτζάνι",
+            "other": "φλιτζάνια"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "okra",
+    "origin": "plant",
+    "names": {
+      "en": "Okra",
+      "el": "Μπάμιες"
+    },
+    "allergens": [],
+    "per100g": {
+      "kcal": 35,
+      "proteinG": 1.9,
+      "carbsG": 7.5,
+      "fatG": 0.2
+    },
+    "units": [
+      {
+        "grams": 100,
+        "names": {
+          "en": {
+            "one": "cup",
+            "other": "cups"
+          },
+          "el": {
+            "one": "φλιτζάνι",
+            "other": "φλιτζάνια"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "asparagus",
+    "origin": "plant",
+    "names": {
+      "en": "Asparagus",
+      "el": "Σπαράγγια"
+    },
+    "allergens": [],
+    "per100g": {
+      "kcal": 22,
+      "proteinG": 2.2,
+      "carbsG": 3.9,
+      "fatG": 0.1
+    },
+    "units": [
+      {
+        "grams": 16,
+        "names": {
+          "en": {
+            "one": "spear",
+            "other": "spears"
+          },
+          "el": {
+            "one": "σπαράγγι",
+            "other": "σπαράγγια"
+          }
+        }
+      },
+      {
+        "grams": 130,
+        "names": {
+          "en": {
+            "one": "cup",
+            "other": "cups"
+          },
+          "el": {
+            "one": "φλιτζάνι",
+            "other": "φλιτζάνια"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "pumpkin",
+    "origin": "plant",
+    "names": {
+      "en": "Pumpkin",
+      "el": "Κολοκύθα"
+    },
+    "allergens": [],
+    "per100g": {
+      "kcal": 28,
+      "proteinG": 1,
+      "carbsG": 6.5,
+      "fatG": 0.1
+    },
+    "units": [
+      {
+        "grams": 116,
+        "names": {
+          "en": {
+            "one": "cup",
+            "other": "cups"
+          },
+          "el": {
+            "one": "φλιτζάνι",
+            "other": "φλιτζάνια"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "butternut-squash",
+    "origin": "plant",
+    "names": {
+      "en": "Butternut squash",
+      "el": "Κολοκύθα butternut"
+    },
+    "allergens": [],
+    "per100g": {
+      "kcal": 47,
+      "proteinG": 1,
+      "carbsG": 12,
+      "fatG": 0.1
+    },
+    "units": [
+      {
+        "grams": 140,
+        "names": {
+          "en": {
+            "one": "cup",
+            "other": "cups"
+          },
+          "el": {
+            "one": "φλιτζάνι",
+            "other": "φλιτζάνια"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "radish",
+    "origin": "plant",
+    "names": {
+      "en": "Radish",
+      "el": "Ραπανάκι"
+    },
+    "allergens": [],
+    "per100g": {
+      "kcal": 16,
+      "proteinG": 0.7,
+      "carbsG": 3.4,
+      "fatG": 0.1
+    },
+    "units": [
+      {
+        "grams": 8,
+        "names": {
+          "en": {
+            "one": "piece",
+            "other": "pieces"
+          },
+          "el": {
+            "one": "τεμάχιο",
+            "other": "τεμάχια"
+          }
+        }
+      },
+      {
+        "grams": 115,
+        "names": {
+          "en": {
+            "one": "cup",
+            "other": "cups"
+          },
+          "el": {
+            "one": "φλιτζάνι",
+            "other": "φλιτζάνια"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "wild-greens-boiled",
+    "origin": "plant",
+    "names": {
+      "en": "Wild greens (horta), boiled",
+      "el": "Χόρτα, βραστά"
+    },
+    "allergens": [],
+    "per100g": {
+      "kcal": 22,
+      "proteinG": 2,
+      "carbsG": 3,
+      "fatG": 0.3
+    },
+    "units": [
+      {
+        "grams": 150,
+        "names": {
+          "en": {
+            "one": "cup",
+            "other": "cups"
+          },
+          "el": {
+            "one": "φλιτζάνι",
+            "other": "φλιτζάνια"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "artichoke-hearts",
+    "origin": "plant",
+    "names": {
+      "en": "Artichoke hearts, cooked",
+      "el": "Καρδιές αγκινάρας, βρασμένες"
+    },
+    "allergens": [],
+    "per100g": {
+      "kcal": 55,
+      "proteinG": 2.9,
+      "carbsG": 12,
+      "fatG": 0.2
+    },
+    "units": [
+      {
+        "grams": 40,
+        "names": {
+          "en": {
+            "one": "heart",
+            "other": "hearts"
+          },
+          "el": {
+            "one": "καρδιά",
+            "other": "καρδιές"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "chard",
+    "origin": "plant",
+    "names": {
+      "en": "Swiss chard",
+      "el": "Σέσκουλο"
+    },
+    "allergens": [],
+    "per100g": {
+      "kcal": 21,
+      "proteinG": 1.8,
+      "carbsG": 3.7,
+      "fatG": 0.2
+    },
+    "units": [
+      {
+        "grams": 40,
+        "names": {
+          "en": {
+            "one": "handful",
+            "other": "handfuls"
+          },
+          "el": {
+            "one": "χούφτα",
+            "other": "χούφτες"
+          }
+        }
+      },
+      {
+        "grams": 36,
+        "names": {
+          "en": {
+            "one": "cup",
+            "other": "cups"
+          },
+          "el": {
+            "one": "φλιτζάνι",
+            "other": "φλιτζάνια"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "brussels-sprouts",
+    "origin": "plant",
+    "names": {
+      "en": "Brussels sprouts",
+      "el": "Λαχανάκια Βρυξελλών"
+    },
+    "allergens": [],
+    "per100g": {
+      "kcal": 46,
+      "proteinG": 3.4,
+      "carbsG": 9,
+      "fatG": 0.3
+    },
+    "units": [
+      {
+        "grams": 90,
+        "names": {
+          "en": {
+            "one": "cup",
+            "other": "cups"
+          },
+          "el": {
+            "one": "φλιτζάνι",
+            "other": "φλιτζάνια"
+          }
+        }
+      },
+      {
+        "grams": 20,
+        "names": {
+          "en": {
+            "one": "piece",
+            "other": "pieces"
+          },
+          "el": {
+            "one": "τεμάχιο",
+            "other": "τεμάχια"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "apple",
+    "origin": "plant",
+    "names": {
+      "en": "Apple",
+      "el": "Μήλο"
+    },
+    "allergens": [],
+    "per100g": {
+      "kcal": 52,
+      "proteinG": 0.3,
+      "carbsG": 14,
+      "fatG": 0.2
+    },
+    "units": [
+      {
+        "grams": 180,
+        "names": {
+          "en": {
+            "one": "piece",
+            "other": "pieces"
+          },
+          "el": {
+            "one": "τεμάχιο",
+            "other": "τεμάχια"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "banana",
+    "origin": "plant",
+    "names": {
+      "en": "Banana",
+      "el": "Μπανάνα"
+    },
+    "allergens": [],
+    "per100g": {
+      "kcal": 89,
+      "proteinG": 1.1,
+      "carbsG": 23,
+      "fatG": 0.3
+    },
+    "units": [
+      {
+        "grams": 120,
+        "names": {
+          "en": {
+            "one": "piece",
+            "other": "pieces"
+          },
+          "el": {
+            "one": "τεμάχιο",
+            "other": "τεμάχια"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "orange",
+    "origin": "plant",
+    "names": {
+      "en": "Orange",
+      "el": "Πορτοκάλι"
+    },
+    "allergens": [],
+    "per100g": {
+      "kcal": 47,
+      "proteinG": 0.9,
+      "carbsG": 12,
+      "fatG": 0.1
+    },
+    "units": [
+      {
+        "grams": 150,
+        "names": {
+          "en": {
+            "one": "piece",
+            "other": "pieces"
+          },
+          "el": {
+            "one": "τεμάχιο",
+            "other": "τεμάχια"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "mandarin",
+    "origin": "plant",
+    "names": {
+      "en": "Mandarin",
+      "el": "Μανταρίνι"
+    },
+    "allergens": [],
+    "per100g": {
+      "kcal": 53,
+      "proteinG": 0.8,
+      "carbsG": 13.3,
+      "fatG": 0.3
+    },
+    "units": [
+      {
+        "grams": 80,
+        "names": {
+          "en": {
+            "one": "piece",
+            "other": "pieces"
+          },
+          "el": {
+            "one": "τεμάχιο",
+            "other": "τεμάχια"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "grapefruit",
+    "origin": "plant",
+    "names": {
+      "en": "Grapefruit",
+      "el": "Γκρέιπφρουτ"
+    },
+    "allergens": [],
+    "per100g": {
+      "kcal": 44,
+      "proteinG": 0.8,
+      "carbsG": 11,
+      "fatG": 0.1
+    },
+    "units": [
+      {
+        "grams": 120,
+        "names": {
+          "en": {
+            "one": "half",
+            "other": "halves"
+          },
+          "el": {
+            "one": "μισό",
+            "other": "μισά"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "pear",
+    "origin": "plant",
+    "names": {
+      "en": "Pear",
+      "el": "Αχλάδι"
+    },
+    "allergens": [],
+    "per100g": {
+      "kcal": 57,
+      "proteinG": 0.4,
+      "carbsG": 15,
+      "fatG": 0.1
+    },
+    "units": [
+      {
+        "grams": 180,
+        "names": {
+          "en": {
+            "one": "piece",
+            "other": "pieces"
+          },
+          "el": {
+            "one": "τεμάχιο",
+            "other": "τεμάχια"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "peach",
+    "origin": "plant",
+    "names": {
+      "en": "Peach",
+      "el": "Ροδάκινο"
+    },
+    "allergens": [],
+    "per100g": {
+      "kcal": 39,
+      "proteinG": 0.9,
+      "carbsG": 9.5,
+      "fatG": 0.3
+    },
+    "units": [
+      {
+        "grams": 150,
+        "names": {
+          "en": {
+            "one": "piece",
+            "other": "pieces"
+          },
+          "el": {
+            "one": "τεμάχιο",
+            "other": "τεμάχια"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "nectarine",
+    "origin": "plant",
+    "names": {
+      "en": "Nectarine",
+      "el": "Νεκταρίνι"
+    },
+    "allergens": [],
+    "per100g": {
+      "kcal": 44,
+      "proteinG": 1.1,
+      "carbsG": 10.6,
+      "fatG": 0.3
+    },
+    "units": [
+      {
+        "grams": 140,
+        "names": {
+          "en": {
+            "one": "piece",
+            "other": "pieces"
+          },
+          "el": {
+            "one": "τεμάχιο",
+            "other": "τεμάχια"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "apricot-fresh",
+    "origin": "plant",
+    "names": {
+      "en": "Apricot",
+      "el": "Βερίκοκο"
+    },
+    "allergens": [],
+    "per100g": {
+      "kcal": 48,
+      "proteinG": 1.4,
+      "carbsG": 11,
+      "fatG": 0.4
+    },
+    "units": [
+      {
+        "grams": 35,
+        "names": {
+          "en": {
+            "one": "piece",
+            "other": "pieces"
+          },
+          "el": {
+            "one": "τεμάχιο",
+            "other": "τεμάχια"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "plum",
+    "origin": "plant",
+    "names": {
+      "en": "Plum",
+      "el": "Δαμάσκηνο"
+    },
+    "allergens": [],
+    "per100g": {
+      "kcal": 46,
+      "proteinG": 0.7,
+      "carbsG": 11,
+      "fatG": 0.3
+    },
+    "units": [
+      {
+        "grams": 65,
+        "names": {
+          "en": {
+            "one": "piece",
+            "other": "pieces"
+          },
+          "el": {
+            "one": "τεμάχιο",
+            "other": "τεμάχια"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "cherries",
+    "origin": "plant",
+    "names": {
+      "en": "Cherries",
+      "el": "Κεράσια"
+    },
+    "allergens": [],
+    "per100g": {
+      "kcal": 63,
+      "proteinG": 1,
+      "carbsG": 16,
+      "fatG": 0.2
+    },
+    "units": [
+      {
+        "grams": 80,
+        "names": {
+          "en": {
+            "one": "handful",
+            "other": "handfuls"
+          },
+          "el": {
+            "one": "χούφτα",
+            "other": "χούφτες"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "grapes",
+    "origin": "plant",
+    "names": {
+      "en": "Grapes",
+      "el": "Σταφύλια"
+    },
+    "allergens": [],
+    "per100g": {
+      "kcal": 69,
+      "proteinG": 0.7,
+      "carbsG": 18,
+      "fatG": 0.2
+    },
+    "units": [
+      {
+        "grams": 80,
+        "names": {
+          "en": {
+            "one": "handful",
+            "other": "handfuls"
+          },
+          "el": {
+            "one": "χούφτα",
+            "other": "χούφτες"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "strawberries",
+    "origin": "plant",
+    "names": {
+      "en": "Strawberries",
+      "el": "Φράουλες"
+    },
+    "allergens": [],
+    "per100g": {
+      "kcal": 32,
+      "proteinG": 0.7,
+      "carbsG": 7.7,
+      "fatG": 0.3
+    },
+    "units": [
+      {
+        "grams": 100,
+        "names": {
+          "en": {
+            "one": "handful",
+            "other": "handfuls"
+          },
+          "el": {
+            "one": "χούφτα",
+            "other": "χούφτες"
+          }
+        }
+      },
+      {
+        "grams": 150,
+        "names": {
+          "en": {
+            "one": "cup",
+            "other": "cups"
+          },
+          "el": {
+            "one": "φλιτζάνι",
+            "other": "φλιτζάνια"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "blueberries",
+    "origin": "plant",
+    "names": {
+      "en": "Blueberries",
+      "el": "Μύρτιλα"
+    },
+    "allergens": [],
+    "per100g": {
+      "kcal": 57,
+      "proteinG": 0.7,
+      "carbsG": 14,
+      "fatG": 0.3
+    },
+    "units": [
+      {
+        "grams": 75,
+        "names": {
+          "en": {
+            "one": "handful",
+            "other": "handfuls"
+          },
+          "el": {
+            "one": "χούφτα",
+            "other": "χούφτες"
+          }
+        }
+      },
+      {
+        "grams": 150,
+        "names": {
+          "en": {
+            "one": "cup",
+            "other": "cups"
+          },
+          "el": {
+            "one": "φλιτζάνι",
+            "other": "φλιτζάνια"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "raspberries",
+    "origin": "plant",
+    "names": {
+      "en": "Raspberries",
+      "el": "Σμέουρα"
+    },
+    "allergens": [],
+    "per100g": {
+      "kcal": 52,
+      "proteinG": 1.2,
+      "carbsG": 12,
+      "fatG": 0.7
+    },
+    "units": [
+      {
+        "grams": 60,
+        "names": {
+          "en": {
+            "one": "handful",
+            "other": "handfuls"
+          },
+          "el": {
+            "one": "χούφτα",
+            "other": "χούφτες"
+          }
+        }
+      },
+      {
+        "grams": 125,
+        "names": {
+          "en": {
+            "one": "cup",
+            "other": "cups"
+          },
+          "el": {
+            "one": "φλιτζάνι",
+            "other": "φλιτζάνια"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "blackberries",
+    "origin": "plant",
+    "names": {
+      "en": "Blackberries",
+      "el": "Βατόμουρα"
+    },
+    "allergens": [],
+    "per100g": {
+      "kcal": 43,
+      "proteinG": 1.4,
+      "carbsG": 10,
+      "fatG": 0.5
+    },
+    "units": [
+      {
+        "grams": 70,
+        "names": {
+          "en": {
+            "one": "handful",
+            "other": "handfuls"
+          },
+          "el": {
+            "one": "χούφτα",
+            "other": "χούφτες"
+          }
+        }
+      },
+      {
+        "grams": 145,
+        "names": {
+          "en": {
+            "one": "cup",
+            "other": "cups"
+          },
+          "el": {
+            "one": "φλιτζάνι",
+            "other": "φλιτζάνια"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "mixed-berries-frozen",
+    "origin": "plant",
+    "names": {
+      "en": "Mixed berries, frozen",
+      "el": "Φρούτα του δάσους, κατεψυγμένα"
+    },
+    "allergens": [],
+    "per100g": {
+      "kcal": 45,
+      "proteinG": 0.7,
+      "carbsG": 10,
+      "fatG": 0.3
+    },
+    "units": [
+      {
+        "grams": 140,
+        "names": {
+          "en": {
+            "one": "cup",
+            "other": "cups"
+          },
+          "el": {
+            "one": "φλιτζάνι",
+            "other": "φλιτζάνια"
+          }
+        }
+      },
+      {
+        "grams": 60,
+        "names": {
+          "en": {
+            "one": "handful",
+            "other": "handfuls"
+          },
+          "el": {
+            "one": "χούφτα",
+            "other": "χούφτες"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "watermelon",
+    "origin": "plant",
+    "names": {
+      "en": "Watermelon",
+      "el": "Καρπούζι"
+    },
+    "allergens": [],
+    "per100g": {
+      "kcal": 30,
+      "proteinG": 0.6,
+      "carbsG": 7.6,
+      "fatG": 0.2
+    },
+    "units": [
+      {
+        "grams": 280,
+        "names": {
+          "en": {
+            "one": "slice",
+            "other": "slices"
+          },
+          "el": {
+            "one": "φέτα",
+            "other": "φέτες"
+          }
+        }
+      },
+      {
+        "grams": 150,
+        "names": {
+          "en": {
+            "one": "cup",
+            "other": "cups"
+          },
+          "el": {
+            "one": "φλιτζάνι",
+            "other": "φλιτζάνια"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "melon",
+    "origin": "plant",
+    "names": {
+      "en": "Melon",
+      "el": "Πεπόνι"
+    },
+    "allergens": [],
+    "per100g": {
+      "kcal": 34,
+      "proteinG": 0.8,
+      "carbsG": 8.2,
+      "fatG": 0.2
+    },
+    "units": [
+      {
+        "grams": 150,
+        "names": {
+          "en": {
+            "one": "slice",
+            "other": "slices"
+          },
+          "el": {
+            "one": "φέτα",
+            "other": "φέτες"
+          }
+        }
+      },
+      {
+        "grams": 160,
+        "names": {
+          "en": {
+            "one": "cup",
+            "other": "cups"
+          },
+          "el": {
+            "one": "φλιτζάνι",
+            "other": "φλιτζάνια"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "kiwi",
+    "origin": "plant",
+    "names": {
+      "en": "Kiwi",
+      "el": "Ακτινίδιο"
+    },
+    "allergens": [],
+    "per100g": {
+      "kcal": 61,
+      "proteinG": 1.1,
+      "carbsG": 15,
+      "fatG": 0.5
+    },
+    "units": [
+      {
+        "grams": 70,
+        "names": {
+          "en": {
+            "one": "piece",
+            "other": "pieces"
+          },
+          "el": {
+            "one": "τεμάχιο",
+            "other": "τεμάχια"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "pomegranate-seeds",
+    "origin": "plant",
+    "names": {
+      "en": "Pomegranate seeds",
+      "el": "Ρόδι, σπόροι"
+    },
+    "allergens": [],
+    "per100g": {
+      "kcal": 83,
+      "proteinG": 1.7,
+      "carbsG": 19,
+      "fatG": 1.2
+    },
+    "units": [
+      {
+        "grams": 50,
+        "names": {
+          "en": {
+            "one": "handful",
+            "other": "handfuls"
+          },
+          "el": {
+            "one": "χούφτα",
+            "other": "χούφτες"
+          }
+        }
+      },
+      {
+        "grams": 10,
+        "names": {
+          "en": {
+            "one": "tablespoon",
+            "other": "tablespoons"
+          },
+          "el": {
+            "one": "κουταλιά της σούπας",
+            "other": "κουταλιές της σούπας"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "figs-fresh",
+    "origin": "plant",
+    "names": {
+      "en": "Figs, fresh",
+      "el": "Σύκα, φρέσκα"
+    },
+    "allergens": [],
+    "per100g": {
+      "kcal": 74,
+      "proteinG": 0.8,
+      "carbsG": 19,
+      "fatG": 0.3
+    },
+    "units": [
+      {
+        "grams": 50,
+        "names": {
+          "en": {
+            "one": "piece",
+            "other": "pieces"
+          },
+          "el": {
+            "one": "τεμάχιο",
+            "other": "τεμάχια"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "mango",
+    "origin": "plant",
+    "names": {
+      "en": "Mango",
+      "el": "Μάνγκο"
+    },
+    "allergens": [],
+    "per100g": {
+      "kcal": 60,
+      "proteinG": 0.8,
+      "carbsG": 15,
+      "fatG": 0.4
+    },
+    "units": [
+      {
+        "grams": 165,
+        "names": {
+          "en": {
+            "one": "cup",
+            "other": "cups"
+          },
+          "el": {
+            "one": "φλιτζάνι",
+            "other": "φλιτζάνια"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "pineapple",
+    "origin": "plant",
+    "names": {
+      "en": "Pineapple",
+      "el": "Ανανάς"
+    },
+    "allergens": [],
+    "per100g": {
+      "kcal": 50,
+      "proteinG": 0.5,
+      "carbsG": 13,
+      "fatG": 0.1
+    },
+    "units": [
+      {
+        "grams": 80,
+        "names": {
+          "en": {
+            "one": "slice",
+            "other": "slices"
+          },
+          "el": {
+            "one": "φέτα",
+            "other": "φέτες"
+          }
+        }
+      },
+      {
+        "grams": 165,
+        "names": {
+          "en": {
+            "one": "cup",
+            "other": "cups"
+          },
+          "el": {
+            "one": "φλιτζάνι",
+            "other": "φλιτζάνια"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "persimmon",
+    "origin": "plant",
+    "names": {
+      "en": "Persimmon",
+      "el": "Λωτός"
+    },
+    "allergens": [],
+    "per100g": {
+      "kcal": 70,
+      "proteinG": 0.6,
+      "carbsG": 18,
+      "fatG": 0.2
+    },
+    "units": [
+      {
+        "grams": 170,
+        "names": {
+          "en": {
+            "one": "piece",
+            "other": "pieces"
+          },
+          "el": {
+            "one": "τεμάχιο",
+            "other": "τεμάχια"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "avocado",
+    "origin": "plant",
+    "names": {
+      "en": "Avocado",
+      "el": "Αβοκάντο"
+    },
+    "allergens": [],
+    "per100g": {
+      "kcal": 160,
+      "proteinG": 2,
+      "carbsG": 8.5,
+      "fatG": 14.7
+    },
+    "units": [
+      {
+        "grams": 100,
+        "names": {
+          "en": {
+            "one": "half",
+            "other": "halves"
+          },
+          "el": {
+            "one": "μισό",
+            "other": "μισά"
+          }
+        }
+      },
+      {
+        "grams": 15,
+        "names": {
+          "en": {
+            "one": "tablespoon",
+            "other": "tablespoons"
+          },
+          "el": {
+            "one": "κουταλιά της σούπας",
+            "other": "κουταλιές της σούπας"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "lemon-juice",
+    "origin": "plant",
+    "names": {
+      "en": "Lemon juice",
+      "el": "Χυμός λεμονιού"
+    },
+    "allergens": [],
+    "per100g": {
+      "kcal": 28,
+      "proteinG": 0.4,
+      "carbsG": 6.9,
+      "fatG": 0.2
+    },
+    "units": [
+      {
+        "grams": 15,
+        "names": {
+          "en": {
+            "one": "tablespoon",
+            "other": "tablespoons"
+          },
+          "el": {
+            "one": "κουταλιά της σούπας",
+            "other": "κουταλιές της σούπας"
+          }
+        }
+      },
+      {
+        "grams": 5,
+        "names": {
+          "en": {
+            "one": "teaspoon",
+            "other": "teaspoons"
+          },
+          "el": {
+            "one": "κουταλάκι του γλυκού",
+            "other": "κουταλάκια του γλυκού"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "raisins",
+    "origin": "plant",
+    "names": {
+      "en": "Raisins",
+      "el": "Σταφίδες"
+    },
+    "allergens": [
+      "sulphites"
+    ],
+    "per100g": {
+      "kcal": 299,
+      "proteinG": 3.1,
+      "carbsG": 79,
+      "fatG": 0.5
+    },
+    "units": [
+      {
+        "grams": 10,
+        "names": {
+          "en": {
+            "one": "tablespoon",
+            "other": "tablespoons"
+          },
+          "el": {
+            "one": "κουταλιά της σούπας",
+            "other": "κουταλιές της σούπας"
+          }
+        }
+      },
+      {
+        "grams": 30,
+        "names": {
+          "en": {
+            "one": "handful",
+            "other": "handfuls"
+          },
+          "el": {
+            "one": "χούφτα",
+            "other": "χούφτες"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "sultanas",
+    "origin": "plant",
+    "names": {
+      "en": "Sultanas",
+      "el": "Σουλτανίνες"
+    },
+    "allergens": [
+      "sulphites"
+    ],
+    "per100g": {
+      "kcal": 299,
+      "proteinG": 3.1,
+      "carbsG": 79,
+      "fatG": 0.5
+    },
+    "units": [
+      {
+        "grams": 10,
+        "names": {
+          "en": {
+            "one": "tablespoon",
+            "other": "tablespoons"
+          },
+          "el": {
+            "one": "κουταλιά της σούπας",
+            "other": "κουταλιές της σούπας"
+          }
+        }
+      },
+      {
+        "grams": 30,
+        "names": {
+          "en": {
+            "one": "handful",
+            "other": "handfuls"
+          },
+          "el": {
+            "one": "χούφτα",
+            "other": "χούφτες"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "apricots-dried",
+    "origin": "plant",
+    "names": {
+      "en": "Dried apricots",
+      "el": "Αποξηραμένα βερίκοκα"
+    },
+    "allergens": [
+      "sulphites"
+    ],
+    "per100g": {
+      "kcal": 241,
+      "proteinG": 3.4,
+      "carbsG": 63,
+      "fatG": 0.5
+    },
+    "units": [
+      {
+        "grams": 8,
+        "names": {
+          "en": {
+            "one": "piece",
+            "other": "pieces"
+          },
+          "el": {
+            "one": "τεμάχιο",
+            "other": "τεμάχια"
+          }
+        }
+      },
+      {
+        "grams": 30,
+        "names": {
+          "en": {
+            "one": "handful",
+            "other": "handfuls"
+          },
+          "el": {
+            "one": "χούφτα",
+            "other": "χούφτες"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "prunes",
+    "origin": "plant",
+    "names": {
+      "en": "Prunes",
+      "el": "Αποξηραμένα δαμάσκηνα"
+    },
+    "allergens": [
+      "sulphites"
+    ],
+    "per100g": {
+      "kcal": 240,
+      "proteinG": 2.2,
+      "carbsG": 64,
+      "fatG": 0.4
+    },
+    "units": [
+      {
+        "grams": 10,
+        "names": {
+          "en": {
+            "one": "piece",
+            "other": "pieces"
+          },
+          "el": {
+            "one": "τεμάχιο",
+            "other": "τεμάχια"
+          }
+        }
+      },
+      {
+        "grams": 30,
+        "names": {
+          "en": {
+            "one": "handful",
+            "other": "handfuls"
+          },
+          "el": {
+            "one": "χούφτα",
+            "other": "χούφτες"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "figs-dried",
+    "origin": "plant",
+    "names": {
+      "en": "Dried figs",
+      "el": "Αποξηραμένα σύκα"
+    },
+    "allergens": [
+      "sulphites"
+    ],
+    "per100g": {
+      "kcal": 249,
+      "proteinG": 3.3,
+      "carbsG": 64,
+      "fatG": 0.9
+    },
+    "units": [
+      {
+        "grams": 20,
+        "names": {
+          "en": {
+            "one": "piece",
+            "other": "pieces"
+          },
+          "el": {
+            "one": "τεμάχιο",
+            "other": "τεμάχια"
+          }
+        }
+      },
+      {
+        "grams": 30,
+        "names": {
+          "en": {
+            "one": "handful",
+            "other": "handfuls"
+          },
+          "el": {
+            "one": "χούφτα",
+            "other": "χούφτες"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "dates-medjool",
+    "origin": "plant",
+    "names": {
+      "en": "Medjool dates",
+      "el": "Χουρμάδες Μετζούλ"
+    },
+    "allergens": [],
+    "per100g": {
+      "kcal": 277,
+      "proteinG": 1.8,
+      "carbsG": 75,
+      "fatG": 0.2
+    },
+    "units": [
+      {
+        "grams": 24,
+        "names": {
+          "en": {
+            "one": "piece",
+            "other": "pieces"
+          },
+          "el": {
+            "one": "τεμάχιο",
+            "other": "τεμάχια"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "cranberries-dried",
+    "origin": "plant",
+    "names": {
+      "en": "Dried cranberries",
+      "el": "Αποξηραμένα κράνμπερι"
+    },
+    "allergens": [],
+    "per100g": {
+      "kcal": 308,
+      "proteinG": 0.1,
+      "carbsG": 82,
+      "fatG": 1.4
+    },
+    "units": [
+      {
+        "grams": 10,
+        "names": {
+          "en": {
+            "one": "tablespoon",
+            "other": "tablespoons"
+          },
+          "el": {
+            "one": "κουταλιά της σούπας",
+            "other": "κουταλιές της σούπας"
+          }
+        }
+      },
+      {
+        "grams": 30,
+        "names": {
+          "en": {
+            "one": "handful",
+            "other": "handfuls"
+          },
+          "el": {
+            "one": "χούφτα",
+            "other": "χούφτες"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "mango-dried",
+    "origin": "plant",
+    "names": {
+      "en": "Dried mango",
+      "el": "Αποξηραμένο μάνγκο"
+    },
+    "allergens": [
+      "sulphites"
+    ],
+    "per100g": {
+      "kcal": 319,
+      "proteinG": 2.5,
+      "carbsG": 78,
+      "fatG": 1.2
+    },
+    "units": [
+      {
+        "grams": 30,
+        "names": {
+          "en": {
+            "one": "handful",
+            "other": "handfuls"
+          },
+          "el": {
+            "one": "χούφτα",
+            "other": "χούφτες"
+          }
+        }
+      },
+      {
+        "grams": 10,
+        "names": {
+          "en": {
+            "one": "piece",
+            "other": "pieces"
+          },
+          "el": {
+            "one": "τεμάχιο",
+            "other": "τεμάχια"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "apple-dried",
+    "origin": "plant",
+    "names": {
+      "en": "Dried apple",
+      "el": "Αποξηραμένο μήλο"
+    },
+    "allergens": [
+      "sulphites"
+    ],
+    "per100g": {
+      "kcal": 243,
+      "proteinG": 0.9,
+      "carbsG": 66,
+      "fatG": 0.3
+    },
+    "units": [
+      {
+        "grams": 30,
+        "names": {
+          "en": {
+            "one": "handful",
+            "other": "handfuls"
+          },
+          "el": {
+            "one": "χούφτα",
+            "other": "χούφτες"
+          }
+        }
+      },
+      {
+        "grams": 10,
+        "names": {
+          "en": {
+            "one": "piece",
+            "other": "pieces"
+          },
+          "el": {
+            "one": "τεμάχιο",
+            "other": "τεμάχια"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "parsley",
+    "origin": "plant",
+    "names": {
+      "en": "Parsley",
+      "el": "Μαϊντανός"
+    },
+    "allergens": [],
+    "per100g": {
+      "kcal": 40,
+      "proteinG": 3,
+      "carbsG": 6.3,
+      "fatG": 0.8
+    },
+    "units": [
+      {
+        "grams": 4,
+        "names": {
+          "en": {
+            "one": "tablespoon",
+            "other": "tablespoons"
+          },
+          "el": {
+            "one": "κουταλιά της σούπας",
+            "other": "κουταλιές της σούπας"
+          }
+        }
+      },
+      {
+        "grams": 30,
+        "names": {
+          "en": {
+            "one": "bunch",
+            "other": "bunches"
+          },
+          "el": {
+            "one": "ματσάκι",
+            "other": "ματσάκια"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "dill",
+    "origin": "plant",
+    "names": {
+      "en": "Dill",
+      "el": "Άνηθος"
+    },
+    "allergens": [],
+    "per100g": {
+      "kcal": 47,
+      "proteinG": 3.5,
+      "carbsG": 7,
+      "fatG": 1.1
+    },
+    "units": [
+      {
+        "grams": 3,
+        "names": {
+          "en": {
+            "one": "tablespoon",
+            "other": "tablespoons"
+          },
+          "el": {
+            "one": "κουταλιά της σούπας",
+            "other": "κουταλιές της σούπας"
+          }
+        }
+      },
+      {
+        "grams": 20,
+        "names": {
+          "en": {
+            "one": "bunch",
+            "other": "bunches"
+          },
+          "el": {
+            "one": "ματσάκι",
+            "other": "ματσάκια"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "mint",
+    "origin": "plant",
+    "names": {
+      "en": "Mint",
+      "el": "Δυόσμος"
+    },
+    "allergens": [],
+    "per100g": {
+      "kcal": 48,
+      "proteinG": 3.3,
+      "carbsG": 8.4,
+      "fatG": 0.7
+    },
+    "units": [
+      {
+        "grams": 3,
+        "names": {
+          "en": {
+            "one": "tablespoon",
+            "other": "tablespoons"
+          },
+          "el": {
+            "one": "κουταλιά της σούπας",
+            "other": "κουταλιές της σούπας"
+          }
+        }
+      },
+      {
+        "grams": 5,
+        "names": {
+          "en": {
+            "one": "sprig",
+            "other": "sprigs"
+          },
+          "el": {
+            "one": "κλωναράκι",
+            "other": "κλωναράκια"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "basil",
+    "origin": "plant",
+    "names": {
+      "en": "Basil",
+      "el": "Βασιλικός"
+    },
+    "allergens": [],
+    "per100g": {
+      "kcal": 26,
+      "proteinG": 3.2,
+      "carbsG": 2.7,
+      "fatG": 0.6
+    },
+    "units": [
+      {
+        "grams": 15,
+        "names": {
+          "en": {
+            "one": "handful",
+            "other": "handfuls"
+          },
+          "el": {
+            "one": "χούφτα",
+            "other": "χούφτες"
+          }
+        }
+      },
+      {
+        "grams": 3,
+        "names": {
+          "en": {
+            "one": "tablespoon",
+            "other": "tablespoons"
+          },
+          "el": {
+            "one": "κουταλιά της σούπας",
+            "other": "κουταλιές της σούπας"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "coriander-fresh",
+    "origin": "plant",
+    "names": {
+      "en": "Fresh coriander",
+      "el": "Φρέσκος κόλιανδρος"
+    },
+    "allergens": [],
+    "per100g": {
+      "kcal": 25,
+      "proteinG": 2.1,
+      "carbsG": 3.7,
+      "fatG": 0.5
+    },
+    "units": [
+      {
+        "grams": 3,
+        "names": {
+          "en": {
+            "one": "tablespoon",
+            "other": "tablespoons"
+          },
+          "el": {
+            "one": "κουταλιά της σούπας",
+            "other": "κουταλιές της σούπας"
+          }
+        }
+      },
+      {
+        "grams": 20,
+        "names": {
+          "en": {
+            "one": "bunch",
+            "other": "bunches"
+          },
+          "el": {
+            "one": "ματσάκι",
+            "other": "ματσάκια"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "chives",
+    "origin": "plant",
+    "names": {
+      "en": "Chives",
+      "el": "Σχοινόπρασο"
+    },
+    "allergens": [],
+    "per100g": {
+      "kcal": 33,
+      "proteinG": 3.3,
+      "carbsG": 4.4,
+      "fatG": 0.7
+    },
+    "units": [
+      {
+        "grams": 3,
+        "names": {
+          "en": {
+            "one": "tablespoon",
+            "other": "tablespoons"
+          },
+          "el": {
+            "one": "κουταλιά της σούπας",
+            "other": "κουταλιές της σούπας"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "ginger-fresh",
+    "origin": "plant",
+    "names": {
+      "en": "Fresh ginger",
+      "el": "Φρέσκο τζίντζερ"
+    },
+    "allergens": [],
+    "per100g": {
+      "kcal": 80,
+      "proteinG": 1.8,
+      "carbsG": 18,
+      "fatG": 0.8
+    },
+    "units": [
+      {
+        "grams": 6,
+        "names": {
+          "en": {
+            "one": "tablespoon",
+            "other": "tablespoons"
+          },
+          "el": {
+            "one": "κουταλιά της σούπας",
+            "other": "κουταλιές της σούπας"
+          }
+        }
+      },
+      {
+        "grams": 10,
+        "names": {
+          "en": {
+            "one": "piece",
+            "other": "pieces"
+          },
+          "el": {
+            "one": "τεμάχιο",
+            "other": "τεμάχια"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "chilli-fresh",
+    "origin": "plant",
+    "names": {
+      "en": "Fresh chilli",
+      "el": "Φρέσκια καυτερή πιπεριά"
+    },
+    "allergens": [],
+    "per100g": {
+      "kcal": 40,
+      "proteinG": 1.9,
+      "carbsG": 8.8,
+      "fatG": 0.4
+    },
+    "units": [
+      {
+        "grams": 15,
+        "names": {
+          "en": {
+            "one": "piece",
+            "other": "pieces"
+          },
+          "el": {
+            "one": "τεμάχιο",
+            "other": "τεμάχια"
+          }
+        }
+      }
+    ]
+  }
+]

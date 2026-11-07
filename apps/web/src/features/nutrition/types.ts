@@ -7,10 +7,13 @@ import type {
   EatingPattern,
   EnergySex,
   EverydayActivity,
+  MealLogStatus,
+  MealSlot,
   WaterAmount,
 } from '@stamina/domain';
 import type { Locale } from '@stamina/i18n';
 import type { RoutePath } from '../../enums/route-path.ts';
+import type { MealScope } from './enums/meal-scope.ts';
 import type { UnlockField } from './enums/unlock-field.ts';
 import type { UnlockMessageKey } from './enums/unlock-message-key.ts';
 import type { UnlockStatus } from './enums/unlock-status.ts';
@@ -28,7 +31,7 @@ export interface UseNutritionOptions {
   mediator?: Mediator;
   /** The time now, for "today" on the person's calendar. Defaults to the browser's clock. */
   now?: () => Date;
-  /** Makes the id of a water log. Defaults to a random id. */
+  /** Makes the id of a water or meal log. Defaults to a random id. */
   newId?: () => string;
 }
 
@@ -86,4 +89,47 @@ export interface HydrationCardProps {
 
 export interface HydrationCardEmits {
   (event: 'log', amount: WaterAmount): void;
+}
+
+/** One meal slot of the day, ready to draw in the person's language. */
+export interface MealView {
+  /** The place of the slot in the day: what a log of it is filed under. */
+  index: number;
+  slot: MealSlot;
+  /** Clock time, "08:00". */
+  time: string;
+  /** The dish name, or undefined when there is no idea for the slot. */
+  title: string | undefined;
+  /** Ingredient lines, "2 tablespoons olive oil (20 g)"; empty without an idea. */
+  portions: readonly string[];
+  macros: { kcal: number; proteinG: number; carbsG: number; fatG: number } | undefined;
+  status: MealLogStatus | null;
+}
+
+export interface MealButtonsProps {
+  meal: MealView;
+  /** Which card the buttons are on, to keep the test ids apart. */
+  scope: MealScope;
+}
+
+export interface MealButtonsEmits {
+  (event: 'log', index: number, status: MealLogStatus): void;
+}
+
+export interface NextMealCardProps {
+  /** The meal to eat next, or undefined when every meal is logged. */
+  meal: MealView | undefined;
+  locale: Locale;
+}
+
+export interface NextMealCardEmits {
+  (event: 'log', index: number, status: MealLogStatus): void;
+}
+
+export interface MealDayListProps {
+  meals: readonly MealView[];
+}
+
+export interface MealDayListEmits {
+  (event: 'log', index: number, status: MealLogStatus): void;
 }

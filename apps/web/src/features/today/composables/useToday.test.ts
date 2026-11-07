@@ -104,8 +104,8 @@ describe('useToday', () => {
   it('draws the meals and water it is given, in time order, and none otherwise', async () => {
     const setup = setupToday(() => ({
       meals: [
-        { id: 'dinner', slot: MealSlotKind.Dinner, at: 1200, title: undefined },
-        { id: 'breakfast', slot: MealSlotKind.Breakfast, at: 450, title: 'Eggs' },
+        { id: 'dinner', slot: MealSlotKind.Dinner, at: 1200, title: undefined, status: null },
+        { id: 'breakfast', slot: MealSlotKind.Breakfast, at: 450, title: 'Eggs', status: null },
       ],
       water: { ml: 500, targetMl: 2500 },
     }));

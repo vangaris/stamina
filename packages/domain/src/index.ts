@@ -42,8 +42,10 @@ export {
   FAT_MIN_ENERGY_SHARE,
   MAX_DISLIKE_LENGTH,
   MAX_DISLIKES,
+  PORTION_UNIT_STEP,
   MAX_HEIGHT_CM,
   MAX_MEALS_PER_DAY,
+  MEAL_SHARES,
   MEAL_TIMES,
   MIN_HEIGHT_CM,
   MIN_MEALS_PER_DAY,
@@ -112,6 +114,12 @@ export {
   SCREENING_INSTRUMENT_VERSION,
   SCREENING_QUESTIONS,
   SESSION_LENGTHS_MINUTES,
+  MIN_PORTION_GRAMS,
+  MINUTES_IN_HOUR,
+  PORTION_ROUND_GRAMS,
+  SMALL_PORTION_BELOW_GRAMS,
+  TEMPLATE_SCALE_MAX,
+  TEMPLATE_SCALE_MIN,
 } from './config.ts';
 export { AdaptationChangeKind } from './enums/adaptation-change-kind.ts';
 export { AdaptationRule } from './enums/adaptation-rule.ts';
@@ -124,6 +132,8 @@ export { EatingPattern } from './enums/eating-pattern.ts';
 export { EnergySex } from './enums/energy-sex.ts';
 export { EverydayActivity } from './enums/everyday-activity.ts';
 export { MealSlot } from './enums/meal-slot.ts';
+export { MealLogStatus } from './enums/meal-log-status.ts';
+export { Origin } from './enums/origin.ts';
 export { TrainingKind } from './enums/training-kind.ts';
 export { WaterAmount } from './enums/water-amount.ts';
 export { BodyArea } from './enums/body-area.ts';
@@ -164,9 +174,24 @@ export { Units } from './enums/units.ts';
 export { Weekday } from './enums/weekday.ts';
 export { VerdictKind } from './enums/verdict-kind.ts';
 export type {
+  Ingredient,
+  IngredientUnit,
+  LocalisedName,
+  NameLocale,
+  NutrientsPer100g,
+  PortionDescription,
+  UnitName,
   DayTargets,
   DayTargetsInput,
   MealSlotTime,
+  MealIdea,
+  MealIdeasInput,
+  MealTemplate,
+  PickTemplateInput,
+  SlotTargets,
+  SlotTargetsDay,
+  TemplateEligibilityInput,
+  TemplateIngredient,
   RateCheckResult,
   RestingEnergyInput,
   TrainingBlock,
@@ -261,3 +286,18 @@ export { mealSlots } from './utils/meal-slots.ts';
 export { rateCheck } from './utils/rate-check.ts';
 export { restingEnergy } from './utils/resting-energy.ts';
 export { toWeeklyWeights } from './utils/to-weekly-weights.ts';
+export { INGREDIENTS } from './data/ingredients.ts';
+export { describePortion } from './utils/describe-portion.ts';
+export { getIngredient } from './utils/get-ingredient.ts';
+export { ingredientName } from './utils/ingredient-name.ts';
+export { originsAllowedBy } from './utils/origins-allowed-by.ts';
+export { TEMPLATES } from './data/templates.ts';
+export { eligibleTemplates } from './utils/eligible-templates.ts';
+export { getTemplate } from './utils/get-template.ts';
+export { matchesDislike } from './utils/matches-dislike.ts';
+export { pickTemplate } from './utils/pick-template.ts';
+export { scaleTemplate } from './utils/scale-template.ts';
+export { slotTargets } from './utils/slot-targets.ts';
+export { templateAllergens } from './utils/template-allergens.ts';
+export { templateOrigins } from './utils/template-origins.ts';
+export { mealIdeas } from './utils/meal-ideas.ts';

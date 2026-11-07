@@ -1,5 +1,9 @@
+import type { Allergen } from './enums/allergen.ts';
+import type { Origin } from './enums/origin.ts';
 import type { BodyDirection } from './enums/body-direction.ts';
 import type { MealSlot } from './enums/meal-slot.ts';
+import type { CookingEffort } from './enums/cooking-effort.ts';
+import type { EatingPattern } from './enums/eating-pattern.ts';
 import type { DayType } from './enums/day-type.ts';
 import type { EnergySex } from './enums/energy-sex.ts';
 import type { EverydayActivity } from './enums/everyday-activity.ts';
@@ -670,4 +674,122 @@ export interface RestingEnergyInput {
   ageYears: number;
   heightCm: number;
   weightKg: number;
+}
+
+/** The languages ingredient names are shipped in. */
+export type NameLocale = 'en' | 'el';
+
+export interface LocalisedName {
+  en: string;
+  el: string;
+}
+
+export interface UnitName {
+  one: string;
+  other: string;
+}
+
+export interface NutrientsPer100g {
+  kcal: number;
+  proteinG: number;
+  carbsG: number;
+  fatG: number;
+}
+
+/** A household measure: how many grams ONE unit weighs, and its name in each language. */
+export interface IngredientUnit {
+  grams: number;
+  names: Record<NameLocale, UnitName>;
+}
+
+export interface Ingredient {
+  /** Kebab-case, unique across the vocabulary. */
+  id: string;
+  origin: Origin;
+  names: LocalisedName;
+  allergens: Allergen[];
+  per100g: NutrientsPer100g;
+  /** One to three household measures; the first is the default. */
+  units: IngredientUnit[];
+}
+
+export interface PortionDescription {
+  /** E.g. "2 tablespoons (20 g)". */
+  text: string;
+  /** The amount as a line that names the food: "2 tablespoons olive oil (20 g)", "2.5 eggs (120 g)", "20 g olive oil". */
+  line: string;
+  /** Number of household units, or the grams when `unit` is "g". */
+  units: number;
+  unit: string;
+}
+
+/** One ingredient of a template at its base amount. */
+export interface TemplateIngredient {
+  ingredientId: string;
+  grams: number;
+}
+
+/**
+ * A fixed meal written in ingredient ids. Allergens and origins are derived from the ingredients,
+ * never stored; `pattern` is only the group the template was written for.
+ */
+export interface MealTemplate {
+  /** `<pattern>-<slot>-<n>`, unique across the templates. */
+  id: string;
+  pattern: EatingPattern;
+  slot: MealSlot;
+  effort: CookingEffort;
+  names: LocalisedName;
+  ingredients: TemplateIngredient[];
+}
+
+/** A slot's share of the day's targets. */
+export interface SlotTargets {
+  slot: MealSlot;
+  /** Minute of the day. */
+  at: number;
+  proteinG: number;
+  carbsG: number;
+  kcal: number;
+}
+
+/** What the rules need of the day's targets to split them across the meals. */
+export type SlotTargetsDay = Pick<DayTargets, 'proteinG' | 'carbsG' | 'energyKcal'>;
+
+/** A template scaled to a slot; names and household measures are rendered from domain data. */
+export interface MealIdea {
+  templateId: string;
+  portions: { ingredientId: string; grams: number }[];
+  kcal: number;
+  proteinG: number;
+  carbsG: number;
+  fatG: number;
+}
+
+/** The person facts a template must respect. */
+export interface TemplateEligibilityInput {
+  pattern: EatingPattern;
+  allergens: readonly Allergen[];
+  dislikes: readonly string[];
+}
+
+export interface PickTemplateInput {
+  candidates: readonly MealTemplate[];
+  effort: CookingEffort;
+  /** Days since a fixed date; the same day always picks the same template. */
+  dayNumber: number;
+  /** Position of the slot in the day. */
+  slotIndex: number;
+  /** How many slots of this kind the day has (two snacks on five meals). */
+  slotsOfKind: number;
+  /** Ids of the templates already given to other slots of the day; avoided while another fits. */
+  taken: ReadonlySet<string>;
+}
+
+export interface MealIdeasInput extends TemplateEligibilityInput {
+  /** The day the ideas are for, `YYYY-MM-DD`. */
+  date: string;
+  effort: CookingEffort;
+  mealsPerDay: number;
+  targets: SlotTargetsDay;
 }

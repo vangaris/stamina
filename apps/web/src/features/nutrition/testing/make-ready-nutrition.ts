@@ -46,9 +46,9 @@ export function makeReadyNutrition(overrides: Partial<ReadyNutrition> = {}): Rea
     },
     water: { ml: 0, targetMl: 1600 },
     meals: [
-      { slot: MealSlot.Breakfast, at: 480 },
-      { slot: MealSlot.Lunch, at: 780 },
-      { slot: MealSlot.Dinner, at: 1170 },
+      { slot: MealSlot.Breakfast, at: 480, idea: null, status: null },
+      { slot: MealSlot.Lunch, at: 780, idea: null, status: null },
+      { slot: MealSlot.Dinner, at: 1170, idea: null, status: null },
     ],
     rateCheck: { deficitHalved: false, prompt: false },
     ...overrides,

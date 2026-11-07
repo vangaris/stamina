@@ -11,6 +11,7 @@ import { savedScreeningSchema } from './saved-screening-schema.ts';
 import { exportedFinishSchema, exportedSetSchema } from './session-schema.ts';
 import { exportedWeighInSchema } from './weigh-in-schema.ts';
 import { nutritionSetupSchema } from './nutrition-schema.ts';
+import { exportedMealLogSchema } from './meal-log-schema.ts';
 import { exportedWaterLogSchema } from './water-schema.ts';
 
 /**
@@ -57,6 +58,8 @@ export const userExportSchema = z.object({
   nutritionSetup: nutritionSetupSchema.nullable(),
   /** Every water log the person made, oldest first. */
   waterLogs: z.array(exportedWaterLogSchema),
+  /** Every meal log the person made (status and the dish they saw), oldest first. */
+  mealLogs: z.array(exportedMealLogSchema),
   screenings: z.array(
     savedScreeningSchema.extend({
       answers: z.record(z.enum(ScreeningQuestion), z.boolean()),

@@ -1,0 +1,454 @@
+[
+  {
+    "id": "vegan-breakfast-1",
+    "pattern": "vegan",
+    "slot": "breakfast",
+    "effort": "normal",
+    "names": {
+      "en": "Quinoa bowl with berries and pumpkin seeds",
+      "el": "Μπολ κινόα με μούρα και κολοκυθόσπορους"
+    },
+    "ingredients": [
+      {
+        "ingredientId": "quinoa-cooked",
+        "grams": 150
+      },
+      {
+        "ingredientId": "rice-milk",
+        "grams": 120
+      },
+      {
+        "ingredientId": "blueberries",
+        "grams": 80
+      },
+      {
+        "ingredientId": "banana",
+        "grams": 40
+      },
+      {
+        "ingredientId": "pumpkin-seeds",
+        "grams": 15
+      },
+      {
+        "ingredientId": "maple-syrup",
+        "grams": 5
+      }
+    ]
+  },
+  {
+    "id": "vegan-breakfast-2",
+    "pattern": "vegan",
+    "slot": "breakfast",
+    "effort": "quick",
+    "names": {
+      "en": "Oat porridge with banana, walnuts and cinnamon",
+      "el": "Χυλός βρώμης με μπανάνα, καρύδια και κανέλα"
+    },
+    "ingredients": [
+      {
+        "ingredientId": "oats-rolled",
+        "grams": 50
+      },
+      {
+        "ingredientId": "oat-milk",
+        "grams": 150
+      },
+      {
+        "ingredientId": "banana",
+        "grams": 100
+      },
+      {
+        "ingredientId": "walnuts",
+        "grams": 15
+      },
+      {
+        "ingredientId": "cinnamon-ground",
+        "grams": 2
+      }
+    ]
+  },
+  {
+    "id": "vegan-breakfast-3",
+    "pattern": "vegan",
+    "slot": "breakfast",
+    "effort": "normal",
+    "names": {
+      "en": "Tofu scramble with spinach and sourdough toast",
+      "el": "Ανακατεμένο τόφου με σπανάκι και φρυγανισμένο ψωμί με προζύμι"
+    },
+    "ingredients": [
+      {
+        "ingredientId": "tofu-firm",
+        "grams": 150
+      },
+      {
+        "ingredientId": "spinach",
+        "grams": 60
+      },
+      {
+        "ingredientId": "cherry-tomatoes",
+        "grams": 80
+      },
+      {
+        "ingredientId": "bread-sourdough",
+        "grams": 60
+      },
+      {
+        "ingredientId": "olive-oil",
+        "grams": 10
+      }
+    ]
+  },
+  {
+    "id": "vegan-lunch-1",
+    "pattern": "vegan",
+    "slot": "lunch",
+    "effort": "normal",
+    "names": {
+      "en": "Brown lentils with rice and tomato",
+      "el": "Φακές με ρύζι και ντομάτα"
+    },
+    "ingredients": [
+      {
+        "ingredientId": "lentils-brown-cooked",
+        "grams": 200
+      },
+      {
+        "ingredientId": "rice-white-cooked",
+        "grams": 150
+      },
+      {
+        "ingredientId": "onion",
+        "grams": 50
+      },
+      {
+        "ingredientId": "carrot",
+        "grams": 50
+      },
+      {
+        "ingredientId": "tomato-paste",
+        "grams": 15
+      },
+      {
+        "ingredientId": "olive-oil",
+        "grams": 15
+      }
+    ]
+  },
+  {
+    "id": "vegan-lunch-2",
+    "pattern": "vegan",
+    "slot": "lunch",
+    "effort": "quick",
+    "names": {
+      "en": "Hummus and vegetable wrap",
+      "el": "Τορτίγια με χούμους και λαχανικά"
+    },
+    "ingredients": [
+      {
+        "ingredientId": "wheat-tortilla-wrap",
+        "grams": 90
+      },
+      {
+        "ingredientId": "hummus",
+        "grams": 80
+      },
+      {
+        "ingredientId": "cucumber",
+        "grams": 80
+      },
+      {
+        "ingredientId": "tomato",
+        "grams": 80
+      },
+      {
+        "ingredientId": "lettuce-romaine",
+        "grams": 40
+      },
+      {
+        "ingredientId": "olive-oil",
+        "grams": 10
+      }
+    ]
+  },
+  {
+    "id": "vegan-lunch-3",
+    "pattern": "vegan",
+    "slot": "lunch",
+    "effort": "normal",
+    "names": {
+      "en": "Giant beans in tomato sauce with bread",
+      "el": "Γίγαντες στον φούρνο με ψωμί"
+    },
+    "ingredients": [
+      {
+        "ingredientId": "white-beans-cooked",
+        "grams": 200
+      },
+      {
+        "ingredientId": "passata",
+        "grams": 100
+      },
+      {
+        "ingredientId": "onion",
+        "grams": 50
+      },
+      {
+        "ingredientId": "olive-oil",
+        "grams": 15
+      },
+      {
+        "ingredientId": "bread-sourdough",
+        "grams": 70
+      },
+      {
+        "ingredientId": "parsley",
+        "grams": 5
+      }
+    ]
+  },
+  {
+    "id": "vegan-dinner-1",
+    "pattern": "vegan",
+    "slot": "dinner",
+    "effort": "normal",
+    "names": {
+      "en": "Roasted vegetable and chickpea bowl with quinoa",
+      "el": "Μπολ ψητά λαχανικά με ρεβίθια και κινόα"
+    },
+    "ingredients": [
+      {
+        "ingredientId": "chickpeas-cooked",
+        "grams": 150
+      },
+      {
+        "ingredientId": "quinoa-cooked",
+        "grams": 150
+      },
+      {
+        "ingredientId": "courgette",
+        "grams": 100
+      },
+      {
+        "ingredientId": "pepper-red",
+        "grams": 100
+      },
+      {
+        "ingredientId": "aubergine",
+        "grams": 100
+      },
+      {
+        "ingredientId": "olive-oil",
+        "grams": 15
+      },
+      {
+        "ingredientId": "lemon-juice",
+        "grams": 10
+      }
+    ]
+  },
+  {
+    "id": "vegan-dinner-2",
+    "pattern": "vegan",
+    "slot": "dinner",
+    "effort": "normal",
+    "names": {
+      "en": "Pasta with lentil and mushroom tomato sauce",
+      "el": "Ζυμαρικά με σάλτσα ντομάτας, φακές και μανιτάρια"
+    },
+    "ingredients": [
+      {
+        "ingredientId": "pasta-cooked",
+        "grams": 200
+      },
+      {
+        "ingredientId": "lentils-brown-cooked",
+        "grams": 120
+      },
+      {
+        "ingredientId": "mushrooms",
+        "grams": 100
+      },
+      {
+        "ingredientId": "passata",
+        "grams": 100
+      },
+      {
+        "ingredientId": "olive-oil",
+        "grams": 12
+      },
+      {
+        "ingredientId": "garlic",
+        "grams": 5
+      }
+    ]
+  },
+  {
+    "id": "vegan-dinner-3",
+    "pattern": "vegan",
+    "slot": "dinner",
+    "effort": "quick",
+    "names": {
+      "en": "Tofu and broccoli stir-fry with rice",
+      "el": "Τόφου με μπρόκολο και ρύζι"
+    },
+    "ingredients": [
+      {
+        "ingredientId": "tofu-firm",
+        "grams": 150
+      },
+      {
+        "ingredientId": "broccoli",
+        "grams": 150
+      },
+      {
+        "ingredientId": "rice-white-cooked",
+        "grams": 200
+      },
+      {
+        "ingredientId": "carrot",
+        "grams": 60
+      },
+      {
+        "ingredientId": "olive-oil",
+        "grams": 15
+      },
+      {
+        "ingredientId": "ginger-fresh",
+        "grams": 5
+      }
+    ]
+  },
+  {
+    "id": "vegan-snack-1",
+    "pattern": "vegan",
+    "slot": "snack",
+    "effort": "quick",
+    "names": {
+      "en": "Apple with peanut butter",
+      "el": "Μήλο με φυστικοβούτυρο"
+    },
+    "ingredients": [
+      {
+        "ingredientId": "apple",
+        "grams": 180
+      },
+      {
+        "ingredientId": "peanut-butter",
+        "grams": 20
+      }
+    ]
+  },
+  {
+    "id": "vegan-snack-2",
+    "pattern": "vegan",
+    "slot": "snack",
+    "effort": "quick",
+    "names": {
+      "en": "Medjool dates with walnuts",
+      "el": "Χουρμάδες με καρύδια"
+    },
+    "ingredients": [
+      {
+        "ingredientId": "dates-medjool",
+        "grams": 40
+      },
+      {
+        "ingredientId": "walnuts",
+        "grams": 15
+      }
+    ]
+  },
+  {
+    "id": "vegan-snack-3",
+    "pattern": "vegan",
+    "slot": "snack",
+    "effort": "quick",
+    "names": {
+      "en": "Hummus with carrot and cucumber sticks",
+      "el": "Χούμους με καρότο και αγγούρι"
+    },
+    "ingredients": [
+      {
+        "ingredientId": "hummus",
+        "grams": 60
+      },
+      {
+        "ingredientId": "carrot",
+        "grams": 100
+      },
+      {
+        "ingredientId": "cucumber",
+        "grams": 100
+      }
+    ]
+  },
+  {
+    "id": "vegan-snack-4",
+    "pattern": "vegan",
+    "slot": "snack",
+    "effort": "quick",
+    "names": {
+      "en": "Rice cakes with avocado",
+      "el": "Ρυζογκοφρέτες με αβοκάντο"
+    },
+    "ingredients": [
+      {
+        "ingredientId": "rice-cakes",
+        "grams": 30
+      },
+      {
+        "ingredientId": "avocado",
+        "grams": 70
+      },
+      {
+        "ingredientId": "lemon-juice",
+        "grams": 5
+      }
+    ]
+  },
+  {
+    "id": "vegan-snack-5",
+    "pattern": "vegan",
+    "slot": "snack",
+    "effort": "quick",
+    "names": {
+      "en": "Orange with pumpkin seeds",
+      "el": "Πορτοκάλι με κολοκυθόσπορους"
+    },
+    "ingredients": [
+      {
+        "ingredientId": "orange",
+        "grams": 200
+      },
+      {
+        "ingredientId": "pumpkin-seeds",
+        "grams": 25
+      }
+    ]
+  },
+  {
+    "id": "vegan-snack-6",
+    "pattern": "vegan",
+    "slot": "snack",
+    "effort": "quick",
+    "names": {
+      "en": "Banana with popcorn and sunflower seeds",
+      "el": "Μπανάνα με ποπ κορν και ηλιόσπορους"
+    },
+    "ingredients": [
+      {
+        "ingredientId": "banana",
+        "grams": 100
+      },
+      {
+        "ingredientId": "popcorn-plain",
+        "grams": 20
+      },
+      {
+        "ingredientId": "sunflower-seeds",
+        "grams": 10
+      }
+    ]
+  }
+]

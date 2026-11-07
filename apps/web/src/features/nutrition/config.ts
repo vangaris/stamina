@@ -6,6 +6,7 @@ import {
   EnergySex,
   EverydayActivity,
   MAX_MEALS_PER_DAY,
+  MealLogStatus,
   MIN_MEALS_PER_DAY,
   WaterAmount,
   BodyDirection,
@@ -82,3 +83,17 @@ export const DEFAULT_MEALS_PER_DAY = MIN_MEALS_PER_DAY;
 
 /** The pre-Activity drink is taken this many hours ahead (a range, in hours). */
 export const PRE_ACTIVITY_HOURS = { from: 2, to: 4 } as const;
+
+/** The three one-tap answers for a meal, in the order they are shown. */
+export const MEAL_STATUS_OPTIONS: readonly MealLogStatus[] = [
+  MealLogStatus.Ate,
+  MealLogStatus.Other,
+  MealLogStatus.Skipped,
+];
+
+/** A meal stays "next" until its time is this many minutes past; after that the next unlogged one leads. */
+export const NEXT_MEAL_GRACE_MINUTES = 90;
+
+/** A clock time is shown as two digits for hours and for minutes: "08:05". */
+export const CLOCK_DIGITS = 2;
+export const CLOCK_PAD = '0';

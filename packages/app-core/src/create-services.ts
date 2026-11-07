@@ -6,6 +6,7 @@ import { createBrowserNetwork } from './services/create-browser-network.ts';
 import { createDexieCheckins } from './services/create-dexie-checkins.ts';
 import { createDexieStopFlags } from './services/create-dexie-stop-flags.ts';
 import { createDexieActivityLog } from './services/create-dexie-activity-log.ts';
+import { createDexieMealLogs } from './services/create-dexie-meal-logs.ts';
 import { createDexieWaterLog } from './services/create-dexie-water-log.ts';
 import { createDexieLocalData } from './services/create-dexie-local-data.ts';
 import { createDexieOfflineQueue } from './services/create-dexie-offline-queue.ts';
@@ -19,6 +20,7 @@ import { createLocalDatabase } from './services/create-local-database.ts';
 import { createMemoryCheckins } from './services/create-memory-checkins.ts';
 import { createMemoryStopFlags } from './services/create-memory-stop-flags.ts';
 import { createMemoryActivityLog } from './services/create-memory-activity-log.ts';
+import { createMemoryMealLogs } from './services/create-memory-meal-logs.ts';
 import { createMemoryWaterLog } from './services/create-memory-water-log.ts';
 import { createMemoryInviteStorage } from './services/create-memory-invite-storage.ts';
 import { createMemoryLocalData } from './services/create-memory-local-data.ts';
@@ -40,6 +42,7 @@ export function createServices(env: ServicesEnv): Services {
       const sessionLog = createMemorySessionLog();
       const activityLog = createMemoryActivityLog();
       const waterLog = createMemoryWaterLog();
+      const mealLogs = createMemoryMealLogs();
       const stopFlags = createMemoryStopFlags();
       const checkins = createMemoryCheckins();
       const planCache = createMemoryPlanCache();
@@ -54,6 +57,7 @@ export function createServices(env: ServicesEnv): Services {
         sessionLog,
         activityLog,
         waterLog,
+        mealLogs,
         stopFlags,
         checkins,
         planCache,
@@ -62,6 +66,7 @@ export function createServices(env: ServicesEnv): Services {
           sessionLog,
           activityLog,
           waterLog,
+          mealLogs,
           stopFlags,
           checkins,
           planCache,
@@ -87,6 +92,7 @@ export function createServices(env: ServicesEnv): Services {
         sessionLog: createDexieSessionLog(database),
         activityLog: createDexieActivityLog(database),
         waterLog: createDexieWaterLog(database),
+        mealLogs: createDexieMealLogs(database),
         stopFlags: createDexieStopFlags(database),
         checkins: createDexieCheckins(database),
         planCache: createDexiePlanCache(database),

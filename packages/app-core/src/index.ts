@@ -43,6 +43,7 @@ export { getProgress } from './handlers/get-progress.ts';
 export { logWeighIn } from './handlers/log-weigh-in.ts';
 export { getNutrition } from './handlers/get-nutrition.ts';
 export { logWater } from './handlers/log-water.ts';
+export { logMeal } from './handlers/log-meal.ts';
 export { saveNutritionSetup } from './handlers/save-nutrition-setup.ts';
 export { logActivity } from './handlers/log-activity.ts';
 export { logSet } from './handlers/log-set.ts';
@@ -59,6 +60,7 @@ export type {
   AcceptAdaptationRequest,
   ActivityLogStore,
   WaterLogStore,
+  MealLogStore,
   AppMediatorOptions,
   AuthService,
   AuthSession,
@@ -93,6 +95,7 @@ export type {
   LocalStopFlag,
   LocalActivity,
   LocalWater,
+  LocalMeal,
   LocalFinish,
   LocalSessionLog,
   LogEntry,
@@ -111,6 +114,7 @@ export type {
   Queued,
   QueuedRequest,
   LogWaterRequest,
+  LogMealRequest,
   LogWeighInRequest,
   SaveNutritionSetupRequest,
   RecheckScreeningRequest,

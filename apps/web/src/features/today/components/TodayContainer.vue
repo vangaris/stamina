@@ -27,7 +27,7 @@ const nutritionFlow = useNutrition({ onNavigate });
 const { nutrition } = nutritionFlow;
 const today = useToday({
   onNavigate,
-  extras: () => toTimelineExtras(nutrition.value),
+  extras: () => toTimelineExtras(nutrition.value, locale.value),
 });
 const { status, date, entries, summary } = today;
 

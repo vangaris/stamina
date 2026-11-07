@@ -11,12 +11,14 @@ import {
   MAX_DISLIKES,
   MAX_HEIGHT_CM,
   MAX_MEALS_PER_DAY,
+  MealLogStatus,
   MealSlot,
   MIN_BODY_WEIGHT_KG,
   MIN_HEIGHT_CM,
   MIN_MEALS_PER_DAY,
 } from '@stamina/domain';
 import { z } from 'zod';
+import { mealIdeaSchema } from './meal-idea-schema.ts';
 import { NutritionStatus } from './enums/nutrition-status.ts';
 import { SaveNutritionSetupRejection } from './enums/save-nutrition-setup-rejection.ts';
 import { SaveNutritionSetupStatus } from './enums/save-nutrition-setup-status.ts';
@@ -75,6 +77,15 @@ export const mealSlotTimeSchema = z.object({
   at: whole.min(0).max(1439),
 });
 
+/**
+ * One slot of the day: its time, the idea built for it (`null` when no template fits the
+ * person's food rules: the day still shows the targets) and the latest status they logged.
+ */
+export const nutritionMealSchema = mealSlotTimeSchema.extend({
+  idea: mealIdeaSchema.nullable(),
+  status: z.enum(MealLogStatus).nullable(),
+});
+
 const ready = z.object({
   status: z.literal(NutritionStatus.Ready),
   /** The day the targets are for (the person's calendar day, `YYYY-MM-DD`). */
@@ -82,7 +93,7 @@ const ready = z.object({
   setup: nutritionSetupSchema,
   targets: dayTargetsSchema,
   water: z.object({ ml: whole.min(0), targetMl: whole.min(0) }),
-  meals: z.array(mealSlotTimeSchema),
+  meals: z.array(nutritionMealSchema),
   rateCheck: z.object({
     /** The deficit is halved because weight fell by more than 1 % a week two weeks running. */
     deficitHalved: z.boolean(),

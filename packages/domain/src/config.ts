@@ -17,7 +17,7 @@ import { SportMovement } from './enums/sport-movement.ts';
 import { StopAction } from './enums/stop-action.ts';
 import { StopFlag } from './enums/stop-flag.ts';
 import { Weekday } from './enums/weekday.ts';
-import type { StopFlagEffect } from './types.ts';
+import type { NameLocale, StopFlagEffect } from './types.ts';
 
 /** Stamina is for adults. Age is the difference between the current year and the birth year. */
 export const ADULT_AGE = 18;
@@ -834,3 +834,53 @@ export const MEAL_TIMES: Record<number, readonly { slot: MealSlot; at: number }[
     { slot: MealSlot.Dinner, at: 19 * 60 + 30 },
   ],
 };
+
+/** Household portions are shown in steps of this many units (half a tablespoon, one and a half slices). */
+export const PORTION_UNIT_STEP = 0.5;
+
+/**
+ * Each meal slot's share of the day's protein, carbs and energy, by meals per day, in the order of
+ * `MEAL_TIMES`. Each row sums to 1. [INFERENCE for dietitian review]
+ */
+export const MEAL_SHARES: Record<number, readonly number[]> = {
+  3: [0.28, 0.36, 0.36],
+  4: [0.25, 0.3, 0.15, 0.3],
+  5: [0.22, 0.11, 0.28, 0.11, 0.28],
+};
+
+/** A template's amounts scale by one factor kept inside these bounds. */
+export const TEMPLATE_SCALE_MIN = 0.6;
+export const TEMPLATE_SCALE_MAX = 1.8;
+/** An amount of at least `SMALL_PORTION_BELOW_GRAMS` is rounded to the nearest multiple of this many grams. */
+export const PORTION_ROUND_GRAMS = 5;
+/** An amount below this many grams is a pinch or a herb: it keeps single-gram precision, never inflated to a 5 g step. */
+export const SMALL_PORTION_BELOW_GRAMS = 10;
+export const SMALL_PORTION_ROUND_GRAMS = 1;
+/** No scaled amount is ever below this. */
+export const MIN_PORTION_GRAMS = 1;
+/** Two scores closer than this are equal (floating-point noise in the factor search). */
+export const SCORE_EPSILON = 1e-9;
+
+/** Meal ideas count days from this date, so the same date always gives the same rotation. */
+export const MEAL_ROTATION_EPOCH = '1970-01-01';
+
+/** The unit literal of an amount too small for a household measure. */
+export const GRAMS_UNIT = 'g';
+/** Decimal separator of each ingredient-name language. */
+export const DECIMAL_SEPARATORS: Record<NameLocale, string> = { en: '.', el: ',' };
+
+/** Greek letters, to tell a Greek word from a Latin one when folding a plural to its stem. */
+export const GREEK_LETTERS = /[\u0370-\u03ff]/u;
+/** Greek endings, after folding, that a plural and its singular differ by: a final sigma and the vowels before it. */
+export const GREEK_FINAL_SIGMA = 'σ';
+export const GREEK_VOWELS = /[αεηιουω]+$/u;
+/** A word shorter than this keeps its ending when folded to a stem ("oil", "pea" stay whole). */
+export const MIN_STEM_LENGTH = 3;
+/** English plural endings: "berries" to "berry", "eggs" to "egg", "tomatoes" to "tomato". */
+export const ENGLISH_PLURAL_IES = /ies$/;
+export const ENGLISH_PLURAL_S = /(?<!s)s$/;
+export const ENGLISH_FINAL_E = /e$/;
+/** What separates the words of a food name. */
+export const WORD_SEPARATOR = /[^\p{L}\p{N}]+/u;
+/** A food name's main words stop at the first comma ("Tuna, canned in oil" is about tuna). */
+export const NAME_QUALIFIER_SEPARATOR = ',';

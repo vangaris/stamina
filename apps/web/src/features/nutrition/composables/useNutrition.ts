@@ -1,12 +1,7 @@
-import {
-  AppError,
-  AppErrorCode,
-  getNutrition,
-  logWater,
-} from '@stamina/app-core';
+import { AppError, AppErrorCode, getNutrition, logMeal, logWater } from '@stamina/app-core';
 import { NutritionStatus, type NutritionState } from '@stamina/contracts';
 import { toLocalDate } from '@stamina/dates';
-import type { WaterAmount } from '@stamina/domain';
+import type { MealLogStatus, WaterAmount } from '@stamina/domain';
 import { newId } from '@stamina/ids';
 import { ref, shallowRef } from 'vue';
 import { useMediator } from '../../../mediator.ts';
@@ -14,15 +9,18 @@ import { toMessageKey } from '../../../utils/to-message-key.ts';
 import { LOAD_ERROR_KEYS, ROUTE_WHEN_SIGNED_OUT } from '../config.ts';
 import { NutritionLoadStatus } from '../enums/nutrition-load-status.ts';
 import { NutritionMessageKey } from '../enums/nutrition-message-key.ts';
+import { MealMessageKey } from '../enums/meal-message-key.ts';
 import { WaterMessageKey } from '../enums/water-message-key.ts';
 import type { UseNutritionOptions } from '../types.ts';
+import { minuteOfDay } from '../utils/minute-of-day.ts';
 
 /**
  * The day's nutrition, as the server worked it out: whether Meals is locked, off or ready, and
  * when ready the targets, the water so far and the meal slots. Read again after the setup is
  * saved or water is logged. Water is logged with an id made here, so a replay cannot count twice;
  * offline the log is kept on the phone and the day still shows it. Nothing about the person's
- * body or food is logged.
+ * body or food is logged. A meal is logged the same way: one tap says ate it, something else or
+ * skipped, kept on the phone offline, and the slot shows it at once.
  */
 export function useNutrition(options: UseNutritionOptions) {
   const mediator = options.mediator ?? useMediator();
@@ -32,7 +30,10 @@ export function useNutrition(options: UseNutritionOptions) {
   const status = ref(NutritionLoadStatus.Loading);
   const messageKey = ref<NutritionMessageKey | undefined>();
   const waterMessageKey = ref<WaterMessageKey | undefined>();
+  const mealMessageKey = ref<MealMessageKey | undefined>();
   const nutrition = shallowRef<NutritionState | undefined>();
+  /** The minute of the person's day at the last read, to pick the next meal. */
+  const minute = ref(minuteOfDay(now()));
 
   function leaveIfSignedOut(error: unknown): boolean {
     if (!(error instanceof AppError && error.code === AppErrorCode.Unauthorized)) return false;
@@ -43,6 +44,7 @@ export function useNutrition(options: UseNutritionOptions) {
   /** Reads the day. Once something is shown, a read that fails leaves it as it is. */
   async function load() {
     messageKey.value = undefined;
+    minute.value = minuteOfDay(now());
     if (!nutrition.value) status.value = NutritionLoadStatus.Loading;
     try {
       nutrition.value = await mediator.send(getNutrition(toLocalDate(now())));
@@ -71,5 +73,47 @@ export function useNutrition(options: UseNutritionOptions) {
     await load();
   }
 
-  return { status, messageKey, waterMessageKey, nutrition, load, addWater };
+  /** Files a meal slot as ate it, something else or skipped, shown at once and read again. */
+  async function addMeal(slotIndex: number, mealStatus: MealLogStatus) {
+    const current = nutrition.value;
+    if (current?.status !== NutritionStatus.Ready) return;
+    const meal = current.meals[slotIndex];
+    if (!meal) return;
+    mealMessageKey.value = undefined;
+    const date = toLocalDate(now());
+    try {
+      await mediator.send(
+        logMeal({
+          id: makeId(),
+          date,
+          slotIndex,
+          status: mealStatus,
+          ...(meal.idea ? { templateId: meal.idea.templateId } : {}),
+        }),
+      );
+    } catch (error) {
+      if (leaveIfSignedOut(error)) return;
+      mealMessageKey.value = MealMessageKey.Failed;
+      return;
+    }
+    nutrition.value = {
+      ...current,
+      meals: current.meals.map((entry, index) =>
+        index === slotIndex ? { ...entry, status: mealStatus } : entry,
+      ),
+    };
+    await load();
+  }
+
+  return {
+    status,
+    messageKey,
+    waterMessageKey,
+    mealMessageKey,
+    nutrition,
+    minute,
+    load,
+    addWater,
+    addMeal,
+  };
 }

@@ -11,11 +11,15 @@ export { SaveNutritionSetupStatus } from './enums/save-nutrition-setup-status.ts
 export {
   dayTargetsSchema,
   mealSlotTimeSchema,
+  nutritionMealSchema,
   nutritionSetupSchema,
   nutritionStateSchema,
   saveNutritionSetupResultSchema,
 } from './nutrition-schema.ts';
 export { exportedWaterLogSchema, logWaterResultSchema, logWaterSchema } from './water-schema.ts';
+export { exportedMealLogSchema, logMealResultSchema, logMealSchema } from './meal-log-schema.ts';
+export { FOOD_ID_MAX_LENGTH } from './config.ts';
+export { mealIdeaSchema } from './meal-idea-schema.ts';
 export { AdaptationRejection } from './enums/adaptation-rejection.ts';
 export { AdaptationSubpath } from './enums/adaptation-subpath.ts';
 export { adaptationPath } from './utils/adaptation-path.ts';
@@ -168,6 +172,11 @@ export type {
   LogWaterResult,
   LogWeighIn,
   LogWeighInResult,
+  ExportedMealLog,
+  LogMeal,
+  LogMealResult,
+  NutritionMeal,
+  NutritionMealIdea,
   NutritionSetup,
   NutritionState,
   Progress,

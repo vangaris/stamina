@@ -5,6 +5,7 @@ export enum LocalTable {
   Finishes = 'finishes',
   Activities = 'activities',
   WaterLogs = 'waterLogs',
+  MealLogs = 'mealLogs',
   StopFlags = 'stopFlags',
   Checkins = 'checkins',
   Cache = 'cache',

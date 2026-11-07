@@ -4,6 +4,7 @@ import { OfflinePolicy } from '../enums/offline-policy.ts';
 import { RequestType } from '../enums/request-type.ts';
 import type { GetNutritionRequest, Services, Stores } from '../types.ts';
 import { mergeLocalWater } from '../utils/merge-local-water.ts';
+import { mergeLocalMeals } from '../utils/merge-local-meals.ts';
 import { readThroughCache } from '../utils/read-through-cache.ts';
 
 /** `date` is the person's calendar day, `YYYY-MM-DD`. */
@@ -17,7 +18,9 @@ export const getNutrition = (date: string): GetNutritionRequest => ({
  * the next time there is no signal (the latest day fetched is kept), with the water this device
  * logged that the server does not show yet added to the day's total. `Always` because the
  * handler copes with being offline itself; it rejects `AppErrorCode.Offline` only when that day
- * was never fetched. Never logged: targets, body stats and water are health data.
+ * was never fetched. Meal ideas come from the server's answer (cached with it), and the meal
+ * logs this device made that the server does not show yet override their slots' statuses. Never
+ * logged: targets, body stats, water and meal logs are health data.
  */
 export const getNutritionDefinition = defineRequest<GetNutritionRequest, Services, Stores>({
   schema: z.object({
@@ -32,6 +35,7 @@ export const getNutritionDefinition = defineRequest<GetNutritionRequest, Service
       save: (fresh) => services.planCache.saveNutrition(date, fresh),
       cached: () => services.planCache.readNutrition(date),
     });
-    return mergeLocalWater(nutrition, await services.waterLog.list());
+    const meals = mergeLocalMeals(nutrition, await services.mealLogs.list());
+    return mergeLocalWater(meals, await services.waterLog.list());
   },
 });

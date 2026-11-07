@@ -1,0 +1,2541 @@
+[
+  {
+    "id": "chicken-breast-cooked",
+    "origin": "meat",
+    "names": {
+      "en": "Chicken breast, cooked",
+      "el": "Στήθος κοτόπουλου, μαγειρεμένο"
+    },
+    "allergens": [],
+    "per100g": {
+      "kcal": 165,
+      "proteinG": 31,
+      "carbsG": 0,
+      "fatG": 3.6
+    },
+    "units": [
+      {
+        "grams": 120,
+        "names": {
+          "en": {
+            "one": "fillet",
+            "other": "fillets"
+          },
+          "el": {
+            "one": "φιλέτο",
+            "other": "φιλέτα"
+          }
+        }
+      },
+      {
+        "grams": 30,
+        "names": {
+          "en": {
+            "one": "piece",
+            "other": "pieces"
+          },
+          "el": {
+            "one": "κομμάτι",
+            "other": "κομμάτια"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "chicken-breast-raw",
+    "origin": "meat",
+    "names": {
+      "en": "Chicken breast, raw",
+      "el": "Στήθος κοτόπουλου, ωμό"
+    },
+    "allergens": [],
+    "per100g": {
+      "kcal": 120,
+      "proteinG": 22.5,
+      "carbsG": 0,
+      "fatG": 2.6
+    },
+    "units": [
+      {
+        "grams": 150,
+        "names": {
+          "en": {
+            "one": "fillet",
+            "other": "fillets"
+          },
+          "el": {
+            "one": "φιλέτο",
+            "other": "φιλέτα"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "chicken-thigh-cooked",
+    "origin": "meat",
+    "names": {
+      "en": "Chicken thigh, skinless, cooked",
+      "el": "Μπούτι κοτόπουλου χωρίς πέτσα, μαγειρεμένο"
+    },
+    "allergens": [],
+    "per100g": {
+      "kcal": 209,
+      "proteinG": 26,
+      "carbsG": 0,
+      "fatG": 10.9
+    },
+    "units": [
+      {
+        "grams": 90,
+        "names": {
+          "en": {
+            "one": "piece",
+            "other": "pieces"
+          },
+          "el": {
+            "one": "κομμάτι",
+            "other": "κομμάτια"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "chicken-liver-cooked",
+    "origin": "meat",
+    "names": {
+      "en": "Chicken liver, cooked",
+      "el": "Συκώτι κοτόπουλου, μαγειρεμένο"
+    },
+    "allergens": [],
+    "per100g": {
+      "kcal": 167,
+      "proteinG": 24.5,
+      "carbsG": 0.9,
+      "fatG": 6.5
+    },
+    "units": [
+      {
+        "grams": 30,
+        "names": {
+          "en": {
+            "one": "piece",
+            "other": "pieces"
+          },
+          "el": {
+            "one": "κομμάτι",
+            "other": "κομμάτια"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "turkey-breast-cooked",
+    "origin": "meat",
+    "names": {
+      "en": "Turkey breast, cooked",
+      "el": "Στήθος γαλοπούλας, μαγειρεμένο"
+    },
+    "allergens": [],
+    "per100g": {
+      "kcal": 135,
+      "proteinG": 30,
+      "carbsG": 0,
+      "fatG": 0.7
+    },
+    "units": [
+      {
+        "grams": 30,
+        "names": {
+          "en": {
+            "one": "slice",
+            "other": "slices"
+          },
+          "el": {
+            "one": "φέτα",
+            "other": "φέτες"
+          }
+        }
+      },
+      {
+        "grams": 120,
+        "names": {
+          "en": {
+            "one": "fillet",
+            "other": "fillets"
+          },
+          "el": {
+            "one": "φιλέτο",
+            "other": "φιλέτα"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "turkey-mince-raw",
+    "origin": "meat",
+    "names": {
+      "en": "Turkey mince, raw",
+      "el": "Κιμάς γαλοπούλας, ωμός"
+    },
+    "allergens": [],
+    "per100g": {
+      "kcal": 150,
+      "proteinG": 19,
+      "carbsG": 0,
+      "fatG": 8
+    },
+    "units": [
+      {
+        "grams": 125,
+        "names": {
+          "en": {
+            "one": "serving",
+            "other": "servings"
+          },
+          "el": {
+            "one": "μερίδα",
+            "other": "μερίδες"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "turkey-ham-sliced",
+    "origin": "meat",
+    "names": {
+      "en": "Turkey ham, sliced",
+      "el": "Γαλοπούλα φέτες"
+    },
+    "allergens": [],
+    "per100g": {
+      "kcal": 104,
+      "proteinG": 17,
+      "carbsG": 1.5,
+      "fatG": 3
+    },
+    "units": [
+      {
+        "grams": 20,
+        "names": {
+          "en": {
+            "one": "slice",
+            "other": "slices"
+          },
+          "el": {
+            "one": "φέτα",
+            "other": "φέτες"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "beef-mince-lean-cooked",
+    "origin": "meat",
+    "names": {
+      "en": "Lean beef mince, cooked",
+      "el": "Άπαχος μοσχαρίσιος κιμάς, μαγειρεμένος"
+    },
+    "allergens": [],
+    "per100g": {
+      "kcal": 171,
+      "proteinG": 26,
+      "carbsG": 0,
+      "fatG": 7
+    },
+    "units": [
+      {
+        "grams": 100,
+        "names": {
+          "en": {
+            "one": "serving",
+            "other": "servings"
+          },
+          "el": {
+            "one": "μερίδα",
+            "other": "μερίδες"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "beef-mince-raw",
+    "origin": "meat",
+    "names": {
+      "en": "Beef mince, raw",
+      "el": "Μοσχαρίσιος κιμάς, ωμός"
+    },
+    "allergens": [],
+    "per100g": {
+      "kcal": 215,
+      "proteinG": 18,
+      "carbsG": 0,
+      "fatG": 15
+    },
+    "units": [
+      {
+        "grams": 125,
+        "names": {
+          "en": {
+            "one": "serving",
+            "other": "servings"
+          },
+          "el": {
+            "one": "μερίδα",
+            "other": "μερίδες"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "beef-steak-cooked",
+    "origin": "meat",
+    "names": {
+      "en": "Beef sirloin steak, cooked",
+      "el": "Μοσχαρίσια μπριζόλα, μαγειρεμένη"
+    },
+    "allergens": [],
+    "per100g": {
+      "kcal": 206,
+      "proteinG": 29,
+      "carbsG": 0,
+      "fatG": 9.5
+    },
+    "units": [
+      {
+        "grams": 150,
+        "names": {
+          "en": {
+            "one": "cutlet",
+            "other": "cutlets"
+          },
+          "el": {
+            "one": "μπριζόλα",
+            "other": "μπριζόλες"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "lamb-leg-cooked",
+    "origin": "meat",
+    "names": {
+      "en": "Lamb leg, roasted",
+      "el": "Αρνίσιο μπούτι, ψητό"
+    },
+    "allergens": [],
+    "per100g": {
+      "kcal": 191,
+      "proteinG": 28,
+      "carbsG": 0,
+      "fatG": 8
+    },
+    "units": [
+      {
+        "grams": 100,
+        "names": {
+          "en": {
+            "one": "piece",
+            "other": "pieces"
+          },
+          "el": {
+            "one": "κομμάτι",
+            "other": "κομμάτια"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "lamb-chop-grilled",
+    "origin": "meat",
+    "names": {
+      "en": "Lamb chop, grilled",
+      "el": "Αρνίσιο παϊδάκι, ψητό"
+    },
+    "allergens": [],
+    "per100g": {
+      "kcal": 282,
+      "proteinG": 25,
+      "carbsG": 0,
+      "fatG": 20
+    },
+    "units": [
+      {
+        "grams": 60,
+        "names": {
+          "en": {
+            "one": "chop",
+            "other": "chops"
+          },
+          "el": {
+            "one": "παϊδάκι",
+            "other": "παϊδάκια"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "pork-loin-cooked",
+    "origin": "meat",
+    "names": {
+      "en": "Pork loin, cooked",
+      "el": "Χοιρινό φιλέτο, μαγειρεμένο"
+    },
+    "allergens": [],
+    "per100g": {
+      "kcal": 187,
+      "proteinG": 27,
+      "carbsG": 0,
+      "fatG": 8
+    },
+    "units": [
+      {
+        "grams": 100,
+        "names": {
+          "en": {
+            "one": "piece",
+            "other": "pieces"
+          },
+          "el": {
+            "one": "κομμάτι",
+            "other": "κομμάτια"
+          }
+        }
+      },
+      {
+        "grams": 40,
+        "names": {
+          "en": {
+            "one": "slice",
+            "other": "slices"
+          },
+          "el": {
+            "one": "φέτα",
+            "other": "φέτες"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "pork-mince-raw",
+    "origin": "meat",
+    "names": {
+      "en": "Pork mince, raw",
+      "el": "Χοιρινός κιμάς, ωμός"
+    },
+    "allergens": [],
+    "per100g": {
+      "kcal": 230,
+      "proteinG": 17,
+      "carbsG": 0,
+      "fatG": 17
+    },
+    "units": [
+      {
+        "grams": 125,
+        "names": {
+          "en": {
+            "one": "serving",
+            "other": "servings"
+          },
+          "el": {
+            "one": "μερίδα",
+            "other": "μερίδες"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "bacon-cooked",
+    "origin": "meat",
+    "names": {
+      "en": "Bacon, cooked",
+      "el": "Μπέικον, μαγειρεμένο"
+    },
+    "allergens": [],
+    "per100g": {
+      "kcal": 541,
+      "proteinG": 37,
+      "carbsG": 1.4,
+      "fatG": 42
+    },
+    "units": [
+      {
+        "grams": 8,
+        "names": {
+          "en": {
+            "one": "slice",
+            "other": "slices"
+          },
+          "el": {
+            "one": "φέτα",
+            "other": "φέτες"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "ham-cooked",
+    "origin": "meat",
+    "names": {
+      "en": "Cooked ham, sliced",
+      "el": "Ζαμπόν βραστό, φέτες"
+    },
+    "allergens": [],
+    "per100g": {
+      "kcal": 107,
+      "proteinG": 17.5,
+      "carbsG": 1.5,
+      "fatG": 3.5
+    },
+    "units": [
+      {
+        "grams": 20,
+        "names": {
+          "en": {
+            "one": "slice",
+            "other": "slices"
+          },
+          "el": {
+            "one": "φέτα",
+            "other": "φέτες"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "pork-sausage",
+    "origin": "meat",
+    "names": {
+      "en": "Pork sausage",
+      "el": "Χοιρινό λουκάνικο"
+    },
+    "allergens": [],
+    "per100g": {
+      "kcal": 300,
+      "proteinG": 15,
+      "carbsG": 2,
+      "fatG": 26
+    },
+    "units": [
+      {
+        "grams": 70,
+        "names": {
+          "en": {
+            "one": "sausage",
+            "other": "sausages"
+          },
+          "el": {
+            "one": "λουκάνικο",
+            "other": "λουκάνικα"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "salmon-baked",
+    "origin": "seafood",
+    "names": {
+      "en": "Salmon, baked",
+      "el": "Σολομός, ψημένος"
+    },
+    "allergens": [
+      "fish"
+    ],
+    "per100g": {
+      "kcal": 206,
+      "proteinG": 22,
+      "carbsG": 0,
+      "fatG": 12
+    },
+    "units": [
+      {
+        "grams": 120,
+        "names": {
+          "en": {
+            "one": "fillet",
+            "other": "fillets"
+          },
+          "el": {
+            "one": "φιλέτο",
+            "other": "φιλέτα"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "salmon-raw",
+    "origin": "seafood",
+    "names": {
+      "en": "Salmon, raw",
+      "el": "Σολομός, ωμός"
+    },
+    "allergens": [
+      "fish"
+    ],
+    "per100g": {
+      "kcal": 208,
+      "proteinG": 20,
+      "carbsG": 0,
+      "fatG": 13
+    },
+    "units": [
+      {
+        "grams": 140,
+        "names": {
+          "en": {
+            "one": "fillet",
+            "other": "fillets"
+          },
+          "el": {
+            "one": "φιλέτο",
+            "other": "φιλέτα"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "smoked-salmon",
+    "origin": "seafood",
+    "names": {
+      "en": "Smoked salmon",
+      "el": "Καπνιστός σολομός"
+    },
+    "allergens": [
+      "fish"
+    ],
+    "per100g": {
+      "kcal": 117,
+      "proteinG": 18,
+      "carbsG": 0,
+      "fatG": 4.3
+    },
+    "units": [
+      {
+        "grams": 25,
+        "names": {
+          "en": {
+            "one": "slice",
+            "other": "slices"
+          },
+          "el": {
+            "one": "φέτα",
+            "other": "φέτες"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "trout-cooked",
+    "origin": "seafood",
+    "names": {
+      "en": "Trout, cooked",
+      "el": "Πέστροφα, μαγειρεμένη"
+    },
+    "allergens": [
+      "fish"
+    ],
+    "per100g": {
+      "kcal": 168,
+      "proteinG": 24,
+      "carbsG": 0,
+      "fatG": 7
+    },
+    "units": [
+      {
+        "grams": 100,
+        "names": {
+          "en": {
+            "one": "fillet",
+            "other": "fillets"
+          },
+          "el": {
+            "one": "φιλέτο",
+            "other": "φιλέτα"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "tuna-canned-water",
+    "origin": "seafood",
+    "names": {
+      "en": "Tuna, canned in water, drained",
+      "el": "Τόνος κονσέρβα σε νερό, στραγγισμένος"
+    },
+    "allergens": [
+      "fish"
+    ],
+    "per100g": {
+      "kcal": 116,
+      "proteinG": 26,
+      "carbsG": 0,
+      "fatG": 1
+    },
+    "units": [
+      {
+        "grams": 110,
+        "names": {
+          "en": {
+            "one": "can",
+            "other": "cans"
+          },
+          "el": {
+            "one": "κουτί",
+            "other": "κουτιά"
+          }
+        }
+      },
+      {
+        "grams": 15,
+        "names": {
+          "en": {
+            "one": "tablespoon",
+            "other": "tablespoons"
+          },
+          "el": {
+            "one": "κουταλιά της σούπας",
+            "other": "κουταλιές της σούπας"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "tuna-canned-oil",
+    "origin": "seafood",
+    "names": {
+      "en": "Tuna, canned in oil, drained",
+      "el": "Τόνος κονσέρβα σε λάδι, στραγγισμένος"
+    },
+    "allergens": [
+      "fish"
+    ],
+    "per100g": {
+      "kcal": 198,
+      "proteinG": 29,
+      "carbsG": 0,
+      "fatG": 8
+    },
+    "units": [
+      {
+        "grams": 110,
+        "names": {
+          "en": {
+            "one": "can",
+            "other": "cans"
+          },
+          "el": {
+            "one": "κουτί",
+            "other": "κουτιά"
+          }
+        }
+      },
+      {
+        "grams": 15,
+        "names": {
+          "en": {
+            "one": "tablespoon",
+            "other": "tablespoons"
+          },
+          "el": {
+            "one": "κουταλιά της σούπας",
+            "other": "κουταλιές της σούπας"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "tuna-fresh-cooked",
+    "origin": "seafood",
+    "names": {
+      "en": "Tuna steak, cooked",
+      "el": "Τόνος φρέσκος, μαγειρεμένος"
+    },
+    "allergens": [
+      "fish"
+    ],
+    "per100g": {
+      "kcal": 184,
+      "proteinG": 30,
+      "carbsG": 0,
+      "fatG": 6.3
+    },
+    "units": [
+      {
+        "grams": 130,
+        "names": {
+          "en": {
+            "one": "cutlet",
+            "other": "cutlets"
+          },
+          "el": {
+            "one": "μπριζόλα",
+            "other": "μπριζόλες"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "sardines-canned-oil",
+    "origin": "seafood",
+    "names": {
+      "en": "Sardines, canned in oil, drained",
+      "el": "Σαρδέλες κονσέρβα σε λάδι, στραγγισμένες"
+    },
+    "allergens": [
+      "fish"
+    ],
+    "per100g": {
+      "kcal": 208,
+      "proteinG": 25,
+      "carbsG": 0,
+      "fatG": 11.5
+    },
+    "units": [
+      {
+        "grams": 90,
+        "names": {
+          "en": {
+            "one": "can",
+            "other": "cans"
+          },
+          "el": {
+            "one": "κουτί",
+            "other": "κουτιά"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "anchovies-canned-oil",
+    "origin": "seafood",
+    "names": {
+      "en": "Anchovies, canned in oil, drained",
+      "el": "Αντσούγιες κονσέρβα σε λάδι, στραγγισμένες"
+    },
+    "allergens": [
+      "fish"
+    ],
+    "per100g": {
+      "kcal": 210,
+      "proteinG": 29,
+      "carbsG": 0,
+      "fatG": 10
+    },
+    "units": [
+      {
+        "grams": 4,
+        "names": {
+          "en": {
+            "one": "piece",
+            "other": "pieces"
+          },
+          "el": {
+            "one": "κομμάτι",
+            "other": "κομμάτια"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "mackerel-cooked",
+    "origin": "seafood",
+    "names": {
+      "en": "Mackerel, cooked",
+      "el": "Σκουμπρί, μαγειρεμένο"
+    },
+    "allergens": [
+      "fish"
+    ],
+    "per100g": {
+      "kcal": 262,
+      "proteinG": 24,
+      "carbsG": 0,
+      "fatG": 18
+    },
+    "units": [
+      {
+        "grams": 100,
+        "names": {
+          "en": {
+            "one": "fillet",
+            "other": "fillets"
+          },
+          "el": {
+            "one": "φιλέτο",
+            "other": "φιλέτα"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "cod-cooked",
+    "origin": "seafood",
+    "names": {
+      "en": "Cod, cooked",
+      "el": "Μπακαλιάρος, μαγειρεμένος"
+    },
+    "allergens": [
+      "fish"
+    ],
+    "per100g": {
+      "kcal": 105,
+      "proteinG": 23,
+      "carbsG": 0,
+      "fatG": 0.9
+    },
+    "units": [
+      {
+        "grams": 120,
+        "names": {
+          "en": {
+            "one": "fillet",
+            "other": "fillets"
+          },
+          "el": {
+            "one": "φιλέτο",
+            "other": "φιλέτα"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "sea-bream-cooked",
+    "origin": "seafood",
+    "names": {
+      "en": "Sea bream, cooked",
+      "el": "Τσιπούρα, μαγειρεμένη"
+    },
+    "allergens": [
+      "fish"
+    ],
+    "per100g": {
+      "kcal": 150,
+      "proteinG": 25,
+      "carbsG": 0,
+      "fatG": 5
+    },
+    "units": [
+      {
+        "grams": 100,
+        "names": {
+          "en": {
+            "one": "fillet",
+            "other": "fillets"
+          },
+          "el": {
+            "one": "φιλέτο",
+            "other": "φιλέτα"
+          }
+        }
+      },
+      {
+        "grams": 250,
+        "names": {
+          "en": {
+            "one": "whole fish",
+            "other": "whole fish"
+          },
+          "el": {
+            "one": "ψάρι",
+            "other": "ψάρια"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "sea-bass-cooked",
+    "origin": "seafood",
+    "names": {
+      "en": "Sea bass, cooked",
+      "el": "Λαβράκι, μαγειρεμένο"
+    },
+    "allergens": [
+      "fish"
+    ],
+    "per100g": {
+      "kcal": 124,
+      "proteinG": 24,
+      "carbsG": 0,
+      "fatG": 2.6
+    },
+    "units": [
+      {
+        "grams": 100,
+        "names": {
+          "en": {
+            "one": "fillet",
+            "other": "fillets"
+          },
+          "el": {
+            "one": "φιλέτο",
+            "other": "φιλέτα"
+          }
+        }
+      },
+      {
+        "grams": 250,
+        "names": {
+          "en": {
+            "one": "whole fish",
+            "other": "whole fish"
+          },
+          "el": {
+            "one": "ψάρι",
+            "other": "ψάρια"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "swordfish-cooked",
+    "origin": "seafood",
+    "names": {
+      "en": "Swordfish, cooked",
+      "el": "Ξιφίας, μαγειρεμένος"
+    },
+    "allergens": [
+      "fish"
+    ],
+    "per100g": {
+      "kcal": 172,
+      "proteinG": 26,
+      "carbsG": 0,
+      "fatG": 6.7
+    },
+    "units": [
+      {
+        "grams": 130,
+        "names": {
+          "en": {
+            "one": "cutlet",
+            "other": "cutlets"
+          },
+          "el": {
+            "one": "μπριζόλα",
+            "other": "μπριζόλες"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "prawns-cooked",
+    "origin": "seafood",
+    "names": {
+      "en": "Prawns, cooked",
+      "el": "Γαρίδες, μαγειρεμένες"
+    },
+    "allergens": [
+      "crustaceans"
+    ],
+    "per100g": {
+      "kcal": 99,
+      "proteinG": 24,
+      "carbsG": 0.2,
+      "fatG": 0.3
+    },
+    "units": [
+      {
+        "grams": 10,
+        "names": {
+          "en": {
+            "one": "prawn",
+            "other": "prawns"
+          },
+          "el": {
+            "one": "γαρίδα",
+            "other": "γαρίδες"
+          }
+        }
+      },
+      {
+        "grams": 100,
+        "names": {
+          "en": {
+            "one": "serving",
+            "other": "servings"
+          },
+          "el": {
+            "one": "μερίδα",
+            "other": "μερίδες"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "crab-cooked",
+    "origin": "seafood",
+    "names": {
+      "en": "Crab meat, cooked",
+      "el": "Κρέας καβουριού, μαγειρεμένο"
+    },
+    "allergens": [
+      "crustaceans"
+    ],
+    "per100g": {
+      "kcal": 97,
+      "proteinG": 19,
+      "carbsG": 0,
+      "fatG": 1.5
+    },
+    "units": [
+      {
+        "grams": 100,
+        "names": {
+          "en": {
+            "one": "serving",
+            "other": "servings"
+          },
+          "el": {
+            "one": "μερίδα",
+            "other": "μερίδες"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "squid-raw",
+    "origin": "seafood",
+    "names": {
+      "en": "Squid, raw",
+      "el": "Καλαμάρι, ωμό"
+    },
+    "allergens": [
+      "molluscs"
+    ],
+    "per100g": {
+      "kcal": 92,
+      "proteinG": 15.6,
+      "carbsG": 3.1,
+      "fatG": 1.4
+    },
+    "units": [
+      {
+        "grams": 120,
+        "names": {
+          "en": {
+            "one": "serving",
+            "other": "servings"
+          },
+          "el": {
+            "one": "μερίδα",
+            "other": "μερίδες"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "octopus-cooked",
+    "origin": "seafood",
+    "names": {
+      "en": "Octopus, cooked",
+      "el": "Χταπόδι, μαγειρεμένο"
+    },
+    "allergens": [
+      "molluscs"
+    ],
+    "per100g": {
+      "kcal": 164,
+      "proteinG": 30,
+      "carbsG": 4.4,
+      "fatG": 2.1
+    },
+    "units": [
+      {
+        "grams": 100,
+        "names": {
+          "en": {
+            "one": "serving",
+            "other": "servings"
+          },
+          "el": {
+            "one": "μερίδα",
+            "other": "μερίδες"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "mussels-cooked",
+    "origin": "seafood",
+    "names": {
+      "en": "Mussels, cooked",
+      "el": "Μύδια, μαγειρεμένα"
+    },
+    "allergens": [
+      "molluscs"
+    ],
+    "per100g": {
+      "kcal": 172,
+      "proteinG": 24,
+      "carbsG": 7.4,
+      "fatG": 4.5
+    },
+    "units": [
+      {
+        "grams": 10,
+        "names": {
+          "en": {
+            "one": "mussel",
+            "other": "mussels"
+          },
+          "el": {
+            "one": "μύδι",
+            "other": "μύδια"
+          }
+        }
+      },
+      {
+        "grams": 100,
+        "names": {
+          "en": {
+            "one": "serving",
+            "other": "servings"
+          },
+          "el": {
+            "one": "μερίδα",
+            "other": "μερίδες"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "egg-whole-raw",
+    "origin": "egg",
+    "names": {
+      "en": "Egg, whole, raw",
+      "el": "Αυγό ολόκληρο, ωμό"
+    },
+    "allergens": [
+      "eggs"
+    ],
+    "per100g": {
+      "kcal": 143,
+      "proteinG": 12.6,
+      "carbsG": 0.7,
+      "fatG": 9.5
+    },
+    "units": [
+      {
+        "grams": 50,
+        "names": {
+          "en": {
+            "one": "egg",
+            "other": "eggs"
+          },
+          "el": {
+            "one": "αυγό",
+            "other": "αυγά"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "egg-boiled",
+    "origin": "egg",
+    "names": {
+      "en": "Egg, hard-boiled",
+      "el": "Αυγό βραστό"
+    },
+    "allergens": [
+      "eggs"
+    ],
+    "per100g": {
+      "kcal": 155,
+      "proteinG": 13,
+      "carbsG": 1.1,
+      "fatG": 11
+    },
+    "units": [
+      {
+        "grams": 50,
+        "names": {
+          "en": {
+            "one": "egg",
+            "other": "eggs"
+          },
+          "el": {
+            "one": "αυγό",
+            "other": "αυγά"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "egg-white",
+    "origin": "egg",
+    "names": {
+      "en": "Egg white",
+      "el": "Ασπράδι αυγού"
+    },
+    "allergens": [
+      "eggs"
+    ],
+    "per100g": {
+      "kcal": 52,
+      "proteinG": 11,
+      "carbsG": 0.7,
+      "fatG": 0.2
+    },
+    "units": [
+      {
+        "grams": 33,
+        "names": {
+          "en": {
+            "one": "egg",
+            "other": "eggs"
+          },
+          "el": {
+            "one": "αυγό",
+            "other": "αυγά"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "egg-yolk",
+    "origin": "egg",
+    "names": {
+      "en": "Egg yolk",
+      "el": "Κρόκος αυγού"
+    },
+    "allergens": [
+      "eggs"
+    ],
+    "per100g": {
+      "kcal": 322,
+      "proteinG": 16,
+      "carbsG": 3.6,
+      "fatG": 27
+    },
+    "units": [
+      {
+        "grams": 17,
+        "names": {
+          "en": {
+            "one": "egg",
+            "other": "eggs"
+          },
+          "el": {
+            "one": "αυγό",
+            "other": "αυγά"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "milk-whole",
+    "origin": "dairy",
+    "names": {
+      "en": "Whole milk",
+      "el": "Πλήρες γάλα"
+    },
+    "allergens": [
+      "milk"
+    ],
+    "per100g": {
+      "kcal": 61,
+      "proteinG": 3.2,
+      "carbsG": 4.8,
+      "fatG": 3.3
+    },
+    "units": [
+      {
+        "grams": 250,
+        "names": {
+          "en": {
+            "one": "glass",
+            "other": "glasses"
+          },
+          "el": {
+            "one": "ποτήρι",
+            "other": "ποτήρια"
+          }
+        }
+      },
+      {
+        "grams": 15,
+        "names": {
+          "en": {
+            "one": "tablespoon",
+            "other": "tablespoons"
+          },
+          "el": {
+            "one": "κουταλιά της σούπας",
+            "other": "κουταλιές της σούπας"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "milk-semi-skimmed",
+    "origin": "dairy",
+    "names": {
+      "en": "Semi-skimmed milk",
+      "el": "Γάλα με μειωμένα λιπαρά"
+    },
+    "allergens": [
+      "milk"
+    ],
+    "per100g": {
+      "kcal": 46,
+      "proteinG": 3.4,
+      "carbsG": 4.9,
+      "fatG": 1.5
+    },
+    "units": [
+      {
+        "grams": 250,
+        "names": {
+          "en": {
+            "one": "glass",
+            "other": "glasses"
+          },
+          "el": {
+            "one": "ποτήρι",
+            "other": "ποτήρια"
+          }
+        }
+      },
+      {
+        "grams": 15,
+        "names": {
+          "en": {
+            "one": "tablespoon",
+            "other": "tablespoons"
+          },
+          "el": {
+            "one": "κουταλιά της σούπας",
+            "other": "κουταλιές της σούπας"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "milk-skimmed",
+    "origin": "dairy",
+    "names": {
+      "en": "Skimmed milk",
+      "el": "Άπαχο γάλα"
+    },
+    "allergens": [
+      "milk"
+    ],
+    "per100g": {
+      "kcal": 34,
+      "proteinG": 3.4,
+      "carbsG": 5,
+      "fatG": 0.1
+    },
+    "units": [
+      {
+        "grams": 250,
+        "names": {
+          "en": {
+            "one": "glass",
+            "other": "glasses"
+          },
+          "el": {
+            "one": "ποτήρι",
+            "other": "ποτήρια"
+          }
+        }
+      },
+      {
+        "grams": 15,
+        "names": {
+          "en": {
+            "one": "tablespoon",
+            "other": "tablespoons"
+          },
+          "el": {
+            "one": "κουταλιά της σούπας",
+            "other": "κουταλιές της σούπας"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "goat-milk",
+    "origin": "dairy",
+    "names": {
+      "en": "Goat milk",
+      "el": "Κατσικίσιο γάλα"
+    },
+    "allergens": [
+      "milk"
+    ],
+    "per100g": {
+      "kcal": 69,
+      "proteinG": 3.6,
+      "carbsG": 4.5,
+      "fatG": 4.1
+    },
+    "units": [
+      {
+        "grams": 250,
+        "names": {
+          "en": {
+            "one": "glass",
+            "other": "glasses"
+          },
+          "el": {
+            "one": "ποτήρι",
+            "other": "ποτήρια"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "yoghurt-greek-full-fat",
+    "origin": "dairy",
+    "names": {
+      "en": "Greek yoghurt, full fat",
+      "el": "Στραγγιστό γιαούρτι πλήρες"
+    },
+    "allergens": [
+      "milk"
+    ],
+    "per100g": {
+      "kcal": 97,
+      "proteinG": 9,
+      "carbsG": 4,
+      "fatG": 5
+    },
+    "units": [
+      {
+        "grams": 30,
+        "names": {
+          "en": {
+            "one": "tablespoon",
+            "other": "tablespoons"
+          },
+          "el": {
+            "one": "κουταλιά της σούπας",
+            "other": "κουταλιές της σούπας"
+          }
+        }
+      },
+      {
+        "grams": 200,
+        "names": {
+          "en": {
+            "one": "tub",
+            "other": "tubs"
+          },
+          "el": {
+            "one": "κυπελλάκι",
+            "other": "κυπελλάκια"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "yoghurt-greek-2pct",
+    "origin": "dairy",
+    "names": {
+      "en": "Greek yoghurt, 2% fat",
+      "el": "Στραγγιστό γιαούρτι 2%"
+    },
+    "allergens": [
+      "milk"
+    ],
+    "per100g": {
+      "kcal": 73,
+      "proteinG": 10,
+      "carbsG": 4,
+      "fatG": 2
+    },
+    "units": [
+      {
+        "grams": 30,
+        "names": {
+          "en": {
+            "one": "tablespoon",
+            "other": "tablespoons"
+          },
+          "el": {
+            "one": "κουταλιά της σούπας",
+            "other": "κουταλιές της σούπας"
+          }
+        }
+      },
+      {
+        "grams": 200,
+        "names": {
+          "en": {
+            "one": "tub",
+            "other": "tubs"
+          },
+          "el": {
+            "one": "κυπελλάκι",
+            "other": "κυπελλάκια"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "yoghurt-greek-0pct",
+    "origin": "dairy",
+    "names": {
+      "en": "Greek yoghurt, fat free",
+      "el": "Στραγγιστό γιαούρτι 0%"
+    },
+    "allergens": [
+      "milk"
+    ],
+    "per100g": {
+      "kcal": 59,
+      "proteinG": 10,
+      "carbsG": 3.6,
+      "fatG": 0.4
+    },
+    "units": [
+      {
+        "grams": 30,
+        "names": {
+          "en": {
+            "one": "tablespoon",
+            "other": "tablespoons"
+          },
+          "el": {
+            "one": "κουταλιά της σούπας",
+            "other": "κουταλιές της σούπας"
+          }
+        }
+      },
+      {
+        "grams": 200,
+        "names": {
+          "en": {
+            "one": "tub",
+            "other": "tubs"
+          },
+          "el": {
+            "one": "κυπελλάκι",
+            "other": "κυπελλάκια"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "yoghurt-plain-whole",
+    "origin": "dairy",
+    "names": {
+      "en": "Plain yoghurt, whole milk",
+      "el": "Γιαούρτι πλήρες, σκέτο"
+    },
+    "allergens": [
+      "milk"
+    ],
+    "per100g": {
+      "kcal": 61,
+      "proteinG": 3.5,
+      "carbsG": 4.7,
+      "fatG": 3.3
+    },
+    "units": [
+      {
+        "grams": 20,
+        "names": {
+          "en": {
+            "one": "tablespoon",
+            "other": "tablespoons"
+          },
+          "el": {
+            "one": "κουταλιά της σούπας",
+            "other": "κουταλιές της σούπας"
+          }
+        }
+      },
+      {
+        "grams": 200,
+        "names": {
+          "en": {
+            "one": "tub",
+            "other": "tubs"
+          },
+          "el": {
+            "one": "κυπελλάκι",
+            "other": "κυπελλάκια"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "cottage-cheese",
+    "origin": "dairy",
+    "names": {
+      "en": "Cottage cheese",
+      "el": "Τυρί cottage"
+    },
+    "allergens": [
+      "milk"
+    ],
+    "per100g": {
+      "kcal": 98,
+      "proteinG": 11,
+      "carbsG": 3.4,
+      "fatG": 4.3
+    },
+    "units": [
+      {
+        "grams": 30,
+        "names": {
+          "en": {
+            "one": "tablespoon",
+            "other": "tablespoons"
+          },
+          "el": {
+            "one": "κουταλιά της σούπας",
+            "other": "κουταλιές της σούπας"
+          }
+        }
+      },
+      {
+        "grams": 150,
+        "names": {
+          "en": {
+            "one": "tub",
+            "other": "tubs"
+          },
+          "el": {
+            "one": "κυπελλάκι",
+            "other": "κυπελλάκια"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "feta",
+    "origin": "dairy",
+    "names": {
+      "en": "Feta",
+      "el": "Φέτα"
+    },
+    "allergens": [
+      "milk"
+    ],
+    "per100g": {
+      "kcal": 264,
+      "proteinG": 14,
+      "carbsG": 4,
+      "fatG": 21
+    },
+    "units": [
+      {
+        "grams": 30,
+        "names": {
+          "en": {
+            "one": "piece",
+            "other": "pieces"
+          },
+          "el": {
+            "one": "κομμάτι",
+            "other": "κομμάτια"
+          }
+        }
+      },
+      {
+        "grams": 20,
+        "names": {
+          "en": {
+            "one": "tablespoon",
+            "other": "tablespoons"
+          },
+          "el": {
+            "one": "κουταλιά της σούπας",
+            "other": "κουταλιές της σούπας"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "halloumi",
+    "origin": "dairy",
+    "names": {
+      "en": "Halloumi",
+      "el": "Χαλούμι"
+    },
+    "allergens": [
+      "milk"
+    ],
+    "per100g": {
+      "kcal": 321,
+      "proteinG": 22,
+      "carbsG": 2.6,
+      "fatG": 25
+    },
+    "units": [
+      {
+        "grams": 30,
+        "names": {
+          "en": {
+            "one": "slice",
+            "other": "slices"
+          },
+          "el": {
+            "one": "φέτα",
+            "other": "φέτες"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "mozzarella",
+    "origin": "dairy",
+    "names": {
+      "en": "Mozzarella",
+      "el": "Μοτσαρέλα"
+    },
+    "allergens": [
+      "milk"
+    ],
+    "per100g": {
+      "kcal": 280,
+      "proteinG": 28,
+      "carbsG": 3,
+      "fatG": 17
+    },
+    "units": [
+      {
+        "grams": 30,
+        "names": {
+          "en": {
+            "one": "slice",
+            "other": "slices"
+          },
+          "el": {
+            "one": "φέτα",
+            "other": "φέτες"
+          }
+        }
+      },
+      {
+        "grams": 125,
+        "names": {
+          "en": {
+            "one": "piece",
+            "other": "pieces"
+          },
+          "el": {
+            "one": "κομμάτι",
+            "other": "κομμάτια"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "parmesan",
+    "origin": "dairy",
+    "names": {
+      "en": "Parmesan",
+      "el": "Παρμεζάνα"
+    },
+    "allergens": [
+      "milk"
+    ],
+    "per100g": {
+      "kcal": 431,
+      "proteinG": 38,
+      "carbsG": 4.1,
+      "fatG": 29
+    },
+    "units": [
+      {
+        "grams": 5,
+        "names": {
+          "en": {
+            "one": "tablespoon",
+            "other": "tablespoons"
+          },
+          "el": {
+            "one": "κουταλιά της σούπας",
+            "other": "κουταλιές της σούπας"
+          }
+        }
+      },
+      {
+        "grams": 20,
+        "names": {
+          "en": {
+            "one": "piece",
+            "other": "pieces"
+          },
+          "el": {
+            "one": "κομμάτι",
+            "other": "κομμάτια"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "graviera",
+    "origin": "dairy",
+    "names": {
+      "en": "Graviera",
+      "el": "Γραβιέρα"
+    },
+    "allergens": [
+      "milk"
+    ],
+    "per100g": {
+      "kcal": 400,
+      "proteinG": 27,
+      "carbsG": 0,
+      "fatG": 31
+    },
+    "units": [
+      {
+        "grams": 30,
+        "names": {
+          "en": {
+            "one": "slice",
+            "other": "slices"
+          },
+          "el": {
+            "one": "φέτα",
+            "other": "φέτες"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "kasseri",
+    "origin": "dairy",
+    "names": {
+      "en": "Kasseri",
+      "el": "Κασέρι"
+    },
+    "allergens": [
+      "milk"
+    ],
+    "per100g": {
+      "kcal": 360,
+      "proteinG": 25,
+      "carbsG": 1,
+      "fatG": 28
+    },
+    "units": [
+      {
+        "grams": 30,
+        "names": {
+          "en": {
+            "one": "slice",
+            "other": "slices"
+          },
+          "el": {
+            "one": "φέτα",
+            "other": "φέτες"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "manouri",
+    "origin": "dairy",
+    "names": {
+      "en": "Manouri",
+      "el": "Μανούρι"
+    },
+    "allergens": [
+      "milk"
+    ],
+    "per100g": {
+      "kcal": 254,
+      "proteinG": 11,
+      "carbsG": 3,
+      "fatG": 22
+    },
+    "units": [
+      {
+        "grams": 30,
+        "names": {
+          "en": {
+            "one": "slice",
+            "other": "slices"
+          },
+          "el": {
+            "one": "φέτα",
+            "other": "φέτες"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "ricotta",
+    "origin": "dairy",
+    "names": {
+      "en": "Ricotta",
+      "el": "Ρικότα"
+    },
+    "allergens": [
+      "milk"
+    ],
+    "per100g": {
+      "kcal": 174,
+      "proteinG": 11,
+      "carbsG": 3,
+      "fatG": 13
+    },
+    "units": [
+      {
+        "grams": 30,
+        "names": {
+          "en": {
+            "one": "tablespoon",
+            "other": "tablespoons"
+          },
+          "el": {
+            "one": "κουταλιά της σούπας",
+            "other": "κουταλιές της σούπας"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "cheddar",
+    "origin": "dairy",
+    "names": {
+      "en": "Cheddar",
+      "el": "Τσένταρ"
+    },
+    "allergens": [
+      "milk"
+    ],
+    "per100g": {
+      "kcal": 403,
+      "proteinG": 25,
+      "carbsG": 1.3,
+      "fatG": 33
+    },
+    "units": [
+      {
+        "grams": 25,
+        "names": {
+          "en": {
+            "one": "slice",
+            "other": "slices"
+          },
+          "el": {
+            "one": "φέτα",
+            "other": "φέτες"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "cream-cheese",
+    "origin": "dairy",
+    "names": {
+      "en": "Cream cheese",
+      "el": "Τυρί κρέμα"
+    },
+    "allergens": [
+      "milk"
+    ],
+    "per100g": {
+      "kcal": 342,
+      "proteinG": 6,
+      "carbsG": 4,
+      "fatG": 34
+    },
+    "units": [
+      {
+        "grams": 20,
+        "names": {
+          "en": {
+            "one": "tablespoon",
+            "other": "tablespoons"
+          },
+          "el": {
+            "one": "κουταλιά της σούπας",
+            "other": "κουταλιές της σούπας"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "butter",
+    "origin": "dairy",
+    "names": {
+      "en": "Butter",
+      "el": "Βούτυρο"
+    },
+    "allergens": [
+      "milk"
+    ],
+    "per100g": {
+      "kcal": 717,
+      "proteinG": 0.9,
+      "carbsG": 0.1,
+      "fatG": 81
+    },
+    "units": [
+      {
+        "grams": 5,
+        "names": {
+          "en": {
+            "one": "teaspoon",
+            "other": "teaspoons"
+          },
+          "el": {
+            "one": "κουταλάκι του γλυκού",
+            "other": "κουταλάκια του γλυκού"
+          }
+        }
+      },
+      {
+        "grams": 14,
+        "names": {
+          "en": {
+            "one": "tablespoon",
+            "other": "tablespoons"
+          },
+          "el": {
+            "one": "κουταλιά της σούπας",
+            "other": "κουταλιές της σούπας"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "cream-whipping",
+    "origin": "dairy",
+    "names": {
+      "en": "Whipping cream",
+      "el": "Κρέμα γάλακτος"
+    },
+    "allergens": [
+      "milk"
+    ],
+    "per100g": {
+      "kcal": 340,
+      "proteinG": 2.8,
+      "carbsG": 2.7,
+      "fatG": 36
+    },
+    "units": [
+      {
+        "grams": 15,
+        "names": {
+          "en": {
+            "one": "tablespoon",
+            "other": "tablespoons"
+          },
+          "el": {
+            "one": "κουταλιά της σούπας",
+            "other": "κουταλιές της σούπας"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "honey",
+    "origin": "honey",
+    "names": {
+      "en": "Honey",
+      "el": "Μέλι"
+    },
+    "allergens": [],
+    "per100g": {
+      "kcal": 304,
+      "proteinG": 0.3,
+      "carbsG": 82.4,
+      "fatG": 0
+    },
+    "units": [
+      {
+        "grams": 7,
+        "names": {
+          "en": {
+            "one": "teaspoon",
+            "other": "teaspoons"
+          },
+          "el": {
+            "one": "κουταλάκι του γλυκού",
+            "other": "κουταλάκια του γλυκού"
+          }
+        }
+      },
+      {
+        "grams": 21,
+        "names": {
+          "en": {
+            "one": "tablespoon",
+            "other": "tablespoons"
+          },
+          "el": {
+            "one": "κουταλιά της σούπας",
+            "other": "κουταλιές της σούπας"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "water",
+    "origin": "plant",
+    "names": {
+      "en": "Water",
+      "el": "Νερό"
+    },
+    "allergens": [],
+    "per100g": {
+      "kcal": 0,
+      "proteinG": 0,
+      "carbsG": 0,
+      "fatG": 0
+    },
+    "units": [
+      {
+        "grams": 250,
+        "names": {
+          "en": {
+            "one": "glass",
+            "other": "glasses"
+          },
+          "el": {
+            "one": "ποτήρι",
+            "other": "ποτήρια"
+          }
+        }
+      },
+      {
+        "grams": 500,
+        "names": {
+          "en": {
+            "one": "bottle",
+            "other": "bottles"
+          },
+          "el": {
+            "one": "μπουκάλι",
+            "other": "μπουκάλια"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "sparkling-water",
+    "origin": "plant",
+    "names": {
+      "en": "Sparkling water",
+      "el": "Ανθρακούχο νερό"
+    },
+    "allergens": [],
+    "per100g": {
+      "kcal": 0,
+      "proteinG": 0,
+      "carbsG": 0,
+      "fatG": 0
+    },
+    "units": [
+      {
+        "grams": 250,
+        "names": {
+          "en": {
+            "one": "glass",
+            "other": "glasses"
+          },
+          "el": {
+            "one": "ποτήρι",
+            "other": "ποτήρια"
+          }
+        }
+      },
+      {
+        "grams": 500,
+        "names": {
+          "en": {
+            "one": "bottle",
+            "other": "bottles"
+          },
+          "el": {
+            "one": "μπουκάλι",
+            "other": "μπουκάλια"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "coffee-black",
+    "origin": "plant",
+    "names": {
+      "en": "Coffee, black, brewed",
+      "el": "Καφές φίλτρου, σκέτος"
+    },
+    "allergens": [],
+    "per100g": {
+      "kcal": 1,
+      "proteinG": 0.1,
+      "carbsG": 0.1,
+      "fatG": 0
+    },
+    "units": [
+      {
+        "grams": 240,
+        "names": {
+          "en": {
+            "one": "cup",
+            "other": "cups"
+          },
+          "el": {
+            "one": "φλιτζάνι",
+            "other": "φλιτζάνια"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "coffee-greek",
+    "origin": "plant",
+    "names": {
+      "en": "Greek coffee, unsweetened",
+      "el": "Ελληνικός καφές, σκέτος"
+    },
+    "allergens": [],
+    "per100g": {
+      "kcal": 2,
+      "proteinG": 0.2,
+      "carbsG": 0.2,
+      "fatG": 0
+    },
+    "units": [
+      {
+        "grams": 60,
+        "names": {
+          "en": {
+            "one": "cup",
+            "other": "cups"
+          },
+          "el": {
+            "one": "φλιτζάνι",
+            "other": "φλιτζάνια"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "tea-black",
+    "origin": "plant",
+    "names": {
+      "en": "Black tea, unsweetened",
+      "el": "Μαύρο τσάι, χωρίς ζάχαρη"
+    },
+    "allergens": [],
+    "per100g": {
+      "kcal": 1,
+      "proteinG": 0,
+      "carbsG": 0.3,
+      "fatG": 0
+    },
+    "units": [
+      {
+        "grams": 240,
+        "names": {
+          "en": {
+            "one": "cup",
+            "other": "cups"
+          },
+          "el": {
+            "one": "φλιτζάνι",
+            "other": "φλιτζάνια"
+          }
+        }
+      },
+      {
+        "grams": 2,
+        "names": {
+          "en": {
+            "one": "tea bag",
+            "other": "tea bags"
+          },
+          "el": {
+            "one": "φακελάκι",
+            "other": "φακελάκια"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "tea-green",
+    "origin": "plant",
+    "names": {
+      "en": "Green tea, unsweetened",
+      "el": "Πράσινο τσάι, χωρίς ζάχαρη"
+    },
+    "allergens": [],
+    "per100g": {
+      "kcal": 1,
+      "proteinG": 0.2,
+      "carbsG": 0,
+      "fatG": 0
+    },
+    "units": [
+      {
+        "grams": 240,
+        "names": {
+          "en": {
+            "one": "cup",
+            "other": "cups"
+          },
+          "el": {
+            "one": "φλιτζάνι",
+            "other": "φλιτζάνια"
+          }
+        }
+      },
+      {
+        "grams": 2,
+        "names": {
+          "en": {
+            "one": "tea bag",
+            "other": "tea bags"
+          },
+          "el": {
+            "one": "φακελάκι",
+            "other": "φακελάκια"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "tea-herbal",
+    "origin": "plant",
+    "names": {
+      "en": "Herbal tea, unsweetened",
+      "el": "Τσάι βοτάνων, χωρίς ζάχαρη"
+    },
+    "allergens": [],
+    "per100g": {
+      "kcal": 1,
+      "proteinG": 0,
+      "carbsG": 0.2,
+      "fatG": 0
+    },
+    "units": [
+      {
+        "grams": 240,
+        "names": {
+          "en": {
+            "one": "cup",
+            "other": "cups"
+          },
+          "el": {
+            "one": "φλιτζάνι",
+            "other": "φλιτζάνια"
+          }
+        }
+      },
+      {
+        "grams": 2,
+        "names": {
+          "en": {
+            "one": "tea bag",
+            "other": "tea bags"
+          },
+          "el": {
+            "one": "φακελάκι",
+            "other": "φακελάκια"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "tea-greek-mountain",
+    "origin": "plant",
+    "names": {
+      "en": "Greek mountain tea, unsweetened",
+      "el": "Τσάι του βουνού, χωρίς ζάχαρη"
+    },
+    "allergens": [],
+    "per100g": {
+      "kcal": 1,
+      "proteinG": 0,
+      "carbsG": 0.2,
+      "fatG": 0
+    },
+    "units": [
+      {
+        "grams": 240,
+        "names": {
+          "en": {
+            "one": "cup",
+            "other": "cups"
+          },
+          "el": {
+            "one": "φλιτζάνι",
+            "other": "φλιτζάνια"
+          }
+        }
+      }
+    ]
+  }
+]

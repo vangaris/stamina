@@ -1,0 +1,442 @@
+[
+  {
+    "id": "everything-breakfast-1",
+    "pattern": "everything",
+    "slot": "breakfast",
+    "effort": "quick",
+    "names": {
+      "en": "Greek yoghurt with honey and walnuts",
+      "el": "Γιαούρτι με μέλι και καρύδια"
+    },
+    "ingredients": [
+      {
+        "ingredientId": "yoghurt-greek-full-fat",
+        "grams": 200
+      },
+      {
+        "ingredientId": "honey",
+        "grams": 15
+      },
+      {
+        "ingredientId": "walnuts",
+        "grams": 25
+      },
+      {
+        "ingredientId": "banana",
+        "grams": 100
+      }
+    ]
+  },
+  {
+    "id": "everything-breakfast-2",
+    "pattern": "everything",
+    "slot": "breakfast",
+    "effort": "normal",
+    "names": {
+      "en": "Spinach and tomato omelette with feta and toast",
+      "el": "Ομελέτα με σπανάκι, ντομάτα και φέτα με φρυγανιά"
+    },
+    "ingredients": [
+      {
+        "ingredientId": "egg-whole-raw",
+        "grams": 120
+      },
+      {
+        "ingredientId": "feta",
+        "grams": 30
+      },
+      {
+        "ingredientId": "tomato",
+        "grams": 80
+      },
+      {
+        "ingredientId": "spinach",
+        "grams": 40
+      },
+      {
+        "ingredientId": "olive-oil",
+        "grams": 8
+      },
+      {
+        "ingredientId": "bread-wholemeal",
+        "grams": 60
+      }
+    ]
+  },
+  {
+    "id": "everything-breakfast-3",
+    "pattern": "everything",
+    "slot": "breakfast",
+    "effort": "quick",
+    "names": {
+      "en": "Quinoa porridge with banana and blueberries",
+      "el": "Χυλός κινόα με μπανάνα και μύρτιλα"
+    },
+    "ingredients": [
+      {
+        "ingredientId": "quinoa-cooked",
+        "grams": 180
+      },
+      {
+        "ingredientId": "rice-milk",
+        "grams": 150
+      },
+      {
+        "ingredientId": "banana",
+        "grams": 100
+      },
+      {
+        "ingredientId": "blueberries",
+        "grams": 60
+      },
+      {
+        "ingredientId": "chia-seeds",
+        "grams": 15
+      }
+    ]
+  },
+  {
+    "id": "everything-lunch-1",
+    "pattern": "everything",
+    "slot": "lunch",
+    "effort": "normal",
+    "names": {
+      "en": "Chicken with rice and Greek salad",
+      "el": "Κοτόπουλο με ρύζι και ελληνική σαλάτα"
+    },
+    "ingredients": [
+      {
+        "ingredientId": "chicken-breast-cooked",
+        "grams": 120
+      },
+      {
+        "ingredientId": "rice-white-cooked",
+        "grams": 200
+      },
+      {
+        "ingredientId": "tomato",
+        "grams": 100
+      },
+      {
+        "ingredientId": "cucumber",
+        "grams": 80
+      },
+      {
+        "ingredientId": "feta",
+        "grams": 30
+      },
+      {
+        "ingredientId": "olive-oil",
+        "grams": 12
+      }
+    ]
+  },
+  {
+    "id": "everything-lunch-2",
+    "pattern": "everything",
+    "slot": "lunch",
+    "effort": "quick",
+    "names": {
+      "en": "Tuna and white bean salad with sourdough",
+      "el": "Σαλάτα τόνου με άσπρα φασόλια και ψωμί με προζύμι"
+    },
+    "ingredients": [
+      {
+        "ingredientId": "tuna-canned-oil",
+        "grams": 80
+      },
+      {
+        "ingredientId": "white-beans-cooked",
+        "grams": 180
+      },
+      {
+        "ingredientId": "cherry-tomatoes",
+        "grams": 100
+      },
+      {
+        "ingredientId": "onion-red",
+        "grams": 30
+      },
+      {
+        "ingredientId": "olive-oil",
+        "grams": 10
+      },
+      {
+        "ingredientId": "parsley",
+        "grams": 5
+      },
+      {
+        "ingredientId": "bread-sourdough",
+        "grams": 60
+      }
+    ]
+  },
+  {
+    "id": "everything-lunch-3",
+    "pattern": "everything",
+    "slot": "lunch",
+    "effort": "normal",
+    "names": {
+      "en": "Lentil and potato stew with spinach",
+      "el": "Φακές με πατάτες και σπανάκι"
+    },
+    "ingredients": [
+      {
+        "ingredientId": "lentils-brown-cooked",
+        "grams": 200
+      },
+      {
+        "ingredientId": "potato-boiled",
+        "grams": 200
+      },
+      {
+        "ingredientId": "carrot",
+        "grams": 80
+      },
+      {
+        "ingredientId": "tomato",
+        "grams": 100
+      },
+      {
+        "ingredientId": "olive-oil",
+        "grams": 15
+      },
+      {
+        "ingredientId": "spinach",
+        "grams": 50
+      }
+    ]
+  },
+  {
+    "id": "everything-dinner-1",
+    "pattern": "everything",
+    "slot": "dinner",
+    "effort": "normal",
+    "names": {
+      "en": "Baked salmon with potatoes and broccoli",
+      "el": "Σολομός στο φούρνο με πατάτες και μπρόκολο"
+    },
+    "ingredients": [
+      {
+        "ingredientId": "salmon-baked",
+        "grams": 140
+      },
+      {
+        "ingredientId": "potato-baked",
+        "grams": 250
+      },
+      {
+        "ingredientId": "broccoli",
+        "grams": 150
+      },
+      {
+        "ingredientId": "olive-oil",
+        "grams": 12
+      },
+      {
+        "ingredientId": "lemon-juice",
+        "grams": 10
+      }
+    ]
+  },
+  {
+    "id": "everything-dinner-2",
+    "pattern": "everything",
+    "slot": "dinner",
+    "effort": "normal",
+    "names": {
+      "en": "Beef and tomato pasta",
+      "el": "Μακαρόνια με κιμά και σάλτσα ντομάτας"
+    },
+    "ingredients": [
+      {
+        "ingredientId": "beef-mince-lean-cooked",
+        "grams": 100
+      },
+      {
+        "ingredientId": "pasta-cooked",
+        "grams": 220
+      },
+      {
+        "ingredientId": "passata",
+        "grams": 120
+      },
+      {
+        "ingredientId": "onion",
+        "grams": 50
+      },
+      {
+        "ingredientId": "olive-oil",
+        "grams": 8
+      }
+    ]
+  },
+  {
+    "id": "everything-dinner-3",
+    "pattern": "everything",
+    "slot": "dinner",
+    "effort": "quick",
+    "names": {
+      "en": "Chicken with rice and roasted vegetables",
+      "el": "Κοτόπουλο με ρύζι και ψητά λαχανικά"
+    },
+    "ingredients": [
+      {
+        "ingredientId": "chicken-breast-cooked",
+        "grams": 130
+      },
+      {
+        "ingredientId": "rice-white-cooked",
+        "grams": 200
+      },
+      {
+        "ingredientId": "courgette",
+        "grams": 100
+      },
+      {
+        "ingredientId": "pepper-red",
+        "grams": 100
+      },
+      {
+        "ingredientId": "olive-oil",
+        "grams": 12
+      }
+    ]
+  },
+  {
+    "id": "everything-snack-1",
+    "pattern": "everything",
+    "slot": "snack",
+    "effort": "quick",
+    "names": {
+      "en": "Apple with almonds",
+      "el": "Μήλο με αμύγδαλα"
+    },
+    "ingredients": [
+      {
+        "ingredientId": "apple",
+        "grams": 150
+      },
+      {
+        "ingredientId": "almonds",
+        "grams": 20
+      }
+    ]
+  },
+  {
+    "id": "everything-snack-2",
+    "pattern": "everything",
+    "slot": "snack",
+    "effort": "quick",
+    "names": {
+      "en": "Greek yoghurt with blueberries and honey",
+      "el": "Γιαούρτι με μύρτιλα και μέλι"
+    },
+    "ingredients": [
+      {
+        "ingredientId": "yoghurt-greek-2pct",
+        "grams": 150
+      },
+      {
+        "ingredientId": "blueberries",
+        "grams": 80
+      },
+      {
+        "ingredientId": "honey",
+        "grams": 10
+      }
+    ]
+  },
+  {
+    "id": "everything-snack-3",
+    "pattern": "everything",
+    "slot": "snack",
+    "effort": "quick",
+    "names": {
+      "en": "Hummus with carrot and cucumber sticks",
+      "el": "Χούμους με καρότο και αγγούρι"
+    },
+    "ingredients": [
+      {
+        "ingredientId": "hummus",
+        "grams": 60
+      },
+      {
+        "ingredientId": "carrot",
+        "grams": 100
+      },
+      {
+        "ingredientId": "cucumber",
+        "grams": 60
+      }
+    ]
+  },
+  {
+    "id": "everything-snack-4",
+    "pattern": "everything",
+    "slot": "snack",
+    "effort": "quick",
+    "names": {
+      "en": "Banana with pumpkin seeds",
+      "el": "Μπανάνα με κολοκυθόσπορους"
+    },
+    "ingredients": [
+      {
+        "ingredientId": "banana",
+        "grams": 120
+      },
+      {
+        "ingredientId": "pumpkin-seeds",
+        "grams": 20
+      }
+    ]
+  },
+  {
+    "id": "everything-snack-5",
+    "pattern": "everything",
+    "slot": "snack",
+    "effort": "normal",
+    "names": {
+      "en": "Boiled eggs with cherry tomatoes and rice cakes",
+      "el": "Βραστά αυγά με ντοματίνια και ρυζογκοφρέτες"
+    },
+    "ingredients": [
+      {
+        "ingredientId": "egg-boiled",
+        "grams": 100
+      },
+      {
+        "ingredientId": "cherry-tomatoes",
+        "grams": 100
+      },
+      {
+        "ingredientId": "rice-cakes",
+        "grams": 15
+      }
+    ]
+  },
+  {
+    "id": "everything-snack-6",
+    "pattern": "everything",
+    "slot": "snack",
+    "effort": "quick",
+    "names": {
+      "en": "Cottage cheese with cucumber and rye crispbread",
+      "el": "Τυρί cottage με αγγούρι και σκούρα φρυγανιά σίκαλης"
+    },
+    "ingredients": [
+      {
+        "ingredientId": "cottage-cheese",
+        "grams": 100
+      },
+      {
+        "ingredientId": "cucumber",
+        "grams": 80
+      },
+      {
+        "ingredientId": "rye-crispbread",
+        "grams": 25
+      }
+    ]
+  }
+]

@@ -1,4 +1,7 @@
 export { logWater } from './log-water.ts';
+export { logMeal } from './log-meal.ts';
+export { MealIdTakenError } from './meal-id-taken-error.ts';
+export { MealNutritionOffError } from './meal-nutrition-off-error.ts';
 export { readNutrition } from './read-nutrition.ts';
 export { saveNutritionSetup } from './save-nutrition-setup.ts';
 export { toNutritionSetup } from './to-nutrition-setup.ts';
