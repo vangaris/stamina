@@ -21,6 +21,8 @@ import {
   BodyArea,
   ConsentPurpose,
   Goal,
+  MealLogStatus,
+  TEMPLATES,
   ScreeningQuestion,
   SportStatus,
   StartingLevel,
@@ -35,7 +37,7 @@ import { appUser, consent, profile, screening, sport } from '../src/db/schema.ts
 import { ApiErrorCode } from '../src/enums/api-error-code.ts';
 import type { ErrorReporter } from '../src/error-reporter.ts';
 import { checkinOf } from './support/checkin-fixtures.ts';
-import { setupOf, waterOf } from './support/nutrition-fixtures.ts';
+import { mealLogOf, setupOf, waterOf } from './support/nutrition-fixtures.ts';
 import { issueInvite, validSubmission } from './support/profile-fixtures.ts';
 import {
   consentToBoth,
@@ -464,13 +466,31 @@ describe('Screening data: encryption, export, deletion, logs', () => {
         date: SENTINELS.nutrition,
       });
       await send(HttpMethod.Post, ApiPath.Water, { ...waterOf(), note: SENTINELS.nutrition });
+      await send(HttpMethod.Post, `${ApiPath.MealLogs}?q=${SENTINELS.nutrition}`, {
+        id: SENTINELS.nutrition,
+        slotIndex: SENTINELS.nutrition,
+        status: SENTINELS.nutrition,
+        templateId: SENTINELS.nutrition,
+        date: SENTINELS.nutrition,
+      });
+      await send(HttpMethod.Post, ApiPath.MealLogs, {
+        ...mealLogOf({ status: MealLogStatus.Other, templateId: TEMPLATES[0]!.id }),
+        note: SENTINELS.nutrition,
+      });
       await send(HttpMethod.Get, ApiPath.MeExport);
 
-      expect(lines).toHaveLength(7);
+      expect(lines).toHaveLength(9);
       expectNoSentinel(lines);
       expectNoSentinel(bodies);
       const text = lines.join('\n');
-      for (const value of ['171.25', '63.75', Allergen.Peanuts, 'anchovies']) {
+      for (const value of [
+        '171.25',
+        '63.75',
+        Allergen.Peanuts,
+        'anchovies',
+        MealLogStatus.Other,
+        TEMPLATES[0]!.id,
+      ]) {
         expect(text).not.toContain(value);
       }
     });

@@ -1,0 +1,506 @@
+[
+  {
+    "id": "vegetarian-breakfast-1",
+    "pattern": "vegetarian",
+    "slot": "breakfast",
+    "effort": "quick",
+    "names": {
+      "en": "Greek yoghurt with honey and fruit",
+      "el": "Γιαούρτι με μέλι και φρούτα"
+    },
+    "ingredients": [
+      {
+        "ingredientId": "yoghurt-greek-2pct",
+        "grams": 250
+      },
+      {
+        "ingredientId": "honey",
+        "grams": 20
+      },
+      {
+        "ingredientId": "banana",
+        "grams": 120
+      },
+      {
+        "ingredientId": "blueberries",
+        "grams": 60
+      },
+      {
+        "ingredientId": "pumpkin-seeds",
+        "grams": 15
+      }
+    ]
+  },
+  {
+    "id": "vegetarian-breakfast-2",
+    "pattern": "vegetarian",
+    "slot": "breakfast",
+    "effort": "normal",
+    "names": {
+      "en": "Veggie omelette with toast",
+      "el": "Ομελέτα λαχανικών με ψωμί"
+    },
+    "ingredients": [
+      {
+        "ingredientId": "egg-whole-raw",
+        "grams": 120
+      },
+      {
+        "ingredientId": "spinach",
+        "grams": 50
+      },
+      {
+        "ingredientId": "feta",
+        "grams": 25
+      },
+      {
+        "ingredientId": "olive-oil",
+        "grams": 5
+      },
+      {
+        "ingredientId": "bread-sourdough",
+        "grams": 50
+      },
+      {
+        "ingredientId": "tomato",
+        "grams": 80
+      }
+    ]
+  },
+  {
+    "id": "vegetarian-breakfast-3",
+    "pattern": "vegetarian",
+    "slot": "breakfast",
+    "effort": "quick",
+    "names": {
+      "en": "Quinoa and banana porridge",
+      "el": "Χυλός κινόα με μπανάνα"
+    },
+    "ingredients": [
+      {
+        "ingredientId": "quinoa-cooked",
+        "grams": 180
+      },
+      {
+        "ingredientId": "rice-milk",
+        "grams": 120
+      },
+      {
+        "ingredientId": "banana",
+        "grams": 110
+      },
+      {
+        "ingredientId": "chia-seeds",
+        "grams": 10
+      },
+      {
+        "ingredientId": "honey",
+        "grams": 5
+      },
+      {
+        "ingredientId": "strawberries",
+        "grams": 60
+      },
+      {
+        "ingredientId": "sunflower-seeds",
+        "grams": 10
+      }
+    ]
+  },
+  {
+    "id": "vegetarian-lunch-1",
+    "pattern": "vegetarian",
+    "slot": "lunch",
+    "effort": "normal",
+    "names": {
+      "en": "Lentil and rice bowl with vegetables",
+      "el": "Φακές με ρύζι και λαχανικά"
+    },
+    "ingredients": [
+      {
+        "ingredientId": "lentils-brown-cooked",
+        "grams": 180
+      },
+      {
+        "ingredientId": "rice-brown-cooked",
+        "grams": 180
+      },
+      {
+        "ingredientId": "cherry-tomatoes",
+        "grams": 100
+      },
+      {
+        "ingredientId": "cucumber",
+        "grams": 100
+      },
+      {
+        "ingredientId": "olive-oil",
+        "grams": 15
+      },
+      {
+        "ingredientId": "lemon-juice",
+        "grams": 10
+      },
+      {
+        "ingredientId": "parsley",
+        "grams": 10
+      }
+    ]
+  },
+  {
+    "id": "vegetarian-lunch-2",
+    "pattern": "vegetarian",
+    "slot": "lunch",
+    "effort": "quick",
+    "names": {
+      "en": "Greek salad with halloumi and pitta",
+      "el": "Ελληνική σαλάτα με χαλούμι και πίτα"
+    },
+    "ingredients": [
+      {
+        "ingredientId": "tomato",
+        "grams": 150
+      },
+      {
+        "ingredientId": "cucumber",
+        "grams": 100
+      },
+      {
+        "ingredientId": "onion-red",
+        "grams": 30
+      },
+      {
+        "ingredientId": "kalamata-olives",
+        "grams": 30
+      },
+      {
+        "ingredientId": "feta",
+        "grams": 40
+      },
+      {
+        "ingredientId": "halloumi",
+        "grams": 40
+      },
+      {
+        "ingredientId": "olive-oil",
+        "grams": 10
+      },
+      {
+        "ingredientId": "pitta-bread",
+        "grams": 60
+      }
+    ]
+  },
+  {
+    "id": "vegetarian-lunch-3",
+    "pattern": "vegetarian",
+    "slot": "lunch",
+    "effort": "normal",
+    "names": {
+      "en": "Chickpea and spinach stew with bulgur",
+      "el": "Ρεβίθια με σπανάκι και πλιγούρι"
+    },
+    "ingredients": [
+      {
+        "ingredientId": "chickpeas-cooked",
+        "grams": 150
+      },
+      {
+        "ingredientId": "spinach",
+        "grams": 100
+      },
+      {
+        "ingredientId": "bulgur-cooked",
+        "grams": 120
+      },
+      {
+        "ingredientId": "onion",
+        "grams": 50
+      },
+      {
+        "ingredientId": "canned-chopped-tomatoes",
+        "grams": 100
+      },
+      {
+        "ingredientId": "olive-oil",
+        "grams": 10
+      },
+      {
+        "ingredientId": "yoghurt-greek-2pct",
+        "grams": 50
+      }
+    ]
+  },
+  {
+    "id": "vegetarian-dinner-1",
+    "pattern": "vegetarian",
+    "slot": "dinner",
+    "effort": "normal",
+    "names": {
+      "en": "Baked potato with beans and salad",
+      "el": "Ψητή πατάτα με φασόλια και σαλάτα"
+    },
+    "ingredients": [
+      {
+        "ingredientId": "potato-baked",
+        "grams": 250
+      },
+      {
+        "ingredientId": "white-beans-cooked",
+        "grams": 150
+      },
+      {
+        "ingredientId": "canned-chopped-tomatoes",
+        "grams": 100
+      },
+      {
+        "ingredientId": "salad-leaves-mixed",
+        "grams": 60
+      },
+      {
+        "ingredientId": "olive-oil",
+        "grams": 10
+      },
+      {
+        "ingredientId": "lemon-juice",
+        "grams": 10
+      }
+    ]
+  },
+  {
+    "id": "vegetarian-dinner-2",
+    "pattern": "vegetarian",
+    "slot": "dinner",
+    "effort": "normal",
+    "names": {
+      "en": "Pasta with tomato sauce and mozzarella",
+      "el": "Ζυμαρικά με σάλτσα ντομάτας και μοτσαρέλα"
+    },
+    "ingredients": [
+      {
+        "ingredientId": "pasta-cooked",
+        "grams": 220
+      },
+      {
+        "ingredientId": "passata",
+        "grams": 150
+      },
+      {
+        "ingredientId": "mozzarella",
+        "grams": 50
+      },
+      {
+        "ingredientId": "garlic",
+        "grams": 5
+      },
+      {
+        "ingredientId": "basil",
+        "grams": 5
+      },
+      {
+        "ingredientId": "olive-oil",
+        "grams": 10
+      },
+      {
+        "ingredientId": "salad-leaves-mixed",
+        "grams": 50
+      }
+    ]
+  },
+  {
+    "id": "vegetarian-dinner-3",
+    "pattern": "vegetarian",
+    "slot": "dinner",
+    "effort": "quick",
+    "names": {
+      "en": "Tofu stir-fry with rice",
+      "el": "Τόφου σοτέ με ρύζι"
+    },
+    "ingredients": [
+      {
+        "ingredientId": "tofu-firm",
+        "grams": 150
+      },
+      {
+        "ingredientId": "rice-white-cooked",
+        "grams": 180
+      },
+      {
+        "ingredientId": "broccoli",
+        "grams": 120
+      },
+      {
+        "ingredientId": "pepper-red",
+        "grams": 80
+      },
+      {
+        "ingredientId": "carrot",
+        "grams": 60
+      },
+      {
+        "ingredientId": "soy-sauce",
+        "grams": 15
+      },
+      {
+        "ingredientId": "sunflower-oil",
+        "grams": 5
+      }
+    ]
+  },
+  {
+    "id": "vegetarian-snack-1",
+    "pattern": "vegetarian",
+    "slot": "snack",
+    "effort": "quick",
+    "names": {
+      "en": "Apple with almonds",
+      "el": "Μήλο με αμύγδαλα"
+    },
+    "ingredients": [
+      {
+        "ingredientId": "apple",
+        "grams": 180
+      },
+      {
+        "ingredientId": "almonds",
+        "grams": 25
+      },
+      {
+        "ingredientId": "honey",
+        "grams": 5
+      }
+    ]
+  },
+  {
+    "id": "vegetarian-snack-2",
+    "pattern": "vegetarian",
+    "slot": "snack",
+    "effort": "quick",
+    "names": {
+      "en": "Greek yoghurt with berries",
+      "el": "Γιαούρτι με μούρα"
+    },
+    "ingredients": [
+      {
+        "ingredientId": "yoghurt-greek-0pct",
+        "grams": 200
+      },
+      {
+        "ingredientId": "mixed-berries-frozen",
+        "grams": 100
+      },
+      {
+        "ingredientId": "honey",
+        "grams": 10
+      },
+      {
+        "ingredientId": "pumpkin-seeds",
+        "grams": 10
+      }
+    ]
+  },
+  {
+    "id": "vegetarian-snack-3",
+    "pattern": "vegetarian",
+    "slot": "snack",
+    "effort": "quick",
+    "names": {
+      "en": "Hummus with carrots and pitta",
+      "el": "Χούμους με καρότα και πίτα"
+    },
+    "ingredients": [
+      {
+        "ingredientId": "hummus",
+        "grams": 50
+      },
+      {
+        "ingredientId": "carrot",
+        "grams": 100
+      },
+      {
+        "ingredientId": "pitta-bread",
+        "grams": 30
+      }
+    ]
+  },
+  {
+    "id": "vegetarian-snack-4",
+    "pattern": "vegetarian",
+    "slot": "snack",
+    "effort": "quick",
+    "names": {
+      "en": "Banana with chia and rice cakes",
+      "el": "Μπανάνα με σπόρους τσία και ρυζογκοφρέτες"
+    },
+    "ingredients": [
+      {
+        "ingredientId": "banana",
+        "grams": 100
+      },
+      {
+        "ingredientId": "rice-cakes",
+        "grams": 20
+      },
+      {
+        "ingredientId": "chia-seeds",
+        "grams": 5
+      },
+      {
+        "ingredientId": "fruit-jam",
+        "grams": 10
+      },
+      {
+        "ingredientId": "sunflower-seeds",
+        "grams": 5
+      }
+    ]
+  },
+  {
+    "id": "vegetarian-snack-5",
+    "pattern": "vegetarian",
+    "slot": "snack",
+    "effort": "quick",
+    "names": {
+      "en": "Cottage cheese with cucumber and crackers",
+      "el": "Τυρί cottage με αγγούρι και κράκερ"
+    },
+    "ingredients": [
+      {
+        "ingredientId": "cottage-cheese",
+        "grams": 120
+      },
+      {
+        "ingredientId": "cucumber",
+        "grams": 100
+      },
+      {
+        "ingredientId": "crackers-plain",
+        "grams": 20
+      }
+    ]
+  },
+  {
+    "id": "vegetarian-snack-6",
+    "pattern": "vegetarian",
+    "slot": "snack",
+    "effort": "quick",
+    "names": {
+      "en": "Boiled egg with fruit",
+      "el": "Βραστό αυγό με φρούτο"
+    },
+    "ingredients": [
+      {
+        "ingredientId": "egg-boiled",
+        "grams": 100
+      },
+      {
+        "ingredientId": "orange",
+        "grams": 120
+      },
+      {
+        "ingredientId": "rice-cakes",
+        "grams": 15
+      }
+    ]
+  }
+]

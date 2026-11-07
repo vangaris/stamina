@@ -22,6 +22,7 @@ import { getWeekLoadDefinition } from './handlers/get-week-load.ts';
 import { getNutritionDefinition } from './handlers/get-nutrition.ts';
 import { getProgressDefinition } from './handlers/get-progress.ts';
 import { logActivityDefinition } from './handlers/log-activity.ts';
+import { logMealDefinition } from './handlers/log-meal.ts';
 import { logWaterDefinition } from './handlers/log-water.ts';
 import { logWeighInDefinition } from './handlers/log-weigh-in.ts';
 import { saveNutritionSetupDefinition } from './handlers/save-nutrition-setup.ts';
@@ -66,6 +67,7 @@ export function createAppRegistry(): RequestRegistry<Services, Stores> {
     [RequestType.GetNutrition]: getNutritionDefinition,
     [RequestType.SaveNutritionSetup]: saveNutritionSetupDefinition,
     [RequestType.LogWater]: logWaterDefinition,
+    [RequestType.LogMeal]: logMealDefinition,
     [RequestType.SubmitCheckin]: submitCheckinDefinition,
     [RequestType.GetLatestCheckin]: getLatestCheckinDefinition,
     [RequestType.ReportStopFlag]: reportStopFlagDefinition,

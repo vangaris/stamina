@@ -58,7 +58,11 @@ export async function answerGoal(page: Page, goal: string, button: 'Continue' | 
   await page.getByRole('button', { name: button }).click();
 }
 
+/** Axe reads colours as drawn, so a colour still fading (transition-colors) can fail contrast for a frame. */
 export async function expectNoAccessibilityViolations(page: Page) {
+  await page.evaluate(() =>
+    Promise.allSettled(document.getAnimations().map((animation) => animation.finished)),
+  );
   expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
 }
 

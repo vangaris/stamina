@@ -3,10 +3,12 @@ import {
   HttpMethod,
   NutritionStatus,
   NutritionSubpath,
+  logMealResultSchema,
   logWaterResultSchema,
   nutritionPath,
   nutritionStateSchema,
   saveNutritionSetupResultSchema,
+  type LogMeal,
   type LogWater,
   type NutritionSetup,
   type NutritionState,
@@ -16,9 +18,11 @@ import {
   EatingPattern,
   EnergySex,
   EverydayActivity,
+  MealLogStatus,
   WaterAmount,
 } from '@stamina/domain';
-import type { FixtureUser } from './safety-fixtures.ts';
+import { programUser } from './program-fixtures.ts';
+import type { FixtureUser, TestApi } from './safety-fixtures.ts';
 
 /** A man of 180 cm and 80 kg who is on his feet all day, eats everything, three meals, maintenance. */
 export const setupOf = (overrides: Partial<NutritionSetup> = {}): NutritionSetup => ({
@@ -75,3 +79,28 @@ export const waterOf = (overrides: Partial<LogWater> = {}): LogWater => ({
   ml: WaterAmount.Small,
   ...overrides,
 });
+
+/** Calls `POST /meal-logs`; the result is parsed only when the answer is `200`. */
+export async function postMealLog(user: FixtureUser, entry: LogMeal) {
+  const response = await user.call(HttpMethod.Post, ApiPath.MealLogs, entry);
+  return {
+    status: response.status,
+    result: response.status === 200 ? logMealResultSchema.parse(await response.json()) : null,
+  };
+}
+
+/** A meal log as the device would send it: a fresh id, the first slot, ate it. */
+export const mealLogOf = (overrides: Partial<LogMeal> = {}): LogMeal => ({
+  id: crypto.randomUUID(),
+  slotIndex: 0,
+  status: MealLogStatus.Ate,
+  ...overrides,
+});
+
+/** A food-only user (no training week) with the Unlock Meals setup saved from `setupOf(setup)`. */
+export async function foodUser(api: TestApi, setup: Partial<NutritionSetup> = {}) {
+  const user = await programUser(api, { foodOnly: true });
+  const saved = await putSetup(user, setupOf(setup));
+  if (saved.status !== 200) throw new Error(`setup failed: ${saved.status}`);
+  return user;
+}

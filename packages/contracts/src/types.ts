@@ -76,10 +76,17 @@ import type {
   progressWeekSchema,
 } from './progress-schema.ts';
 import type {
+  nutritionMealSchema,
   nutritionSetupSchema,
   nutritionStateSchema,
   saveNutritionSetupResultSchema,
 } from './nutrition-schema.ts';
+import type {
+  exportedMealLogSchema,
+  logMealResultSchema,
+  logMealSchema,
+} from './meal-log-schema.ts';
+import type { mealIdeaSchema } from './meal-idea-schema.ts';
 import type {
   exportedWaterLogSchema,
   logWaterResultSchema,
@@ -171,11 +178,16 @@ export type LogWeighIn = z.infer<typeof logWeighInSchema>;
 export type LogWeighInResult = z.infer<typeof logWeighInResultSchema>;
 export type ExportedWeighIn = z.infer<typeof exportedWeighInSchema>;
 export type NutritionSetup = z.infer<typeof nutritionSetupSchema>;
+export type NutritionMeal = z.infer<typeof nutritionMealSchema>;
 export type NutritionState = z.infer<typeof nutritionStateSchema>;
 export type SaveNutritionSetupResult = z.infer<typeof saveNutritionSetupResultSchema>;
 export type LogWater = z.infer<typeof logWaterSchema>;
 export type LogWaterResult = z.infer<typeof logWaterResultSchema>;
 export type ExportedWaterLog = z.infer<typeof exportedWaterLogSchema>;
+export type LogMeal = z.infer<typeof logMealSchema>;
+export type LogMealResult = z.infer<typeof logMealResultSchema>;
+export type ExportedMealLog = z.infer<typeof exportedMealLogSchema>;
+export type NutritionMealIdea = z.infer<typeof mealIdeaSchema>;
 export type SessionRevisionRef = z.infer<typeof sessionRevisionRefSchema>;
 export type AdaptationChange = z.infer<typeof adaptationChangeSchema>;
 export type Adaptation = z.infer<typeof adaptationSchema>;
@@ -248,6 +260,8 @@ export interface ApiClient {
   saveNutritionSetup(setup: NutritionSetup): Promise<SaveNutritionSetupResult>;
   /** A repeat of a water log id the server has returns the stored row and counts once. A day too far ahead is an `ApiError` 400; while the latest Screening has Nutrition off it is an `ApiError` 422 and nothing is stored. */
   logWater(water: LogWater): Promise<LogWaterResult>;
+  /** A repeat of a meal log id the server has returns the stored row and stores nothing new; the latest log of a slot wins. A day too far ahead is an `ApiError` 400; while the latest Screening has Nutrition off it is an `ApiError` 422 and nothing is stored. */
+  logMeal(meal: LogMeal): Promise<LogMealResult>;
   /** The pending Adaptation suggestions that still apply, oldest first. The server evaluates the rules first. */
   getAdaptations(): Promise<AdaptationList>;
   /**

@@ -1,5 +1,5 @@
 import type { Mediator } from '@stamina/app-core';
-import type { SessionFocus, WaterAmount } from '@stamina/domain';
+import type { MealLogStatus, SessionFocus, WaterAmount } from '@stamina/domain';
 import type { Locale } from '@stamina/i18n';
 import type { ActivityRowView, LoadSummaryView } from '../activity/index.ts';
 import type { SessionProgress } from '../program/index.ts';
@@ -23,6 +23,8 @@ export interface TimelineMeal {
   at: number;
   /** The meal idea for the slot, if there is one. */
   title: string | undefined;
+  /** What the person said about it, if they have. */
+  status: MealLogStatus | null;
 }
 
 /** Water drunk so far today against the day's target, in millilitres. */

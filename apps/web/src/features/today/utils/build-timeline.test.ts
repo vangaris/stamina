@@ -28,7 +28,7 @@ function activity(key: string): ActivityRowView {
 }
 
 function meal(id: string, at: number): TimelineMeal {
-  return { id, slot: MealSlotKind.Lunch, at, title: undefined };
+  return { id, slot: MealSlotKind.Lunch, at, title: undefined, status: null };
 }
 
 const kinds = (input: Parameters<typeof buildTimeline>[0]) =>

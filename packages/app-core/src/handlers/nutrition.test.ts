@@ -4,11 +4,13 @@ import {
   SaveNutritionSetupRejection,
   SaveNutritionSetupStatus,
   type ApiClient,
+  type LogMeal,
   type LogWater,
   type NutritionSetup,
   type NutritionState,
 } from '@stamina/contracts';
 import {
+  Allergen,
   BodyDirection,
   CookingEffort,
   DayType,
@@ -16,9 +18,16 @@ import {
   EnergySex,
   EverydayActivity,
   Goal,
+  MealLogStatus,
+  Origin,
   ScreeningQuestion,
+  TEMPLATES,
   WaterAmount,
   addDays,
+  getTemplate,
+  mealIdeas,
+  templateAllergens,
+  templateOrigins,
 } from '@stamina/domain';
 import { newId } from '@stamina/ids';
 import { describe, expect, it } from 'vitest';
@@ -26,7 +35,14 @@ import { QUEUED_RESULT } from '../config.ts';
 import { createAppSync } from '../create-app-sync.ts';
 import { createServices } from '../create-services.ts';
 import { ServicesMode } from '../enums/services-mode.ts';
-import { AppErrorCode, getNutrition, logWater, saveNutritionSetup, signOut } from '../index.ts';
+import {
+  AppErrorCode,
+  getNutrition,
+  logMeal,
+  logWater,
+  saveNutritionSetup,
+  signOut,
+} from '../index.ts';
 import { buildProfileAnswers } from '../testing/build-profile-answers.ts';
 import { readyToTrain } from '../testing/ready-to-train.ts';
 
@@ -50,6 +66,14 @@ const waterOf = (overrides: Partial<LogWater> = {}): LogWater => ({
   id: newId(),
   ml: WaterAmount.Small,
   date: today(),
+  ...overrides,
+});
+
+const mealOf = (overrides: Partial<LogMeal> = {}): LogMeal => ({
+  id: newId(),
+  date: today(),
+  slotIndex: 0,
+  status: MealLogStatus.Ate,
   ...overrides,
 });
 
@@ -350,6 +374,309 @@ describe('Meals through the mediator', () => {
     });
   });
 
+  describe('meal ideas', () => {
+    const readyOn = async (read: () => Promise<NutritionState>) => {
+      const state = await read();
+      if (state.status !== NutritionStatus.Ready) throw new Error(`nutrition is ${state.status}`);
+      return state;
+    };
+
+    it('gives every slot an idea the rules built from the setup, and no status yet', async () => {
+      const { mediator } = await setup();
+      const person = setupOf({
+        eatingPattern: EatingPattern.Vegan,
+        allergens: [Allergen.TreeNuts],
+        dislikes: ['okra'],
+        mealsPerDay: 5,
+      });
+      await mediator.send(saveNutritionSetup(person));
+
+      const state = await readyOn(() => mediator.send(getNutrition(today())));
+
+      expect(state.meals).toHaveLength(5);
+      expect(state.meals.map(({ idea }) => idea).length).toBe(5);
+      expect(state.meals.map(({ status }) => status)).toEqual([null, null, null, null, null]);
+      expect(state.meals.map(({ idea }) => idea)).toEqual(
+        mealIdeas({
+          date: today(),
+          pattern: person.eatingPattern,
+          allergens: person.allergens,
+          dislikes: person.dislikes,
+          effort: person.cookingEffort,
+          mealsPerDay: person.mealsPerDay,
+          targets: state.targets,
+        }),
+      );
+      for (const { idea, slot } of state.meals) {
+        const template = getTemplate(idea!.templateId)!;
+        expect(template.slot).toBe(slot);
+        expect(templateAllergens(template)).not.toContain(Allergen.TreeNuts);
+        expect(templateOrigins(template).every((origin) => origin === Origin.Plant)).toBe(true);
+      }
+    });
+
+    it('keeps the ideas of the day last fetched when there is no signal', async () => {
+      const { mediator, network } = await setup();
+      await mediator.send(saveNutritionSetup(setupOf()));
+      const online = await readyOn(() => mediator.send(getNutrition(today())));
+      network.online = false;
+
+      const offline = await readyOn(() => mediator.send(getNutrition(today())));
+
+      expect(offline.meals).toEqual(online.meals);
+      expect(offline.meals.every(({ idea }) => idea !== null)).toBe(true);
+    });
+  });
+
+  describe('logging meals', () => {
+    const statusesOn = async (read: () => Promise<NutritionState>) => {
+      const state = await read();
+      if (state.status !== NutritionStatus.Ready) throw new Error(`nutrition is ${state.status}`);
+      return state.meals.map(({ status }) => status);
+    };
+
+    it('writes the log locally, sends it, and shows the status on its slot, once', async () => {
+      const { mediator, services, server } = await setup();
+      await mediator.send(saveNutritionSetup(setupOf()));
+      const first = mealOf({ slotIndex: 1, status: MealLogStatus.Other });
+
+      const result = await mediator.send(logMeal(first));
+
+      expect(result).toEqual({
+        id: first.id,
+        date: today(),
+        slotIndex: 1,
+        status: MealLogStatus.Other,
+      });
+      expect(await services.mealLogs.list()).toEqual([]);
+      expect(await services.offlineQueue.pending()).toEqual([]);
+      expect(await statusesOn(() => mediator.send(getNutrition(today())))).toEqual([
+        null,
+        MealLogStatus.Other,
+        null,
+      ]);
+      expect(await statusesOn(() => server.getNutrition(today()))).toEqual([
+        null,
+        MealLogStatus.Other,
+        null,
+      ]);
+    });
+
+    it('lets the latest tap on a slot win', async () => {
+      const { mediator } = await setup();
+      await mediator.send(saveNutritionSetup(setupOf()));
+
+      await mediator.send(logMeal(mealOf({ status: MealLogStatus.Ate })));
+      await mediator.send(logMeal(mealOf({ status: MealLogStatus.Skipped })));
+
+      expect(await statusesOn(() => mediator.send(getNutrition(today())))).toEqual([
+        MealLogStatus.Skipped,
+        null,
+        null,
+      ]);
+    });
+
+    it('sends the template the person saw with the tap', async () => {
+      const sent: unknown[] = [];
+      const { mediator } = await setup(undefined, [], (api) => ({
+        ...api,
+        logMeal: async (meal) => {
+          sent.push(meal);
+          return api.logMeal(meal);
+        },
+      }));
+      await mediator.send(saveNutritionSetup(setupOf()));
+      const meal = mealOf({ templateId: TEMPLATES[0]!.id });
+
+      await mediator.send(logMeal(meal));
+
+      expect(sent).toEqual([meal]);
+    });
+
+    it('takes only a slot of 0 to 4 and a known status, refusing the rest before it is written or queued', async () => {
+      const { mediator, services, network } = await setup();
+      await mediator.send(saveNutritionSetup(setupOf()));
+      const bad = [
+        { ...mealOf(), slotIndex: -1 },
+        { ...mealOf(), slotIndex: 5 },
+        { ...mealOf(), slotIndex: 1.5 },
+        { ...mealOf(), status: 'eaten' as MealLogStatus },
+        { ...mealOf(), templateId: '' },
+        { ...mealOf(), id: 'not-a-uuid' },
+      ];
+
+      for (const online of [true, false]) {
+        network.online = online;
+        for (const meal of bad) {
+          await expect(mediator.send(logMeal(meal))).rejects.toMatchObject({
+            code: AppErrorCode.ValidationFailed,
+          });
+        }
+      }
+
+      expect(await services.mealLogs.list()).toEqual([]);
+      expect(await services.offlineQueue.pending()).toEqual([]);
+    });
+
+    it('is refused with a 422 while Nutrition is off, and leaves nothing on the device or in the queue', async () => {
+      const { mediator, services } = await setup(undefined, [ScreeningQuestion.EatingDisorder]);
+
+      await expect(mediator.send(logMeal(mealOf()))).rejects.toBeDefined();
+
+      expect(await services.mealLogs.list()).toEqual([]);
+      expect(await services.offlineQueue.pending()).toEqual([]);
+    });
+
+    describe('offline', () => {
+      it('queues the log, keeps it on the device and shows its status on the slot', async () => {
+        const { mediator, network, services } = await setup();
+        await mediator.send(saveNutritionSetup(setupOf()));
+        await mediator.send(getNutrition(today()));
+        network.online = false;
+        const meal = mealOf({ slotIndex: 2, status: MealLogStatus.Ate });
+
+        expect(await mediator.send(logMeal(meal))).toBe(QUEUED_RESULT);
+
+        expect((await services.mealLogs.list()).map((row) => row.meal.id)).toEqual([meal.id]);
+        expect(await services.offlineQueue.pending()).toHaveLength(1);
+        expect(await statusesOn(() => mediator.send(getNutrition(today())))).toEqual([
+          null,
+          null,
+          MealLogStatus.Ate,
+        ]);
+      });
+
+      it('shows a slot changed offline as the new status, over what the server had', async () => {
+        const { mediator, network } = await setup();
+        await mediator.send(saveNutritionSetup(setupOf()));
+        await mediator.send(logMeal(mealOf({ status: MealLogStatus.Ate })));
+        await mediator.send(getNutrition(today()));
+        network.online = false;
+
+        await mediator.send(logMeal(mealOf({ status: MealLogStatus.Skipped })));
+
+        expect(await statusesOn(() => mediator.send(getNutrition(today())))).toEqual([
+          MealLogStatus.Skipped,
+          null,
+          null,
+        ]);
+      });
+
+      it('replays on reconnect once, and the slot keeps the status the person left it with', async () => {
+        const { mediator, network, services, sync, server } = await setup();
+        await mediator.send(saveNutritionSetup(setupOf()));
+        await mediator.send(getNutrition(today()));
+        network.online = false;
+        await mediator.send(logMeal(mealOf({ status: MealLogStatus.Ate })));
+        await mediator.send(logMeal(mealOf({ status: MealLogStatus.Other })));
+        network.online = true;
+
+        expect(await sync()).toEqual({ replayed: 2, remaining: 0 });
+        expect(await sync()).toEqual({ replayed: 0, remaining: 0 });
+
+        expect(await statusesOn(() => server.getNutrition(today()))).toEqual([
+          MealLogStatus.Other,
+          null,
+          null,
+        ]);
+        expect(await services.mealLogs.list()).toEqual([]);
+        expect(await statusesOn(() => mediator.send(getNutrition(today())))).toEqual([
+          MealLogStatus.Other,
+          null,
+          null,
+        ]);
+      });
+
+      it('queues the log when the send cannot reach the server, and a sync delivers it once', async () => {
+        let calls = 0;
+        const { mediator, services, sync, server } = await setup(undefined, [], (api) => ({
+          ...api,
+          logMeal: async (meal) => {
+            calls += 1;
+            if (calls === 1) throw new TypeError('Failed to fetch');
+            return api.logMeal(meal);
+          },
+        }));
+        await mediator.send(saveNutritionSetup(setupOf()));
+
+        expect(await mediator.send(logMeal(mealOf()))).toBe(QUEUED_RESULT);
+        expect(await services.offlineQueue.pending()).toHaveLength(1);
+        expect(await sync()).toEqual({ replayed: 1, remaining: 0 });
+
+        expect(await statusesOn(() => server.getNutrition(today()))).toEqual([
+          MealLogStatus.Ate,
+          null,
+          null,
+        ]);
+        expect(await services.mealLogs.list()).toEqual([]);
+      });
+
+      it('stores a log once when the server saved it but the answer was lost', async () => {
+        let calls = 0;
+        const { mediator, services, sync, server } = await setup(undefined, [], (api) => ({
+          ...api,
+          logMeal: async (meal) => {
+            calls += 1;
+            const stored = await api.logMeal(meal);
+            if (calls === 1) throw new TypeError('Failed to fetch');
+            return stored;
+          },
+        }));
+        await mediator.send(saveNutritionSetup(setupOf()));
+        await mediator.send(logMeal(mealOf({ status: MealLogStatus.Ate })));
+        await sync();
+
+        expect(await statusesOn(() => server.getNutrition(today()))).toEqual([
+          MealLogStatus.Ate,
+          null,
+          null,
+        ]);
+        expect(await statusesOn(() => mediator.send(getNutrition(today())))).toEqual([
+          MealLogStatus.Ate,
+          null,
+          null,
+        ]);
+        expect(await services.mealLogs.list()).toEqual([]);
+      });
+    });
+
+    describe('a permanent client error', () => {
+      it.each([400, 404, 409, 422])(
+        'on an online send (%i) takes the log off the device and queues nothing',
+        async (status) => {
+          const { mediator, services } = await setup(undefined, [], (api) => ({
+            ...api,
+            logMeal: async () => {
+              throw new ApiError(status);
+            },
+          }));
+
+          await expect(mediator.send(logMeal(mealOf()))).rejects.toBeDefined();
+
+          expect(await services.mealLogs.list()).toEqual([]);
+          expect(await services.offlineQueue.pending()).toEqual([]);
+        },
+      );
+
+      it('on a replay drops the queued log and its local row', async () => {
+        const { mediator, network, services, sync } = await setup(undefined, [], (api) => ({
+          ...api,
+          logMeal: async () => {
+            throw new ApiError(400);
+          },
+        }));
+        network.online = false;
+        await mediator.send(logMeal(mealOf()));
+        network.online = true;
+
+        expect(await sync()).toEqual({ replayed: 1, remaining: 0 });
+
+        expect(await services.mealLogs.list()).toEqual([]);
+        expect(await services.offlineQueue.pending()).toEqual([]);
+      });
+    });
+  });
+
   describe('on this device', () => {
     it('is wiped with the rest of the local data: logs and the cached day', async () => {
       const { mediator, network, services } = await setup();
@@ -357,32 +684,42 @@ describe('Meals through the mediator', () => {
       await mediator.send(getNutrition(today()));
       network.online = false;
       await mediator.send(logWater(waterOf()));
+      await mediator.send(logMeal(mealOf()));
 
       await services.localData.clear();
 
       expect(await services.waterLog.list()).toEqual([]);
+      expect(await services.mealLogs.list()).toEqual([]);
       expect(await services.planCache.readNutrition(today())).toBeUndefined();
     });
 
-    it('sends unsynced water before signing out, then leaves nothing on the device', async () => {
+    it('sends unsynced water and meal logs before signing out, then leaves nothing on the device', async () => {
       const delivered: string[] = [];
+      const deliveredMeals: string[] = [];
       const { mediator, network, services } = await setup(undefined, [], (api) => ({
         ...api,
         logWater: async (water) => {
           delivered.push(water.id);
           return api.logWater(water);
         },
+        logMeal: async (meal) => {
+          deliveredMeals.push(meal.id);
+          return api.logMeal(meal);
+        },
       }));
       await mediator.send(saveNutritionSetup(setupOf()));
       network.online = false;
       const water = waterOf({ ml: WaterAmount.Large });
       await mediator.send(logWater(water));
+      await mediator.send(logMeal(mealOf()));
       network.online = true;
 
       await mediator.send(signOut());
 
       expect(delivered).toEqual([water.id]);
+      expect(deliveredMeals).toHaveLength(1);
       expect(await services.waterLog.list()).toEqual([]);
+      expect(await services.mealLogs.list()).toEqual([]);
       expect(await services.offlineQueue.pending()).toEqual([]);
     });
   });

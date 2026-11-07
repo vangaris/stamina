@@ -26,6 +26,7 @@ export enum RequestType {
   GetNutrition = 'GetNutrition',
   SaveNutritionSetup = 'SaveNutritionSetup',
   LogWater = 'LogWater',
+  LogMeal = 'LogMeal',
   SubmitCheckin = 'SubmitCheckin',
   GetLatestCheckin = 'GetLatestCheckin',
   ReportStopFlag = 'ReportStopFlag',

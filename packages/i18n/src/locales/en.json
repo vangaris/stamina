@@ -938,6 +938,31 @@
         "failed": "We could not save that. Please try again."
       }
     },
+    "meal": {
+      "next": {
+        "title": "Next meal",
+        "allLogged": "All meals logged for today. Nice work.",
+        "announced": "Logged: {status}, {meal}. Next: {next}.",
+        "announcedAllLogged": "Logged: {status}, {meal}. All meals are logged for today."
+      },
+      "day": {
+        "title": "Your meals today"
+      },
+      "slotAt": "{slot}, {time}",
+      "status": {
+        "ate": "Ate it",
+        "something-else": "Something else",
+        "skipped": "Skipped"
+      },
+      "logged": "Logged: {status}",
+      "actionLabel": "{action}: {meal}, {time}",
+      "choices": "Log {meal}",
+      "noIdea": "No idea for this meal with your preferences. Eat to your targets.",
+      "macros": "{kcal} kcal · Protein {protein} g · Carbohydrate {carbs} g · Fat {fat} g",
+      "errors": {
+        "failed": "We could not save that. Please try again."
+      }
+    },
     "guidance": "These targets are general sports-nutrition guidance for healthy adults. For a plan made for you, ask a dietitian."
   },
   "settings": {

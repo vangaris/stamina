@@ -1,0 +1,1957 @@
+[
+  {
+    "id": "bread-wholemeal",
+    "origin": "plant",
+    "names": {
+      "en": "Wholemeal bread",
+      "el": "Ψωμί ολικής άλεσης"
+    },
+    "allergens": ["gluten"],
+    "per100g": {
+      "kcal": 247,
+      "proteinG": 13,
+      "carbsG": 41,
+      "fatG": 3.4
+    },
+    "units": [
+      {
+        "grams": 35,
+        "names": {
+          "en": {
+            "one": "slice",
+            "other": "slices"
+          },
+          "el": {
+            "one": "φέτα",
+            "other": "φέτες"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "bread-white",
+    "origin": "plant",
+    "names": {
+      "en": "White bread",
+      "el": "Λευκό ψωμί"
+    },
+    "allergens": ["gluten"],
+    "per100g": {
+      "kcal": 265,
+      "proteinG": 9,
+      "carbsG": 49,
+      "fatG": 3.2
+    },
+    "units": [
+      {
+        "grams": 30,
+        "names": {
+          "en": {
+            "one": "slice",
+            "other": "slices"
+          },
+          "el": {
+            "one": "φέτα",
+            "other": "φέτες"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "bread-sourdough",
+    "origin": "plant",
+    "names": {
+      "en": "Sourdough bread",
+      "el": "Ψωμί με προζύμι"
+    },
+    "allergens": ["gluten"],
+    "per100g": {
+      "kcal": 259,
+      "proteinG": 8.5,
+      "carbsG": 51,
+      "fatG": 1.8
+    },
+    "units": [
+      {
+        "grams": 40,
+        "names": {
+          "en": {
+            "one": "slice",
+            "other": "slices"
+          },
+          "el": {
+            "one": "φέτα",
+            "other": "φέτες"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "bread-rye",
+    "origin": "plant",
+    "names": {
+      "en": "Rye bread",
+      "el": "Ψωμί σίκαλης"
+    },
+    "allergens": ["gluten"],
+    "per100g": {
+      "kcal": 259,
+      "proteinG": 8.5,
+      "carbsG": 48,
+      "fatG": 3.3
+    },
+    "units": [
+      {
+        "grams": 35,
+        "names": {
+          "en": {
+            "one": "slice",
+            "other": "slices"
+          },
+          "el": {
+            "one": "φέτα",
+            "other": "φέτες"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "bread-multigrain-seeded",
+    "origin": "plant",
+    "names": {
+      "en": "Seeded multigrain bread",
+      "el": "Πολύσπορο ψωμί"
+    },
+    "allergens": ["gluten", "sesame"],
+    "per100g": {
+      "kcal": 265,
+      "proteinG": 11,
+      "carbsG": 40,
+      "fatG": 7
+    },
+    "units": [
+      {
+        "grams": 40,
+        "names": {
+          "en": {
+            "one": "slice",
+            "other": "slices"
+          },
+          "el": {
+            "one": "φέτα",
+            "other": "φέτες"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "bread-roll",
+    "origin": "plant",
+    "names": {
+      "en": "Bread roll",
+      "el": "Ψωμάκι"
+    },
+    "allergens": ["gluten"],
+    "per100g": {
+      "kcal": 280,
+      "proteinG": 9,
+      "carbsG": 52,
+      "fatG": 3
+    },
+    "units": [
+      {
+        "grams": 60,
+        "names": {
+          "en": {
+            "one": "roll",
+            "other": "rolls"
+          },
+          "el": {
+            "one": "ψωμάκι",
+            "other": "ψωμάκια"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "pitta-bread",
+    "origin": "plant",
+    "names": {
+      "en": "Pitta bread",
+      "el": "Πίτα για γύρο"
+    },
+    "allergens": ["gluten"],
+    "per100g": {
+      "kcal": 275,
+      "proteinG": 9,
+      "carbsG": 56,
+      "fatG": 1.2
+    },
+    "units": [
+      {
+        "grams": 60,
+        "names": {
+          "en": {
+            "one": "pitta",
+            "other": "pittas"
+          },
+          "el": {
+            "one": "πίτα",
+            "other": "πίτες"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "koulouri-sesame-bread-ring",
+    "origin": "plant",
+    "names": {
+      "en": "Sesame bread ring (koulouri)",
+      "el": "Κουλούρι Θεσσαλονίκης"
+    },
+    "allergens": ["gluten", "sesame"],
+    "per100g": {
+      "kcal": 300,
+      "proteinG": 10,
+      "carbsG": 52,
+      "fatG": 6
+    },
+    "units": [
+      {
+        "grams": 100,
+        "names": {
+          "en": {
+            "one": "ring",
+            "other": "rings"
+          },
+          "el": {
+            "one": "κουλούρι",
+            "other": "κουλούρια"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "barley-rusk",
+    "origin": "plant",
+    "names": {
+      "en": "Barley rusk (paximadi)",
+      "el": "Κριθαρένιο παξιμάδι"
+    },
+    "allergens": ["gluten"],
+    "per100g": {
+      "kcal": 385,
+      "proteinG": 11,
+      "carbsG": 72,
+      "fatG": 4
+    },
+    "units": [
+      {
+        "grams": 30,
+        "names": {
+          "en": {
+            "one": "rusk",
+            "other": "rusks"
+          },
+          "el": {
+            "one": "παξιμάδι",
+            "other": "παξιμάδια"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "toasted-bread-slices",
+    "origin": "plant",
+    "names": {
+      "en": "Toasted bread slices (friganies)",
+      "el": "Φρυγανιές"
+    },
+    "allergens": ["gluten"],
+    "per100g": {
+      "kcal": 400,
+      "proteinG": 12,
+      "carbsG": 73,
+      "fatG": 6
+    },
+    "units": [
+      {
+        "grams": 8,
+        "names": {
+          "en": {
+            "one": "slice",
+            "other": "slices"
+          },
+          "el": {
+            "one": "φρυγανιά",
+            "other": "φρυγανιές"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "breadcrumbs",
+    "origin": "plant",
+    "names": {
+      "en": "Breadcrumbs",
+      "el": "Τριμμένη φρυγανιά"
+    },
+    "allergens": ["gluten"],
+    "per100g": {
+      "kcal": 395,
+      "proteinG": 13,
+      "carbsG": 72,
+      "fatG": 5
+    },
+    "units": [
+      {
+        "grams": 7,
+        "names": {
+          "en": {
+            "one": "tablespoon",
+            "other": "tablespoons"
+          },
+          "el": {
+            "one": "κουταλιά της σούπας",
+            "other": "κουταλιές της σούπας"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "wheat-tortilla-wrap",
+    "origin": "plant",
+    "names": {
+      "en": "Wheat tortilla wrap",
+      "el": "Τορτίγια σιταριού"
+    },
+    "allergens": ["gluten"],
+    "per100g": {
+      "kcal": 310,
+      "proteinG": 8.5,
+      "carbsG": 52,
+      "fatG": 7.5
+    },
+    "units": [
+      {
+        "grams": 60,
+        "names": {
+          "en": {
+            "one": "tortilla",
+            "other": "tortillas"
+          },
+          "el": {
+            "one": "τορτίγια",
+            "other": "τορτίγιες"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "corn-tortilla",
+    "origin": "plant",
+    "names": {
+      "en": "Corn tortilla",
+      "el": "Τορτίγια καλαμποκιού"
+    },
+    "allergens": [],
+    "per100g": {
+      "kcal": 218,
+      "proteinG": 5.7,
+      "carbsG": 44,
+      "fatG": 2.9
+    },
+    "units": [
+      {
+        "grams": 30,
+        "names": {
+          "en": {
+            "one": "tortilla",
+            "other": "tortillas"
+          },
+          "el": {
+            "one": "τορτίγια",
+            "other": "τορτίγιες"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "pasta-dry",
+    "origin": "plant",
+    "names": {
+      "en": "Pasta, dry",
+      "el": "Ζυμαρικά, άβραστα"
+    },
+    "allergens": ["gluten"],
+    "per100g": {
+      "kcal": 359,
+      "proteinG": 12.5,
+      "carbsG": 72,
+      "fatG": 1.5
+    },
+    "units": [
+      {
+        "grams": 80,
+        "names": {
+          "en": {
+            "one": "serving",
+            "other": "servings"
+          },
+          "el": {
+            "one": "μερίδα",
+            "other": "μερίδες"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "pasta-cooked",
+    "origin": "plant",
+    "names": {
+      "en": "Pasta, cooked",
+      "el": "Ζυμαρικά, βρασμένα"
+    },
+    "allergens": ["gluten"],
+    "per100g": {
+      "kcal": 158,
+      "proteinG": 5.8,
+      "carbsG": 31,
+      "fatG": 0.9
+    },
+    "units": [
+      {
+        "grams": 140,
+        "names": {
+          "en": {
+            "one": "cup",
+            "other": "cups"
+          },
+          "el": {
+            "one": "φλιτζάνι",
+            "other": "φλιτζάνια"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "pasta-wholewheat-cooked",
+    "origin": "plant",
+    "names": {
+      "en": "Wholewheat pasta, cooked",
+      "el": "Ζυμαρικά ολικής άλεσης, βρασμένα"
+    },
+    "allergens": ["gluten"],
+    "per100g": {
+      "kcal": 140,
+      "proteinG": 5.5,
+      "carbsG": 28,
+      "fatG": 1.1
+    },
+    "units": [
+      {
+        "grams": 140,
+        "names": {
+          "en": {
+            "one": "cup",
+            "other": "cups"
+          },
+          "el": {
+            "one": "φλιτζάνι",
+            "other": "φλιτζάνια"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "orzo-dry",
+    "origin": "plant",
+    "names": {
+      "en": "Orzo, dry",
+      "el": "Κριθαράκι, άβραστο"
+    },
+    "allergens": ["gluten"],
+    "per100g": {
+      "kcal": 357,
+      "proteinG": 12.5,
+      "carbsG": 72,
+      "fatG": 1.5
+    },
+    "units": [
+      {
+        "grams": 80,
+        "names": {
+          "en": {
+            "one": "serving",
+            "other": "servings"
+          },
+          "el": {
+            "one": "μερίδα",
+            "other": "μερίδες"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "lasagne-sheets-dry",
+    "origin": "egg",
+    "names": {
+      "en": "Lasagne sheets, dry",
+      "el": "Φύλλα λαζάνιας, άβραστα"
+    },
+    "allergens": ["gluten", "eggs"],
+    "per100g": {
+      "kcal": 350,
+      "proteinG": 12,
+      "carbsG": 72,
+      "fatG": 1.5
+    },
+    "units": [
+      {
+        "grams": 20,
+        "names": {
+          "en": {
+            "one": "sheet",
+            "other": "sheets"
+          },
+          "el": {
+            "one": "φύλλο",
+            "other": "φύλλα"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "egg-noodles-dry",
+    "origin": "egg",
+    "names": {
+      "en": "Egg noodles, dry",
+      "el": "Νουντλς αυγού, άβραστα"
+    },
+    "allergens": ["gluten", "eggs"],
+    "per100g": {
+      "kcal": 384,
+      "proteinG": 14,
+      "carbsG": 71,
+      "fatG": 4.4
+    },
+    "units": [
+      {
+        "grams": 80,
+        "names": {
+          "en": {
+            "one": "serving",
+            "other": "servings"
+          },
+          "el": {
+            "one": "μερίδα",
+            "other": "μερίδες"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "rice-noodles-cooked",
+    "origin": "plant",
+    "names": {
+      "en": "Rice noodles, cooked",
+      "el": "Νουντλς ρυζιού, βρασμένα"
+    },
+    "allergens": [],
+    "per100g": {
+      "kcal": 108,
+      "proteinG": 0.9,
+      "carbsG": 25,
+      "fatG": 0.2
+    },
+    "units": [
+      {
+        "grams": 176,
+        "names": {
+          "en": {
+            "one": "cup",
+            "other": "cups"
+          },
+          "el": {
+            "one": "φλιτζάνι",
+            "other": "φλιτζάνια"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "potato-gnocchi",
+    "origin": "plant",
+    "names": {
+      "en": "Potato gnocchi",
+      "el": "Νιόκι πατάτας"
+    },
+    "allergens": ["gluten"],
+    "per100g": {
+      "kcal": 130,
+      "proteinG": 3,
+      "carbsG": 28,
+      "fatG": 0.5
+    },
+    "units": [
+      {
+        "grams": 125,
+        "names": {
+          "en": {
+            "one": "serving",
+            "other": "servings"
+          },
+          "el": {
+            "one": "μερίδα",
+            "other": "μερίδες"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "trahana-dry",
+    "origin": "dairy",
+    "names": {
+      "en": "Trahana, dry",
+      "el": "Τραχανάς, άβραστος"
+    },
+    "allergens": ["gluten", "milk"],
+    "per100g": {
+      "kcal": 350,
+      "proteinG": 12,
+      "carbsG": 70,
+      "fatG": 3
+    },
+    "units": [
+      {
+        "grams": 15,
+        "names": {
+          "en": {
+            "one": "tablespoon",
+            "other": "tablespoons"
+          },
+          "el": {
+            "one": "κουταλιά της σούπας",
+            "other": "κουταλιές της σούπας"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "semolina-dry",
+    "origin": "plant",
+    "names": {
+      "en": "Semolina",
+      "el": "Σιμιγδάλι"
+    },
+    "allergens": ["gluten"],
+    "per100g": {
+      "kcal": 360,
+      "proteinG": 12.7,
+      "carbsG": 73,
+      "fatG": 1.1
+    },
+    "units": [
+      {
+        "grams": 12,
+        "names": {
+          "en": {
+            "one": "tablespoon",
+            "other": "tablespoons"
+          },
+          "el": {
+            "one": "κουταλιά της σούπας",
+            "other": "κουταλιές της σούπας"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "couscous-dry",
+    "origin": "plant",
+    "names": {
+      "en": "Couscous, dry",
+      "el": "Κους κους, άβραστο"
+    },
+    "allergens": ["gluten"],
+    "per100g": {
+      "kcal": 365,
+      "proteinG": 12.8,
+      "carbsG": 75,
+      "fatG": 0.6
+    },
+    "units": [
+      {
+        "grams": 60,
+        "names": {
+          "en": {
+            "one": "serving",
+            "other": "servings"
+          },
+          "el": {
+            "one": "μερίδα",
+            "other": "μερίδες"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "couscous-cooked",
+    "origin": "plant",
+    "names": {
+      "en": "Couscous, cooked",
+      "el": "Κους κους, βρασμένο"
+    },
+    "allergens": ["gluten"],
+    "per100g": {
+      "kcal": 112,
+      "proteinG": 3.8,
+      "carbsG": 23,
+      "fatG": 0.2
+    },
+    "units": [
+      {
+        "grams": 157,
+        "names": {
+          "en": {
+            "one": "cup",
+            "other": "cups"
+          },
+          "el": {
+            "one": "φλιτζάνι",
+            "other": "φλιτζάνια"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "bulgur-dry",
+    "origin": "plant",
+    "names": {
+      "en": "Bulgur wheat, dry",
+      "el": "Πλιγούρι, άβραστο"
+    },
+    "allergens": ["gluten"],
+    "per100g": {
+      "kcal": 342,
+      "proteinG": 12.3,
+      "carbsG": 76,
+      "fatG": 1.3
+    },
+    "units": [
+      {
+        "grams": 60,
+        "names": {
+          "en": {
+            "one": "serving",
+            "other": "servings"
+          },
+          "el": {
+            "one": "μερίδα",
+            "other": "μερίδες"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "bulgur-cooked",
+    "origin": "plant",
+    "names": {
+      "en": "Bulgur wheat, cooked",
+      "el": "Πλιγούρι, βρασμένο"
+    },
+    "allergens": ["gluten"],
+    "per100g": {
+      "kcal": 83,
+      "proteinG": 3.1,
+      "carbsG": 18.6,
+      "fatG": 0.2
+    },
+    "units": [
+      {
+        "grams": 180,
+        "names": {
+          "en": {
+            "one": "cup",
+            "other": "cups"
+          },
+          "el": {
+            "one": "φλιτζάνι",
+            "other": "φλιτζάνια"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "rice-white-dry",
+    "origin": "plant",
+    "names": {
+      "en": "White rice, dry",
+      "el": "Λευκό ρύζι, άβραστο"
+    },
+    "allergens": [],
+    "per100g": {
+      "kcal": 360,
+      "proteinG": 6.7,
+      "carbsG": 79,
+      "fatG": 0.6
+    },
+    "units": [
+      {
+        "grams": 75,
+        "names": {
+          "en": {
+            "one": "serving",
+            "other": "servings"
+          },
+          "el": {
+            "one": "μερίδα",
+            "other": "μερίδες"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "rice-white-cooked",
+    "origin": "plant",
+    "names": {
+      "en": "White rice, cooked",
+      "el": "Λευκό ρύζι, βρασμένο"
+    },
+    "allergens": [],
+    "per100g": {
+      "kcal": 130,
+      "proteinG": 2.7,
+      "carbsG": 28,
+      "fatG": 0.3
+    },
+    "units": [
+      {
+        "grams": 150,
+        "names": {
+          "en": {
+            "one": "cup",
+            "other": "cups"
+          },
+          "el": {
+            "one": "φλιτζάνι",
+            "other": "φλιτζάνια"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "rice-brown-dry",
+    "origin": "plant",
+    "names": {
+      "en": "Brown rice, dry",
+      "el": "Καστανό ρύζι, άβραστο"
+    },
+    "allergens": [],
+    "per100g": {
+      "kcal": 362,
+      "proteinG": 7.5,
+      "carbsG": 76,
+      "fatG": 2.7
+    },
+    "units": [
+      {
+        "grams": 75,
+        "names": {
+          "en": {
+            "one": "serving",
+            "other": "servings"
+          },
+          "el": {
+            "one": "μερίδα",
+            "other": "μερίδες"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "rice-brown-cooked",
+    "origin": "plant",
+    "names": {
+      "en": "Brown rice, cooked",
+      "el": "Καστανό ρύζι, βρασμένο"
+    },
+    "allergens": [],
+    "per100g": {
+      "kcal": 123,
+      "proteinG": 2.7,
+      "carbsG": 26,
+      "fatG": 1
+    },
+    "units": [
+      {
+        "grams": 160,
+        "names": {
+          "en": {
+            "one": "cup",
+            "other": "cups"
+          },
+          "el": {
+            "one": "φλιτζάνι",
+            "other": "φλιτζάνια"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "rice-short-grain-dry",
+    "origin": "plant",
+    "names": {
+      "en": "Short-grain rice, dry",
+      "el": "Ρύζι κοντόκοκκο, άβραστο"
+    },
+    "allergens": [],
+    "per100g": {
+      "kcal": 358,
+      "proteinG": 6.5,
+      "carbsG": 80,
+      "fatG": 0.6
+    },
+    "units": [
+      {
+        "grams": 75,
+        "names": {
+          "en": {
+            "one": "serving",
+            "other": "servings"
+          },
+          "el": {
+            "one": "μερίδα",
+            "other": "μερίδες"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "oats-rolled",
+    "origin": "plant",
+    "names": {
+      "en": "Rolled oats",
+      "el": "Νιφάδες βρώμης"
+    },
+    "allergens": ["gluten"],
+    "per100g": {
+      "kcal": 372,
+      "proteinG": 13.5,
+      "carbsG": 60,
+      "fatG": 7
+    },
+    "units": [
+      {
+        "grams": 10,
+        "names": {
+          "en": {
+            "one": "tablespoon",
+            "other": "tablespoons"
+          },
+          "el": {
+            "one": "κουταλιά της σούπας",
+            "other": "κουταλιές της σούπας"
+          }
+        }
+      },
+      {
+        "grams": 80,
+        "names": {
+          "en": {
+            "one": "cup",
+            "other": "cups"
+          },
+          "el": {
+            "one": "φλιτζάνι",
+            "other": "φλιτζάνια"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "oat-porridge-water",
+    "origin": "plant",
+    "names": {
+      "en": "Porridge made with water",
+      "el": "Χυλός βρώμης με νερό"
+    },
+    "allergens": ["gluten"],
+    "per100g": {
+      "kcal": 71,
+      "proteinG": 2.5,
+      "carbsG": 12,
+      "fatG": 1.5
+    },
+    "units": [
+      {
+        "grams": 240,
+        "names": {
+          "en": {
+            "one": "bowl",
+            "other": "bowls"
+          },
+          "el": {
+            "one": "μπολ",
+            "other": "μπολ"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "muesli-plain",
+    "origin": "plant",
+    "names": {
+      "en": "Muesli, no added sugar",
+      "el": "Μούσλι χωρίς ζάχαρη"
+    },
+    "allergens": ["gluten", "tree-nuts"],
+    "per100g": {
+      "kcal": 360,
+      "proteinG": 10,
+      "carbsG": 62,
+      "fatG": 7
+    },
+    "units": [
+      {
+        "grams": 45,
+        "names": {
+          "en": {
+            "one": "serving",
+            "other": "servings"
+          },
+          "el": {
+            "one": "μερίδα",
+            "other": "μερίδες"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "granola",
+    "origin": "plant",
+    "names": {
+      "en": "Granola",
+      "el": "Γκρανόλα"
+    },
+    "allergens": ["gluten", "tree-nuts"],
+    "per100g": {
+      "kcal": 450,
+      "proteinG": 10,
+      "carbsG": 64,
+      "fatG": 17
+    },
+    "units": [
+      {
+        "grams": 40,
+        "names": {
+          "en": {
+            "one": "handful",
+            "other": "handfuls"
+          },
+          "el": {
+            "one": "χούφτα",
+            "other": "χούφτες"
+          }
+        }
+      },
+      {
+        "grams": 15,
+        "names": {
+          "en": {
+            "one": "tablespoon",
+            "other": "tablespoons"
+          },
+          "el": {
+            "one": "κουταλιά της σούπας",
+            "other": "κουταλιές της σούπας"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "cornflakes",
+    "origin": "plant",
+    "names": {
+      "en": "Cornflakes",
+      "el": "Δημητριακά καλαμποκιού"
+    },
+    "allergens": ["gluten"],
+    "per100g": {
+      "kcal": 357,
+      "proteinG": 7.5,
+      "carbsG": 84,
+      "fatG": 0.4
+    },
+    "units": [
+      {
+        "grams": 30,
+        "names": {
+          "en": {
+            "one": "serving",
+            "other": "servings"
+          },
+          "el": {
+            "one": "μερίδα",
+            "other": "μερίδες"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "wholegrain-wheat-biscuit-cereal",
+    "origin": "plant",
+    "names": {
+      "en": "Wholegrain wheat biscuit cereal",
+      "el": "Δημητριακά ολικής με μπισκότα σίτου"
+    },
+    "allergens": ["gluten"],
+    "per100g": {
+      "kcal": 340,
+      "proteinG": 11,
+      "carbsG": 67,
+      "fatG": 2.5
+    },
+    "units": [
+      {
+        "grams": 20,
+        "names": {
+          "en": {
+            "one": "biscuit",
+            "other": "biscuits"
+          },
+          "el": {
+            "one": "μπισκότο",
+            "other": "μπισκότα"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "quinoa-dry",
+    "origin": "plant",
+    "names": {
+      "en": "Quinoa, dry",
+      "el": "Κινόα, άβραστη"
+    },
+    "allergens": [],
+    "per100g": {
+      "kcal": 368,
+      "proteinG": 14,
+      "carbsG": 64,
+      "fatG": 6
+    },
+    "units": [
+      {
+        "grams": 70,
+        "names": {
+          "en": {
+            "one": "serving",
+            "other": "servings"
+          },
+          "el": {
+            "one": "μερίδα",
+            "other": "μερίδες"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "quinoa-cooked",
+    "origin": "plant",
+    "names": {
+      "en": "Quinoa, cooked",
+      "el": "Κινόα, βρασμένη"
+    },
+    "allergens": [],
+    "per100g": {
+      "kcal": 120,
+      "proteinG": 4.4,
+      "carbsG": 21.3,
+      "fatG": 1.9
+    },
+    "units": [
+      {
+        "grams": 185,
+        "names": {
+          "en": {
+            "one": "cup",
+            "other": "cups"
+          },
+          "el": {
+            "one": "φλιτζάνι",
+            "other": "φλιτζάνια"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "buckwheat-groats-cooked",
+    "origin": "plant",
+    "names": {
+      "en": "Buckwheat groats, cooked",
+      "el": "Φαγόπυρο, βρασμένο"
+    },
+    "allergens": [],
+    "per100g": {
+      "kcal": 92,
+      "proteinG": 3.4,
+      "carbsG": 20,
+      "fatG": 0.6
+    },
+    "units": [
+      {
+        "grams": 170,
+        "names": {
+          "en": {
+            "one": "cup",
+            "other": "cups"
+          },
+          "el": {
+            "one": "φλιτζάνι",
+            "other": "φλιτζάνια"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "barley-pearl-dry",
+    "origin": "plant",
+    "names": {
+      "en": "Pearl barley, dry",
+      "el": "Κριθάρι περλέ, άβραστο"
+    },
+    "allergens": ["gluten"],
+    "per100g": {
+      "kcal": 352,
+      "proteinG": 9.9,
+      "carbsG": 78,
+      "fatG": 1.2
+    },
+    "units": [
+      {
+        "grams": 75,
+        "names": {
+          "en": {
+            "one": "serving",
+            "other": "servings"
+          },
+          "el": {
+            "one": "μερίδα",
+            "other": "μερίδες"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "barley-pearl-cooked",
+    "origin": "plant",
+    "names": {
+      "en": "Pearl barley, cooked",
+      "el": "Κριθάρι περλέ, βρασμένο"
+    },
+    "allergens": ["gluten"],
+    "per100g": {
+      "kcal": 123,
+      "proteinG": 2.3,
+      "carbsG": 28,
+      "fatG": 0.4
+    },
+    "units": [
+      {
+        "grams": 157,
+        "names": {
+          "en": {
+            "one": "cup",
+            "other": "cups"
+          },
+          "el": {
+            "one": "φλιτζάνι",
+            "other": "φλιτζάνια"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "cornmeal-polenta-dry",
+    "origin": "plant",
+    "names": {
+      "en": "Cornmeal (polenta), dry",
+      "el": "Καλαμποκάλευρο (πολέντα), άβραστο"
+    },
+    "allergens": [],
+    "per100g": {
+      "kcal": 362,
+      "proteinG": 8.1,
+      "carbsG": 77,
+      "fatG": 3.6
+    },
+    "units": [
+      {
+        "grams": 10,
+        "names": {
+          "en": {
+            "one": "tablespoon",
+            "other": "tablespoons"
+          },
+          "el": {
+            "one": "κουταλιά της σούπας",
+            "other": "κουταλιές της σούπας"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "flour-wheat-plain",
+    "origin": "plant",
+    "names": {
+      "en": "Plain wheat flour",
+      "el": "Αλεύρι σίτου για όλες τις χρήσεις"
+    },
+    "allergens": ["gluten"],
+    "per100g": {
+      "kcal": 364,
+      "proteinG": 10.3,
+      "carbsG": 76,
+      "fatG": 1
+    },
+    "units": [
+      {
+        "grams": 8,
+        "names": {
+          "en": {
+            "one": "tablespoon",
+            "other": "tablespoons"
+          },
+          "el": {
+            "one": "κουταλιά της σούπας",
+            "other": "κουταλιές της σούπας"
+          }
+        }
+      },
+      {
+        "grams": 125,
+        "names": {
+          "en": {
+            "one": "cup",
+            "other": "cups"
+          },
+          "el": {
+            "one": "φλιτζάνι",
+            "other": "φλιτζάνια"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "flour-wholemeal",
+    "origin": "plant",
+    "names": {
+      "en": "Wholemeal wheat flour",
+      "el": "Αλεύρι ολικής άλεσης"
+    },
+    "allergens": ["gluten"],
+    "per100g": {
+      "kcal": 340,
+      "proteinG": 13,
+      "carbsG": 72,
+      "fatG": 2.5
+    },
+    "units": [
+      {
+        "grams": 8,
+        "names": {
+          "en": {
+            "one": "tablespoon",
+            "other": "tablespoons"
+          },
+          "el": {
+            "one": "κουταλιά της σούπας",
+            "other": "κουταλιές της σούπας"
+          }
+        }
+      },
+      {
+        "grams": 120,
+        "names": {
+          "en": {
+            "one": "cup",
+            "other": "cups"
+          },
+          "el": {
+            "one": "φλιτζάνι",
+            "other": "φλιτζάνια"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "flour-rye",
+    "origin": "plant",
+    "names": {
+      "en": "Rye flour",
+      "el": "Αλεύρι σίκαλης"
+    },
+    "allergens": ["gluten"],
+    "per100g": {
+      "kcal": 335,
+      "proteinG": 10,
+      "carbsG": 70,
+      "fatG": 1.6
+    },
+    "units": [
+      {
+        "grams": 8,
+        "names": {
+          "en": {
+            "one": "tablespoon",
+            "other": "tablespoons"
+          },
+          "el": {
+            "one": "κουταλιά της σούπας",
+            "other": "κουταλιές της σούπας"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "flour-spelt",
+    "origin": "plant",
+    "names": {
+      "en": "Spelt flour",
+      "el": "Αλεύρι από ζέα"
+    },
+    "allergens": ["gluten"],
+    "per100g": {
+      "kcal": 338,
+      "proteinG": 14.6,
+      "carbsG": 70,
+      "fatG": 2.4
+    },
+    "units": [
+      {
+        "grams": 8,
+        "names": {
+          "en": {
+            "one": "tablespoon",
+            "other": "tablespoons"
+          },
+          "el": {
+            "one": "κουταλιά της σούπας",
+            "other": "κουταλιές της σούπας"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "flour-chickpea",
+    "origin": "plant",
+    "names": {
+      "en": "Chickpea flour",
+      "el": "Αλεύρι από ρεβίθια"
+    },
+    "allergens": [],
+    "per100g": {
+      "kcal": 387,
+      "proteinG": 22,
+      "carbsG": 58,
+      "fatG": 6.7
+    },
+    "units": [
+      {
+        "grams": 8,
+        "names": {
+          "en": {
+            "one": "tablespoon",
+            "other": "tablespoons"
+          },
+          "el": {
+            "one": "κουταλιά της σούπας",
+            "other": "κουταλιές της σούπας"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "flour-rice",
+    "origin": "plant",
+    "names": {
+      "en": "Rice flour",
+      "el": "Αλεύρι ρυζιού"
+    },
+    "allergens": [],
+    "per100g": {
+      "kcal": 366,
+      "proteinG": 6,
+      "carbsG": 80,
+      "fatG": 1.4
+    },
+    "units": [
+      {
+        "grams": 10,
+        "names": {
+          "en": {
+            "one": "tablespoon",
+            "other": "tablespoons"
+          },
+          "el": {
+            "one": "κουταλιά της σούπας",
+            "other": "κουταλιές της σούπας"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "cornflour-starch",
+    "origin": "plant",
+    "names": {
+      "en": "Cornflour (corn starch)",
+      "el": "Κορνφλάουρ (άμυλο καλαμποκιού)"
+    },
+    "allergens": [],
+    "per100g": {
+      "kcal": 381,
+      "proteinG": 0.3,
+      "carbsG": 91,
+      "fatG": 0.1
+    },
+    "units": [
+      {
+        "grams": 8,
+        "names": {
+          "en": {
+            "one": "tablespoon",
+            "other": "tablespoons"
+          },
+          "el": {
+            "one": "κουταλιά της σούπας",
+            "other": "κουταλιές της σούπας"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "filo-pastry",
+    "origin": "plant",
+    "names": {
+      "en": "Filo pastry",
+      "el": "Φύλλο κρούστας"
+    },
+    "allergens": ["gluten"],
+    "per100g": {
+      "kcal": 300,
+      "proteinG": 8,
+      "carbsG": 57,
+      "fatG": 3
+    },
+    "units": [
+      {
+        "grams": 25,
+        "names": {
+          "en": {
+            "one": "sheet",
+            "other": "sheets"
+          },
+          "el": {
+            "one": "φύλλο",
+            "other": "φύλλα"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "potato-raw",
+    "origin": "plant",
+    "names": {
+      "en": "Potato, raw",
+      "el": "Πατάτα, ωμή"
+    },
+    "allergens": [],
+    "per100g": {
+      "kcal": 77,
+      "proteinG": 2,
+      "carbsG": 17,
+      "fatG": 0.1
+    },
+    "units": [
+      {
+        "grams": 170,
+        "names": {
+          "en": {
+            "one": "medium potato",
+            "other": "medium potatoes"
+          },
+          "el": {
+            "one": "μέτρια πατάτα",
+            "other": "μέτριες πατάτες"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "potato-boiled",
+    "origin": "plant",
+    "names": {
+      "en": "Potato, boiled",
+      "el": "Πατάτα, βραστή"
+    },
+    "allergens": [],
+    "per100g": {
+      "kcal": 87,
+      "proteinG": 1.9,
+      "carbsG": 20,
+      "fatG": 0.1
+    },
+    "units": [
+      {
+        "grams": 150,
+        "names": {
+          "en": {
+            "one": "medium potato",
+            "other": "medium potatoes"
+          },
+          "el": {
+            "one": "μέτρια πατάτα",
+            "other": "μέτριες πατάτες"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "potato-baked",
+    "origin": "plant",
+    "names": {
+      "en": "Potato, baked, with skin",
+      "el": "Πατάτα, ψητή με τη φλούδα"
+    },
+    "allergens": [],
+    "per100g": {
+      "kcal": 93,
+      "proteinG": 2.5,
+      "carbsG": 21,
+      "fatG": 0.1
+    },
+    "units": [
+      {
+        "grams": 170,
+        "names": {
+          "en": {
+            "one": "medium baked potato",
+            "other": "medium baked potatoes"
+          },
+          "el": {
+            "one": "μέτρια ψητή πατάτα",
+            "other": "μέτριες ψητές πατάτες"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "sweet-potato-raw",
+    "origin": "plant",
+    "names": {
+      "en": "Sweet potato, raw",
+      "el": "Γλυκοπατάτα, ωμή"
+    },
+    "allergens": [],
+    "per100g": {
+      "kcal": 86,
+      "proteinG": 1.6,
+      "carbsG": 20,
+      "fatG": 0.1
+    },
+    "units": [
+      {
+        "grams": 130,
+        "names": {
+          "en": {
+            "one": "medium sweet potato",
+            "other": "medium sweet potatoes"
+          },
+          "el": {
+            "one": "μέτρια γλυκοπατάτα",
+            "other": "μέτριες γλυκοπατάτες"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "sweet-potato-baked",
+    "origin": "plant",
+    "names": {
+      "en": "Sweet potato, baked",
+      "el": "Γλυκοπατάτα, ψητή"
+    },
+    "allergens": [],
+    "per100g": {
+      "kcal": 90,
+      "proteinG": 2,
+      "carbsG": 21,
+      "fatG": 0.2
+    },
+    "units": [
+      {
+        "grams": 130,
+        "names": {
+          "en": {
+            "one": "medium sweet potato",
+            "other": "medium sweet potatoes"
+          },
+          "el": {
+            "one": "μέτρια γλυκοπατάτα",
+            "other": "μέτριες γλυκοπατάτες"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "sweetcorn-boiled",
+    "origin": "plant",
+    "names": {
+      "en": "Sweetcorn kernels, boiled",
+      "el": "Καλαμπόκι, βραστό"
+    },
+    "allergens": [],
+    "per100g": {
+      "kcal": 96,
+      "proteinG": 3.2,
+      "carbsG": 19,
+      "fatG": 1.2
+    },
+    "units": [
+      {
+        "grams": 80,
+        "names": {
+          "en": {
+            "one": "tablespoon",
+            "other": "tablespoons"
+          },
+          "el": {
+            "one": "κουταλιά της σούπας",
+            "other": "κουταλιές της σούπας"
+          }
+        }
+      },
+      {
+        "grams": 150,
+        "names": {
+          "en": {
+            "one": "cup",
+            "other": "cups"
+          },
+          "el": {
+            "one": "φλιτζάνι",
+            "other": "φλιτζάνια"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "popcorn-plain",
+    "origin": "plant",
+    "names": {
+      "en": "Popcorn, plain, air-popped",
+      "el": "Ποπκόρν σκέτο"
+    },
+    "allergens": [],
+    "per100g": {
+      "kcal": 387,
+      "proteinG": 13,
+      "carbsG": 78,
+      "fatG": 4.5
+    },
+    "units": [
+      {
+        "grams": 8,
+        "names": {
+          "en": {
+            "one": "cup",
+            "other": "cups"
+          },
+          "el": {
+            "one": "φλιτζάνι",
+            "other": "φλιτζάνια"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "rice-cakes",
+    "origin": "plant",
+    "names": {
+      "en": "Rice cakes",
+      "el": "Ρυζογκοφρέτες"
+    },
+    "allergens": [],
+    "per100g": {
+      "kcal": 387,
+      "proteinG": 8,
+      "carbsG": 82,
+      "fatG": 2.8
+    },
+    "units": [
+      {
+        "grams": 9,
+        "names": {
+          "en": {
+            "one": "rice cake",
+            "other": "rice cakes"
+          },
+          "el": {
+            "one": "ρυζογκοφρέτα",
+            "other": "ρυζογκοφρέτες"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "rye-crispbread",
+    "origin": "plant",
+    "names": {
+      "en": "Rye crispbread",
+      "el": "Τραγανή φρυγανιά σίκαλης"
+    },
+    "allergens": ["gluten"],
+    "per100g": {
+      "kcal": 335,
+      "proteinG": 9,
+      "carbsG": 68,
+      "fatG": 1.5
+    },
+    "units": [
+      {
+        "grams": 10,
+        "names": {
+          "en": {
+            "one": "slice",
+            "other": "slices"
+          },
+          "el": {
+            "one": "φέτα",
+            "other": "φέτες"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "crackers-plain",
+    "origin": "plant",
+    "names": {
+      "en": "Plain crackers",
+      "el": "Κράκερ σκέτα"
+    },
+    "allergens": ["gluten"],
+    "per100g": {
+      "kcal": 430,
+      "proteinG": 10,
+      "carbsG": 72,
+      "fatG": 11
+    },
+    "units": [
+      {
+        "grams": 6,
+        "names": {
+          "en": {
+            "one": "cracker",
+            "other": "crackers"
+          },
+          "el": {
+            "one": "κράκερ",
+            "other": "κράκερ"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "oatcakes",
+    "origin": "plant",
+    "names": {
+      "en": "Oatcakes",
+      "el": "Μπισκότα βρώμης αλμυρά"
+    },
+    "allergens": ["gluten"],
+    "per100g": {
+      "kcal": 430,
+      "proteinG": 11,
+      "carbsG": 60,
+      "fatG": 17
+    },
+    "units": [
+      {
+        "grams": 13,
+        "names": {
+          "en": {
+            "one": "biscuit",
+            "other": "biscuits"
+          },
+          "el": {
+            "one": "μπισκότο",
+            "other": "μπισκότα"
+          }
+        }
+      }
+    ]
+  }
+]

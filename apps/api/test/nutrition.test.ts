@@ -232,7 +232,7 @@ describe('Nutrition targets and water', () => {
       const { user } = await setUp();
       const slotsFor = async (mealsPerDay: number) => {
         await putSetup(user, setupOf({ mealsPerDay }));
-        return (await getReady(user, REST_DAY)).meals;
+        return (await getReady(user, REST_DAY)).meals.map(({ slot, at }) => ({ slot, at }));
       };
       const at = (hours: number, minutes = 0) => hours * 60 + minutes;
 

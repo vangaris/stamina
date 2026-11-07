@@ -38,4 +38,6 @@ export enum ApiPath {
   Nutrition = '/nutrition',
   /** `POST /water` logs 250 or 500 ml, idempotent on the client-made id. */
   Water = '/water',
+  /** `POST /meal-logs` records ate it / something else / skipped for a meal slot, idempotent on the client-made id. */
+  MealLogs = '/meal-logs',
 }

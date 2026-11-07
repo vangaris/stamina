@@ -4,9 +4,12 @@ import {
   NutritionStatus,
   SaveNutritionSetupRejection,
   SaveNutritionSetupStatus,
+  type ExportedMealLog,
   type ExportedWaterLog,
   type ExportedWeighIn,
   type LoggedActivity,
+  type LogMeal,
+  type LogMealResult,
   type LogWater,
   type LogWaterResult,
   type NutritionSetup,
@@ -24,11 +27,13 @@ import {
   TrainingKind,
   daysBetween,
   dayTargets,
+  mealIdeas,
   mealSlots,
   plannedActivities,
   rateCheck,
   toWeeklyWeights,
   weekStartOf,
+  type MealLogStatus,
   type TrainingBlock,
 } from '@stamina/domain';
 
@@ -55,15 +60,19 @@ export interface FakeNutritionContext {
  * setup is saved, otherwise the day's targets from the basis weight and the day's training (each
  * Session, each Activity logged that day, and the planned play day while none is logged; the fake
  * has no Sport Profiles, so Activities use the fallback METs). A body direction counts only
- * while the Goal is body composition. Water is idempotent by id (a replay returns the stored
- * row, another person's id is a `409`); it is refused with an `ApiError` 422 while Nutrition is
- * off, and a day more than `MAX_ACTIVITY_FUTURE_DAYS` ahead is an `ApiError` 400. Saving the
- * setup is the caller's to pair with a weigh-in of that weight (only when the weight is new).
+ * while the Goal is body composition. Water and meal logs are idempotent by id (a replay returns
+ * the stored row, another person's id is a `409`); both are refused with an `ApiError` 422 while
+ * Nutrition is off, and a day more than `MAX_ACTIVITY_FUTURE_DAYS` ahead is an `ApiError` 400.
+ * Meals carry the idea the real `mealIdeas` rule builds from the setup and the day's targets, and
+ * the latest status logged per slot. Saving the setup is the caller's to pair with a weigh-in of
+ * that weight (only when the weight is new).
  */
 export function createFakeNutrition() {
   const setups = new Map<string, NutritionSetup>();
   const waterLogs = new Map<string, ExportedWaterLog[]>();
   const readWater = (userId: string) => waterLogs.get(userId) ?? [];
+  const mealLogs = new Map<string, ExportedMealLog[]>();
+  const readMeals = (userId: string) => mealLogs.get(userId) ?? [];
 
   const assertDayInRange = (today: string, date: string) => {
     if (daysBetween(today, date) > MAX_ACTIVITY_FUTURE_DAYS) {
@@ -114,10 +123,13 @@ export function createFakeNutrition() {
     setup: (userId: string): NutritionSetup | null => setups.get(userId) ?? null,
     /** Every water log of the user, oldest first (the data export). */
     allWater: readWater,
+    /** Every meal log of the user, oldest first (the data export). */
+    allMeals: readMeals,
     /** Account deletion. */
     forget(userId: string): void {
       setups.delete(userId);
       waterLogs.delete(userId);
+      mealLogs.delete(userId);
     },
     read(context: FakeNutritionContext, date: string): NutritionState {
       assertDayInRange(context.today, date);
@@ -144,6 +156,20 @@ export function createFakeNutrition() {
         trainings: trainingBlocks(context, date),
         deficitHalved: check.deficitHalved,
       });
+      const ideas = mealIdeas({
+        date,
+        pattern: setup.eatingPattern,
+        allergens: setup.allergens,
+        dislikes: setup.dislikes,
+        effort: setup.cookingEffort,
+        mealsPerDay: setup.mealsPerDay,
+        targets,
+      });
+      // The latest log of a slot wins: logs are in the order they were made.
+      const statuses = new Map<number, MealLogStatus>();
+      for (const log of readMeals(userId)) {
+        if (log.date === date) statuses.set(log.slotIndex, log.status);
+      }
       return {
         status: NutritionStatus.Ready,
         date,
@@ -155,7 +181,11 @@ export function createFakeNutrition() {
             .reduce((total, { ml }) => total + ml, 0),
           targetMl: targets.drinksMl,
         },
-        meals: mealSlots(setup.mealsPerDay),
+        meals: mealSlots(setup.mealsPerDay).map((meal, index) => ({
+          ...meal,
+          idea: ideas[index] ?? null,
+          status: statuses.get(index) ?? null,
+        })),
         rateCheck: { deficitHalved: targets.deficitHalved, prompt: check.prompt },
       };
     },
@@ -204,6 +234,33 @@ export function createFakeNutrition() {
       };
       waterLogs.set(userId, [...readWater(userId), stored]);
       return { id: stored.id, date, ml: stored.ml };
+    },
+    logMeal(context: FakeNutritionContext, entry: LogMeal): LogMealResult {
+      const { userId, today } = context;
+      if (context.nutritionOff) throw new ApiError(HttpStatus.UnprocessableEntity);
+      for (const [owner, logs] of mealLogs) {
+        const replay = logs.find(({ id }) => id === entry.id);
+        if (replay === undefined) continue;
+        if (owner !== userId) throw new ApiError(HttpStatus.Conflict);
+        return {
+          id: replay.id,
+          date: replay.date,
+          slotIndex: replay.slotIndex,
+          status: replay.status,
+        };
+      }
+      const date = entry.date ?? today;
+      assertDayInRange(today, date);
+      const stored: ExportedMealLog = {
+        id: entry.id,
+        date,
+        slotIndex: entry.slotIndex,
+        status: entry.status,
+        templateId: entry.templateId ?? null,
+        loggedAt: new Date().toISOString(),
+      };
+      mealLogs.set(userId, [...readMeals(userId), stored]);
+      return { id: stored.id, date, slotIndex: stored.slotIndex, status: stored.status };
     },
   };
 }

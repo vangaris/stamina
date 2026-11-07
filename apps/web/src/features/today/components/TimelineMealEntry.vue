@@ -13,5 +13,8 @@ const { t } = useI18n();
     <p v-if="meal.title" class="text-sm text-text-muted" data-testid="meal-title">
       {{ meal.title }}
     </p>
+    <p v-if="meal.status" class="text-sm text-text-muted" data-testid="meal-status">
+      {{ t(`meals.meal.status.${meal.status}`) }}
+    </p>
   </div>
 </template>

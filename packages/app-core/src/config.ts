@@ -118,13 +118,14 @@ export const FAKE_PROGRAM_EXERCISES = {
 /** The IndexedDB database: its name and Dexie schema (the primary key first, then indexed fields). */
 export const LOCAL_DATABASE = {
   name: 'stamina',
-  version: 5,
+  version: 6,
   schema: {
     [LocalTable.Queue]: '++id',
     [LocalTable.Sets]: 'id, sessionId',
     [LocalTable.Finishes]: 'sessionId',
     [LocalTable.Activities]: 'id',
     [LocalTable.WaterLogs]: 'id',
+    [LocalTable.MealLogs]: 'id',
     [LocalTable.StopFlags]: 'id',
     [LocalTable.Checkins]: 'id',
     [LocalTable.Cache]: 'key',

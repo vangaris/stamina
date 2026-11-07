@@ -42,6 +42,7 @@ import type { ApiClient, ApiClientOptions } from './types.ts';
 import { progressSchema } from './progress-schema.ts';
 import { logWeighInResultSchema } from './weigh-in-schema.ts';
 import { nutritionStateSchema, saveNutritionSetupResultSchema } from './nutrition-schema.ts';
+import { logMealResultSchema } from './meal-log-schema.ts';
 import { logWaterResultSchema } from './water-schema.ts';
 import { nutritionPath } from './utils/nutrition-path.ts';
 import { userExportSchema } from './user-export-schema.ts';
@@ -192,6 +193,10 @@ export function createApiClient({
     async logWater(water) {
       const response = await postJson(ApiPath.Water, water);
       return logWaterResultSchema.parse(await response.json());
+    },
+    async logMeal(meal) {
+      const response = await postJson(ApiPath.MealLogs, meal);
+      return logMealResultSchema.parse(await response.json());
     },
     async getAdaptations() {
       const response = await send(adaptationPath(), {});

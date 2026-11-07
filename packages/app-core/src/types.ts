@@ -15,7 +15,9 @@ import type {
   LogActivityResult,
   LogSet as LogSetBody,
   LogSetResult,
+  LogMeal as LogMealBody,
   LogWater as LogWaterBody,
+  LogMealResult,
   LogWaterResult,
   LogWeighIn as LogWeighInBody,
   LogWeighInResult,
@@ -255,6 +257,28 @@ export interface WaterLogStore {
   list(): Promise<readonly LocalWater[]>;
 }
 
+/** A meal log as the device recorded it: the body plus when (ISO), so the slot shows its status before the server confirms. */
+export interface LocalMeal {
+  meal: LogMealBody;
+  recordedAt: string;
+}
+
+/**
+ * The meal logs the person made on this device, written before anything is sent (see
+ * `RequestDefinition.writeLocal`) so a slot shows ate it / something else / skipped offline. A
+ * row stays until the server has the log (the handler removes it: the server's status already
+ * includes it, and a row left behind would override a later change made on another device) or
+ * refused it; `GetNutrition` lays what is left over the server's slot statuses, the latest
+ * `recordedAt` per slot winning.
+ */
+export interface MealLogStore {
+  /** Idempotent by the log's id: the first `recordedAt` stays. */
+  add(meal: LogMealBody, recordedAt: string): Promise<void>;
+  remove(id: string): Promise<void>;
+  /** In no particular order. */
+  list(): Promise<readonly LocalMeal[]>;
+}
+
 /** A stop flag as the device recorded it: the report plus when (ISO), so the pause holds before the server confirms. */
 export interface LocalStopFlag {
   report: ReportStopFlagBody;
@@ -375,6 +399,10 @@ export interface WaterRow extends LocalWater {
   id: string;
 }
 
+export interface MealLogRow extends LocalMeal {
+  id: string;
+}
+
 export interface StopFlagRow extends LocalStopFlag {
   id: string;
 }
@@ -442,6 +470,7 @@ export interface Services extends PipelineServices {
   sessionLog: SessionLogStore;
   activityLog: ActivityLogStore;
   waterLog: WaterLogStore;
+  mealLogs: MealLogStore;
   stopFlags: StopFlagStore;
   checkins: CheckinStore;
   planCache: PlanCache;
@@ -632,6 +661,12 @@ export interface SaveNutritionSetupRequest extends Request<SaveNutritionSetupRes
 export interface LogWaterRequest extends Request<LogWaterResult | Queued> {
   readonly type: RequestType.LogWater;
   readonly water: LogWaterBody;
+}
+
+/** (`Request` suffix: `LogMeal` is the contract's body type.) */
+export interface LogMealRequest extends Request<LogMealResult | Queued> {
+  readonly type: RequestType.LogMeal;
+  readonly meal: LogMealBody;
 }
 
 export interface GetProgram extends Request<ProgramWeek | null> {

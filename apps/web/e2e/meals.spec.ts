@@ -64,6 +64,42 @@ test('unlock Meals, see the targets, log water, and Today shows the meal slots a
   await expect(page.getByTestId('reds-card')).toBeVisible();
   await expect(page.getByTestId('meals-guidance')).toContainText('ask a dietitian');
   await expect(page.getByTestId('meals-water-progress')).toContainText('0 of');
+
+  // The next meal leads: a dish with its portions and macros, and three one-tap answers.
+  const nextMeal = page.getByTestId('next-meal');
+  await expect(nextMeal).toBeVisible();
+  await expect(page.getByTestId('next-meal-title')).not.toBeEmpty();
+  await expect(page.getByTestId('next-meal-portions').getByRole('listitem').first()).toContainText(
+    /\d+ g|\(\d+ g\)/,
+  );
+  await expect(page.getByTestId('next-meal-macros')).toContainText('kcal');
+  await expect(nextMeal.getByRole('button', { name: /^Ate it: / })).toBeVisible();
+  await expect(nextMeal.getByRole('button', { name: /^Something else: / })).toBeVisible();
+  await expect(nextMeal.getByRole('button', { name: /^Skipped: / })).toBeVisible();
+  await expect(page.getByTestId('meal-day').getByRole('listitem')).toHaveCount(DEFAULT_MEAL_SLOTS);
+  await expectNoAccessibilityViolations(page);
+
+  // One tap on Ate it: the day list marks it and the card moves on to another meal.
+  const dish = (await page.getByTestId('next-meal-title').innerText()).trim();
+  await nextMeal.getByRole('button', { name: `Ate it: ${dish}` }).click();
+  const logged = page.getByTestId('meal-day').locator('[data-status="ate"]');
+  await expect(logged).toHaveCount(1);
+  await expect(logged.getByTestId('meal-day-title')).toHaveText(dish);
+  await expect(logged.getByRole('button', { name: `Ate it: ${dish}` })).toHaveAttribute(
+    'aria-pressed',
+    'true',
+  );
+  await expect(page.getByTestId('next-meal-title')).not.toHaveText(dish);
+
+  // The day list changes a status with one tap on a different button.
+  await logged.getByRole('button', { name: `Skipped: ${dish}` }).click();
+  await expect(page.getByTestId('meal-day').locator('[data-status="skipped"]')).toHaveCount(1);
+  await expect(page.getByTestId('meal-day').locator('[data-status="ate"]')).toHaveCount(0);
+  await page
+    .getByTestId('meal-day')
+    .getByRole('button', { name: `Ate it: ${dish}` })
+    .click();
+  await expect(page.getByTestId('meal-day').locator('[data-status="ate"]')).toHaveCount(1);
   await expectNoAccessibilityViolations(page);
 
   // One tap adds 250 ml.
@@ -76,6 +112,10 @@ test('unlock Meals, see the targets, log water, and Today shows the meal slots a
   await expect(page.getByTestId('unlock-meals-card')).toHaveCount(0);
   await expect(page.locator('[data-kind="meal-slot"]')).toHaveCount(DEFAULT_MEAL_SLOTS);
   await expect(page.getByTestId('water-bar')).toBeVisible();
+  await expect(page.getByTestId('meal-title').first()).not.toBeEmpty();
+  await expect(page.locator('[data-kind="meal-slot"]').filter({ hasText: dish })).toContainText(
+    'Ate it',
+  );
   await expect(page.getByTestId('timeline')).toContainText('250 of');
 
   // The same buttons are on Today.

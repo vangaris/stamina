@@ -1,11 +1,12 @@
 import { NutritionStatus, type NutritionState } from '@stamina/contracts';
-import { Goal, dayTargets, mealSlots, rateCheck } from '@stamina/domain';
+import { Goal, dayTargets, mealIdeas, mealSlots, rateCheck } from '@stamina/domain';
 import { eq } from 'drizzle-orm';
 import { readLoadAnchor } from '../activities/index.ts';
 import { profile } from '../db/schema.ts';
 import type { UserTx } from '../db/types.ts';
 import { readLatestScreening } from '../safety/read-latest-screening.ts';
 import { readTrainingBlocks } from './read-training-blocks.ts';
+import { readMealStatuses } from './read-meal-statuses.ts';
 import { readWaterTotal } from './read-water-total.ts';
 import { readWeeklyWeights } from './read-weekly-weights.ts';
 import { toNutritionSetup } from './to-nutrition-setup.ts';
@@ -16,8 +17,10 @@ import { toNutritionSetup } from './to-nutrition-setup.ts';
  * Nutrition off (whatever was saved before), `Locked` while the Unlock Meals setup is not saved
  * (or there is no profile), otherwise `Ready`: the day's targets from the basis weight and the
  * day's training (`readTrainingBlocks`), the rate check over the weekly weights, the water logged
- * that day against the drinks target, and the meal slots. Targets are computed here on every
- * read, so a changed Goal, schedule or basis weight recalculates with no second step.
+ * that day against the drinks target, and the meal slots, each with the idea the rules built
+ * for it from the person's food setup (`null` when no template fits) and the latest status they
+ * logged. Targets and ideas are computed here on every read, so a changed Goal, schedule,
+ * basis weight or food setting recalculates with no second step.
  */
 export async function readNutrition(
   tx: UserTx,
@@ -46,13 +49,28 @@ export async function readNutrition(
     deficitHalved: check.deficitHalved,
   });
 
+  const ideas = mealIdeas({
+    date,
+    pattern: setup.eatingPattern,
+    allergens: setup.allergens,
+    dislikes: setup.dislikes,
+    effort: setup.cookingEffort,
+    mealsPerDay: setup.mealsPerDay,
+    targets,
+  });
+  const statuses = await readMealStatuses(tx, userId, date);
+
   return {
     status: NutritionStatus.Ready,
     date,
     setup,
     targets,
     water: { ml: await readWaterTotal(tx, userId, date), targetMl: targets.drinksMl },
-    meals: mealSlots(setup.mealsPerDay),
+    meals: mealSlots(setup.mealsPerDay).map((meal, index) => ({
+      ...meal,
+      idea: ideas[index] ?? null,
+      status: statuses.get(index) ?? null,
+    })),
     rateCheck: { deficitHalved: targets.deficitHalved, prompt: check.prompt },
   };
 }
