@@ -43,6 +43,7 @@ test('renders every component in both themes', async ({ page }) => {
       'Checkbox',
       'Chip',
       'ChipGroup',
+      'LoadBars',
       'ProgressBar',
       'RestTimer',
       'SetDots',

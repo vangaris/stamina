@@ -36,6 +36,7 @@ import {
   resolveTrainingMode,
   TrainingMode,
   type LoadEntry,
+  summariseProgress,
 } from '@stamina/domain';
 import { FAKE_AUTH, FAKE_INVITE, FAKE_KEY_SEPARATOR, HTTP_UNAUTHORIZED } from '../config.ts';
 import { buildFakeProgram } from '../utils/build-fake-program.ts';
@@ -43,6 +44,7 @@ import { toHardActivityDates } from '../utils/to-hard-activity-dates.ts';
 import { createFakeAdaptations, type FakeAdaptationContext } from './create-fake-adaptations.ts';
 import { createFakeActivityLog, type FakeActivityContext } from './create-fake-activity-log.ts';
 import { createFakeCheckins } from './create-fake-checkins.ts';
+import { createFakeWeighIns } from './create-fake-weigh-ins.ts';
 import { createFakeSessionLog, type FakeSessionTarget } from './create-fake-session-log.ts';
 import { createFakeStopFlags } from './create-fake-stop-flags.ts';
 import type { FakeApiClient, FakeWeek } from '../types.ts';
@@ -162,6 +164,8 @@ export function createFakeApiClient(getToken: () => Promise<string | undefined>)
       const finished = sessionLog.finished(`${userId}${FAKE_KEY_SEPARATOR}${session.id}`);
       return finished ? [{ date: session.date, load: finished.load }] : [];
     });
+
+  const weighIns = createFakeWeighIns();
 
   const grantedPurposes = (userId: string) =>
     (consents.get(userId) ?? [])
@@ -348,6 +352,7 @@ export function createFakeApiClient(getToken: () => Promise<string | undefined>)
         activities: activityLog.all(userId),
         checkins: checkins.all(userId),
         stopFlags: stopFlags.all(userId),
+        weighIns: weighIns.all(userId),
         consents: [...(consents.get(userId) ?? [])],
         sportRequests: sportRequests.has(userId) ? [sportRequests.get(userId)!] : [],
         adaptations: adaptations.all(userId),
@@ -369,6 +374,7 @@ export function createFakeApiClient(getToken: () => Promise<string | undefined>)
       checkins.forget(userId);
       stopFlags.forget(userId);
       adaptations.forget(userId);
+      weighIns.forget(userId);
     },
     getProgram: async () => readProgram(await requireUserId()),
     getSession: async (sessionId) => sessionLog.read(await sessionTarget(sessionId)),
@@ -380,6 +386,30 @@ export function createFakeApiClient(getToken: () => Promise<string | undefined>)
       const context = await activityContext();
       return activityLog.week(context, finishedSessionEntries(context.userId));
     },
+    getProgress: async () => {
+      const context = await activityContext();
+      const week = programs.get(context.userId);
+      const summary = summariseProgress({
+        anchor: context.anchor,
+        today: context.today,
+        entries: [
+          ...finishedSessionEntries(context.userId),
+          ...activityLog.all(context.userId).map(({ date, load }): LoadEntry => ({ date, load })),
+        ],
+        sessions: (week?.sessions ?? []).map(({ id, date, minutes }) => ({
+          date,
+          weekInBlock: week!.block.weekInBlock,
+          minutes,
+          finished:
+            sessionLog.finished(`${context.userId}${FAKE_KEY_SEPARATOR}${id}`) !== undefined,
+        })),
+        activities: activityLog.all(context.userId),
+        play: context.profile,
+      });
+      return { ...summary, weighIn: weighIns.status(context.userId, summary.weekStartsOn) };
+    },
+    logWeighIn: async (entry) =>
+      weighIns.log(await requireUserId(), new Date().toISOString().slice(0, 10), entry),
     getAdaptations: async () => ({ adaptations: adaptations.pending(await adaptationContext()) }),
     acceptAdaptation: async (id, accept) =>
       adaptations.accept(await adaptationContext(), id, accept),

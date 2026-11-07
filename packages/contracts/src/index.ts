@@ -60,6 +60,17 @@ export {
   weeklyLoadSchema,
 } from './activity-schema.ts';
 export {
+  progressSchema,
+  progressVerdictSchema,
+  progressWeekSchema,
+  progressWeighInSchema,
+} from './progress-schema.ts';
+export {
+  exportedWeighInSchema,
+  logWeighInResultSchema,
+  logWeighInSchema,
+} from './weigh-in-schema.ts';
+export {
   exerciseVariantSchema,
   finishedSessionSchema,
   finishSessionResultSchema,
@@ -138,6 +149,12 @@ export type {
   ExportedCheckin,
   ExportedStopFlag,
   LatestCheckinResponse,
+  ExportedWeighIn,
+  LogWeighIn,
+  LogWeighInResult,
+  Progress,
+  ProgressVerdict,
+  ProgressWeek,
   RecheckScreening,
   ReportStopFlag,
   ReportStopFlagResult,

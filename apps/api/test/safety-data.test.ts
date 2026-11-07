@@ -405,6 +405,28 @@ describe('Screening data: encryption, export, deletion, logs', () => {
       }
     });
 
+    it('keep weigh-in and Progress data out of every log line and error body', async () => {
+      const user = await consented();
+      lines.length = 0;
+      const bodies: string[] = [];
+      const send = async (method: HttpMethod, path: string, body?: unknown) => {
+        bodies.push(await (await user.call(method, path, body)).text());
+      };
+
+      await send(HttpMethod.Post, `${ApiPath.WeighIns}?q=${SENTINELS.weighIn}`, {
+        weightKg: SENTINELS.weighIn,
+        date: SENTINELS.weighIn,
+      });
+      await send(HttpMethod.Post, ApiPath.WeighIns, { weightKg: 72.5, note: SENTINELS.weighIn });
+      await send(HttpMethod.Get, `${ApiPath.Progress}?q=${SENTINELS.weighIn}`);
+      await send(HttpMethod.Get, ApiPath.MeExport);
+
+      expect(lines).toHaveLength(4);
+      expectNoSentinel(lines);
+      expectNoSentinel(bodies);
+      expect(lines.join('\n')).not.toContain('72.5');
+    });
+
     it('keep plaintext and keys out of an error report when decryption fails', async () => {
       const user = await consented();
       await submit(user, answersSubmission());

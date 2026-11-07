@@ -10,6 +10,7 @@ export const SENTINELS = {
   requestId: 'SENTINEL-REQID-migraine',
   checkin: 'SENTINEL-CHECKIN-slept-badly-since-the-funeral',
   stopFlag: 'SENTINEL-STOPFLAG-chest-tightness-on-stairs',
+  weighIn: 'SENTINEL-WEIGHIN-gained-six-kilos-since-the-divorce',
 } as const;
 
 export const SENTINEL_VALUES = Object.values(SENTINELS);

@@ -44,8 +44,12 @@ export {
   MAX_SET_RPE,
   ACTIVITY_RPE_BY_INTENSITY,
   LOAD_AVERAGE_WEEKS,
+  MAX_BODY_WEIGHT_KG,
+  MIN_BODY_WEIGHT_KG,
+  VOLUME_FLEX,
   EMERGENCY_NUMBER,
   MAX_ACTIVITY_FUTURE_DAYS,
+  MAX_WEIGH_IN_PAST_DAYS,
   MAX_CHECKIN_SCORE,
   MIN_CHECKIN_SCORE,
   STOP_FLAG_EFFECTS,
@@ -117,6 +121,7 @@ export { TrainingMode } from './enums/training-mode.ts';
 export { TrainingWeekProblem } from './enums/training-week-problem.ts';
 export { Units } from './enums/units.ts';
 export { Weekday } from './enums/weekday.ts';
+export { VerdictKind } from './enums/verdict-kind.ts';
 export type {
   EligibilityInput,
   ExerciseFilter,
@@ -145,6 +150,11 @@ export type {
   PlannedActivity,
   PlannedActivityInput,
   WeeklyLoad,
+  WeekVerdictInput,
+  ProgressActivity,
+  ProgressSession,
+  ProgressSummary,
+  ProgressWeekLoad,
   ActivityFact,
   GenerationBasis,
   AdaptationChange,
@@ -184,9 +194,13 @@ export { hardActivityDates } from './utils/hard-activity-dates.ts';
 export { activityLoad } from './utils/activity-load.ts';
 export { activityRpe } from './utils/activity-rpe.ts';
 export { daysBetween } from './utils/days-between.ts';
+export { isWeighInDateInRange } from './utils/is-weigh-in-date-in-range.ts';
 export { plannedActivities } from './utils/planned-activities.ts';
+export { plannedSessionLoad } from './utils/planned-session-load.ts';
+export { summariseProgress } from './utils/summarise-progress.ts';
 export { summariseWeeklyLoad } from './utils/summarise-weekly-load.ts';
 export { weekStartOf } from './utils/week-start-of.ts';
+export { weekVerdict } from './utils/week-verdict.ts';
 export { isTrainingBlocked } from './utils/is-training-blocked.ts';
 export { mergeExcludedAreas } from './utils/merge-excluded-areas.ts';
 export { resolveStopState } from './utils/resolve-stop-state.ts';

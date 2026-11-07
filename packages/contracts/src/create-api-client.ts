@@ -38,6 +38,8 @@ import { safetyStateSchema } from './safety-state-schema.ts';
 import { saveProfileResultSchema } from './save-profile-result-schema.ts';
 import { saveScreeningResultSchema } from './save-screening-result-schema.ts';
 import type { ApiClient, ApiClientOptions } from './types.ts';
+import { progressSchema } from './progress-schema.ts';
+import { logWeighInResultSchema } from './weigh-in-schema.ts';
 import { userExportSchema } from './user-export-schema.ts';
 
 const BEARER_SCHEME = 'Bearer';
@@ -161,6 +163,14 @@ export function createApiClient({
     async getWeekLoad() {
       const response = await send(activityPath(ActivitySubpath.Week), {});
       return weekLoadSchema.parse(await response.json());
+    },
+    async getProgress() {
+      const response = await send(ApiPath.Progress, {});
+      return progressSchema.parse(await response.json());
+    },
+    async logWeighIn(weighIn) {
+      const response = await postJson(ApiPath.WeighIns, weighIn);
+      return logWeighInResultSchema.parse(await response.json());
     },
     async getAdaptations() {
       const response = await send(adaptationPath(), {});

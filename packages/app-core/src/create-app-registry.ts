@@ -19,7 +19,9 @@ import { getSessionDefinition } from './handlers/get-session.ts';
 import { getSessionDetailDefinition } from './handlers/get-session-detail.ts';
 import { finishSessionDefinition } from './handlers/finish-session.ts';
 import { getWeekLoadDefinition } from './handlers/get-week-load.ts';
+import { getProgressDefinition } from './handlers/get-progress.ts';
 import { logActivityDefinition } from './handlers/log-activity.ts';
+import { logWeighInDefinition } from './handlers/log-weigh-in.ts';
 import { logSetDefinition } from './handlers/log-set.ts';
 import { grantConsentDefinition } from './handlers/grant-consent.ts';
 import { recordDoctorOkDefinition } from './handlers/record-doctor-ok.ts';
@@ -56,6 +58,8 @@ export function createAppRegistry(): RequestRegistry<Services, Stores> {
     [RequestType.FinishSession]: finishSessionDefinition,
     [RequestType.LogActivity]: logActivityDefinition,
     [RequestType.GetWeekLoad]: getWeekLoadDefinition,
+    [RequestType.GetProgress]: getProgressDefinition,
+    [RequestType.LogWeighIn]: logWeighInDefinition,
     [RequestType.SubmitCheckin]: submitCheckinDefinition,
     [RequestType.GetLatestCheckin]: getLatestCheckinDefinition,
     [RequestType.ReportStopFlag]: reportStopFlagDefinition,

@@ -15,4 +15,5 @@
 - [ ] Drinks 2.0 / 1.6 / 1.8 L + 0.5 L per training hour + 0.25 L/h hot, capped at 1 L per hour of exercise with 'drink to thirst'; pre-Activity cue; electrolyte note for > 2 h or hot
 - [ ] +250 / +500 ml water logging; REDs warning-signs card in Meals and Settings → Safety
 - [ ] Nutrition off for 9b users; recalculation on ≥ 2 kg weight change or Goal/schedule change
+- [ ] Today timeline shows meal slots (from meals per day) and the water bar, using the `MealSlot` and `Water` timeline entries from ticket 15 (`useToday` `extras`)
 - [ ] API tests cover targets per day type, floor, rate check and cap with fixture users

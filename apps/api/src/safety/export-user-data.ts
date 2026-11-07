@@ -12,6 +12,7 @@ import {
   sport,
   sportRequest,
   stopFlag,
+  weighIn,
 } from '../db/schema.ts';
 import type { Db } from '../db/types.ts';
 import { withUser } from '../db/with-user.ts';
@@ -25,7 +26,7 @@ import { storedAnswersSchema } from './stored-answers-schema.ts';
 import { toSavedScreening } from './to-saved-screening.ts';
 
 /**
- * Everything held about the user: profile, every consent row, the Program week, every logged set, finished Session, Activity, Check-in, Adaptation (with its decision) and stop flag, every sport they asked for and every Screening with its
+ * Everything held about the user: profile, every consent row, the Program week, every logged set, finished Session, Activity, Check-in, Adaptation (with its decision), stop flag and weigh-in, every sport they asked for and every Screening with its
  * answers decrypted, oldest first. The one place answers leave the server.
  */
 export async function exportUserData(
@@ -44,6 +45,7 @@ export async function exportUserData(
     checkinRows,
     adaptationRows,
     stopFlagRows,
+    weighInRows,
   } = await withUser(db, userId, async (tx) => ({
     profileRow: (await tx.select().from(profile).where(eq(profile.userId, userId)))[0],
     consentRows: await tx
@@ -83,6 +85,11 @@ export async function exportUserData(
       .from(stopFlag)
       .where(eq(stopFlag.userId, userId))
       .orderBy(asc(stopFlag.reportedAt)),
+    weighInRows: await tx
+      .select()
+      .from(weighIn)
+      .where(eq(weighIn.userId, userId))
+      .orderBy(asc(weighIn.createdAt)),
   }));
 
   // As the table owner, filtered by the user: a rejected sport is hidden from its requesters by
@@ -143,6 +150,12 @@ export async function exportUserData(
       sessionId: row.sessionId,
       reportedAt: row.reportedAt.toISOString(),
       confirmedAt: row.confirmedAt?.toISOString() ?? null,
+    })),
+    weighIns: weighInRows.map((row) => ({
+      id: row.id,
+      date: row.date,
+      weightKg: row.weightKg,
+      loggedAt: row.createdAt.toISOString(),
     })),
     sportRequests: sportRequestRows.map((row) => ({
       sportId: row.sportId,

@@ -577,8 +577,20 @@ export const ACTIVITY_RPE_BY_INTENSITY: Readonly<Record<Intensity, number>> = {
 };
 /** An Activity may be logged for a day this many days ahead of the server's UTC date (a device clock or time zone ahead). */
 export const MAX_ACTIVITY_FUTURE_DAYS = 1;
+/** A weigh-in may be dated at most this many days before the server's UTC date (a late entry; keeps years like 0000 out). */
+export const MAX_WEIGH_IN_PAST_DAYS = 366;
 /** How many weeks before this one the average Load covers. */
 export const LOAD_AVERAGE_WEEKS = 4;
+
+/**
+ * The weekly verdict calls a week on track while its Load, with the planned Sessions and
+ * Activities still to come, is within this share (10 percent) above or below the person's average.
+ */
+export const VOLUME_FLEX = 0.1;
+
+/** A body weight the weigh-in accepts, in kilograms (a typo guard, not a health judgement). */
+export const MIN_BODY_WEIGHT_KG = 30;
+export const MAX_BODY_WEIGHT_KG = 300;
 
 /** Movement patterns of the lower body; every other pattern counts as upper body for progression. */
 export const LOWER_BODY_PATTERNS: readonly MovementPattern[] = [

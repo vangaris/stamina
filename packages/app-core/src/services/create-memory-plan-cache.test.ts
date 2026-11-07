@@ -2,6 +2,7 @@ import type { Checkin } from '@stamina/contracts';
 import { BodyArea, Emphasis, StopFlag, type StopState } from '@stamina/domain';
 import { describe, expect, it } from 'vitest';
 import { buildAdaptation } from '../testing/build-adaptation.ts';
+import { buildProgress } from '../testing/build-progress.ts';
 import { testFakeSession } from '../testing/test-fake-session.ts';
 import { buildFakeSessionDetail } from '../utils/build-fake-session-detail.ts';
 import { createMemoryPlanCache } from './create-memory-plan-cache.ts';
@@ -91,5 +92,21 @@ describe('createMemoryPlanCache Adaptations and Session details', () => {
 
     expect(await cache.readSessionDetail(detail.id)).toBeUndefined();
     expect(await cache.readSessionDetail(other.id)).toEqual(other);
+  });
+});
+
+describe('createMemoryPlanCache Progress', () => {
+  it('tells never fetched from fetched, and returns a copy', async () => {
+    const cache = createMemoryPlanCache();
+    expect(await cache.readProgress()).toBeUndefined();
+
+    const progress = buildProgress();
+    await cache.saveProgress(progress);
+    const read = await cache.readProgress();
+    expect(read).toEqual(progress);
+    expect(read).not.toBe(progress);
+
+    cache.clear();
+    expect(await cache.readProgress()).toBeUndefined();
   });
 });

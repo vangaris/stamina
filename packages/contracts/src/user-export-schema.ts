@@ -9,6 +9,7 @@ import { exportedCheckinSchema } from './checkin-schema.ts';
 import { exportedStopFlagSchema } from './stop-flag-schema.ts';
 import { savedScreeningSchema } from './saved-screening-schema.ts';
 import { exportedFinishSchema, exportedSetSchema } from './session-schema.ts';
+import { exportedWeighInSchema } from './weigh-in-schema.ts';
 
 /**
  * Everything Stamina holds about the signed-in user, as JSON. Screening answers are decrypted
@@ -48,6 +49,8 @@ export const userExportSchema = z.object({
   adaptations: z.array(exportedAdaptationSchema),
   /** Every stop flag the person reported, oldest first. */
   stopFlags: z.array(exportedStopFlagSchema),
+  /** Every weigh-in the person logged, oldest first. */
+  weighIns: z.array(exportedWeighInSchema),
   screenings: z.array(
     savedScreeningSchema.extend({
       answers: z.record(z.enum(ScreeningQuestion), z.boolean()),
