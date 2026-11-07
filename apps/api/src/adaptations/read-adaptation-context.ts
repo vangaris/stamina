@@ -5,8 +5,7 @@ import {
   type AdaptationContext,
 } from '@stamina/domain';
 import { and, eq, gte } from 'drizzle-orm';
-import { readLoadAnchor } from '../activities/read-load-anchor.ts';
-import { readLoadEntries } from '../activities/read-load-entries.ts';
+import { readLoadAnchor, readLoadEntries } from '../activities/index.ts';
 import { checkin } from '../db/schema.ts';
 import type { UserTx } from '../db/types.ts';
 import { ProgramInputsStatus, readCurrentWeek, readProgramInputs } from '../program/index.ts';

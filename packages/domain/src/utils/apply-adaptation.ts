@@ -18,6 +18,15 @@ import { revisableSession } from './revisable-session.ts';
 import { swapSessionExercises } from './swap-session-exercises.ts';
 import { weekdayOf } from './weekday-of.ts';
 
+/**
+ * "From tomorrow" when the suggestion was made, and still from tomorrow when it is accepted
+ * later (or its offline accept syncs later): a new week never starts in the past.
+ */
+const notBeforeTomorrow = (startsOn: string, today: string): string => {
+  const tomorrow = addDays(today, 1);
+  return startsOn < tomorrow ? tomorrow : startsOn;
+};
+
 /** Revisions inside the current Block. */
 const inBlock = (sessions: RevisedSession[]): AppliedAdaptation => ({
   block: null,
@@ -85,12 +94,12 @@ export function applyAdaptation(
     case AdaptationChangeKind.RepeatWeek:
       return regenerateWeek(context, {
         weekInBlock: change.weekInBlock,
-        startsOn: change.startsOn,
+        startsOn: notBeforeTomorrow(change.startsOn, context.today),
       });
     case AdaptationChangeKind.RestartBlock:
       return regenerateWeek(context, {
         weekInBlock: 1,
-        startsOn: change.startsOn,
+        startsOn: notBeforeTomorrow(change.startsOn, context.today),
         rirBoost: RESTART_RIR_STEP,
       });
   }

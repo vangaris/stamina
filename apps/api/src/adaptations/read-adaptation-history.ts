@@ -14,5 +14,7 @@ export async function readAdaptationHistory(
     ask: row.ask,
     status: decision?.decision ?? AdaptationStatus.Pending,
     decidedAt: decision?.decidedAt.toISOString() ?? null,
+    basis: row.basis,
+    validUntil: row.validUntil,
   }));
 }

@@ -9,13 +9,14 @@ import {
   AdaptationStatus,
   RESTART_RIR_STEP,
   applyAdaptation,
+  isBasisCurrent,
 } from '@stamina/domain';
 import { lockUser } from '../db/lock-user.ts';
 import { adaptationDecision } from '../db/schema.ts';
 import type { Db, UserTx } from '../db/types.ts';
 import { withUser } from '../db/with-user.ts';
 import { readProgram } from '../program/index.ts';
-import { isBasisCurrent } from './is-basis-current.ts';
+
 import { isSameBasis } from './is-same-basis.ts';
 import { readAdaptation } from './read-adaptation.ts';
 import { readAdaptationContext } from './read-adaptation-context.ts';
@@ -80,7 +81,7 @@ export async function acceptAdaptation(
     if (
       context === null ||
       !isSameBasis(basis, row.basis) ||
-      !isBasisCurrent(row.basis, context) ||
+      !isBasisCurrent(row.basis, context.sessions) ||
       (row.validUntil !== null && row.validUntil < context.today)
     ) {
       return stale();

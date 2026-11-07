@@ -163,6 +163,7 @@ export type {
   SessionRevisionRef,
 } from './types.ts';
 export { addDays } from './utils/add-days.ts';
+export { isBasisCurrent } from './utils/is-basis-current.ts';
 export { bodyHalfOf } from './utils/body-half-of.ts';
 export { progressLoad } from './utils/progress-load.ts';
 export { sessionLoad } from './utils/session-load.ts';

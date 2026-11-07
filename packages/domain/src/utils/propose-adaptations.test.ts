@@ -55,6 +55,8 @@ const history = (
   ask: 1,
   status,
   decidedAt: status === AdaptationStatus.Pending ? null : '2026-11-01T12:00:00.000Z',
+  basis: [],
+  validUntil: null,
   ...extra,
 });
 
@@ -624,6 +626,23 @@ describe('proposeAdaptations: early Deload', () => {
       }
     });
 
+    it('is asked again at once when the Sessions a pending one was raised on moved on', () => {
+      const pending = (
+        basis: { sessionId: string; revision: number }[],
+        validUntil: string | null,
+      ) =>
+        history(AdaptationRule.DeloadEffort, '2026-11-02', AdaptationStatus.Pending, {
+          basis,
+          validUntil,
+        });
+      // Another suggestion revised s1, so the pending Deload can no longer be accepted.
+      expect(at(after(0), [pending([{ sessionId: 's1', revision: 2 }], null)])[0]?.ask).toBe(2);
+      // Its last day passed.
+      expect(at(after(0), [pending([], '2026-11-01')])[0]?.ask).toBe(2);
+      // Still current: not asked again.
+      expect(at(after(0), [pending([{ sessionId: 's1', revision: 1 }], null)])).toEqual([]);
+    });
+
     it('is a different Deload in another week', () => {
       const lastWeek = [
         history(AdaptationRule.DeloadEffort, '2026-10-26', AdaptationStatus.Accepted),
@@ -679,6 +698,31 @@ describe('proposeAdaptations: missed Sessions', () => {
       index === 0 ? { ...session, started: true, finished: true } : session,
     );
     expect(missed({ sessions: oneDone, finished: [finishedFact('2026-11-02', 7, 3)] })).toEqual([]);
+  });
+
+  it('replaces only the Sessions nothing was done in, and needs one', () => {
+    const sessions = layout([Upper, '2026-11-02'], [Lower, '2026-11-04'], [Recovery, '2026-11-07']);
+    const started = sessions.map((session) =>
+      session.id === 's1' ? { ...session, started: true } : session,
+    );
+    const [proposal] = missed({ sessions: started });
+    expect(proposal?.params).toEqual({ missed: 2, weekInBlock: 1 });
+    expect(proposal?.basis).toEqual([
+      { sessionId: 's2', revision: 1 },
+      { sessionId: 's3', revision: 1 },
+    ]);
+    expect(
+      missed({ sessions: sessions.map((session) => ({ ...session, started: true })) }),
+    ).toEqual([]);
+  });
+
+  it('is asked again at once when the Sessions it was raised on moved on, never when decided', () => {
+    const moved = history(AdaptationRule.RepeatWeek, WEEK_START, AdaptationStatus.Pending, {
+      basis: [{ sessionId: 's1', revision: 2 }],
+    });
+    expect(missed({ history: [moved] })[0]).toMatchObject({ ask: 2 });
+    const declined = history(AdaptationRule.RepeatWeek, WEEK_START, AdaptationStatus.Declined);
+    expect(missed({ history: [moved, declined] })).toEqual([]);
   });
 
   it('counts only Sessions dated before today', () => {

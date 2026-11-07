@@ -475,6 +475,9 @@ export interface AdaptationHistoryEntry {
   status: AdaptationStatus;
   /** ISO instant of the decision; `null` while pending. */
   decidedAt: string | null;
+  /** The Session revisions it applies to and its last day: a pending one lapses with them. */
+  basis: SessionRevisionRef[];
+  validUntil: string | null;
 }
 
 /** What `generateWeek` reads except the week itself: where the Block is, the start day, picks, and RIR boost. */

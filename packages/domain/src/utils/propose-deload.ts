@@ -17,7 +17,7 @@ export function proposeDeload(context: AdaptationContext): AdaptationProposal[] 
   if (sessions.length === 0) return [];
   const reason = deloadReason(context);
   if (reason === null) return [];
-  const ask = nextDeloadAsk(context.history, reason.ruleId, context.weekStartsOn, context.now);
+  const ask = nextDeloadAsk(context, reason.ruleId, context.weekStartsOn);
   if (ask === null) return [];
   return [
     {

@@ -436,7 +436,7 @@ describe('Deciding on Adaptations', () => {
   });
 
   describe('a Session a revision replaced', () => {
-    it('opens as its current revision, and takes no set or finish any more', async () => {
+    it('opens as its current revision, and takes a set or finish queued before the plan changed', async () => {
       const { user, lower, lighten } = await twoSuggestions();
       const lightened = sessionOfFocus(await acceptedProgram(user, lighten), SessionFocus.Lower);
       const main = lower.exercises.find(({ rir }) => rir !== null)!;
@@ -454,11 +454,15 @@ describe('Deciding on Adaptations', () => {
 
       expect(status).toBe(200);
       expect(opened).toMatchObject({ id: lightened.id, revision: 2 });
-      expect(set.status).toBe(404);
-      expect(finish.status).toBe(404);
-      expect((await postSet(user, lightened.id, setOf(main.exerciseId, 1, 40, 8, 7))).status).toBe(
-        200,
-      );
+      expect(set.status).toBe(200);
+      expect(await set.json()).toMatchObject({ status: RecordStatus.Saved, recorded: true });
+      expect(finish.status).toBe(200);
+      const current = (await getSession(user, lightened.id)).session;
+      expect(current).not.toBeNull();
+      expect(current!.finished).not.toBeNull();
+      expect(
+        current!.exercises.find(({ exerciseId }) => exerciseId === main.exerciseId)?.loggedSets,
+      ).toEqual([expect.objectContaining({ setNumber: 1, reps: 8 })]);
     });
 
     it('resolves through every revision, to the newest', async () => {

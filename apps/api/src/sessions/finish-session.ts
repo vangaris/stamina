@@ -7,13 +7,14 @@ import { withUser } from '../db/with-user.ts';
 import { refreshAdaptations } from '../adaptations/index.ts';
 import { RecordIdTakenError } from './record-id-taken-error.ts';
 import { readSessionPlan } from './read-session-plan.ts';
-import { readSupersedingSessionId } from './read-superseding-session-id.ts';
+import { resolveCurrentSessionId } from './resolve-current-session-id.ts';
 import { toFinishedSession } from './to-finished-session.ts';
 
 /**
  * Finishes the user's Session with its session RPE and stores the Load (`sessionLoad`: RPE x
  * minutes, the Session's planned minutes when none are given); `null` when the Session is not
- * the user's or does not exist, or when a revision replaced it (an Adaptation was accepted); `RecordIdTakenError` when the finish id belongs to another Session. A Session finishes once: a second finish (the same id again or
+ * the user's or does not exist. A revision that replaced the Session (an Adaptation was accepted)
+ * is finished in its place: the id resolves to the current revision. `RecordIdTakenError` when the finish id belongs to another Session. A Session finishes once: a second finish (the same id again or
  * another) changes nothing and returns the stored one with `recorded: false`. Runs under
  * `lockUser`, so two devices finishing at once store one record. A new finish runs the Adaptation
  * rules at `now` in the same transaction (`refreshAdaptations`), so two hard Sessions in a row can
@@ -28,8 +29,9 @@ export async function finishSession(
 ): Promise<FinishSessionResult | null> {
   return withUser(db, userId, async (tx) => {
     await lockUser(tx, userId);
-    const plan = await readSessionPlan(tx, userId, sessionId);
-    if (plan === null || (await readSupersedingSessionId(tx, sessionId)) !== null) return null;
+    const current = await resolveCurrentSessionId(tx, sessionId);
+    const plan = await readSessionPlan(tx, userId, current);
+    if (plan === null) return null;
     if (plan.finished !== null) {
       return { status: RecordStatus.Saved, recorded: false, finished: plan.finished };
     }
@@ -40,7 +42,7 @@ export async function finishSession(
       .values({
         id: finish.id,
         userId,
-        sessionId,
+        sessionId: current,
         rpe: finish.rpe,
         minutes,
         load: sessionLoad(finish.rpe, minutes),

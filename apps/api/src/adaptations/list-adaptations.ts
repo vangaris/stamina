@@ -1,10 +1,10 @@
 import type { Adaptation } from '@stamina/contracts';
+import { isBasisCurrent } from '@stamina/domain';
 import { and, asc, eq, isNull } from 'drizzle-orm';
 import { lockUser } from '../db/lock-user.ts';
 import { adaptation, adaptationDecision } from '../db/schema.ts';
 import type { Db } from '../db/types.ts';
 import { withUser } from '../db/with-user.ts';
-import { isBasisCurrent } from './is-basis-current.ts';
 import { refreshAdaptations } from './refresh-adaptations.ts';
 import { toAdaptation } from './to-adaptation.ts';
 
@@ -32,7 +32,7 @@ export async function listAdaptations(db: Db, userId: string, now: Date): Promis
       .filter(
         ({ row }) =>
           (row.validUntil === null || row.validUntil >= context.today) &&
-          isBasisCurrent(row.basis, context),
+          isBasisCurrent(row.basis, context.sessions),
       )
       .map(({ row }) => toAdaptation({ row, decision: null }));
   });

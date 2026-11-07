@@ -444,6 +444,17 @@ describe('applyAdaptation', () => {
       expect(Math.min(...rirs)).toBe(3 + RESTART_RIR_STEP);
     });
 
+    it('starts the week tomorrow even when it is accepted later: never in the past', () => {
+      for (const change of [
+        { kind: AdaptationChangeKind.RepeatWeek, startsOn: '2026-11-07', weekInBlock: 1 } as const,
+        { kind: AdaptationChangeKind.RestartBlock, startsOn: '2026-11-07' } as const,
+      ]) {
+        const applied = applyAdaptation(change, context({ today: '2026-11-09' }))!;
+        expect(applied.block?.startsOn).toBe('2026-11-10');
+        expect(applied.sessions.every(({ date }) => date >= '2026-11-10')).toBe(true);
+      }
+    });
+
     it('answers null when nothing is left to replace or the week cannot be generated', () => {
       const done = sessions.map((s) => ({ ...s, started: true, finished: true }));
       expect(
