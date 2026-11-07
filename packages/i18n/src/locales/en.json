@@ -524,6 +524,114 @@
     },
     "backToWeek": "Back to your week"
   },
+  "stopFlag": {
+    "title": "Anything unusual today?",
+    "stop": "Stop",
+    "close": "Close",
+    "cancel": "Cancel",
+    "back": "Back",
+    "continue": "Continue",
+    "retry": "Try again",
+    "options": {
+      "chest-pain": "Chest pain or pressure",
+      "fainting": "Fainting or dizziness",
+      "breathlessness": "Unusual breathlessness",
+      "heartbeat": "Racing or irregular heartbeat",
+      "fever": "Fever or feeling ill",
+      "new-pain": "New pain or swelling",
+      "head-knock": "Head knock"
+    },
+    "area": {
+      "title": "Where is it?",
+      "label": "Which area?"
+    },
+    "outcome": {
+      "emergency": "Stop training. If symptoms are severe or don't settle, call {number} now.",
+      "paused-doctor": {
+        "title": "Stop training",
+        "body": "Training is paused until you confirm a doctor has seen you."
+      },
+      "rest": {
+        "title": "Rest today",
+        "body": "Today is a rest day. Don't train while you feel unwell."
+      },
+      "area-excluded": {
+        "title": "Area left out",
+        "body": "Left out of the plans Stamina makes from now on: {area}. Please get it checked by a professional."
+      },
+      "paused-cleared": {
+        "title": "Training is paused",
+        "body": "Training is paused until a doctor has cleared you."
+      }
+    },
+    "status": {
+      "queued": "You are offline. This is saved on this phone and will be sent when you are back online.",
+      "failed": "We could not save this report. Please try again."
+    },
+    "recheck": {
+      "title": "Let's check a few answers again",
+      "intro": "Because of what you reported, please answer again how things are today."
+    },
+    "paused": {
+      "title": "Training is paused",
+      "confirm": "A doctor has seen me",
+      "confirmCleared": "A doctor has cleared me",
+      "hint": "Tap this only once a doctor has seen you. Stamina records what you tell us and doesn't check it.",
+      "hintCleared": "Tap this only once a doctor has cleared you. Stamina records what you tell us and doesn't check it.",
+      "errors": {
+        "stillSaving": "Your report is still saving on this phone. Try again in a moment.",
+        "offline": "You are offline. Connect to the internet and try again.",
+        "unknown": "Something went wrong. Please try again."
+      }
+    },
+    "errors": {
+      "answer": "Choose yes or no.",
+      "areas": "Choose at least one area.",
+      "offline": "You are offline. Connect to the internet and try again.",
+      "unknown": "Something went wrong. Please try again."
+    }
+  },
+  "checkin": {
+    "progress": {
+      "label": "Check-in progress",
+      "value": "Question {step} of {total}"
+    },
+    "sleep": {
+      "name": "Sleep",
+      "question": "How did you sleep?",
+      "low": "1 = badly",
+      "high": "5 = very well"
+    },
+    "soreness": {
+      "name": "Muscles",
+      "question": "How do your muscles feel?",
+      "low": "1 = very sore",
+      "high": "5 = not sore"
+    },
+    "energy": {
+      "name": "Energy",
+      "question": "How is your energy?",
+      "low": "1 = very low",
+      "high": "5 = very high"
+    },
+    "back": "Back",
+    "retry": "Try again",
+    "done": {
+      "title": "Check-in done",
+      "saved": "Saved.",
+      "queued": "Saved on this phone. It will be sent when you are back online.",
+      "score": "{score} of {max}"
+    },
+    "unusual": {
+      "title": "Anything unusual today?",
+      "none": "Nothing unusual",
+      "something": "Something unusual",
+      "done": "Thanks, noted."
+    },
+    "error": {
+      "failed": "We could not save that. Please try again."
+    }
+  },
   "activity": {
     "played": {
       "open": "+ I played",

@@ -8,6 +8,7 @@ import {
   SessionSlot,
 } from '@stamina/domain';
 import { RoutePath } from '../../enums/route-path.ts';
+import { SessionPhase } from './enums/session-phase.ts';
 import { SessionMessageKey } from './enums/session-message-key.ts';
 import { TargetMessageKey } from './enums/target-message-key.ts';
 
@@ -71,6 +72,13 @@ export const SUGGESTED_WEIGHT_KEYS: Record<ProgressionOutcome, TargetMessageKey>
   [ProgressionOutcome.Decrease]: TargetMessageKey.SuggestedDecrease,
   [ProgressionOutcome.Hold]: TargetMessageKey.SuggestedHold,
 };
+
+/** The screens a person trains on, where the Stop button shows so it is never a scroll away. */
+export const STOP_BUTTON_PHASES: readonly SessionPhase[] = [
+  SessionPhase.Focus,
+  SessionPhase.Overview,
+  SessionPhase.Finish,
+];
 
 /** Where a person's swaps for a Session are kept on this device (the Session's id follows). */
 export const SWAP_STORAGE_PREFIX = 'stamina.session-swaps.';

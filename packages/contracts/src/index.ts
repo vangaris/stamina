@@ -14,6 +14,26 @@ export { ProgramRejection } from './enums/program-rejection.ts';
 export { SessionRejection } from './enums/session-rejection.ts';
 export { SessionSubpath } from './enums/session-subpath.ts';
 export { sessionPath } from './utils/session-path.ts';
+export { CheckinSubpath } from './enums/checkin-subpath.ts';
+export { StopFlagSubpath } from './enums/stop-flag-subpath.ts';
+export { checkinPath } from './utils/checkin-path.ts';
+export { stopFlagPath } from './utils/stop-flag-path.ts';
+export {
+  checkinSchema,
+  exportedCheckinSchema,
+  latestCheckinResponseSchema,
+  submitCheckinResultSchema,
+  submitCheckinSchema,
+} from './checkin-schema.ts';
+export {
+  confirmDoctorSeenResultSchema,
+  confirmDoctorSeenSchema,
+  exportedStopFlagSchema,
+  reportStopFlagResultSchema,
+  reportStopFlagSchema,
+  stopStateSchema,
+} from './stop-flag-schema.ts';
+export { recheckScreeningSchema } from './recheck-screening-schema.ts';
 export { ActivityRejection } from './enums/activity-rejection.ts';
 export { ActivitySubpath } from './enums/activity-subpath.ts';
 export { activityPath } from './utils/activity-path.ts';
@@ -91,6 +111,18 @@ export type {
   FinishSession,
   FinishSessionResult,
   ExportedActivity,
+  Checkin,
+  ConfirmDoctorSeen,
+  ConfirmDoctorSeenResult,
+  ExportedCheckin,
+  ExportedStopFlag,
+  LatestCheckinResponse,
+  RecheckScreening,
+  ReportStopFlag,
+  ReportStopFlagResult,
+  StopStateResponse,
+  SubmitCheckin,
+  SubmitCheckinResult,
   LoggedActivity,
   LogActivity,
   LogActivityResult,

@@ -1,7 +1,9 @@
 import {
+  checkinSchema,
   programWeekSchema,
   savedScreeningSchema,
   sessionDetailSchema,
+  stopStateSchema,
   weekLoadSchema,
 } from '@stamina/contracts';
 import { TrainingMode } from '@stamina/domain';
@@ -51,7 +53,26 @@ export function createDexiePlanCache(database: Dexie): PlanCache {
         : undefined;
     },
     async deleteClearedScreening() {
-      await table.delete(CACHE_KEY.clearedScreening);
+      await database.transaction('rw', table, async () => {
+        await table.delete(CACHE_KEY.clearedScreening);
+        await table.delete(CACHE_KEY.stop);
+      });
+    },
+    async saveStop(stop) {
+      await table.put({ key: CACHE_KEY.stop, value: stop });
+    },
+    async readStop() {
+      const parsed = stopStateSchema.safeParse((await table.get(CACHE_KEY.stop))?.value);
+      return parsed.success ? parsed.data : undefined;
+    },
+    async saveLatestCheckin(checkin) {
+      await table.put({ key: CACHE_KEY.latestCheckin, value: checkin });
+    },
+    async readLatestCheckin() {
+      const parsed = checkinSchema
+        .nullable()
+        .safeParse((await table.get(CACHE_KEY.latestCheckin))?.value);
+      return parsed.success ? parsed.data : undefined;
     },
   };
 }

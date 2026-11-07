@@ -10,6 +10,7 @@ export enum RouteName {
   Consent = 'consent',
   Screening = 'screening',
   Referred = 'referred',
+  Paused = 'paused',
   Reveal = 'reveal',
   Week = 'week',
   DevUi = 'dev-ui',

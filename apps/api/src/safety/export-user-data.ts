@@ -3,6 +3,7 @@ import { asc, eq } from 'drizzle-orm';
 import type { FieldCipher } from '../crypto/index.ts';
 import {
   activity,
+  checkin,
   consent,
   profile,
   screening,
@@ -10,10 +11,12 @@ import {
   setLog,
   sport,
   sportRequest,
+  stopFlag,
 } from '../db/schema.ts';
 import type { Db } from '../db/types.ts';
 import { withUser } from '../db/with-user.ts';
 import { toLoggedActivity } from '../activities/index.ts';
+import { toCheckin } from '../checkins/index.ts';
 import { readProgram } from '../program/index.ts';
 import { toFinishedSession } from '../sessions/index.ts';
 import { toSavedProfile } from '../profile/to-saved-profile.ts';
@@ -21,7 +24,7 @@ import { storedAnswersSchema } from './stored-answers-schema.ts';
 import { toSavedScreening } from './to-saved-screening.ts';
 
 /**
- * Everything held about the user: profile, every consent row, the Program week, every logged set, finished Session and Activity, every sport they asked for and every Screening with its
+ * Everything held about the user: profile, every consent row, the Program week, every logged set, finished Session, Activity, Check-in and stop flag, every sport they asked for and every Screening with its
  * answers decrypted, oldest first. The one place answers leave the server.
  */
 export async function exportUserData(
@@ -29,36 +32,55 @@ export async function exportUserData(
   cipher: FieldCipher,
   userId: string,
 ): Promise<UserExport> {
-  const { profileRow, consentRows, screeningRows, programWeek, setRows, finishRows, activityRows } =
-    await withUser(db, userId, async (tx) => ({
-      profileRow: (await tx.select().from(profile).where(eq(profile.userId, userId)))[0],
-      consentRows: await tx
-        .select()
-        .from(consent)
-        .where(eq(consent.userId, userId))
-        .orderBy(asc(consent.grantedAt)),
-      screeningRows: await tx
-        .select()
-        .from(screening)
-        .where(eq(screening.userId, userId))
-        .orderBy(asc(screening.takenAt)),
-      programWeek: await readProgram(tx, userId),
-      setRows: await tx
-        .select()
-        .from(setLog)
-        .where(eq(setLog.userId, userId))
-        .orderBy(asc(setLog.createdAt), asc(setLog.setNumber)),
-      finishRows: await tx
-        .select()
-        .from(sessionLog)
-        .where(eq(sessionLog.userId, userId))
-        .orderBy(asc(sessionLog.finishedAt)),
-      activityRows: await tx
-        .select()
-        .from(activity)
-        .where(eq(activity.userId, userId))
-        .orderBy(asc(activity.loggedAt)),
-    }));
+  const {
+    profileRow,
+    consentRows,
+    screeningRows,
+    programWeek,
+    setRows,
+    finishRows,
+    activityRows,
+    checkinRows,
+    stopFlagRows,
+  } = await withUser(db, userId, async (tx) => ({
+    profileRow: (await tx.select().from(profile).where(eq(profile.userId, userId)))[0],
+    consentRows: await tx
+      .select()
+      .from(consent)
+      .where(eq(consent.userId, userId))
+      .orderBy(asc(consent.grantedAt)),
+    screeningRows: await tx
+      .select()
+      .from(screening)
+      .where(eq(screening.userId, userId))
+      .orderBy(asc(screening.takenAt)),
+    programWeek: await readProgram(tx, userId),
+    setRows: await tx
+      .select()
+      .from(setLog)
+      .where(eq(setLog.userId, userId))
+      .orderBy(asc(setLog.createdAt), asc(setLog.setNumber)),
+    finishRows: await tx
+      .select()
+      .from(sessionLog)
+      .where(eq(sessionLog.userId, userId))
+      .orderBy(asc(sessionLog.finishedAt)),
+    activityRows: await tx
+      .select()
+      .from(activity)
+      .where(eq(activity.userId, userId))
+      .orderBy(asc(activity.loggedAt)),
+    checkinRows: await tx
+      .select()
+      .from(checkin)
+      .where(eq(checkin.userId, userId))
+      .orderBy(asc(checkin.submittedAt)),
+    stopFlagRows: await tx
+      .select()
+      .from(stopFlag)
+      .where(eq(stopFlag.userId, userId))
+      .orderBy(asc(stopFlag.reportedAt)),
+  }));
 
   // As the table owner, filtered by the user: a rejected sport is hidden from its requesters by
   // the `sport_visible` policy, but the request is still the user's data and is exported.
@@ -108,6 +130,16 @@ export async function exportUserData(
       sessionId: row.sessionId,
     })),
     activities: activityRows.map(toLoggedActivity),
+    checkins: checkinRows.map(toCheckin),
+    stopFlags: stopFlagRows.map((row) => ({
+      id: row.id,
+      flag: row.flag,
+      date: row.date,
+      area: row.bodyArea,
+      sessionId: row.sessionId,
+      reportedAt: row.reportedAt.toISOString(),
+      confirmedAt: row.confirmedAt?.toISOString() ?? null,
+    })),
     sportRequests: sportRequestRows.map((row) => ({
       sportId: row.sportId,
       name: row.name,

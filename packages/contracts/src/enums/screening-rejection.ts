@@ -4,4 +4,6 @@ export enum ScreeningRejection {
   ConsentMissing = 'consent-missing',
   /** No saved profile: under-18s and non-EEA residents are stopped at onboarding and never reach a health question. */
   ProfileMissing = 'profile-missing',
+  /** Nothing to carry the other answers over from: the first Screening takes all ten questions. */
+  NoScreening = 'no-screening',
 }

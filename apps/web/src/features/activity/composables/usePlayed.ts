@@ -8,6 +8,7 @@ import {
   logActivity,
 } from '@stamina/app-core';
 import { RecordStatus, type LogActivity } from '@stamina/contracts';
+import { toLocalDate } from '@stamina/dates';
 import { newId } from '@stamina/ids';
 import { computed, ref } from 'vue';
 import { useMediator } from '../../../mediator.ts';
@@ -17,7 +18,6 @@ import { PlayedStatus } from '../enums/played-status.ts';
 import type { PlayedDraft, UsePlayedOptions } from '../types.ts';
 import { ownSportName } from '../utils/own-sport-name.ts';
 import { toLoadPreview } from '../utils/to-load-preview.ts';
-import { toLocalDate } from '../utils/to-local-date.ts';
 import { toLogSport } from '../utils/to-log-sport.ts';
 import { toPlayedDefaults } from '../utils/to-played-defaults.ts';
 import { toSportOptions } from '../utils/to-sport-options.ts';

@@ -9,7 +9,10 @@ import { ScreeningQuestion } from './enums/screening-question.ts';
 import { SessionFocus } from './enums/session-focus.ts';
 import { SessionSlot } from './enums/session-slot.ts';
 import { SportMovement } from './enums/sport-movement.ts';
+import { StopAction } from './enums/stop-action.ts';
+import { StopFlag } from './enums/stop-flag.ts';
 import { Weekday } from './enums/weekday.ts';
+import type { StopFlagEffect } from './types.ts';
 
 /** Stamina is for adults. Age is the difference between the current year and the birth year. */
 export const ADULT_AGE = 18;
@@ -599,3 +602,55 @@ export const PROGRESSION_HARD_SETS = 2;
 export const WEIGHT_ROUNDING_KG = 0.5;
 /** Effort of a set taken to failure; the target RPE is this minus the prescribed reps in reserve. */
 export const FAILURE_RPE = 10;
+
+/** Check-in answers (sleep, soreness, energy) run from this to `MAX_CHECKIN_SCORE`. */
+export const MIN_CHECKIN_SCORE = 1;
+export const MAX_CHECKIN_SCORE = 5;
+
+/** The emergency number shown with a cardiac, fainting, breathing or heartbeat flag; every country Stamina serves (the EEA) has 112. */
+export const EMERGENCY_NUMBER = '112';
+
+/**
+ * What each stop flag does (safety rules, "Stop flags"). `recheck` lists the Screening questions
+ * the person answers again after reporting it; a fever has none. Safety-critical: changes need
+ * the reviewers' sign-off.
+ */
+export const STOP_FLAG_EFFECTS: Readonly<Record<StopFlag, StopFlagEffect>> = {
+  [StopFlag.ChestPain]: {
+    action: StopAction.PauseUntilDoctor,
+    showEmergency: true,
+    recheck: [ScreeningQuestion.HeartCondition, ScreeningQuestion.ChestPain],
+  },
+  [StopFlag.Fainting]: {
+    action: StopAction.PauseUntilDoctor,
+    showEmergency: true,
+    recheck: [ScreeningQuestion.Fainting],
+  },
+  [StopFlag.Breathlessness]: {
+    action: StopAction.PauseUntilDoctor,
+    showEmergency: true,
+    recheck: [ScreeningQuestion.Breathing],
+  },
+  [StopFlag.Heartbeat]: {
+    action: StopAction.PauseUntilDoctor,
+    showEmergency: true,
+    recheck: [ScreeningQuestion.HeartCondition],
+  },
+  [StopFlag.Fever]: { action: StopAction.RestToday, showEmergency: false, recheck: [] },
+  [StopFlag.NewPain]: {
+    action: StopAction.ExcludeArea,
+    showEmergency: false,
+    recheck: [ScreeningQuestion.BoneJointMuscle],
+  },
+  [StopFlag.HeadKnock]: {
+    action: StopAction.PauseUntilCleared,
+    showEmergency: false,
+    recheck: [ScreeningQuestion.HeadInjury],
+  },
+};
+
+/** The actions that pause training until the person confirms a doctor has seen or cleared them. */
+export const PAUSING_STOP_ACTIONS: readonly StopAction[] = [
+  StopAction.PauseUntilDoctor,
+  StopAction.PauseUntilCleared,
+];

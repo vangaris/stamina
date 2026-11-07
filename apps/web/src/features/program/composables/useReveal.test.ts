@@ -46,6 +46,21 @@ describe('useReveal', () => {
     expect(onNavigate).toHaveBeenCalledWith(RoutePath.Referred);
   });
 
+  it('sends a person whose training is paused to the paused screen', async () => {
+    const { flow, onNavigate } = await setup({
+      api: () => ({
+        createProgram: async () => ({
+          status: RecordStatus.Rejected,
+          reason: ProgramRejection.Paused,
+        }),
+      }),
+    });
+
+    await flow.load();
+
+    expect(onNavigate).toHaveBeenCalledWith(RoutePath.Paused);
+  });
+
   it('explains a food-only profile calmly', async () => {
     const { flow } = await setup({
       answers: profileAnswers({ needs: Need.Food, trainingWeek: undefined }),

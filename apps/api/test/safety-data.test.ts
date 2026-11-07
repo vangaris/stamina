@@ -1,14 +1,19 @@
 import {
   ApiPath,
+  CheckinSubpath,
   HttpMethod,
   HttpStatus,
   RecordStatus,
   createApiClient,
   saveScreeningResultSchema,
   SportKind,
+  StopFlagSubpath,
+  checkinPath,
+  stopFlagPath,
   userExportSchema,
   type ScreeningSubmission,
 } from '@stamina/contracts';
+import { NO_STOP } from './support/stop-flag-fixtures.ts';
 import {
   BodyArea,
   ConsentPurpose,
@@ -16,6 +21,7 @@ import {
   ScreeningQuestion,
   SportStatus,
   StartingLevel,
+  StopFlag,
   TrainingMode,
 } from '@stamina/domain';
 import { Locale } from '@stamina/i18n';
@@ -25,6 +31,7 @@ import { createFieldCipher, FieldCipherError } from '../src/crypto/index.ts';
 import { appUser, consent, profile, screening, sport } from '../src/db/schema.ts';
 import { ApiErrorCode } from '../src/enums/api-error-code.ts';
 import type { ErrorReporter } from '../src/error-reporter.ts';
+import { checkinOf } from './support/checkin-fixtures.ts';
 import { issueInvite, validSubmission } from './support/profile-fixtures.ts';
 import {
   consentToBoth,
@@ -35,6 +42,7 @@ import {
   type TestApi,
 } from './support/safety-fixtures.ts';
 import { expectNoSentinel, SENTINELS } from './support/sentinel.ts';
+import { stopFlagOf } from './support/stop-flag-fixtures.ts';
 import { startTestApi } from './support/test-api.ts';
 
 const OTHER_KEY = btoa(String.fromCharCode(...Array.from({ length: 32 }, (_, i) => 200 + i)));
@@ -313,6 +321,7 @@ describe('Screening data: encryption, export, deletion, logs', () => {
         profileSaved: false,
         granted: [],
         screening: null,
+        stop: NO_STOP,
       });
     });
   });
@@ -345,6 +354,54 @@ describe('Screening data: encryption, export, deletion, logs', () => {
           expect.arrayContaining(['latency_ms', 'request_id', 'route', 'status']),
         );
         expect(Object.keys(JSON.parse(line) as object).length).toBeLessThanOrEqual(5);
+      }
+    });
+
+    it('keep Check-in and stop flag data out of every log line and error body', async () => {
+      const user = await consented();
+      lines.length = 0;
+      const bodies: string[] = [];
+      const send = async (method: HttpMethod, path: string, body?: unknown) => {
+        bodies.push(await (await user.call(method, path, body)).text());
+      };
+
+      await send(HttpMethod.Post, `${checkinPath()}?q=${SENTINELS.checkin}`, {
+        id: crypto.randomUUID(),
+        date: SENTINELS.checkin,
+        sleep: SENTINELS.checkin,
+        soreness: 3,
+        energy: 3,
+      });
+      await send(HttpMethod.Post, checkinPath(), {
+        ...checkinOf('2026-11-08'),
+        note: SENTINELS.checkin,
+      });
+      await send(HttpMethod.Get, `${checkinPath(CheckinSubpath.Latest)}?q=${SENTINELS.checkin}`);
+      await send(HttpMethod.Post, `${stopFlagPath()}?q=${SENTINELS.stopFlag}`, {
+        id: crypto.randomUUID(),
+        flag: SENTINELS.stopFlag,
+        date: SENTINELS.stopFlag,
+      });
+      await send(HttpMethod.Post, stopFlagPath(), {
+        ...stopFlagOf(StopFlag.ChestPain, '2026-11-08'),
+        note: SENTINELS.stopFlag,
+      });
+      await send(HttpMethod.Post, `${stopFlagPath()}/${SENTINELS.stopFlag}`);
+      await send(HttpMethod.Post, stopFlagPath(StopFlagSubpath.Confirm), {
+        flags: [StopFlag.ChestPain],
+      });
+      await send(HttpMethod.Post, ApiPath.ScreeningRecheck, {
+        answers: { [ScreeningQuestion.Fainting]: SENTINELS.stopFlag },
+      });
+      await send(HttpMethod.Get, ApiPath.Safety);
+      await send(HttpMethod.Get, ApiPath.MeExport);
+
+      expect(lines).toHaveLength(10);
+      expectNoSentinel(lines);
+      expectNoSentinel(bodies);
+      const text = lines.join('\n');
+      for (const token of [...Object.values(StopFlag), 'soreness']) {
+        expect(text).not.toContain(token);
       }
     });
 

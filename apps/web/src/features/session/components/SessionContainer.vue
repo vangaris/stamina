@@ -1,15 +1,18 @@
 <script setup lang="ts">
+import { Button, ButtonVariant } from '@stamina/ui-button';
 import { RestTimer } from '@stamina/ui-rest-timer';
-import { computed, onBeforeUnmount, onMounted } from 'vue';
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import { RoutePath } from '../../../enums/route-path.ts';
 import { i18n } from '../../../i18n.ts';
+import { ReportStopFlagContainer, RestNoticeContainer } from '../../stop-flag/index.ts';
 import { REST_ADD_SECONDS } from '../config.ts';
 import { useSession } from '../composables/useSession.ts';
 import { SessionPhase } from '../enums/session-phase.ts';
 import { SessionSheet } from '../enums/session-sheet.ts';
 import type { SessionContainerProps } from '../types.ts';
+import { hasStopButton } from '../utils/has-stop-button.ts';
 import { toRestAnnouncement } from '../utils/to-rest-announcement.ts';
 import ConfirmFinishSheet from './ConfirmFinishSheet.vue';
 import DoneView from './DoneView.vue';
@@ -58,6 +61,9 @@ const confirmOpen = computed({
   },
 });
 
+const showStop = computed(() => hasStopButton(phase.value));
+const stopOpen = ref(false);
+
 function announceRest(seconds: number) {
   const { key, params } = toRestAnnouncement(seconds);
   return t(key, params);
@@ -69,6 +75,13 @@ onBeforeUnmount(session.close);
 
 <template>
   <div class="flex flex-col gap-4">
+    <RestNoticeContainer />
+    <div v-if="showStop" class="flex justify-end">
+      <Button :variant="ButtonVariant.Danger" data-testid="stop-open" @click="stopOpen = true">
+        {{ t('stopFlag.stop') }}
+      </Button>
+    </div>
+    <ReportStopFlagContainer v-model:open="stopOpen" :session-id="sessionId" />
     <SessionGate
       v-if="phase === SessionPhase.Loading || phase === SessionPhase.Failed"
       :phase="phase"

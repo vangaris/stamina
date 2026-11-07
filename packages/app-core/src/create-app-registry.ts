@@ -1,4 +1,9 @@
 import { RequestType } from './enums/request-type.ts';
+import { confirmDoctorSeenDefinition } from './handlers/confirm-doctor-seen.ts';
+import { getLatestCheckinDefinition } from './handlers/get-latest-checkin.ts';
+import { recheckScreeningDefinition } from './handlers/recheck-screening.ts';
+import { reportStopFlagDefinition } from './handlers/report-stop-flag.ts';
+import { submitCheckinDefinition } from './handlers/submit-checkin.ts';
 import { checkInviteDefinition } from './handlers/check-invite.ts';
 import { deleteAccountDefinition } from './handlers/delete-account.ts';
 import { createProgramDefinition } from './handlers/create-program.ts';
@@ -48,5 +53,10 @@ export function createAppRegistry(): RequestRegistry<Services, Stores> {
     [RequestType.FinishSession]: finishSessionDefinition,
     [RequestType.LogActivity]: logActivityDefinition,
     [RequestType.GetWeekLoad]: getWeekLoadDefinition,
+    [RequestType.SubmitCheckin]: submitCheckinDefinition,
+    [RequestType.GetLatestCheckin]: getLatestCheckinDefinition,
+    [RequestType.ReportStopFlag]: reportStopFlagDefinition,
+    [RequestType.ConfirmDoctorSeen]: confirmDoctorSeenDefinition,
+    [RequestType.RecheckScreening]: recheckScreeningDefinition,
   } satisfies Record<RequestType, unknown>;
 }

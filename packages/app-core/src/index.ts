@@ -19,6 +19,11 @@ export { SessionStatus } from './enums/session-status.ts';
 export { SyncTrigger } from './enums/sync-trigger.ts';
 export { AppError } from './errors/app-error.ts';
 export { AuthError } from './errors/auth-error.ts';
+export { confirmDoctorSeen } from './handlers/confirm-doctor-seen.ts';
+export { getLatestCheckin } from './handlers/get-latest-checkin.ts';
+export { recheckScreening } from './handlers/recheck-screening.ts';
+export { reportStopFlag } from './handlers/report-stop-flag.ts';
+export { submitCheckin } from './handlers/submit-checkin.ts';
 export { checkInvite } from './handlers/check-invite.ts';
 export { deleteAccount } from './handlers/delete-account.ts';
 export { createProgram } from './handlers/create-program.ts';
@@ -49,12 +54,15 @@ export type {
   AuthSession,
   BetterAuthServiceOptions,
   CheckInvite,
+  CheckinStore,
   Clock,
+  ConfirmDoctorSeenRequest,
   Context,
   DeleteAccount,
   ExportData,
   FinishSessionRequest,
   GetHealth,
+  GetLatestCheckinRequest,
   GetProfile,
   GetSafety,
   GetSession,
@@ -65,7 +73,9 @@ export type {
   HealthState,
   IntervalTimer,
   InviteStorage,
+  LocalCheckin,
   LocalData,
+  LocalStopFlag,
   LocalActivity,
   LocalFinish,
   LocalSessionLog,
@@ -84,7 +94,9 @@ export type {
   ProfileState,
   Queued,
   QueuedRequest,
+  RecheckScreeningRequest,
   RecordDoctorOk,
+  ReportStopFlagRequest,
   Request,
   RequestDefinition,
   RequestEmailCode,
@@ -100,7 +112,9 @@ export type {
   SignOut,
   StartGoogleSignIn,
   StartSyncOptions,
+  StopFlagStore,
   Stores,
+  SubmitCheckinRequest,
   SyncResult,
   SyncRunner,
   VerifyEmailCode,

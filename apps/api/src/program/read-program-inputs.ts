@@ -1,5 +1,11 @@
 import { ProgramRejection, SportKind } from '@stamina/contracts';
-import { addDays, ConsentPurpose, DEFAULT_EQUIPMENT, TrainingMode } from '@stamina/domain';
+import {
+  addDays,
+  ConsentPurpose,
+  DEFAULT_EQUIPMENT,
+  TrainingMode,
+  mergeExcludedAreas,
+} from '@stamina/domain';
 import { eq, sql } from 'drizzle-orm';
 import { exercise, profile } from '../db/schema.ts';
 import type { UserTx } from '../db/types.ts';
@@ -8,6 +14,7 @@ import { toSavedProfile } from '../profile/to-saved-profile.ts';
 import { readGrantedPurposes } from '../safety/read-granted-purposes.ts';
 import { readLatestScreening } from '../safety/read-latest-screening.ts';
 import { toSavedScreening } from '../safety/to-saved-screening.ts';
+import { readStopState } from '../stop-flags/index.ts';
 import { FIRST_WEEK_IN_BLOCK, START_DELAY_DAYS } from './config.ts';
 import { ProgramInputsStatus } from './enums/program-inputs-status.ts';
 import type { ProgramInputs } from './types.ts';
@@ -21,8 +28,8 @@ const refused = (reason: ProgramRejection): ProgramInputs => ({
 /**
  * Everything the engine reads for the signed-in user's first week, or why it cannot run.
  * Refusals, in order: no saved profile, missing consent or no Screening (`NotReady`); a Referred
- * Training mode (`Referred`); food only (`NoTrainingWeek`). The week starts the day after
- * `now`, in UTC. Reads as the app role, so what the person may see is what the engine sees.
+ * Training mode (`Referred`); an unconfirmed pausing stop flag (`Paused`); food only (`NoTrainingWeek`). The week starts the day after
+ * `now`, in UTC. The excluded areas are the Screening's plus those of reported new pain. Reads as the app role, so what the person may see is what the engine sees.
  */
 export async function readProgramInputs(
   tx: UserTx,
@@ -39,6 +46,8 @@ export async function readProgramInputs(
 
   const screening = toSavedScreening(screeningRow);
   if (screening.trainingMode === TrainingMode.Referred) return refused(ProgramRejection.Referred);
+  const stop = await readStopState(tx, userId);
+  if (stop.pausing.length > 0) return refused(ProgramRejection.Paused);
   const saved = toSavedProfile(profileRow);
   if (saved.trainingWeek === undefined) return refused(ProgramRejection.NoTrainingWeek);
 
@@ -60,7 +69,7 @@ export async function readProgramInputs(
       trainingWeek: saved.trainingWeek,
       sport: await findProfileSport(tx, saved),
       mode: screening.trainingMode,
-      excludedAreas: screening.excludedAreas,
+      excludedAreas: mergeExcludedAreas(screening.excludedAreas, stop),
       equipment: DEFAULT_EQUIPMENT,
       library,
       weekInBlock: FIRST_WEEK_IN_BLOCK,

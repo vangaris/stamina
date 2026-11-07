@@ -6,6 +6,8 @@ export interface SafetyGuardOptions {
   ungatedRoutes: readonly RouteName[];
   /** Resolved on each navigation, so the guard can be created before the app's services exist. */
   mediator: () => Mediator;
+  /** The time now, for "today" on the person's calendar. Defaults to the browser's clock. */
+  now?: () => Date;
 }
 
 export interface ServicesEnvInput {

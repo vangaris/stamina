@@ -19,6 +19,7 @@ import { ApiErrorCode } from './enums/api-error-code.ts';
 import type { ErrorReporter } from './error-reporter.ts';
 import { requestLog, type AppEnv, type LogSink } from './request-log.ts';
 import { activityRoutes } from './routes/activity-routes.ts';
+import { checkinRoutes } from './routes/checkin-routes.ts';
 import { consentRoutes } from './routes/consent-routes.ts';
 import { doctorOkRoutes } from './routes/doctor-ok-routes.ts';
 import { exerciseRoutes } from './routes/exercise-routes.ts';
@@ -31,6 +32,7 @@ import { profileRoutes } from './routes/profile-routes.ts';
 import { safetyRoutes } from './routes/safety-routes.ts';
 import { screeningRoutes } from './routes/screening-routes.ts';
 import { sportRoutes } from './routes/sport-routes.ts';
+import { stopFlagRoutes } from './routes/stop-flag-routes.ts';
 
 export interface AppDeps {
   db: Db;
@@ -94,7 +96,9 @@ export function createApp({
   app.route(ApiPath.Program, programRoutes({ db, ai, auth, now }));
   app.route(ApiPath.Sessions, sessionRoutes({ db, auth }));
   app.route(ApiPath.Activities, activityRoutes({ db, auth, now }));
+  app.route(ApiPath.Checkins, checkinRoutes({ db, auth }));
   app.route(ApiPath.Safety, safetyRoutes({ db, auth }));
+  app.route(ApiPath.StopFlags, stopFlagRoutes({ db, auth }));
   app.route(ApiPath.Consent, consentRoutes({ db, auth }));
   app.route(ApiPath.Screening, screeningRoutes({ db, auth, cipher }));
   app.route(ApiPath.DoctorOk, doctorOkRoutes({ db, auth }));

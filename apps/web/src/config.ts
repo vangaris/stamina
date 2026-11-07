@@ -17,6 +17,7 @@ export const ROUTES_WITHOUT_TABS: readonly RouteName[] = [
   RouteName.Consent,
   RouteName.Screening,
   RouteName.Referred,
+  RouteName.Paused,
   RouteName.Reveal,
   RouteName.SessionDetail,
 ];
@@ -33,6 +34,7 @@ export const UNGATED_ROUTES: readonly RouteName[] = [
   RouteName.Consent,
   RouteName.Screening,
   RouteName.Referred,
+  RouteName.Paused,
   RouteName.DevUi,
 ];
 

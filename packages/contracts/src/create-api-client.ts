@@ -1,5 +1,11 @@
 import { ApiError } from './api-error.ts';
 import { logActivityResultSchema, weekLoadSchema } from './activity-schema.ts';
+import { latestCheckinResponseSchema, submitCheckinResultSchema } from './checkin-schema.ts';
+import { CheckinSubpath } from './enums/checkin-subpath.ts';
+import { StopFlagSubpath } from './enums/stop-flag-subpath.ts';
+import { confirmDoctorSeenResultSchema, reportStopFlagResultSchema } from './stop-flag-schema.ts';
+import { checkinPath } from './utils/checkin-path.ts';
+import { stopFlagPath } from './utils/stop-flag-path.ts';
 import { ActivitySubpath } from './enums/activity-subpath.ts';
 import { activityPath } from './utils/activity-path.ts';
 import { ApiPath } from './enums/api-path.ts';
@@ -92,6 +98,28 @@ export function createApiClient({
         HttpStatus.UnprocessableEntity,
       ]);
       return saveScreeningResultSchema.parse(await response.json());
+    },
+    async recheckScreening(recheck) {
+      const response = await postJson(ApiPath.ScreeningRecheck, recheck, [
+        HttpStatus.UnprocessableEntity,
+      ]);
+      return saveScreeningResultSchema.parse(await response.json());
+    },
+    async submitCheckin(checkin) {
+      const response = await postJson(checkinPath(), checkin);
+      return submitCheckinResultSchema.parse(await response.json());
+    },
+    async getLatestCheckin() {
+      const response = await send(checkinPath(CheckinSubpath.Latest), {});
+      return latestCheckinResponseSchema.parse(await response.json()).checkin;
+    },
+    async reportStopFlag(flag) {
+      const response = await postJson(stopFlagPath(), flag);
+      return reportStopFlagResultSchema.parse(await response.json());
+    },
+    async confirmDoctorSeen(confirm) {
+      const response = await postJson(stopFlagPath(StopFlagSubpath.Confirm), confirm);
+      return confirmDoctorSeenResultSchema.parse(await response.json());
     },
     async recordDoctorOk() {
       const response = await postEmpty(ApiPath.DoctorOk, [HttpStatus.UnprocessableEntity]);

@@ -8,6 +8,8 @@ export const SENTINELS = {
   path: 'SENTINEL-PATH-asthma-attack',
   cookie: 'SENTINEL-COOKIE-bmi-31',
   requestId: 'SENTINEL-REQID-migraine',
+  checkin: 'SENTINEL-CHECKIN-slept-badly-since-the-funeral',
+  stopFlag: 'SENTINEL-STOPFLAG-chest-tightness-on-stairs',
 } as const;
 
 export const SENTINEL_VALUES = Object.values(SENTINELS);

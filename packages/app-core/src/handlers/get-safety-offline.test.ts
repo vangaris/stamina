@@ -1,5 +1,6 @@
-import { ConsentPurpose, ScreeningQuestion } from '@stamina/domain';
+import { ConsentPurpose, ScreeningQuestion, StopFlag } from '@stamina/domain';
 import { Locale } from '@stamina/i18n';
+import { newId } from '@stamina/ids';
 import { IDBFactory, IDBKeyRange } from 'fake-indexeddb';
 import { describe, expect, it } from 'vitest';
 import {
@@ -8,10 +9,12 @@ import {
   getSafety,
   grantConsent,
   recordDoctorOk,
+  reportStopFlag,
   saveScreening,
   SafetyStatus,
   signOut,
 } from '../index.ts';
+import { LocalTable } from '../enums/local-table.ts';
 import { createDexieLocalData } from '../services/create-dexie-local-data.ts';
 import { createDexiePlanCache } from '../services/create-dexie-plan-cache.ts';
 import { createLocalDatabase } from '../services/create-local-database.ts';
@@ -100,6 +103,16 @@ describe.each(ADAPTERS)('getSafety without signal with %s', (_name, adapters) =>
     await rejectsOffline(mediator.send(getSafety()));
   });
 
+  it('rejects Offline when the cached Screening has no stop state: it could hide a pause', async () => {
+    const { mediator, network, services } = await clearedAndCached(adapters());
+    const screening = await services.planCache.readClearedScreening();
+    await services.planCache.deleteClearedScreening();
+    await services.planCache.saveClearedScreening(screening!);
+    network.online = false;
+
+    await rejectsOffline(mediator.send(getSafety()));
+  });
+
   it('drops the cached Ready when this app records a doctor statement', async () => {
     const { mediator, network } = await clearedAndCached(adapters());
 
@@ -144,5 +157,46 @@ describe('getSafety after a reload', () => {
 
     await before.mediator.send(signOut());
     await rejectsOffline(reopened(false).mediator.send(getSafety()));
+  });
+
+  it('still holds a pause from IndexedDB: Paused offline, and Offline once wiped', async () => {
+    const indexedDB = new IDBFactory();
+    const before = await clearedAndCached(dexieServices(indexedDB));
+    await before.mediator.send(
+      reportStopFlag({
+        id: newId(),
+        flag: StopFlag.ChestPain,
+        date: new Date().toISOString().slice(0, 10),
+      }),
+    );
+    expect(await before.mediator.send(getSafety())).toMatchObject({ status: SafetyStatus.Paused });
+
+    const reopened = (online: boolean) =>
+      setupMediator({
+        api: before.services.api,
+        auth: before.services.auth,
+        network: { isOnline: () => online },
+        ...dexieServices(indexedDB),
+      });
+    expect(await reopened(false).mediator.send(getSafety())).toMatchObject({
+      status: SafetyStatus.Paused,
+      stop: { pausing: [StopFlag.ChestPain] },
+    });
+
+    await before.mediator.send(signOut());
+    await rejectsOffline(reopened(false).mediator.send(getSafety()));
+  });
+});
+
+describe('getSafety when the cached stop state is unreadable', () => {
+  it('rejects Offline when it is in an unknown shape (IndexedDB)', async () => {
+    const indexedDB = new IDBFactory();
+    const before = await clearedAndCached(dexieServices(indexedDB));
+    await createLocalDatabase({ indexedDB, IDBKeyRange })
+      .table(LocalTable.Cache)
+      .put({ key: 'stop', value: { old: 1 } });
+    before.network.online = false;
+
+    await rejectsOffline(before.mediator.send(getSafety()));
   });
 });

@@ -1,6 +1,6 @@
 import { IDBFactory, IDBKeyRange } from 'fake-indexeddb';
-import { Emphasis } from '@stamina/domain';
-import type { WeekLoad } from '@stamina/contracts';
+import { BodyArea, Emphasis, StopFlag, type StopState } from '@stamina/domain';
+import type { Checkin, WeekLoad } from '@stamina/contracts';
 import { describe, expect, it } from 'vitest';
 import { LocalTable } from '../enums/local-table.ts';
 import { testFakeSession } from '../testing/test-fake-session.ts';
@@ -82,5 +82,59 @@ describe('createDexiePlanCache', () => {
 
     expect(await cache.readSessionDetail(detail.id)).toBeUndefined();
     expect(await cache.readProgram()).toBeUndefined();
+  });
+
+  describe('stop state and latest Check-in', () => {
+    const stop: StopState = {
+      pausing: [StopFlag.ChestPain],
+      restOn: '2026-11-06',
+      excludedAreas: [BodyArea.Knee],
+    };
+    const checkin: Checkin = {
+      id: '00000000-0000-4000-8000-000000000001',
+      date: '2026-11-06',
+      sleep: 3,
+      soreness: 2,
+      energy: 4,
+      submittedAt: '2026-11-06T09:00:00.000Z',
+    };
+
+    it('returns the stop state saved, across a reload, and none before', async () => {
+      const indexedDB = new IDBFactory();
+      const { cache } = open(indexedDB);
+      expect(await cache.readStop()).toBeUndefined();
+
+      await cache.saveStop(stop);
+
+      expect(await open(indexedDB).cache.readStop()).toEqual(stop);
+    });
+
+    it('drops the stop state with the cleared Screening', async () => {
+      const { cache } = open(new IDBFactory());
+      await cache.saveStop(stop);
+
+      await cache.deleteClearedScreening();
+
+      expect(await cache.readStop()).toBeUndefined();
+    });
+
+    it('treats a cached stop state in an unknown shape as not cached', async () => {
+      const { database, cache } = open(new IDBFactory());
+      await database.table(LocalTable.Cache).put({ key: 'stop', value: { old: 1 } });
+
+      expect(await cache.readStop()).toBeUndefined();
+    });
+
+    it('tells a fetched "none yet" (null) from never fetched, across a reload', async () => {
+      const indexedDB = new IDBFactory();
+      const { cache } = open(indexedDB);
+      expect(await cache.readLatestCheckin()).toBeUndefined();
+
+      await cache.saveLatestCheckin(null);
+      expect(await open(indexedDB).cache.readLatestCheckin()).toBeNull();
+
+      await cache.saveLatestCheckin(checkin);
+      expect(await open(indexedDB).cache.readLatestCheckin()).toEqual(checkin);
+    });
   });
 });

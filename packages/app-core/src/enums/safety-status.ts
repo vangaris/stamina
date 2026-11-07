@@ -8,6 +8,8 @@ export enum SafetyStatus {
   ScreeningNeeded = 'screening_needed',
   /** The latest Screening refers the person to a professional and no doctor statement lifts it. */
   Referred = 'referred',
+  /** Cleared to train, but a reported stop flag pauses training until the person confirms a doctor has seen or cleared them. */
+  Paused = 'paused',
   /** Cleared, or Referred with the doctor statement (Limited mode): the app can be used. */
   Ready = 'ready',
 }

@@ -24,13 +24,13 @@ const rejected = (reason: ProgramRejection): CreateProgramResult => ({
  *
  * Three steps, so no transaction and no row lock is held while the model answers: read what
  * exists and the inputs (transaction); pick (no transaction); lock the user, read the inputs
- * again and store (transaction). If the inputs changed in between (a Screening saved while the
+ * again and store (transaction). If the inputs changed in between (a Screening or stop flag saved while the
  * model was thinking), the AI's picks are dropped and the rules' week for the new inputs is
  * stored: a Program never outlives the exclusions it was built under. Two simultaneous calls
  * both pick; the second finds the first's Program under the lock and returns it.
  *
  * Refusals, in order: no saved profile, missing consent or no Screening (`NotReady`); a Referred
- * Training mode (`Referred`); food only (`NoTrainingWeek`); a library that cannot fill every slot
+ * Training mode (`Referred`); a pausing stop flag not yet confirmed (`Paused`); food only (`NoTrainingWeek`); a library that cannot fill every slot
  * of every Session for the person's equipment and excluded areas (`NoExercises`). Nothing is
  * stored for a refusal.
  */

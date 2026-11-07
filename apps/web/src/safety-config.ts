@@ -10,5 +10,6 @@ export const ROUTE_FOR_SAFETY: Record<SafetyStatus, RoutePath> = {
   [SafetyStatus.ConsentNeeded]: RoutePath.Consent,
   [SafetyStatus.ScreeningNeeded]: RoutePath.Screening,
   [SafetyStatus.Referred]: RoutePath.Referred,
+  [SafetyStatus.Paused]: RoutePath.Paused,
   [SafetyStatus.Ready]: RoutePath.Today,
 };

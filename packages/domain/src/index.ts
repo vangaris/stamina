@@ -25,7 +25,12 @@ export {
   MAX_SET_RPE,
   ACTIVITY_RPE_BY_INTENSITY,
   LOAD_AVERAGE_WEEKS,
+  EMERGENCY_NUMBER,
   MAX_ACTIVITY_FUTURE_DAYS,
+  MAX_CHECKIN_SCORE,
+  MIN_CHECKIN_SCORE,
+  STOP_FLAG_EFFECTS,
+  PAUSING_STOP_ACTIONS,
   MAX_WEIGHT_KG,
   MIN_SESSION_RPE,
   MIN_SET_RPE,
@@ -71,6 +76,8 @@ export { Eligibility } from './enums/eligibility.ts';
 export { Goal } from './enums/goal.ts';
 export { Intensity } from './enums/intensity.ts';
 export { ActivitySource } from './enums/activity-source.ts';
+export { StopAction } from './enums/stop-action.ts';
+export { StopFlag } from './enums/stop-flag.ts';
 export { LaunchSport } from './enums/launch-sport.ts';
 export { LoadGuidance } from './enums/load-guidance.ts';
 export { Need } from './enums/need.ts';
@@ -109,6 +116,9 @@ export type {
   PickValidation,
   SlotSpec,
   LoadEntry,
+  StopFlagEffect,
+  StopState,
+  StoredStopFlag,
   LoadSummary,
   PlannedActivity,
   PlannedActivityInput,
@@ -135,6 +145,10 @@ export { daysBetween } from './utils/days-between.ts';
 export { plannedActivities } from './utils/planned-activities.ts';
 export { summariseWeeklyLoad } from './utils/summarise-weekly-load.ts';
 export { weekStartOf } from './utils/week-start-of.ts';
+export { isTrainingBlocked } from './utils/is-training-blocked.ts';
+export { mergeExcludedAreas } from './utils/merge-excluded-areas.ts';
+export { resolveStopState } from './utils/resolve-stop-state.ts';
+export { stopFlagEffect } from './utils/stop-flag-effect.ts';
 export { weekdayOf } from './utils/weekday-of.ts';
 export { buildPickSpec } from './utils/build-pick-spec.ts';
 export { validatePicks } from './utils/validate-picks.ts';

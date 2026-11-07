@@ -3,6 +3,8 @@ import { ServicesMode } from './enums/services-mode.ts';
 import { createBetterAuthService } from './services/create-better-auth-service.ts';
 import { createBrowserInviteStorage } from './services/create-browser-invite-storage.ts';
 import { createBrowserNetwork } from './services/create-browser-network.ts';
+import { createDexieCheckins } from './services/create-dexie-checkins.ts';
+import { createDexieStopFlags } from './services/create-dexie-stop-flags.ts';
 import { createDexieActivityLog } from './services/create-dexie-activity-log.ts';
 import { createDexieLocalData } from './services/create-dexie-local-data.ts';
 import { createDexieOfflineQueue } from './services/create-dexie-offline-queue.ts';
@@ -13,6 +15,8 @@ import { createFixedClock } from './services/create-fixed-clock.ts';
 import { createFakeApiClient } from './services/create-fake-api-client.ts';
 import { createFakeAuthService } from './services/create-fake-auth-service.ts';
 import { createLocalDatabase } from './services/create-local-database.ts';
+import { createMemoryCheckins } from './services/create-memory-checkins.ts';
+import { createMemoryStopFlags } from './services/create-memory-stop-flags.ts';
 import { createMemoryActivityLog } from './services/create-memory-activity-log.ts';
 import { createMemoryInviteStorage } from './services/create-memory-invite-storage.ts';
 import { createMemoryLocalData } from './services/create-memory-local-data.ts';
@@ -23,7 +27,7 @@ import { createSilentLogger } from './services/create-silent-logger.ts';
 import { createSystemClock } from './services/create-system-clock.ts';
 import type { Services, ServicesEnv } from './types.ts';
 
-/** Test and Dev share the in-memory fakes (queue, session and Activity logs, plan cache and local data included; Production keeps them in IndexedDB); Dev uses the console, the system clock and the browser's network state; Test is silent, fixed-time and always online. */
+/** Test and Dev share the in-memory fakes (queue, session, Activity, stop flag and Check-in stores, plan cache and local data included; Production keeps them in IndexedDB); Dev uses the console, the system clock and the browser's network state; Test is silent, fixed-time and always online. */
 export function createServices(env: ServicesEnv): Services {
   switch (env.mode) {
     case ServicesMode.Test:
@@ -33,6 +37,8 @@ export function createServices(env: ServicesEnv): Services {
       const offlineQueue = createMemoryOfflineQueue();
       const sessionLog = createMemorySessionLog();
       const activityLog = createMemoryActivityLog();
+      const stopFlags = createMemoryStopFlags();
+      const checkins = createMemoryCheckins();
       const planCache = createMemoryPlanCache();
       return {
         api: createFakeApiClient(() => auth.getToken()),
@@ -44,8 +50,17 @@ export function createServices(env: ServicesEnv): Services {
         offlineQueue,
         sessionLog,
         activityLog,
+        stopFlags,
+        checkins,
         planCache,
-        localData: createMemoryLocalData([offlineQueue, sessionLog, activityLog, planCache]),
+        localData: createMemoryLocalData([
+          offlineQueue,
+          sessionLog,
+          activityLog,
+          stopFlags,
+          checkins,
+          planCache,
+        ]),
       };
     }
     case ServicesMode.Production: {
@@ -66,6 +81,8 @@ export function createServices(env: ServicesEnv): Services {
         offlineQueue: createDexieOfflineQueue(database),
         sessionLog: createDexieSessionLog(database),
         activityLog: createDexieActivityLog(database),
+        stopFlags: createDexieStopFlags(database),
+        checkins: createDexieCheckins(database),
         planCache: createDexiePlanCache(database),
         localData: createDexieLocalData(database),
       };

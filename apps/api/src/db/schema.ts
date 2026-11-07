@@ -40,6 +40,9 @@ import {
   Intensity,
   MAX_PLAY_MINUTES,
   MIN_PLAY_MINUTES,
+  MAX_CHECKIN_SCORE,
+  MIN_CHECKIN_SCORE,
+  StopFlag,
   Weekday,
   type Goal,
   type LaunchSport,
@@ -794,6 +797,103 @@ export const activity = pgTable(
       for: 'insert',
       to: APP_ROLE,
       withCheck: sql`user_id = app_user_id()::uuid`,
+    }),
+  ],
+).enableRLS();
+
+/**
+ * One daily Check-in: sleep, soreness and energy, each 1..5. The id is made on the device, so a
+ * replay is a conflict the insert ignores. Append-only like `activity`: the app role reads and
+ * inserts its own rows and never rewrites or deletes them. Health data: never logged.
+ */
+export const checkin = pgTable(
+  'checkin',
+  {
+    id: uuid('id').primaryKey(),
+    userId: uuid('user_id')
+      .notNull()
+      .references(() => appUser.id, { onDelete: 'cascade' }),
+    date: date('date', { mode: 'string' }).notNull(),
+    sleep: integer('sleep').notNull(),
+    soreness: integer('soreness').notNull(),
+    energy: integer('energy').notNull(),
+    submittedAt: timestamp('submitted_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => [
+    check(
+      'checkin_sleep_valid',
+      sql`${table.sleep} between ${sql.raw(String(MIN_CHECKIN_SCORE))} and ${sql.raw(String(MAX_CHECKIN_SCORE))}`,
+    ),
+    check(
+      'checkin_soreness_valid',
+      sql`${table.soreness} between ${sql.raw(String(MIN_CHECKIN_SCORE))} and ${sql.raw(String(MAX_CHECKIN_SCORE))}`,
+    ),
+    check(
+      'checkin_energy_valid',
+      sql`${table.energy} between ${sql.raw(String(MIN_CHECKIN_SCORE))} and ${sql.raw(String(MAX_CHECKIN_SCORE))}`,
+    ),
+    index('checkin_user_date').on(table.userId, table.date),
+    pgPolicy('checkin_owner_select', {
+      for: 'select',
+      to: APP_ROLE,
+      using: sql`user_id = app_user_id()::uuid`,
+    }),
+    pgPolicy('checkin_owner_insert', {
+      for: 'insert',
+      to: APP_ROLE,
+      withCheck: sql`user_id = app_user_id()::uuid`,
+    }),
+  ],
+).enableRLS();
+
+/**
+ * One reported stop flag ("anything unusual today?"). The id is made on the device, so a replay is
+ * a conflict the insert ignores. Append-only like `consent`: the app role reads and inserts its own
+ * rows, and the only change it can make is stamping `confirmed_at` once ("a doctor has seen me" /
+ * "cleared"), from null to a time (column grant plus the update policy). `body_area` is set exactly
+ * for `new-pain`. `session_id` is the Session it was reported from, when it is the person's own.
+ * Health data: never logged, returned only by the user's own export.
+ */
+export const stopFlag = pgTable(
+  'stop_flag',
+  {
+    id: uuid('id').primaryKey(),
+    userId: uuid('user_id')
+      .notNull()
+      .references(() => appUser.id, { onDelete: 'cascade' }),
+    flag: text('flag').$type<StopFlag>().notNull(),
+    date: date('date', { mode: 'string' }).notNull(),
+    bodyArea: text('body_area').$type<BodyArea>(),
+    sessionId: uuid('session_id').references(() => session.id, { onDelete: 'set null' }),
+    reportedAt: timestamp('reported_at', { withTimezone: true }).notNull().defaultNow(),
+    confirmedAt: timestamp('confirmed_at', { withTimezone: true }),
+  },
+  (table) => [
+    check('stop_flag_flag_valid', isOneOf(table.flag, Object.values(StopFlag))),
+    check(
+      'stop_flag_body_area_valid',
+      sql`${table.bodyArea} is null or ${isOneOf(table.bodyArea, Object.values(BodyArea))}`,
+    ),
+    check(
+      'stop_flag_area_iff_new_pain',
+      sql`(${table.bodyArea} is not null) = (${table.flag} = ${literal(StopFlag.NewPain)})`,
+    ),
+    index('stop_flag_user_date').on(table.userId, table.date),
+    pgPolicy('stop_flag_owner_select', {
+      for: 'select',
+      to: APP_ROLE,
+      using: sql`user_id = app_user_id()::uuid`,
+    }),
+    pgPolicy('stop_flag_owner_insert', {
+      for: 'insert',
+      to: APP_ROLE,
+      withCheck: sql`user_id = app_user_id()::uuid`,
+    }),
+    pgPolicy('stop_flag_owner_confirm', {
+      for: 'update',
+      to: APP_ROLE,
+      using: sql`user_id = app_user_id()::uuid and confirmed_at is null`,
+      withCheck: sql`user_id = app_user_id()::uuid and confirmed_at is not null`,
     }),
   ],
 ).enableRLS();

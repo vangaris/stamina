@@ -16,6 +16,12 @@ export enum ApiPath {
   Screening = '/screening',
   /** "A doctor has said I can train", after a referral. */
   DoctorOk = '/screening/doctor-ok',
+  /** The Screening questions asked again after a stop flag. */
+  ScreeningRecheck = '/screening/recheck',
+  /** `POST` reports a stop flag; `POST /safety/stop-flags/confirm` ends the pauses. */
+  StopFlags = '/safety/stop-flags',
+  /** `POST /checkins` sends the daily Check-in; `GET /checkins/latest` reads the latest. */
+  Checkins = '/checkins',
   /** The signed-in user's Program: `GET` reads the week, `POST` creates it if there is none. */
   Program = '/program',
   /** One Session: `GET /sessions/{id}`, `POST /sessions/{id}/sets`, `POST /sessions/{id}/finish`. */
