@@ -4,7 +4,7 @@
 
 **Blocked by:** 16: Nutrition targets and water
 
-**Status:** ready-for-agent
+**Status:** in-progress
 
 **Roadmap week:** 6
 
